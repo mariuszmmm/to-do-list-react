@@ -1,4 +1,4 @@
-# **To-do list**
+# **To-do list**    (currently no interaction)
 
 ## Description
 
@@ -9,7 +9,7 @@ The "To-do List" application allows you to:
 - hiding completed tasks;
 - marking all tasks as done.
 
-The application has been prepared for convenient use also on smaller devices.
+The application has been prepared for convenient use also on tablets and smartphones.
 #
  Check it out:     -->    https://mariuszmmm.github.io/to-do-list-react/     <--
 #
