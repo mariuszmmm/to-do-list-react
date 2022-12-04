@@ -10,17 +10,13 @@ The "To-do List" application allows you to:
 - marking all tasks as done.
 
 The application has been prepared for convenient use also on smaller devices.
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 #
  Check it out:     -->    https://mariuszmmm.github.io/to-do-list-react/     <--
 #
-![To-do list]("%PUBLIC_URL%/animation.gif")
-
-
-
-
-
+![To-do list](public/animation.gif)
+#
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#
 ## Available Scripts
 
 In the project directory, you can run:
