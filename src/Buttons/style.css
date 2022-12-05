@@ -1,15 +1,15 @@
-.header__button {
+.buttons_button {
     border: solid 1px rgb(255, 255, 255);
     color: hsl(180 100% 25%);
     font-size: 16px;
     background-color: transparent;
-    margin: 0 5px;
+    margin-left: 20px;
     padding: 0;
     transition: 250ms;
 }
 
 @media (max-width: 767px) {
-    .header__button {
+    .buttons_button {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -19,15 +19,15 @@
     }
 }
 
-.header__button:hover {
+.buttons_button:hover {
     cursor: pointer;
     color: hsl(180 100% 30%);
 }
 
-.header__button:active {
+.buttons_button:active {
     color: hsl(180 100% 35%);
 }
 
-.header__button:disabled {
+.buttons_button:disabled {
     color: #ddd;
 }
