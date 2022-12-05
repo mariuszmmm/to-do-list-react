@@ -1,4 +1,4 @@
-.buttons_button {
+.buttons__button {
     border: solid 1px rgb(255, 255, 255);
     color: hsl(180 100% 25%);
     font-size: 16px;
@@ -9,7 +9,7 @@
 }
 
 @media (max-width: 767px) {
-    .buttons_button {
+    .buttons__button {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -19,15 +19,15 @@
     }
 }
 
-.buttons_button:hover {
+.buttons__button:hover {
     cursor: pointer;
     color: hsl(180 100% 30%);
 }
 
-.buttons_button:active {
+.buttons__button:active {
     color: hsl(180 100% 35%);
 }
 
-.buttons_button:disabled {
+.buttons__button:disabled {
     color: #ddd;
 }
