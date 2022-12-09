@@ -7,20 +7,29 @@ import Header from "./Header";
 import Container from "./Container";
 
 function App() {
-  const [hideDone, sethideDone] = useState(false);
+  const [hideDone, setHideDone] = useState(false);
   const [tasks, setTasks] = useState([
     { id: 1, content: "Przejść na Reacta", done: true },
     { id: 2, content: "Napić się", done: false },
   ]);
 
   const togglehideDone = () => {
-    sethideDone(hideDone => !hideDone);
-    // console.log(hideDone);
+    setHideDone(hideDone => !hideDone);
   };
 
   const removeTasks = (id) => {
     setTasks(tasks => tasks.filter(task => task.id !== id));
   };
+
+  const toggleTaskDone = (id) => {
+    setTasks(tasks => tasks.map(task => {
+      if (task.id === id) {
+        return { ...task, done: !task.done };
+      }
+
+      return task;
+    }));
+  }
 
   return (
     <Container className="container">
@@ -36,6 +45,7 @@ function App() {
             tasks={tasks}
             hideDone={hideDone}
             removeTasks={removeTasks}
+            toggleTaskDone={toggleTaskDone}
           />
         }
         extraHeaderContent={
