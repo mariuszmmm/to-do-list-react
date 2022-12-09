@@ -13,7 +13,7 @@ const Form = ({ addNewTask }) => {
     return (
         <form className="form" onSubmit={onFormSubmit}>
             <input
-                // autoFocus
+                autoFocus
                 value={newTaskContent}
                 className="form__input"
                 name="taskName"
