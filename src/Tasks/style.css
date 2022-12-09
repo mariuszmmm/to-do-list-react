@@ -53,6 +53,8 @@
 .tasks__button--toggleDone:hover {
     cursor: pointer;
     background-color: hsl(120 61% 39%);
+    border: 1px solid black;
+    border-radius: 2px;
 }
 
 .tasks__button--toggleDone:active {
@@ -70,6 +72,8 @@
 .tasks__button--remove:hover {
     cursor: pointer;
     background-color: hsl(348 83% 52%);
+    border: 1px solid black;
+    border-radius: 2px;
 }
 
 .tasks__button--remove:active {
