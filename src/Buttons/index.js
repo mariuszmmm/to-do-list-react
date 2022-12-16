@@ -22,5 +22,4 @@ const Buttons = ({ tasks, hideDone, togglehideDone, setAllDone }) => (
 	</div>
 );
 
-
 export default Buttons;
