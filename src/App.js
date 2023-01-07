@@ -6,12 +6,15 @@ import Section from "./Section";
 import Header from "./Header";
 import Container from "./Container";
 
+const hideDoneLocalStorage = JSON.parse(localStorage.getItem("hideDone"));
+const tasksLocalStorage = JSON.parse(localStorage.getItem("tasks"));
+
 function App() {
-  const [hideDone, setHideDone] = useState(false);
-  const [tasks, setTasks] = useState([
-    { id: 1, content: "Przejść na Reacta", done: true },
-    { id: 2, content: "Napić się", done: false },
-  ]);
+  const [hideDone, setHideDone] = useState(hideDoneLocalStorage);
+  const [tasks, setTasks] = useState(tasksLocalStorage ? tasksLocalStorage : []);
+
+  localStorage.setItem("hideDone", JSON.stringify(hideDone));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 
   const togglehideDone = () => {
     setHideDone(hideDone => !hideDone);
