@@ -60,7 +60,7 @@
 }
 
 .tasks__content--toggleDone {
-    text-decoration: line-through;
+    text-decoration: 2px line-through;
 }
 
 .tasks__button--remove {
