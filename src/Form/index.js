@@ -34,10 +34,7 @@ const Form = ({ addNewTask }) => {
                 onChange={({ target }) => setNewTaskContent(target.value)}
                 ref={inputRef}
             />
-            <button
-                className="form__button"
-                onClick={focusInput}
-            >
+            <button className="form__button" onClick={focusInput}>
                 Dodaj zadanie
             </button>
         </form>
