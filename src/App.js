@@ -23,7 +23,7 @@ function App() {
   } = useTasks();
 
   return (
-    <Container className="container">
+    <Container>
       <Header title="Lista zadań" />
       <Section
         title="Dodaj nowe zadanie"
