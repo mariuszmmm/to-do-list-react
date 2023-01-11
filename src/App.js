@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLocalStorageState } from "./useLocalStorageState";
 import Form from "./Form";
 import Tasks from "./Tasks";
 import Buttons from "./Buttons";
@@ -8,7 +8,7 @@ import Container from "./Container";
 import { useTasks } from "./useTasks";
 
 function App() {
-  const [hideDone, setHideDone] = useState(false);
+  const [hideDone, setHideDone] = useLocalStorageState("hideDone", false);
 
   const togglehideDone = () => {
     setHideDone(hideDone => !hideDone);
