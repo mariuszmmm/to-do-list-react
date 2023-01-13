@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ButtonsContainer = styled.div`
-display: block;
+   display: block;
 `;
 
 export const Button = styled.button`
