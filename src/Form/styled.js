@@ -32,7 +32,7 @@ export const Button = styled.button`
    &:hover {
       cursor: pointer;
       background-color: hsl(180, 100%, 30%);
-      transform: scale(1.08);
+      transform: scale(1.05);
    }
 
    &:active {
