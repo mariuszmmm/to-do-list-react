@@ -2,16 +2,16 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 html {
-  box-sizing: border-box;
+   box-sizing: border-box;
 }
 
 *, ::after, ::before {
-  box-sizing: inherit;
+   box-sizing: inherit;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #eee;
+   font-family: 'Montserrat', sans-serif;
+   background-color: #eee;
 }
 `;
 
