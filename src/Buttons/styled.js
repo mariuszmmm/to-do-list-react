@@ -5,15 +5,15 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const Button = styled.button`
-   border: solid 1px rgb(255, 255, 255);
-   color: hsl(180 100% 25%);
+   border: none;
+   color: ${({ theme }) => theme.color.teal};
    font-size: 16px;
-   background-color: transparent;
-   margin-left: 20px;
+   background: transparent;
+   margin: 0 0 0 20px;
    padding: 0;
-   transition: 250ms;
+   transition: filter 0.8s;
 
-   @media (max-width: 767px) {
+   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -24,14 +24,14 @@ export const Button = styled.button`
 
    &:hover {
       cursor: pointer;
-      color: hsl(180 100% 30%);
+      filter: brightness(110%);
    }
 
    &:active {
-      color: hsl(180 100% 35%);
+      filter: brightness(120%);
    }
 
    &:disabled {
-      color: #ddd;
+      color: ${({ theme }) => theme.color.silver};
    } 
 `;

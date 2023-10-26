@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
 html {
    box-sizing: border-box;
 }
@@ -11,8 +11,6 @@ html {
 
 body {
    font-family: 'Montserrat', sans-serif;
-   background-color: #eee;
+   background: ${({ theme }) => theme.color.gallery};
 }
 `;
-
-export default GlobalStyle;

@@ -5,37 +5,37 @@ export const Container = styled.form`
    grid-template-columns: 1fr auto;
    grid-gap: 20px;
 
-   @media (max-width: 767px) {
+   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
       grid-template-columns: 1fr;
    }
 `;
 
 export const Input = styled.input`
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid ${({ theme }) => theme.color.alto};
     min-width: 200px;
     border-radius: 5px;
 `;
 
 export const Button = styled.button`
    padding: 10px;
-   background-color: hsl(180, 100%, 25%);
-   color: white;
+   background: ${({ theme }) => theme.color.teal};
+   color: ${({ theme }) => theme.color.white};
    border: none;
-   transition: 250ms;
+   transition: 0.25s;
 
-   @media (max-width: 767px) {
-      background-color: hsl(180, 100%, 30%);
-      transform: scale(1.02, 1.04);
+   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
+      background-color: ${({ theme }) => theme.color.teal};
+      transform: scale(1.02);
    }
 
    &:hover {
       cursor: pointer;
-      background-color: hsl(180, 100%, 30%);
-      transform: scale(1.05);
+      filter: brightness(110%);
+      transform: scale(1.04);
    }
 
    &:active {
-      background-color: hsl(180, 100%, 35%);
+      filter: brightness(120%);
    }
 `;

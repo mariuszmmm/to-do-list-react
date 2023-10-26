@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const StyledSection = styled.section`
    margin: 10px 0;
-   background: white;
-   box-shadow: 0 0 5px #ddd;
+   background: ${({ theme }) => theme.color.white};
+   box-shadow: 0 0 5px ${({ theme }) => theme.color.alto};;
 `;
 
 export const Header = styled.h2`
@@ -13,9 +13,9 @@ export const Header = styled.h2`
    font-size: 20px;
    padding: 20px;
    margin: 0;
-   border-bottom: 1px solid #ddd;
+   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
 
-   @media (max-width: 767px) {
+   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
       flex-direction: column;
       padding-bottom: 10px;
    }
