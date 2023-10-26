@@ -5,10 +5,6 @@ const Form = ({ addNewTask }) => {
    const [newTaskContent, setNewTaskContent] = useState("");
    const inputRef = useRef(null);
 
-   const focusInput = () => {
-      inputRef.current.focus();
-   };
-
    const onFormSubmit = (event) => {
       event.preventDefault();
 
@@ -19,6 +15,7 @@ const Form = ({ addNewTask }) => {
       }
 
       setNewTaskContent("");
+      inputRef.current.focus();
    };
 
    return (
@@ -31,7 +28,7 @@ const Form = ({ addNewTask }) => {
             onChange={({ target }) => setNewTaskContent(target.value)}
             ref={inputRef}
          />
-         <Button onClick={focusInput}>
+         <Button>
             Dodaj zadanie
          </Button>
       </Container>
