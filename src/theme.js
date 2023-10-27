@@ -1,4 +1,4 @@
-export const theme = {
+const theme = {
   color: {
     black: "#000",
     silver: "#ccc",
@@ -13,4 +13,6 @@ export const theme = {
     mobileMax: 767,
     mobileMin: 321,
   },
-}; 
+};
+
+export default theme;
