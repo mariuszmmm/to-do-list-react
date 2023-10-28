@@ -1,4 +1,4 @@
-import { StyledSection, Header, Body } from "./styled";
+import { StyledSection, Header, SectionBody } from "./styled";
 
 const Section = ({ title, body, extraHeaderContent }) => (
    <StyledSection>
@@ -6,9 +6,9 @@ const Section = ({ title, body, extraHeaderContent }) => (
          {title}
          {extraHeaderContent}
       </Header>
-      <Body>
+      <SectionBody>
          {body}
-      </Body>
+      </SectionBody>
    </StyledSection>
 );
 
