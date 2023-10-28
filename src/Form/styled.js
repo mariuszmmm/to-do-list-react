@@ -11,10 +11,10 @@ export const Container = styled.form`
 `;
 
 export const Input = styled.input`
-    padding: 10px;
-    border: 1px solid ${({ theme }) => theme.color.alto};
-    min-width: 200px;
-    border-radius: 5px;
+   padding: 10px;
+   border: 1px solid ${({ theme }) => theme.color.alto};
+   min-width: 200px;
+   border-radius: 5px;
 `;
 
 export const Button = styled.button`

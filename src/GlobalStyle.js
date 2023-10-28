@@ -1,18 +1,18 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-html {
-   box-sizing: border-box;
-}
+   html {
+      box-sizing: border-box;
+   }
 
-*, ::after, ::before {
-   box-sizing: inherit;
-}
+   *, ::after, ::before {
+      box-sizing: inherit;
+   }
 
-body {
-   font-family: 'Montserrat', sans-serif;
-   background: ${({ theme }) => theme.color.gallery};
-}
+   body {
+      font-family: 'Montserrat', sans-serif;
+      background: ${({ theme }) => theme.color.gallery};
+   }
 `;
 
 export default GlobalStyle;
