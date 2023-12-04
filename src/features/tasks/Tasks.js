@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { useLocalStorageState } from "../../useLocalStorageState";
 import Form from "./Form";
 import TasksList from "./TasksList";
@@ -6,16 +7,13 @@ import Section from "../../common/Section";
 import Header from "../../common/Header";
 import Container from "../../common/Container";
 import { useTasks } from "../../useTasks";
+import { selectTasks } from "./tasksSlice";
+
 
 function Tasks() {
-   const [hideDone, setHideDone] = useLocalStorageState("hideDone", false);
-
-   const togglehideDone = () => {
-      setHideDone(hideDone => !hideDone);
-   };
+   const { tasks } = useSelector(selectTasks);
 
    const {
-      tasks,
       removeTasks,
       toggleTaskDone,
       setAllDone,
@@ -33,17 +31,12 @@ function Tasks() {
             title="Lista zadań"
             body={
                <TasksList
-                  tasks={tasks}
-                  hideDone={hideDone}
                   removeTasks={removeTasks}
                   toggleTaskDone={toggleTaskDone}
                />
             }
             extraHeaderContent={
                <Buttons
-                  tasks={tasks}
-                  hideDone={hideDone}
-                  togglehideDone={togglehideDone}
                   setAllDone={setAllDone}
                />
             }
