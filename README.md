@@ -1,4 +1,83 @@
-# **To-do list** 
+<p align="right">
+  🌍 <a href="README-pl.md">polski</a> ∙ <a href="README.md">English</a>
+</p>
+
+# [To-do list](https://mariuszmmm.github.io/to-do-list-react/)
+* [Try it Now](https://mariuszmmm.github.io/to-do-list-react/)
+* [Presentation](#-presentation)
+* [Description](#-description)
+* [Technologies](#-technologies)
+* [Setup](#-setup)
+* [Application view](#-application-view)
+<br>
+
+## 🎬 Presentation
+![To-do list](images/presentation.gif)
+
+<br>
+
+## 📝 Description
+<b>'Currency converter'</b> is an application built on the React.js library.<br>
+
+
+
+
+Additionally, the application is responsive, adapting seamlessly to various screen sizes and devices.
+
+<br>
+
+## 🛠 Technologies
+
+<ul>
+<li>JavaScript ES6+ Features</li>
+<li>React.js</li>
+<li>JSX</li>
+<li>CSS Grid</li>
+<li>CSS Flex</li>
+<li>Normalize.css</li>
+<li>Styled Components</li>
+<li>Media Queries</li>
+<li>Controlled Components</li>
+<li>Custom Hooks</li>
+<li>API Integration</li>
+</ul>
+
+<br>
+
+## ⚙ Setup
+To run the program from the 'to-do-list-react' repository on your local computer, you can follow these steps:
+1. <b>Downloading the source code:</b><br>
+Clone the repository from the GitHub page to your local computer using the command:
+```commandline
+     git clone https://github.com/mariuszmmm/to-do-list-react.git
+```
+2. <b>Dependency Installation:</b><br>
+Navigate to the project directory, then install all required dependencies using a package manager like npm:
+```commandline
+    cd to-do-list-react
+    npm install
+```
+3. <b>Launching the Application:</b><br>
+After installing the dependencies, you can run the application locally. Use the command:
+```commandline
+    npm start
+```
+  This command will start the application in developer mode, opening it in a browser at http://localhost:3000.
+
+<br>
+
+## 🖥 Application view
+The application is fully responsive and adapts to various devices.<br>
+Screenshots showcase the app's appearance on both phones and tablets, demonstrating how it responsively adjusts to screen size changes
+
+![Currency converter](images/size.png)
+
+
+
+
+
+
+
 
 ## Description
 
@@ -49,20 +128,4 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Technologies Used
-  
-- Javascript ES6+
 
-- HTML 5
-
-- CSS Grid
-
-- CSS Flex
-
-- Media queries
-
-- Styled Component
-
-- Normalize.css
-
-- React
