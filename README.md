@@ -20,7 +20,7 @@
 <b>'To-do List'</b> is an application built using the React.js library.<br>
 
 The application enables:
-- aAdding new tasks to the list,
+- adding new tasks to the list,
 - marking tasks as completed,
 - removing tasks from the list,
 - hiding completed tasks,
