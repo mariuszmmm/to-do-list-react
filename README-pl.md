@@ -11,8 +11,8 @@
 * [Widok aplikacji](#-widok-aplikacji)
 <br>
 
-## 🎬 Presentation
-![Lista rzeczy do zrobienia](images/presentation.gif)
+## 🎬 Prezentacja
+![to-do List](images/presentation.gif)
 
 <br>
 
@@ -42,8 +42,6 @@ Instrukcje użytkowania:
 5. Oznaczanie wszystkich zadań jako ukończone:
 - Wykorzystaj opcję "Zaznacz wszystkie", aby oznaczyć wszystkie zadania jako ukończone.
 
-Aplikacja jest responsywna, płynnie dostosowując się do różnych rozmiarów ekranów i urządzeń.
-
 <br>
 
 ## 🛠 Technologie
@@ -57,8 +55,7 @@ Aplikacja jest responsywna, płynnie dostosowując się do różnych rozmiarów 
 <li>Styled Components</li>
 <li>Media Queries</li>
 <li>Controlled Components</li>
-<li>Custom Hooks</li>
-<li>API Integration</li>
+<li>Redux</li>
 </ul>
 
 <br>
