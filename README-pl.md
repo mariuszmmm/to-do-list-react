@@ -12,7 +12,7 @@
 <br>
 
 ## 🎬 Prezentacja
-![to-do List](images/presentation.gif)
+![to-do list](images/presentation.gif)
 
 <br>
 
@@ -30,21 +30,22 @@ Wykorzystaj tę aplikację, aby efektywnie zarządzać swoimi zadaniami i śledz
 
 Instrukcje użytkowania:
    
-1. Dodawanie zadania:
-- Wprowadź nazwę zadania w polu tekstowym.
-- Naciśnij przycisk "Dodaj" lub wciśnij klawisz Enter, aby dodać zadanie do listy.
+1. Dodawanie zadania:  
+   - Wprowadź nazwę zadania w polu tekstowym.
+   - Naciśnij przycisk "Dodaj zadanie" lub wciśnij klawisz Enter, aby dodać zadanie do listy.
 2. Oznaczanie zadania jako ukończone:
-- Kliknij na pole wyboru obok zadania, aby je oznaczyć jako ukończone.
-3. Usuwanie zadania:
-- Kliknij przycisk usuwania (np. ikona kosza) obok zadania, aby je usunąć z listy.
-4. Ukrywanie ukończonych zadań:
-- Użyj opcji "Ukryj ukończone" lub podobnej funkcji, aby schować zakończone zadania z listy.
-5. Oznaczanie wszystkich zadań jako ukończone:
-- Wykorzystaj opcję "Zaznacz wszystkie", aby oznaczyć wszystkie zadania jako ukończone.
+   - Kliknij na pole wyboru obok zadania, aby je oznaczyć jako ukończone.
+4. Usuwanie zadania:
+   - Kliknij przycisk usuwania (ikona kosza) obok zadania, aby je usunąć z listy.
+5. Ukrywanie ukończonych zadań:
+   - Użyj opcji "Ukryj ukończone" lub "Pokaż ukończone", aby schować lub pokazać zakończone zadania z listy.
+6. Oznaczanie wszystkich zadań jako ukończone:
+   - Wykorzystaj opcję "Ukończ wszystkie", aby oznaczyć wszystkie zadania jako ukończone.
 
 <br>
 
 ## 🛠 Technologie
+
 <ul>
 <li>JavaScript ES6+ Features</li>
 <li>React.js</li>
@@ -87,4 +88,4 @@ Po zainstalowaniu zależności, możesz uruchomić aplikację lokalnie. Użyj po
 Aplikacja jest w pełni responsywna i dostosowuje się do różnych urządzeń.<br>
 Zrzuty ekranu prezentują wygląd aplikacji zarówno na telefonach, jak i tabletach, pokazując, jak responsywnie dostosowuje się do zmiany rozmiaru ekranu.
 
-![Currency converter](images/size.png)
+![to-do list](images/size.png)
