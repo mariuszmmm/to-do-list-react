@@ -48,7 +48,7 @@ export const Button = styled.button`
       grid-row: 2 / 3;
       grid-column: span 2;
    }
-
+   
    &:hover {
       cursor: pointer;
       filter: brightness(110%);
