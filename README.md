@@ -32,15 +32,15 @@ User Instructions:
 
 1. Adding a task:
    - Enter the task name in the text field.
-   - Press the "Add Task" button or hit the Enter key to add the task to the list.
+   - Press the "Dodaj zadanie" button or hit the Enter key to add the task to the list.
 2. Marking a task as completed:
    - Click on the checkbox next to the task to mark it as completed.
 4. Removing a task:
    - Click the delete button (trash can icon) next to the task to remove it from the list.
 5. Hiding completed tasks:
-   - Use the "Hide completed" or "Show completed" option to hide or reveal completed tasks on the list.
+   - Use the "Ukryj ukończone" or "Pokaż ukończone" option to hide or reveal completed tasks on the list.
 6. Marking all tasks as completed:
-   - Utilize the "Complete all" option to mark all tasks as completed.
+   - Utilize the "Ukończ wszystkie" option to mark all tasks as completed.
 
 <br>
 
