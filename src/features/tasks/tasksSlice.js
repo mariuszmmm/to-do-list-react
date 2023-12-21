@@ -3,9 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const tasksSlice = createSlice({
   name: "tasks",
   initialState: {
-    tasks: [{ content: "test", id: "sdsd" }],
+    tasks: [],
     hideDone: false,
-    aa: "dsds"
   },
   reducers: {
     addTask: ({ tasks }, { payload: task }) => {
@@ -38,7 +37,11 @@ export const {
   setAllDone
 } = tasksSlice.actions;
 
-export const selectTasksState = state => state.tasks;
-export const selectAreTasksEmpty = state => selectTasksState(state).tasks.length === 0;
-export const selectIsEveryTaskDone = (state) => selectTasksState(state).tasks.every(({ done }) => done)
+const selectTasksState = state => state.tasks;
+
+export const selectTasks = state => selectTasksState(state).tasks;
+export const selectHideDone = state => selectTasksState(state).hideDone;
+export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
+export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
+
 export default tasksSlice.reducer;
