@@ -1,45 +1,48 @@
-import { useState, useRef } from 'react'; import { useDispatch } from 'react-redux';
+import { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { addTask } from '../tasksSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { StyledForm, Input, Button } from "./styled";
 
 
 const Form = () => {
-   const [newTaskContent, setNewTaskContent] = useState("");
-   const inputRef = useRef(null);
-   const dispatch = useDispatch();
+  const [newTaskContent, setNewTaskContent] = useState("");
+  const inputRef = useRef(null);
 
-   const onFormSubmit = (event) => {
-      event.preventDefault();
+  const dispatch = useDispatch();
 
-      const trimmedNewTaskContent = newTaskContent.trim();
+  const onFormSubmit = (event) => {
+    event.preventDefault();
 
-      if (trimmedNewTaskContent) {
-         dispatch(addTask({
-            content: trimmedNewTaskContent,
-            done: false,
-            id: nanoid(),
-         }));
-      };
-      setNewTaskContent("");
-      inputRef.current.focus();
-   };
+    const trimmedNewTaskContent = newTaskContent.trim();
 
-   return (
-      <StyledForm onSubmit={onFormSubmit}>
-         <Input
-            autoFocus
-            value={newTaskContent}
-            name="taskName"
-            placeholder="Co jest do zrobienia ?"
-            onChange={({ target }) => setNewTaskContent(target.value)}
-            ref={inputRef}
-         />
-         <Button>
-            Dodaj zadanie
-         </Button>
-      </StyledForm>
-   )
+    if (trimmedNewTaskContent) {
+      dispatch(addTask({
+        content: trimmedNewTaskContent,
+        done: false,
+        id: nanoid(),
+      }));
+    };
+
+    setNewTaskContent("");
+    inputRef.current.focus();
+  };
+
+  return (
+    <StyledForm onSubmit={onFormSubmit}>
+      <Input
+        autoFocus
+        value={newTaskContent}
+        name="taskName"
+        placeholder="Co jest do zrobienia ?"
+        onChange={({ target }) => setNewTaskContent(target.value)}
+        ref={inputRef}
+      />
+      <Button>
+        Dodaj zadanie
+      </Button>
+    </StyledForm>
+  )
 };
 
 export default Form;
