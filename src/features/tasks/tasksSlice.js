@@ -1,14 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const items = localStorage.getItem("tasks") ? JSON.parse(localStorage.getItem("tasks")) : [];
+
+const setItems = (tasks) => localStorage.setItem("tasks", JSON.stringify(tasks));
+
 const tasksSlice = createSlice({
   name: "tasks",
   initialState: {
-    tasks: [],
+    tasks: items,
     hideDone: false,
   },
   reducers: {
     addTask: ({ tasks }, { payload: task }) => {
       tasks.push(task);
+
+      setItems(tasks);
     },
     toggleHideDone: state => {
       state.hideDone = !state.hideDone;
@@ -16,14 +22,20 @@ const tasksSlice = createSlice({
     toggleTaskDone: ({ tasks }, { payload: taskId }) => {
       const index = tasks.findIndex(({ id }) => id === taskId);
       tasks[index].done = !tasks[index].done;
+
+      setItems(tasks);
     },
     removeTasks: ({ tasks }, { payload: taskId }) => {
       const index = tasks.findIndex(({ id }) => id === taskId);
       tasks.splice(index, 1);
+
+      setItems(tasks);
     },
     setAllDone: ({ tasks }) => {
       for (const task of tasks) {
         task.done = true;
+
+        setItems(tasks);
       };
     },
   },
