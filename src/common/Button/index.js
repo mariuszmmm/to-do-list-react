@@ -1,17 +1,13 @@
 import styled from "styled-components";
 
-export const ButtonsContainer = styled.div`
-  display: block;
-`;
-
-export const Button = styled.button`
+export default styled.button`
   border: none;
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;
   background: transparent;
   margin: 0 0 0 20px;
   padding: 0;
-  transition: filter 0.8s;
+  transition: filter 0.3s;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
     width: 100%;
@@ -28,10 +24,11 @@ export const Button = styled.button`
   }
 
   &:active {
-    filter: brightness(120%);
+    filter: brightness(130%);
   }
 
   &:disabled {
     color: ${({ theme }) => theme.color.silver};
+    filter: brightness(100%);
   } 
 `;

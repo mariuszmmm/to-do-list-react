@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "content": "zadanie_1",
+    "done": false
+  },
+  {
+    "id": 2,
+    "content": "zadanie_2",
+    "done": true
+  }
+]
