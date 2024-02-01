@@ -3,7 +3,8 @@ import Header from "../../common/Header";
 import Section from "../../common/Section";
 import Form from "./Form";
 import TasksList from "./TasksList";
-import Buttons from "./Buttons";
+import TaskButtons from "./TaskButtons";
+import FormButtons from "./FormButtons";
 
 const Tasks = () => {
 
@@ -12,12 +13,13 @@ const Tasks = () => {
       <Header title="Lista zadań" />
       <Section
         title="Dodaj nowe zadanie"
+        extraHeaderContent={<FormButtons />}
         body={<Form />}
       />
       <Section
         title="Lista zadań"
         body={<TasksList />}
-        extraHeaderContent={<Buttons />}
+        extraHeaderContent={<TaskButtons />}
       />
     </Container>
   );

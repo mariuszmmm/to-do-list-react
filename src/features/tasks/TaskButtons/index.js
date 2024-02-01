@@ -1,8 +1,9 @@
-import { ButtonsContainer, Button } from "./styled";
+import Button from "../../../common/Button";
+import ButtonsContainer from "../../../common/ButtonsContainer";
 import { selectHideDone, selectIsEveryTaskDone, selectAreTasksEmpty, toggleHideDone, setAllDone } from "../tasksSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-const Buttons = () => {
+const TaskButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
@@ -30,4 +31,4 @@ const Buttons = () => {
   );
 };
 
-export default Buttons;
+export default TaskButtons;
