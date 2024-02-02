@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import Tasks from "./features/tasks/Tasks";
 import AboutAutor from "./features/aboutAutor/AboutAutor";
 import { Nav, NavList, StyledNavLink } from "./styled";
@@ -14,6 +14,7 @@ const App = () => (
     <Routes>
       <Route path="/zadania" element={<Tasks />} />
       <Route path="/autor" element={<AboutAutor />} />
+      <Route path="/" element={<Navigate to="/zadania" />} />
     </Routes>
   </ HashRouter>
 );
