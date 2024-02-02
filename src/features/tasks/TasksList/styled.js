@@ -22,6 +22,7 @@ export const Item = styled.li`
 export const Content = styled.p`
   word-break: break-word;
   margin: 0;
+  color: ${({ theme }) => theme.color.teal};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}px) {
     grid-row: 1 / 2;
