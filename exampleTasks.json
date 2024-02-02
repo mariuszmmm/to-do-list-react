@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "content": "Oznaczyć to zadanie jako ukończone",
+    "done": false
+  },
+  {
+    "id": 2,
+    "content": "Ukończyć wszystkie zadania",
+    "done": false
+  }
+]
