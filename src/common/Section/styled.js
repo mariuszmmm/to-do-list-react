@@ -14,6 +14,8 @@ export const Header = styled.h2`
   padding: 20px;
   margin: 0;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
+  word-break: break-word;
+
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
     flex-direction: column;
