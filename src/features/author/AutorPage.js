@@ -2,7 +2,7 @@ import Container from "../../common/Container";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 
-const AboutAutor = () => {
+const Autor = () => {
 
   return (
     <Container>
@@ -20,4 +20,4 @@ const AboutAutor = () => {
   );
 };
 
-export default AboutAutor;
+export default Autor;
