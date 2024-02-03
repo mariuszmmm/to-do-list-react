@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Montserrat', sans-serif;
     background: ${({ theme }) => theme.color.gallery};
+    min-width: 250px;
   }
 `;
 

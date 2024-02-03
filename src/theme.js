@@ -5,7 +5,7 @@ const theme = {
     alto: "#ddd",
     gallery: "#eee",
     white: "#fff",
-    teal: "#008080",
+    teal: "#007380",
     crimson: "#db143c",
     forestGreen: "#228c22",
     red: "#ff0000"
