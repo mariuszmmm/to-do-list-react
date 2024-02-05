@@ -9,10 +9,12 @@ export const useQueryParameter = (key) => {
 export const useReplaceQueryParameter = () => {
   const navigate = useNavigate();
   const { search, pathname } = useLocation();
-  const queryParametr = new URLSearchParams(search);
 
   const replaceQueryParameter = ({ key, value }) => {
+    const queryParametr = new URLSearchParams(search);
+
     value ? queryParametr.set(key, value) : queryParametr.delete(key);
+    
     navigate(`${pathname}?${queryParametr.toString()}`);
   };
 
