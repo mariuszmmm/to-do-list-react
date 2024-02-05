@@ -29,7 +29,7 @@ const tasksSlice = createSlice({
       };
     },
     fetchExampleTasks: (state) => {
-      state.fetchStatus = "working";
+      state.fetchStatus = "loading";
     },
     resetFetchStatus: (state) => {
       state.fetchStatus = "ready";
@@ -60,10 +60,10 @@ const selectTasksState = state => state.tasks;
 
 export const selectTasks = state => selectTasksState(state).tasks;
 export const selectHideDone = state => selectTasksState(state).hideDone;
-export const selectFetchStatus = state => selectTasksState(state).fetchStatus
+export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
 
-export const getTasksById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId)
+export const getTasksById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
 
 export default tasksSlice.reducer;
