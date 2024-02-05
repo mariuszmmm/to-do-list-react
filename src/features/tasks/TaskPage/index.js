@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getTasksById } from "../tasksSlice";
 import Container from "../../../common/Container";
 import Header from "../../../common/Header";
 import Section from "../../../common/Section";
-import { useSelector } from "react-redux";
-import { getTasksById } from "../tasksSlice";
 
-const Task = () => {
+const TaskPage = () => {
   const { id } = useParams();
   const task = useSelector(state => getTasksById(state, id));
 
@@ -24,4 +24,4 @@ const Task = () => {
   );
 };
 
-export default Task;
+export default TaskPage;
