@@ -1,12 +1,13 @@
 import Container from "../../../common/Container";
 import Header from "../../../common/Header";
 import Section from "../../../common/Section";
+import FormButtons from "./FormButtons";
 import Form from "./Form";
+import Search from "./Search";
 import TasksList from "./TasksList";
 import TaskButtons from "./TasksButtons";
-import FormButtons from "./FormButtons";
 
-const Tasks = () => {
+const TasksPage = () => {
 
   return (
     <Container>
@@ -17,6 +18,10 @@ const Tasks = () => {
         body={<Form />}
       />
       <Section
+        title="Wyszukiwarka"
+        body={<Search />}
+      />
+      <Section
         title="Lista zadań"
         body={<TasksList />}
         extraHeaderContent={<TaskButtons />}
@@ -25,4 +30,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default TasksPage;

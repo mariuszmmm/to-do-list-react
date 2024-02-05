@@ -1,15 +1,22 @@
-import { List, Item, ToggleButton, Content, Text, RemoveButton, StyledLink } from "./styled";
-import { toggleTaskDone, removeTasks, selectTasks, selectHideDone } from "../../tasksSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { selectTasks, selectHideDone, toggleTaskDone, removeTasks } from "../../tasksSlice";
+import { List, Item, ToggleButton, Content, Text, RemoveButton, StyledLink } from "./styled";
+import { useQueryParameter } from "../queryParameter";
+import searchQueryParamName from "../searchQueryParamName";
 
 const TasksList = () => {
   const tasks = useSelector(selectTasks);
   const hideDone = useSelector(selectHideDone);
   const dispatch = useDispatch();
+  const query = useQueryParameter(searchQueryParamName);
+
+  const tasksSearchParams =
+    (!query || query === "") ? tasks : tasks.filter((task) =>
+      ((task.content).toUpperCase()).includes(query.toUpperCase().trim()));
 
   return (
     <List>
-      {tasks.map((task, index) => (
+      {tasksSearchParams.map((task, index) => (
         <Item
           key={task.id}
           hidden={task.done && hideDone}
@@ -20,11 +27,9 @@ const TasksList = () => {
             {task.done ? "✔" : ""}
           </ToggleButton>
           <Content>
-            {index + 1}.{" "}
+            {(!query || query === "") ? `${index + 1}. ` : ""}
             <Text done={task.done}>
-              &nbsp;
               <StyledLink to={`/zadania/${task.id}`}>{task.content}</StyledLink>
-              {" "}&nbsp;
             </Text>
           </Content>
           <RemoveButton
