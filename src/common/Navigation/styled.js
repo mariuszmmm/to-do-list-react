@@ -18,6 +18,11 @@ export const StyledNavLink = styled(NavLink)`
   text-decoration: none;
   color: ${({ theme }) => theme.color.white};
 
+  &:hover{
+    text-decoration: underline;
+    text-underline-offset: 5px
+  }
+
   &.active{
     font-weight: 700;
   }
