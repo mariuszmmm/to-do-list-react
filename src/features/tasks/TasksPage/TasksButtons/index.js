@@ -1,13 +1,18 @@
-import Button from "../../../../common/Button";
-import ButtonsContainer from "../../../../common/ButtonsContainer";
-import { selectHideDone, selectIsEveryTaskDone, selectAreTasksEmpty, toggleHideDone, setAllDone } from "../../tasksSlice";
 import { useSelector, useDispatch } from "react-redux";
+import ButtonsContainer from "../../../../common/ButtonsContainer";
+import Button from "../../../../common/Button";
+import {
+  selectAreTasksEmpty,
+  selectHideDone,
+  selectIsEveryTaskDone,
+  toggleHideDone,
+  setAllDone
+} from "../../tasksSlice";
 
 const TaskButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
-
   const dispatch = useDispatch();
 
   return (

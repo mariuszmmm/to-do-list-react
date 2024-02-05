@@ -9,7 +9,7 @@ export default styled.button`
   padding: 0;
   transition: filter 0.3s;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     width: 100%;
     display: flex;
     flex-direction: column;

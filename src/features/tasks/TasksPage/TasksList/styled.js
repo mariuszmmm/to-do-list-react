@@ -25,7 +25,7 @@ export const Content = styled.p`
   margin: 0;
   color: ${({ theme }) => theme.color.teal};
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 1 / 2;
     grid-column: span 4;
   }
@@ -33,7 +33,7 @@ export const Content = styled.p`
 
 export const Text = styled.span`
   ${({ done }) => done && css`
-    text-decoration: 2px line-through;
+    text-decoration: 2px line-through black;
   `}
 `;
 
@@ -60,7 +60,7 @@ export const Button = styled.button`
   font-size: 20px;
   transition: filter 0.25s;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 2 / 3;
     grid-column: span 2;
   }

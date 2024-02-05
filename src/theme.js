@@ -8,11 +8,11 @@ const theme = {
     teal: "#007380",
     crimson: "#db143c",
     forestGreen: "#228c22",
-    red: "#ff0000"
+    red: "#ff0000",
   },
   breakpoint: {
-    mobileMax: 767,
-    mobileMin: 321,
+    mobileMax: "767px",
+    mobileMin: "321px",
   },
 };
 

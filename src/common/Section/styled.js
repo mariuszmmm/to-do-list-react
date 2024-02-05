@@ -17,7 +17,7 @@ export const Header = styled.h2`
   word-break: break-word;
 
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     flex-direction: column;
     padding-bottom: 10px;
   }
