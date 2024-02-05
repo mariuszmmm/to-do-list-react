@@ -5,16 +5,9 @@ export const StyledForm = styled.form`
   grid-template-columns: 1fr auto;
   grid-gap: 20px;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     grid-template-columns: 1fr;
   }
-`;
-
-export const Input = styled.input`
-  padding: 10px;
-  border: 1px solid ${({ theme }) => theme.color.alto};
-  min-width: 200px;
-  border-radius: 5px;
 `;
 
 export const Button = styled.button`
@@ -24,7 +17,7 @@ export const Button = styled.button`
   border: none;
   transition: 0.25s;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     background-color: ${({ theme }) => theme.color.teal};
     transform: scale(1.02);
   }
