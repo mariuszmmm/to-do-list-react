@@ -2,7 +2,7 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navigation from "./common/Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
-import AuthorPage from "./features/AutorPage";
+import AuthorPage from "./features/AuthorPage";
 
 const App = () => {
 
