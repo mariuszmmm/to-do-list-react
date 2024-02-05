@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getTasksFromLocalStorage } from "./tasksLocalStorage";
+import searchQueryParamName from "./TasksPage/searchQueryParamName";
 
 const tasksSlice = createSlice({
   name: "tasks",
@@ -31,14 +32,14 @@ const tasksSlice = createSlice({
     fetchExampleTasks: (state) => {
       state.fetchStatus = "loading";
     },
+    setTasks: (state, { payload: tasks }) => {
+      state.tasks = tasks;
+    },
     resetFetchStatus: (state) => {
       state.fetchStatus = "ready";
     },
     fetchError: (state) => {
       state.fetchStatus = "error";
-    },
-    setTasks: (state, { payload: tasks }) => {
-      state.tasks = tasks;
     },
   },
 });
@@ -64,6 +65,14 @@ export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
 
-export const getTasksById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
+export const selectTaskById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
+
+export const selectTasksByQuery = (state, query) => {
+  const tasks = selectTasks(state);
+
+  if (!query || query === "") return tasks;
+
+  return tasks.filter(({ content }) => content.toUpperCase().includes(query.toUpperCase().trim()))
+};
 
 export default tasksSlice.reducer;

@@ -1,22 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectTasks, selectHideDone, toggleTaskDone, removeTasks } from "../../tasksSlice";
+import { selectHideDone, toggleTaskDone, removeTasks, selectTasksByQuery } from "../../tasksSlice";
 import { List, Item, ToggleButton, Content, Text, RemoveButton, StyledLink } from "./styled";
 import { useQueryParameter } from "../queryParameter";
 import searchQueryParamName from "../searchQueryParamName";
 
 const TasksList = () => {
-  const tasks = useSelector(selectTasks);
-  const hideDone = useSelector(selectHideDone);
-  const dispatch = useDispatch();
   const query = useQueryParameter(searchQueryParamName);
+  const tasks = useSelector(state => selectTasksByQuery(state, query));
+  const hideDone = useSelector(selectHideDone);
 
-  const tasksSearchParams =
-    (!query || query === "") ? tasks : tasks.filter((task) =>
-      ((task.content).toUpperCase()).includes(query.toUpperCase().trim()));
+  const dispatch = useDispatch();
 
   return (
     <List>
-      {tasksSearchParams.map((task, index) => (
+      {tasks.map((task, index) => (
         <Item
           key={task.id}
           hidden={task.done && hideDone}
@@ -27,7 +24,7 @@ const TasksList = () => {
             {task.done ? "✔" : ""}
           </ToggleButton>
           <Content>
-            {(!query || query === "") ? `${index + 1}. ` : ""}
+            {(!query) ? `${index + 1}. ` : ""}
             <Text done={task.done}>
               <StyledLink to={`/zadania/${task.id}`}>{task.content}</StyledLink>
             </Text>
