@@ -19,9 +19,12 @@
 ## 📝 Opis
 <b>'Lista rzeczy do zrobienia'</b> to aplikacja zbudowana przy użyciu biblioteki React.js.<br>
 
-Aplikacja umożliwia:  
+Aplikacja umożliwia: 
+- pobieranie przykładowych zadań,
 - dodawanie nowych zadań do listy,
 - oznaczanie zadań jako ukończone,
+- wyszukiwanie zadań,
+- wyświetlanie szczegółów zadania,
 - usuwanie zadań z listy,
 - ukrywanie ukończonych zadań,
 - oznaczanie wszystkich zadań jako ukończone.
@@ -30,16 +33,23 @@ Wykorzystaj tę aplikację, aby efektywnie zarządzać swoimi zadaniami i śledz
 
 Instrukcje użytkowania:
    
-1. Dodawanie zadania:  
+1. Pobieranie przykładowych zadań:
+   - Wybierz opcję "Pobierz przykładowe zadania", aby załadować zestaw przykładowych zadań do listy.
+2. Dodawanie zadania:  
    - Wprowadź nazwę zadania w polu tekstowym.
    - Naciśnij przycisk "Dodaj zadanie" lub wciśnij klawisz Enter, aby dodać zadanie do listy.
-2. Oznaczanie zadania jako ukończone:
+3. Oznaczanie zadania jako ukończone:
    - Kliknij na pole wyboru obok zadania, aby je oznaczyć jako ukończone.
-4. Usuwanie zadania:
+4. Wyszukiwanie zadań:
+   - Wpisz szukane słowo lub frazę w pole wyszukiwania.
+   - Zadania pasujące do kryteriów wyszukiwania zostaną automatycznie wyświetlone na liście.
+5. Wyświetlanie szczegółów zadania:
+   - Kliknij na zadanie na liście, aby wyświetlić jego szczegóły.
+6. Usuwanie zadania:
    - Kliknij przycisk usuwania (ikona kosza) obok zadania, aby je usunąć z listy.
-5. Ukrywanie ukończonych zadań:
+7. Ukrywanie ukończonych zadań:
    - Użyj opcji "Ukryj ukończone" lub "Pokaż ukończone", aby schować lub pokazać zakończone zadania z listy.
-6. Oznaczanie wszystkich zadań jako ukończone:
+8. Oznaczanie wszystkich zadań jako ukończone:
    - Wykorzystaj opcję "Ukończ wszystkie", aby oznaczyć wszystkie zadania jako ukończone.
 
 <br>
@@ -48,7 +58,7 @@ Instrukcje użytkowania:
 
 <ul>
 <li>JavaScript ES6+ Features</li>
-<li>React.js</li>
+<li>React</li>
 <li>JSX</li>
 <li>CSS Grid</li>
 <li>CSS Flex</li>
@@ -57,6 +67,9 @@ Instrukcje użytkowania:
 <li>Media Queries</li>
 <li>Controlled Components</li>
 <li>Redux</li>
+<li>Redux Toolkit</li>
+<li>Redux Saga</li>
+<li>Redux Router</li>
 </ul>
 
 <br>
@@ -88,4 +101,10 @@ Po zainstalowaniu zależności, możesz uruchomić aplikację lokalnie. Użyj po
 Aplikacja jest w pełni responsywna i dostosowuje się do różnych urządzeń.<br>
 Zrzuty ekranu prezentują wygląd aplikacji zarówno na telefonach, jak i tabletach, pokazując, jak responsywnie dostosowuje się do zmiany rozmiaru ekranu.
 
-![to-do list](images/size.png)
+- 320x568
+  
+![to-do list](images/size_1.gif)
+
+- 600x960
+
+![to-do list](images/size_2.gif)

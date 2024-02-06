@@ -20,8 +20,11 @@
 <b>'To-do List'</b> is an application built using the React.js library.<br>
 
 The application enables:
+- downloading example tasks,
 - adding new tasks to the list,
 - marking tasks as completed,
+- searching for tasks,
+- displaying task details,
 - removing tasks from the list,
 - hiding completed tasks,
 - marking all tasks as completed.
@@ -30,16 +33,23 @@ Utilize this application to efficiently manage your tasks and track progress in 
 
 User Instructions:
 
-1. Adding a task:
+1. Downloading example tasks:
+   - Select the "Download sample tasks" option to load a set of sample tasks into the list.
+2. Adding a task:
    - Enter the task name in the text field.
    - Press the "Dodaj zadanie" button or hit the Enter key to add the task to the list.
-2. Marking a task as completed:
+3. Marking a task as completed:
    - Click on the checkbox next to the task to mark it as completed.
-4. Removing a task:
+4. Searching for tasks:
+   - Enter the desired word or phrase in the search field.
+   - Tasks matching the search criteria will be automatically displayed on the list.
+5. Displaying task details:
+   - Click on the task in the list to view its details.
+6. Removing a task:
    - Click the delete button (trash can icon) next to the task to remove it from the list.
-5. Hiding completed tasks:
+7. Hiding completed tasks:
    - Use the "Ukryj ukończone" or "Pokaż ukończone" option to hide or reveal completed tasks on the list.
-6. Marking all tasks as completed:
+8. Marking all tasks as completed:
    - Utilize the "Ukończ wszystkie" option to mark all tasks as completed.
 
 <br>
@@ -48,7 +58,7 @@ User Instructions:
 
 <ul>
 <li>JavaScript ES6+ Features</li>
-<li>React.js</li>
+<li>React</li>
 <li>JSX</li>
 <li>CSS Grid</li>
 <li>CSS Flex</li>
@@ -57,6 +67,9 @@ User Instructions:
 <li>Media Queries</li>
 <li>Controlled Components</li>
 <li>Redux</li>
+<li>Redux Toolkit</li>
+<li>Redux Saga</li>
+<li>Redux Router</li>
 </ul>
 
 <br>
@@ -87,4 +100,10 @@ After installing the dependencies, you can run the application locally. Use the 
 The application is fully responsive and adapts to various devices.<br>
 Screenshots showcase the app's appearance on both phones and tablets, demonstrating how it responsively adjusts to screen size changes
 
-![to-do list](images/size.png)
+- 320 x 568
+  
+![to-do list](images/size_1.gif)
+
+- 600 x 960
+
+![to-do list](images/size_2.gif)

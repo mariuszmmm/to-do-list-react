@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getTasksFromLocalStorage } from "./tasksLocalStorage";
-import searchQueryParamName from "./TasksPage/searchQueryParamName";
 
 const tasksSlice = createSlice({
   name: "tasks",

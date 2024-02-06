@@ -12,6 +12,7 @@ export const NavList = styled.ul`
   list-style: none;
   display: flex;
   gap: 50px;
+  padding: 0;
 `;
 
 export const StyledNavLink = styled(NavLink)`
