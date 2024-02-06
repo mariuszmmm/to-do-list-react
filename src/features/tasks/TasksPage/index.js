@@ -1,4 +1,3 @@
-import Container from "../../../common/Container";
 import Header from "../../../common/Header";
 import Section from "../../../common/Section";
 import FormButtons from "./FormButtons";
@@ -10,7 +9,7 @@ import TaskButtons from "./TasksButtons";
 const TasksPage = () => {
 
   return (
-    <Container>
+    <>
       <Header title="Lista zadań" />
       <Section
         title="Dodaj nowe zadanie"
@@ -26,7 +25,7 @@ const TasksPage = () => {
         body={<TasksList />}
         extraHeaderContent={<TaskButtons />}
       />
-    </Container>
+    </>
   );
 };
 

@@ -1,11 +1,10 @@
-import Container from "../../common/Container";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 
 const AuthorPage = () => {
 
   return (
-    <Container>
+    <>
       <Header title="O autorze" />
       <Section
         title="Mariusz Matusiewicz"
@@ -16,7 +15,7 @@ const AuthorPage = () => {
             <p>Obecnie uczę się <strong>programowania frontend</strong> w ramach kursu <strong>'YouCode'</strong>. Chciałbym wykorzystać zdobyte umiejętności do udziału w fascynujących projektach, gdzie mógłbym wprowadzić innowacyjne rozwiązania i tworzyć wyjątkowe aplikacje. 😊🚀🌟</p>
           </>}
       />
-    </Container>
+    </>
   );
 };
 
