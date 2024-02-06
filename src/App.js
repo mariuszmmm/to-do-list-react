@@ -8,18 +8,17 @@ import Container from "./common/Container";
 const App = () => {
 
   return (
-    <Container>
-      <HashRouter>
-        <Navigation />
-
+    <HashRouter>
+      <Navigation />
+      <Container>
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
           <Route path="/autor" element={<AuthorPage />} />
           <Route path="/" element={<Navigate to="/zadania" />} />
         </Routes>
-      </ HashRouter>
-    </Container>
+      </Container>
+    </ HashRouter>
   )
 };
 
