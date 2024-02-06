@@ -25,4 +25,9 @@ export const Header = styled.h2`
 
 export const SectionBody = styled.div`
   padding: 20px;
+
+  & p {
+    margin: 20px;
+    text-align: justify;
+  }
 `;
