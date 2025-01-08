@@ -24,16 +24,23 @@ export const Content = styled.p`
   word-break: break-word;
   margin: 0;
   color: ${({ theme }) => theme.color.teal};
+  margin: 0 5px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 1 / 2;
     grid-column: span 4;
+    margin: 0;
+  }
+
+  span {
+    color: ${({ theme }) => theme.color.black};
   }
 `;
 
-export const Text = styled.span`
+export const Task = styled.span`
+  padding-left: 2px;
   ${({ done }) => done && css`
-    text-decoration: 2px line-through black;
+    text-decoration: 1px line-through black;
   `}
 `;
 
