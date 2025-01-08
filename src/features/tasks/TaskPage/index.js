@@ -22,7 +22,7 @@ const TaskPage = () => {
               <strong>Data utworzenia: </strong> {task.date}
             </p>
             {task.done && <p>
-              <strong>Data ukonczenia: </strong> {task.doneDate}
+              <strong>Data ukończenia: </strong> {task.doneDate}
             </p>}
           </>
         }

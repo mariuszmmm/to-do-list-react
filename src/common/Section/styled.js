@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledSection = styled.section`
   margin: 10px 0;
@@ -16,7 +16,6 @@ export const Header = styled.h2`
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
   word-break: break-word;
 
-
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     flex-direction: column;
     padding-bottom: 10px;
@@ -25,4 +24,8 @@ export const Header = styled.h2`
 
 export const SectionBody = styled.div`
   padding: 20px;
+
+  ${({ hidden }) => hidden && css`
+    display: none;
+  `}
 `;

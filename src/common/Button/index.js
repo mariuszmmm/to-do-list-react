@@ -16,6 +16,7 @@ export default styled.button`
     align-items: center;
     margin: 5px 0;
     padding-top: 10px;
+    min-width: 145px;
   }
 
   &:hover {

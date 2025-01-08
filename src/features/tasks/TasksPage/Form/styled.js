@@ -15,17 +15,15 @@ export const Button = styled.button`
   background: ${({ theme }) => theme.color.teal};
   color: ${({ theme }) => theme.color.white};
   border: none;
-  transition: 0.25s;
+  transition: filter 0.25s;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     background-color: ${({ theme }) => theme.color.teal};
-    transform: scale(1.02);
   }
 
   &:hover {
     cursor: pointer;
     filter: brightness(110%);
-    transform: scale(1.04);
   }
 
   &:active {

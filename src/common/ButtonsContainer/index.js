@@ -3,6 +3,9 @@ import styled from "styled-components";
 export default styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  column-gap: 20px;
+  justify-content: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+      column-gap: 30px;
+  };
 `;

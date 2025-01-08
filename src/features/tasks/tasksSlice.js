@@ -8,6 +8,7 @@ const tasksSlice = createSlice({
     deletedTasks: [],
     hideDone: false,
     fetchStatus: "ready",
+    showSearch: false,
   },
   reducers: {
     addTask: ({ tasks }, { payload: task }) => {
@@ -43,6 +44,9 @@ const tasksSlice = createSlice({
     fetchError: (state) => {
       state.fetchStatus = "error";
     },
+    toggleShowSearch: state => {
+      state.showSearch = !state.showSearch;
+    },
     restoreDeletedTask: ({ tasks, deletedTasks }) => {
       tasks.push(deletedTasks.pop());
     }
@@ -59,6 +63,7 @@ export const {
   resetFetchStatus,
   fetchError,
   setTasks,
+  toggleShowSearch,
   restoreDeletedTask,
 } = tasksSlice.actions;
 
@@ -68,6 +73,7 @@ export const selectTasks = state => selectTasksState(state).tasks;
 export const selectAreDeletedTasksEmpty = state => selectTasksState(state).deletedTasks.length === 0;
 export const selectHideDone = state => selectTasksState(state).hideDone;
 export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
+export const selectShowSearch = state => selectTasksState(state).showSearch;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
 export const selectTaskById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
