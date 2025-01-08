@@ -2,12 +2,16 @@ import { delay, call, put, select, takeLatest, takeEvery } from "redux-saga/effe
 import { setTasks, fetchError, resetFetchStatus, selectTasks, fetchExampleTasks } from "./tasksSlice";
 import { getExampleTasks } from "./getExampleTasks";
 import { saveTasksInLocalStorage } from "./tasksLocalStorage";
+import { formatCurrentDate } from "../../utils/formatCurrentDate";
+
 
 function* fetchExampleTasksHandler() {
   try {
     yield delay(1000);
     const exampleTasks = yield call(getExampleTasks);
-    yield put(setTasks(exampleTasks));
+    const date = formatCurrentDate(new Date());
+    const tasks = exampleTasks.map(task => ({ ...task, date }));
+    yield put(setTasks(tasks));
   } catch (error) {
     yield put(fetchError());
     yield delay(3000);

@@ -6,12 +6,14 @@ import { StyledForm, Button } from "./styled";
 import { Input } from "../../../../common/Input";
 import { useReplaceQueryParameter } from '../queryParameter';
 import searchQueryParamName from '../searchQueryParamName';
+import { formatCurrentDate } from '../../../../utils/formatCurrentDate';
 
 const Form = () => {
   const [newTaskContent, setNewTaskContent] = useState("");
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const replaceQueryParameter = useReplaceQueryParameter();
+  const formatedDate = formatCurrentDate(new Date());
 
   const onFormSubmit = (event) => {
     event.preventDefault();
@@ -27,6 +29,7 @@ const Form = () => {
         content: trimmedNewTaskContent,
         done: false,
         id: nanoid(),
+        date: formatedDate,
       }));
     };
 

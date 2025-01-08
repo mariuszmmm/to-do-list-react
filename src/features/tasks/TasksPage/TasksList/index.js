@@ -3,13 +3,14 @@ import { selectHideDone, toggleTaskDone, removeTasks, selectTasksByQuery } from 
 import { List, Item, ToggleButton, Content, Task, RemoveButton, StyledLink } from "./styled";
 import { useQueryParameter } from "../queryParameter";
 import searchQueryParamName from "../searchQueryParamName";
+import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
 
 const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useSelector(state => selectTasksByQuery(state, query));
   const hideDone = useSelector(selectHideDone);
-
   const dispatch = useDispatch();
+  const date = formatCurrentDate(new Date());
 
   return (
     <List>
@@ -19,7 +20,7 @@ const TasksList = () => {
           hidden={task.done && hideDone}
         >
           <ToggleButton
-            onClick={() => dispatch(toggleTaskDone(task.id))}
+            onClick={() => dispatch(toggleTaskDone({ taskId: task.id, doneDate: task.done ? null : date }))}
           >
             {task.done ? "✔" : ""}
           </ToggleButton>

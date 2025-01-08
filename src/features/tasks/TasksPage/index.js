@@ -6,27 +6,24 @@ import Search from "./Search";
 import TasksList from "./TasksList";
 import TaskButtons from "./TasksButtons";
 
-const TasksPage = () => {
-
-  return (
-    <>
-      <Header title="Lista zadań" />
-      <Section
-        title="Dodaj nowe zadanie"
-        extraHeaderContent={<FormButtons />}
-        body={<Form />}
-      />
-      <Section
-        title="Wyszukiwarka"
-        body={<Search />}
-      />
-      <Section
-        title="Lista zadań"
-        body={<TasksList />}
-        extraHeaderContent={<TaskButtons />}
-      />
-    </>
-  );
-};
+const TasksPage = () => (
+  <>
+    <Header title="Lista zadań" />
+    <Section
+      title="Dodaj nowe zadanie"
+      extraHeaderContent={<FormButtons />}
+      body={<Form />}
+    />
+    <Section
+      title="Wyszukiwarka"
+      body={<Search />}
+    />
+    <Section
+      title="Lista zadań"
+      body={<TasksList />}
+      extraHeaderContent={<TaskButtons />}
+    />
+  </>
+);
 
 export default TasksPage;

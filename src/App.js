@@ -4,6 +4,7 @@ import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
 import AuthorPage from "./features/AuthorPage";
 import Container from "./common/Container";
+import CurrentDate from "./common/CurrentDate";
 
 const App = () => {
 
@@ -11,6 +12,7 @@ const App = () => {
     <HashRouter>
       <Navigation />
       <Container>
+        <CurrentDate />
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />

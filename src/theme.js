@@ -12,7 +12,7 @@ const theme = {
   },
   breakpoint: {
     mobileMax: "767px",
-    mobileMin: "321px",
+    mobileMin: "350px",
   },
 };
 
