@@ -10,14 +10,14 @@ const FormButtons = () => {
 
   return (
     <ButtonsContainer>
-      <Button
+      {tasks.length === 0 && <Button
         onClick={() => dispatch(fetchExampleTasks())}
-        disabled={fetchStatus === "loading" || fetchStatus === "error" || tasks.length > 0}
+        disabled={fetchStatus === "loading" || fetchStatus === "error"}
         error={fetchStatus === "error"}
       >
         {fetchStatus === "ready" ? "Pobierz przykładowe zadania" :
           fetchStatus === "loading" ? "Ładowanie..." : "Błąd ładowania danych"}
-      </Button>
+      </Button>}
     </ButtonsContainer>
   )
 };

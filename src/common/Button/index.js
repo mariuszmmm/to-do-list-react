@@ -30,7 +30,6 @@ export default styled.button`
   &:disabled {
     color: ${({ theme }) => theme.color.silver};
     filter: brightness(100%);
-    cursor: auto;
     
     ${({ error }) => error && css`
       color: ${({ theme }) => theme.color.red};
