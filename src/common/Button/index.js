@@ -10,11 +10,11 @@ export default styled.button`
   transition: filter 0.3s;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    width: 100%;
+    width: max-content;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 15px 0;
+    margin: 5px 0;
     padding-top: 10px;
   }
 
@@ -30,6 +30,7 @@ export default styled.button`
   &:disabled {
     color: ${({ theme }) => theme.color.silver};
     filter: brightness(100%);
+    cursor: auto;
     
     ${({ error }) => error && css`
       color: ${({ theme }) => theme.color.red};

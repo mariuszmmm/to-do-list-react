@@ -6,7 +6,9 @@ import {
   selectHideDone,
   selectIsEveryTaskDone,
   toggleHideDone,
-  setAllDone
+  setAllDone,
+  restoreDeletedTask,
+  selectAreDeletedTasksEmpty
 } from "../../tasksSlice";
 
 const TaskButtons = () => {
@@ -14,13 +16,15 @@ const TaskButtons = () => {
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
   const dispatch = useDispatch();
+  const areDeletedTasksEmpty = useSelector(selectAreDeletedTasksEmpty);
 
   return (
     <ButtonsContainer>
-      {!areTasksEmpty && (
+      {(!areTasksEmpty || !areDeletedTasksEmpty) && (
         <>
           <Button
             onClick={() => dispatch(toggleHideDone())}
+            disabled={areTasksEmpty}
           >
             {hideDone ? "Pokaż" : "Ukryj"} ukończone
           </Button>
@@ -29,6 +33,12 @@ const TaskButtons = () => {
             disabled={isEveryTaskDone}
           >
             Ukończ wszystkie
+          </Button>
+          <Button
+            onClick={() => dispatch(restoreDeletedTask())}
+            disabled={areDeletedTasksEmpty}
+          >
+            Przywróc usunięte
           </Button>
         </>
       )}

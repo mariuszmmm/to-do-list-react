@@ -5,6 +5,7 @@ const tasksSlice = createSlice({
   name: "tasks",
   initialState: {
     tasks: getTasksFromLocalStorage(),
+    deletedTasks: [],
     hideDone: false,
     fetchStatus: "ready",
   },
@@ -19,8 +20,9 @@ const tasksSlice = createSlice({
       const index = tasks.findIndex(({ id }) => id === taskId);
       tasks[index].done = !tasks[index].done;
     },
-    removeTasks: ({ tasks }, { payload: taskId }) => {
+    removeTasks: ({ tasks, deletedTasks }, { payload: taskId }) => {
       const index = tasks.findIndex(({ id }) => id === taskId);
+      deletedTasks.push(tasks[index]);
       tasks.splice(index, 1);
     },
     setAllDone: ({ tasks }) => {
@@ -40,6 +42,9 @@ const tasksSlice = createSlice({
     fetchError: (state) => {
       state.fetchStatus = "error";
     },
+    restoreDeletedTask: ({ tasks, deletedTasks }) => {
+      tasks.push(deletedTasks.pop());
+    }
   },
 });
 
@@ -52,18 +57,18 @@ export const {
   fetchExampleTasks,
   resetFetchStatus,
   fetchError,
-  setTasks
+  setTasks,
+  restoreDeletedTask,
 } = tasksSlice.actions;
-
 
 const selectTasksState = state => state.tasks;
 
 export const selectTasks = state => selectTasksState(state).tasks;
+export const selectAreDeletedTasksEmpty = state => selectTasksState(state).deletedTasks.length === 0;
 export const selectHideDone = state => selectTasksState(state).hideDone;
 export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
-
 export const selectTaskById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
 
 export const selectTasksByQuery = (state, query) => {
