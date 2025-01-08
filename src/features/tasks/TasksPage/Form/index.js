@@ -4,16 +4,21 @@ import { addTask } from '../../tasksSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { StyledForm, Button } from "./styled";
 import { Input } from "../../../../common/Input";
-
+import { useReplaceQueryParameter } from '../queryParameter';
+import searchQueryParamName from '../searchQueryParamName';
 
 const Form = () => {
   const [newTaskContent, setNewTaskContent] = useState("");
   const inputRef = useRef(null);
-
   const dispatch = useDispatch();
+  const replaceQueryParameter = useReplaceQueryParameter();
 
   const onFormSubmit = (event) => {
     event.preventDefault();
+
+    replaceQueryParameter({
+      key: searchQueryParamName,
+    });
 
     const trimmedNewTaskContent = newTaskContent.trim();
 
