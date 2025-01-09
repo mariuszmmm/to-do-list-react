@@ -43,7 +43,12 @@ const Form = () => {
 
     setTaskContent("");
     editedTask === null && inputRef.current.focus();
+    inputRef.current.scrollLeft = inputRef.current.scrollWidth;
   };
+
+  useEffect(() => {
+    inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+  }, [taskContent]);
 
   useEffect(() => {
     if (editedTask !== null) {
