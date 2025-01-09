@@ -13,7 +13,7 @@ export const Date = styled.span`
    text-align: right;
    color: ${({ theme }) => theme.color.black};
 
-   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
+   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
       ${({ description }) => description && "display: none;"}
    }
 `;
