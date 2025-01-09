@@ -22,6 +22,10 @@ export const Item = styled.li`
   ${({ hidden }) => hidden && css`
     display: none;
   `}
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    grid-template-columns: 1fr auto auto;
+  }
 `;
 
 export const Content = styled.p`
@@ -30,7 +34,7 @@ export const Content = styled.p`
   color: ${({ theme }) => theme.color.teal};
   margin: 0 5px;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;
     grid-column: span 4;
     margin: 0;

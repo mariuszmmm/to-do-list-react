@@ -5,7 +5,7 @@ export default styled.button`
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;
   background: transparent;
-  margin: 0 0 0 20px;
+  margin-left: 20px;
   padding: 0;
   transition: filter 0.3s;
   user-select: none;
@@ -15,8 +15,7 @@ export default styled.button`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 5px 0 5px 20px;
-    padding-top: 10px;
+    margin: 15px 0 5px 20px;
   }
 
   &:hover {
