@@ -12,7 +12,6 @@ import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 const TasksPage = () => {
   const showSearch = useSelector(selectShowSearch);
   const editedTask = useSelector(selectEditedTask);
-  console.log(editedTask);
 
   return (
     <>
