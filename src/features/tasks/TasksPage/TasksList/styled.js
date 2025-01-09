@@ -9,11 +9,15 @@ export const List = styled.ul`
 
 export const Item = styled.li`
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   grid-gap: 10px;
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
+
+  ${({ edit }) => edit && css`
+    background-color: ${({ theme }) => theme.color.silver};
+  `}
 
   ${({ hidden }) => hidden && css`
     display: none;
@@ -39,6 +43,7 @@ export const Content = styled.p`
 
 export const Task = styled.span`
   padding-left: 2px;
+  
   ${({ done }) => done && css`
     text-decoration: 1px line-through black;
   `}
@@ -66,6 +71,7 @@ export const Button = styled.button`
   padding: 0;
   font-size: 20px;
   transition: filter 0.25s;
+  user-select: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 2 / 3;
@@ -80,10 +86,19 @@ export const Button = styled.button`
   &:active {
     filter: brightness(120%);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 `;
 
 export const ToggleButton = styled(Button)`
   background: ${({ theme }) => theme.color.forestGreen};
+`;
+
+export const EditButton = styled(Button)`
+  background: ${({ theme }) => theme.color.empress};
 `;
 
 export const RemoveButton = styled(Button)`

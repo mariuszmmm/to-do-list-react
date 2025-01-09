@@ -6,6 +6,7 @@ export const Nav = styled.nav`
   display: flex;
   justify-content: center;
   height: 50px;
+  user-select: none;
 `;
 
 export const NavList = styled.ul`

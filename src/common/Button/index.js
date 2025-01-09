@@ -8,15 +8,15 @@ export default styled.button`
   margin: 0 0 0 20px;
   padding: 0;
   transition: filter 0.3s;
+  user-select: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     width: max-content;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 5px 0;
+    margin: 5px 0 5px 20px;
     padding-top: 10px;
-    min-width: 145px;
   }
 
   &:hover {

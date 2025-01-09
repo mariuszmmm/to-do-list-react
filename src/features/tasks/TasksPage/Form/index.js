@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../tasksSlice';
+import { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, saveEditedTask, selectEditedTask } from '../../tasksSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { StyledForm, Button } from "./styled";
 import { Input } from "../../../../common/Input";
@@ -9,7 +9,8 @@ import searchQueryParamName from '../searchQueryParamName';
 import { formatCurrentDate } from '../../../../utils/formatCurrentDate';
 
 const Form = () => {
-  const [newTaskContent, setNewTaskContent] = useState("");
+  const editedTask = useSelector(selectEditedTask)
+  const [taskContent, setTaskContent] = useState("");
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const replaceQueryParameter = useReplaceQueryParameter();
@@ -18,37 +19,51 @@ const Form = () => {
   const onFormSubmit = (event) => {
     event.preventDefault();
 
-    replaceQueryParameter({
+    editedTask === null && replaceQueryParameter({
       key: searchQueryParamName,
     });
 
-    const trimmedNewTaskContent = newTaskContent.trim();
+    const trimmedTaskContent = taskContent.trim();
 
-    if (trimmedNewTaskContent) {
-      dispatch(addTask({
-        content: trimmedNewTaskContent,
-        done: false,
-        id: nanoid(),
-        date: formatedDate,
-      }));
+    if (trimmedTaskContent) {
+      editedTask === null ?
+        dispatch(addTask({
+          content: trimmedTaskContent,
+          done: false,
+          id: nanoid(),
+          date: formatedDate,
+        }))
+        :
+        dispatch(saveEditedTask({
+          id: editedTask.id,
+          content: trimmedTaskContent,
+          editedDate: formatedDate,
+        }))
     };
 
-    setNewTaskContent("");
-    inputRef.current.focus();
+    setTaskContent("");
+    editedTask === null && inputRef.current.focus();
   };
+
+  useEffect(() => {
+    if (editedTask !== null) {
+      setTaskContent(editedTask.content);
+      inputRef.current.focus();
+    }
+  }, [editedTask]);
 
   return (
     <StyledForm onSubmit={onFormSubmit}>
       <Input
         autoFocus
-        value={newTaskContent}
+        value={taskContent}
         name="taskName"
         placeholder="Co jest do zrobienia ?"
-        onChange={({ target }) => setNewTaskContent(target.value)}
+        onChange={({ target }) => setTaskContent(target.value)}
         ref={inputRef}
       />
       <Button>
-        Dodaj zadanie
+        {editedTask !== null ? "Zapisz zmiany" : "Dodaj zadanie"}
       </Button>
     </StyledForm>
   )

@@ -13,5 +13,7 @@ export const formatCurrentTime = (currentDate) => currentDate.toLocaleString(und
 export const formatCurrentDate = (currentDate) => currentDate.toLocaleString(undefined, {
    day: "numeric",
    month: "numeric",
-   year: "numeric"
+   year: "numeric",
+   hour: "2-digit",
+   minute: "2-digit",
 });

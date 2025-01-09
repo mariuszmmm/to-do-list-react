@@ -16,6 +16,7 @@ export const Button = styled.button`
   color: ${({ theme }) => theme.color.white};
   border: none;
   transition: filter 0.25s;
+  user-select: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     background-color: ${({ theme }) => theme.color.teal};

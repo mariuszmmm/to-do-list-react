@@ -6,6 +6,7 @@ const tasksSlice = createSlice({
   initialState: {
     tasks: getTasksFromLocalStorage(),
     deletedTasks: [],
+    editedTask: null,
     hideDone: false,
     fetchStatus: "ready",
     showSearch: false,
@@ -13,6 +14,16 @@ const tasksSlice = createSlice({
   reducers: {
     addTask: ({ tasks }, { payload: task }) => {
       tasks.push(task);
+    },
+    editTask: (state, { payload: taskId }) => {
+      const index = state.tasks.findIndex(task => task.id === taskId);
+      state.editedTask = state.tasks[index];
+    },
+    saveEditedTask: (state, { payload: { id, content, editedDate } }) => {
+      const index = state.tasks.findIndex(task => task.id === id);
+      state.tasks[index].content = content;
+      state.tasks[index].editedDate = editedDate;
+      state.editedTask = null;
     },
     toggleHideDone: state => {
       state.hideDone = !state.hideDone;
@@ -24,8 +35,10 @@ const tasksSlice = createSlice({
     },
     removeTasks: ({ tasks, deletedTasks }, { payload: taskId }) => {
       const index = tasks.findIndex(({ id }) => id === taskId);
-      deletedTasks.push(tasks[index]);
-      tasks.splice(index, 1);
+      if (index !== -1) {
+        deletedTasks.push(tasks[index]);
+        tasks.splice(index, 1);
+      }
     },
     setAllDone: ({ tasks }) => {
       for (const task of tasks) {
@@ -55,6 +68,8 @@ const tasksSlice = createSlice({
 
 export const {
   addTask,
+  editTask,
+  saveEditedTask,
   toggleHideDone,
   toggleTaskDone,
   removeTasks,
@@ -70,6 +85,7 @@ export const {
 const selectTasksState = state => state.tasks;
 
 export const selectTasks = state => selectTasksState(state).tasks;
+export const selectEditedTask = state => selectTasksState(state).editedTask;
 export const selectAreDeletedTasksEmpty = state => selectTasksState(state).deletedTasks.length === 0;
 export const selectHideDone = state => selectTasksState(state).hideDone;
 export const selectFetchStatus = state => selectTasksState(state).fetchStatus;

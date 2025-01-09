@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectTaskById } from "../tasksSlice";
 import Header from "../../../common/Header";
 import Section from "../../../common/Section";
+import { DateInfo, Name } from "./styled";
 
 const TaskPage = () => {
   const { id } = useParams();
@@ -15,15 +16,18 @@ const TaskPage = () => {
         title={task ? task.content : "Nie znaleziono zadania 😥"}
         body={
           task && <>
-            <p>
-              <strong>Ukończone: </strong> {task.done ? "Tak" : "Nie"}
-            </p>
-            <p>
-              <strong>Data utworzenia: </strong> {task.date}
-            </p>
-            {task.done && <p>
-              <strong>Data ukończenia: </strong> {task.doneDate}
-            </p>}
+            <DateInfo>
+              <Name>Ukończone: </Name> {task.done ? "Tak" : "Nie"}
+            </DateInfo>
+            <DateInfo>
+              <Name>Data utworzenia: </Name> {task.date}
+            </DateInfo>
+            {task.editedDate && <DateInfo>
+              <Name>Data modyfikacji: </Name> {task.editedDate}
+            </DateInfo>}
+            {task.done && <DateInfo>
+              <Name>Data ukończenia: </Name> {task.doneDate}
+            </DateInfo>}
           </>
         }
       />

@@ -7,16 +7,18 @@ import TasksList from "./TasksList";
 import TaskButtons from "./TasksButtons";
 import SearchButtons from "./SearchButtons";
 import { useSelector } from "react-redux";
-import { selectShowSearch } from "../tasksSlice";
+import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 
 const TasksPage = () => {
   const showSearch = useSelector(selectShowSearch);
+  const editedTask = useSelector(selectEditedTask);
+  console.log(editedTask);
 
   return (
     <>
       <Header title="Lista zadań" />
       <Section
-        title="Dodaj nowe zadanie"
+        title={editedTask === null ? "Dodaj nowe zadanie" : "Edytuj zadanie"}
         extraHeaderContent={<FormButtons />}
         body={<Form />}
       />
