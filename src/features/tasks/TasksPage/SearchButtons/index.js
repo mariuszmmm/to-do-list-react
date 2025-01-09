@@ -15,17 +15,17 @@ const SearchButtons = () => {
     <ButtonsContainer>
       <>
         <Button
+          onClick={() => dispatch(toggleShowSearch())}
+        >
+          {showSearch ? "Ukryj" : "Pokaż"} filtr
+        </Button>
+        <Button
           onClick={() => replaceQueryParameter({
             key: searchQueryParamName,
           })}
           disabled={!query}
         >
           Wyczyść filtr
-        </Button>
-        <Button
-          onClick={() => dispatch(toggleShowSearch())}
-        >
-          {showSearch ? "Ukryj filtr" : "Pokaż filtr"}
         </Button>
       </>
     </ButtonsContainer>
