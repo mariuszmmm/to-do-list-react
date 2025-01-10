@@ -5,6 +5,7 @@ import TasksPage from "./features/tasks/TasksPage";
 import AuthorPage from "./features/AuthorPage";
 import Container from "./common/Container";
 import CurrentDate from "./common/CurrentDate";
+import Login from "./features/Login";
 
 const App = () => {
 
@@ -17,6 +18,7 @@ const App = () => {
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
           <Route path="/autor" element={<AuthorPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/zadania" />} />
         </Routes>
       </Container>
