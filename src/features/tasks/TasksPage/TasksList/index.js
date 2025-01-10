@@ -22,7 +22,7 @@ const TasksList = () => {
           edit={editedTask?.id === task.id}
         >
           <ToggleButton
-            onClick={() => dispatch(toggleTaskDone({ taskId: task.id, doneDate: task.done ? null : date }))}
+            onClick={() => dispatch(toggleTaskDone({ taskId: task.id, doneDate: task.done ? null : date, lastTasks: tasks }))}
             disabled={editedTask !== null}
           >
             {task.done ? "✔" : ""}
@@ -40,7 +40,7 @@ const TasksList = () => {
             ✏️
           </EditButton>
           <RemoveButton
-            onClick={() => dispatch(removeTasks(task.id))}
+            onClick={() => dispatch(removeTasks({ taskId: task.id, lastTasks: tasks }))}
             disabled={editedTask !== null}
           >
             🗑️

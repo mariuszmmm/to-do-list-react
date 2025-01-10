@@ -7,41 +7,59 @@ import {
   selectIsEveryTaskDone,
   toggleHideDone,
   setAllDone,
-  restoreDeletedTask,
-  selectAreDeletedTasksEmpty
+  selectUndoStack,
+  selectRedoStack,
+  undo,
+  redo,
+  selectTasks,
+  selectEditedTask,
 } from "../../tasksSlice";
+import { Redo, Undo } from "./styled";
 
 const TaskButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
+  const undoStack = useSelector(selectUndoStack);
+  const redoStack = useSelector(selectRedoStack);
+  const tasks = useSelector(selectTasks);
+  const editedTask = useSelector(selectEditedTask);
   const dispatch = useDispatch();
-  const areDeletedTasksEmpty = useSelector(selectAreDeletedTasksEmpty);
 
   return (
     <ButtonsContainer>
-      {(!areTasksEmpty || !areDeletedTasksEmpty) && (
-        <>
+      <>
+        <Button
+          onClick={() => dispatch(toggleHideDone())}
+          disabled={areTasksEmpty}
+          noDisplay={areTasksEmpty}
+        >
+          {hideDone ? "Pokaż" : "Ukryj"} ukończone
+        </Button>
+        <Button
+          onClick={() => dispatch(setAllDone({ lastTasks: tasks }))}
+          disabled={isEveryTaskDone}
+          noDisplay={areTasksEmpty}
+        >
+          Ukończ wszystkie
+        </Button>
+        <ButtonsContainer>
           <Button
-            onClick={() => dispatch(toggleHideDone())}
-            disabled={areTasksEmpty}
+            disabled={undoStack.length === 0 || editedTask !== null}
+            onClick={() => dispatch(undo())}
+            title={(undoStack.length === 0 || editedTask !== null) ? "" : "Cofnij"}
           >
-            {hideDone ? "Pokaż" : "Ukryj"} ukończone
+            <Undo />
           </Button>
           <Button
-            onClick={() => dispatch(setAllDone())}
-            disabled={isEveryTaskDone}
+            disabled={redoStack.length === 0 || editedTask !== null}
+            onClick={() => dispatch(redo())}
+            title={(redoStack.length === 0 || editedTask !== null) ? "" : "Ponów"}
           >
-            Ukończ wszystkie
+            <Redo />
           </Button>
-          <Button
-            onClick={() => dispatch(restoreDeletedTask())}
-            disabled={areDeletedTasksEmpty}
-          >
-            Przywróc usunięte
-          </Button>
-        </>
-      )}
+        </ButtonsContainer>
+      </>
     </ButtonsContainer>
   );
 };

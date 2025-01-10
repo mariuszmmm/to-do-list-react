@@ -17,10 +17,11 @@ import { formatCurrentDate } from "../../utils/formatCurrentDate";
 function* fetchExampleTasksHandler() {
   try {
     yield delay(1000);
+    const tasks = yield select(selectTasks);
     const exampleTasks = yield call(getExampleTasks);
     const date = formatCurrentDate(new Date());
-    const tasks = exampleTasks.map(task => ({ ...task, date }));
-    yield put(setTasks(tasks));
+    const exampleTasksWithDate = exampleTasks.map(task => ({ ...task, date }));
+    yield put(setTasks({ tasks: exampleTasksWithDate, lastTasks: tasks }));
   } catch (error) {
     yield put(fetchError());
     yield delay(3000);

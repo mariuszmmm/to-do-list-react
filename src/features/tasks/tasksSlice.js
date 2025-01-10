@@ -5,51 +5,63 @@ const tasksSlice = createSlice({
   name: "tasks",
   initialState: {
     tasks: getTasksFromLocalStorage(),
-    deletedTasks: [],
     editedTask: null,
     hideDone: getSettingsFromLocalStorage()?.hideDone,
     showSearch: getSettingsFromLocalStorage()?.showSearch,
     fetchStatus: "ready",
+    undoStack: [],
+    redoStack: [],
   },
   reducers: {
-    addTask: ({ tasks }, { payload: task }) => {
-      tasks.push(task);
+    addTask: (state, { payload: { task, lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
+      state.tasks.push(task);
+      state.redoStack = [];
     },
     editTask: (state, { payload: taskId }) => {
       const index = state.tasks.findIndex(task => task.id === taskId);
-      state.editedTask = state.tasks[index];
+      state.editedTask = taskId ? state.tasks[index] : null;
     },
-    saveEditedTask: (state, { payload: { id, content, editedDate } }) => {
+    saveEditedTask: (state, { payload: { task: { id, content, editedDate }, lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
       const index = state.tasks.findIndex(task => task.id === id);
       state.tasks[index].content = content;
       state.tasks[index].editedDate = editedDate;
       state.editedTask = null;
+      state.redoStack = [];
     },
     toggleHideDone: state => {
       state.hideDone = !state.hideDone;
     },
-    toggleTaskDone: ({ tasks }, { payload: { taskId, doneDate } }) => {
-      const index = tasks.findIndex(({ id }) => id === taskId);
-      tasks[index].done = !tasks[index].done;
-      tasks[index].doneDate = tasks[index].done ? doneDate : null;
+    toggleTaskDone: (state, { payload: { taskId, doneDate, lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
+      const index = state.tasks.findIndex(({ id }) => id === taskId);
+      state.tasks[index].done = !state.tasks[index].done;
+      state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      state.redoStack = [];
     },
-    removeTasks: ({ tasks, deletedTasks }, { payload: taskId }) => {
-      const index = tasks.findIndex(({ id }) => id === taskId);
+    removeTasks: (state, { payload: { taskId, lastTasks } }) => {
+      const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index !== -1) {
-        deletedTasks.push(tasks[index]);
-        tasks.splice(index, 1);
+        state.undoStack.push([...lastTasks]);
+        state.tasks.splice(index, 1);
+        state.redoStack = [];
       }
     },
-    setAllDone: ({ tasks }) => {
-      for (const task of tasks) {
+    setAllDone: (state, { payload: { lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
+      for (const task of state.tasks) {
         task.done = true;
       };
+      state.redoStack = [];
     },
     fetchExampleTasks: (state) => {
       state.fetchStatus = "loading";
     },
-    setTasks: (state, { payload: tasks }) => {
+    setTasks: (state, { payload: { tasks, lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
       state.tasks = tasks;
+      state.redoStack = [];
     },
     resetFetchStatus: (state) => {
       state.fetchStatus = "ready";
@@ -60,9 +72,14 @@ const tasksSlice = createSlice({
     toggleShowSearch: state => {
       state.showSearch = !state.showSearch;
     },
-    restoreDeletedTask: ({ tasks, deletedTasks }) => {
-      tasks.push(deletedTasks.pop());
-    }
+    undo: (state) => {
+      state.redoStack.push([...state.tasks]);
+      state.tasks = state.undoStack.pop();
+    },
+    redo: (state) => {
+      state.undoStack.push([...state.tasks]);
+      state.tasks = state.redoStack.pop();
+    },
   },
 });
 
@@ -79,17 +96,19 @@ export const {
   fetchError,
   setTasks,
   toggleShowSearch,
-  restoreDeletedTask,
+  undo,
+  redo,
 } = tasksSlice.actions;
 
 const selectTasksState = state => state.tasks;
 
 export const selectTasks = state => selectTasksState(state).tasks;
 export const selectEditedTask = state => selectTasksState(state).editedTask;
-export const selectAreDeletedTasksEmpty = state => selectTasksState(state).deletedTasks.length === 0;
 export const selectHideDone = state => selectTasksState(state).hideDone;
 export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
 export const selectShowSearch = state => selectTasksState(state).showSearch;
+export const selectUndoStack = state => selectTasksState(state).undoStack;
+export const selectRedoStack = state => selectTasksState(state).redoStack;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
 export const selectTaskById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);

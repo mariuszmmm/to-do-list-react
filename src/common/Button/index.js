@@ -9,6 +9,7 @@ export default styled.button`
   padding: 0;
   transition: filter 0.3s;
   user-select: none;
+  min-width: 40px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     width: max-content;
@@ -34,6 +35,10 @@ export default styled.button`
     
     ${({ error }) => error && css`
       color: ${({ theme }) => theme.color.red};
+   `};
+
+    ${({ noDisplay }) => noDisplay && css`
+      display: none;
    `};
   } 
 `;

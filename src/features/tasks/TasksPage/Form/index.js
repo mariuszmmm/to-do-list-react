@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask, saveEditedTask, selectEditedTask } from '../../tasksSlice';
+import { addTask, editTask, saveEditedTask, selectEditedTask, selectTasks } from '../../tasksSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { StyledForm, Button } from "./styled";
 import { Input } from "../../../../common/Input";
@@ -9,8 +9,10 @@ import searchQueryParamName from '../searchQueryParamName';
 import { formatCurrentDate } from '../../../../utils/formatCurrentDate';
 
 const Form = () => {
+  const tasks = useSelector(selectTasks);
   const editedTask = useSelector(selectEditedTask)
   const [taskContent, setTaskContent] = useState("");
+  const [previousContent, setPreviousContent] = useState("");
   const inputRef = useRef(null);
   const dispatch = useDispatch();
   const replaceQueryParameter = useReplaceQueryParameter();
@@ -26,19 +28,32 @@ const Form = () => {
     const trimmedTaskContent = taskContent.trim();
 
     if (trimmedTaskContent) {
-      editedTask === null ?
+      editedTask === null
+        ?
         dispatch(addTask({
-          content: trimmedTaskContent,
-          done: false,
-          id: nanoid(),
-          date: formatedDate,
-        }))
+          task: {
+            content: trimmedTaskContent,
+            done: false,
+            id: nanoid(),
+            date: formatedDate,
+          },
+          lastTasks: tasks
+        }
+        ))
         :
-        dispatch(saveEditedTask({
-          id: editedTask.id,
-          content: trimmedTaskContent,
-          editedDate: formatedDate,
-        }))
+        trimmedTaskContent !== previousContent
+          ?
+          dispatch(saveEditedTask({
+            task: {
+              id: editedTask.id,
+              content: trimmedTaskContent,
+              editedDate: formatedDate,
+            },
+            lastTasks: tasks
+          }
+          ))
+          :
+          dispatch(editTask())
     };
 
     setTaskContent("");
@@ -47,12 +62,9 @@ const Form = () => {
   };
 
   useEffect(() => {
-    inputRef.current.scrollLeft = inputRef.current.scrollWidth;
-  }, [taskContent]);
-
-  useEffect(() => {
     if (editedTask !== null) {
       setTaskContent(editedTask.content);
+      setPreviousContent(editedTask.content);
       inputRef.current.focus();
     }
   }, [editedTask]);
