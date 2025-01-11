@@ -55,6 +55,13 @@ const tasksSlice = createSlice({
       };
       state.redoStack = [];
     },
+    setAllUndone: (state, { payload: { lastTasks } }) => {
+      state.undoStack.push([...lastTasks]);
+      for (const task of state.tasks) {
+        task.done = false;
+      };
+      state.redoStack = [];
+    },
     fetchExampleTasks: (state) => {
       state.fetchStatus = "loading";
     },
@@ -91,6 +98,7 @@ export const {
   toggleTaskDone,
   removeTasks,
   setAllDone,
+  setAllUndone,
   fetchExampleTasks,
   resetFetchStatus,
   fetchError,
@@ -111,6 +119,7 @@ export const selectUndoStack = state => selectTasksState(state).undoStack;
 export const selectRedoStack = state => selectTasksState(state).redoStack;
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
+export const selectIsEveryTaskUndone = state => selectTasks(state).every(({ done }) => !done);
 export const selectTaskById = (state, taskId) => selectTasks(state).find(({ id }) => id === taskId);
 
 export const selectTasksByQuery = (state, query) => {

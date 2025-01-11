@@ -13,6 +13,8 @@ import {
   redo,
   selectTasks,
   selectEditedTask,
+  setAllUndone,
+  selectIsEveryTaskUndone,
 } from "../../tasksSlice";
 import { Redo, Undo } from "./styled";
 
@@ -20,6 +22,7 @@ const TaskButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
+  const isEveryTaskUndone = useSelector(selectIsEveryTaskUndone);
   const undoStack = useSelector(selectUndoStack);
   const redoStack = useSelector(selectRedoStack);
   const tasks = useSelector(selectTasks);
@@ -42,6 +45,13 @@ const TaskButtons = () => {
           noDisplay={areTasksEmpty}
         >
           Ukończ wszystkie
+        </Button>
+        <Button
+          onClick={() => dispatch(setAllUndone({ lastTasks: tasks }))}
+          disabled={isEveryTaskUndone}
+          noDisplay={areTasksEmpty}
+        >
+          Odznacz wszystkie
         </Button>
         <ButtonsContainer>
           <Button
