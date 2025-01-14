@@ -1,17 +1,29 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectHideDone, toggleTaskDone, editTask, removeTasks, selectTasksByQuery, selectEditedTask } from "../../tasksSlice";
-import { List, Item, ToggleButton, Content, Task, RemoveButton, StyledLink, EditButton } from "./styled";
+import { selectHideDone, toggleTaskDone, editTask, removeTasks, selectTasksByQuery, selectEditedTask, setTasks } from "../../tasksSlice";
+import { List, Item, Content, Task, StyledLink } from "./styled";
 import { useQueryParameter } from "../queryParameter";
 import searchQueryParamName from "../searchQueryParamName";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
+import { useEffect } from "react";
+import { selectListToDownload, setListToDownload } from "../../../ListsPage/listsSlice";
+import { EditButton, RemoveButton, ToggleButton } from "../../../../common/buttons";
 
 const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useSelector(state => selectTasksByQuery(state, query));
   const hideDone = useSelector(selectHideDone);
-  const editedTask = useSelector(selectEditedTask)
+  const editedTask = useSelector(selectEditedTask);
+  const listToDownload = useSelector(selectListToDownload);
   const dispatch = useDispatch();
   const date = formatCurrentDate(new Date());
+
+  useEffect(() => {
+    if (listToDownload !== null) {
+      dispatch(setTasks({ tasks: listToDownload.list, lastTasks: tasks }));
+      dispatch(setListToDownload(null))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listToDownload]);
 
   return (
     <List >

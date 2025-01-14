@@ -5,18 +5,25 @@ export default styled.button`
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;
   background: transparent;
-  margin-left: 20px;
+  margin: 2px 0 0 20px;
   padding: 0;
   transition: filter 0.3s;
   user-select: none;
-  min-width: 40px;
+  width: 40px;
+  min-width: max-content;
+
+  ${({ forName }) => forName && css`
+      margin: 0;
+  `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    width: max-content;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 15px 0 5px 20px;
+
+    ${({ forName }) => forName && css`
+      margin: 0;
+    `};
   }
 
   &:hover {
@@ -32,13 +39,13 @@ export default styled.button`
     color: ${({ theme }) => theme.color.silver};
     filter: brightness(100%);
     cursor: auto;
-    
+
     ${({ error }) => error && css`
       color: ${({ theme }) => theme.color.red};
-   `};
+    `};
 
     ${({ noDisplay }) => noDisplay && css`
       display: none;
-   `};
+    `};
   } 
 `;

@@ -9,16 +9,18 @@ const FormButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
 
   return (
-    <ButtonsContainer>
-      {areTasksEmpty && <Button
-        onClick={() => dispatch(fetchExampleTasks())}
-        disabled={fetchStatus === "loading" || fetchStatus === "error"}
-        error={fetchStatus === "error"}
-      >
-        {fetchStatus === "ready" ? "Pobierz przykładowe zadania" :
-          fetchStatus === "loading" ? "Ładowanie..." : "Błąd ładowania danych"}
-      </Button>}
-    </ButtonsContainer>
+    <>
+      {areTasksEmpty && <ButtonsContainer>
+        <Button
+          onClick={() => dispatch(fetchExampleTasks())}
+          disabled={fetchStatus === "loading" || fetchStatus === "error"}
+          error={fetchStatus === "error"}
+        >
+          {fetchStatus === "ready" ? "Pobierz przykładowe zadania" :
+            fetchStatus === "loading" ? "Ładowanie..." : "Błąd ładowania danych"}
+        </Button>
+      </ButtonsContainer>}
+    </>
   )
 };
 

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getSettingsFromLocalStorage, getTasksFromLocalStorage } from "./tasksLocalStorage";
+import { getSettingsFromLocalStorage, getTasksFromLocalStorage, getListNameFromLocalStorage } from "../../utils/localStorage";
 
 const tasksSlice = createSlice({
   name: "tasks",
@@ -11,6 +11,8 @@ const tasksSlice = createSlice({
     fetchStatus: "ready",
     undoStack: [],
     redoStack: [],
+    listName: getListNameFromLocalStorage() || "Lista zadań",
+    editListName: false,
   },
   reducers: {
     addTask: (state, { payload: { task, lastTasks } }) => {
@@ -62,13 +64,14 @@ const tasksSlice = createSlice({
       };
       state.redoStack = [];
     },
-    fetchExampleTasks: (state) => {
-      state.fetchStatus = "loading";
-    },
     setTasks: (state, { payload: { tasks, lastTasks } }) => {
       state.undoStack.push([...lastTasks]);
       state.tasks = tasks;
       state.redoStack = [];
+      state.listName = "Lista zadań";
+    },
+    fetchExampleTasks: (state) => {
+      state.fetchStatus = "loading";
     },
     resetFetchStatus: (state) => {
       state.fetchStatus = "ready";
@@ -86,6 +89,12 @@ const tasksSlice = createSlice({
     redo: (state) => {
       state.undoStack.push([...state.tasks]);
       state.tasks = state.redoStack.pop();
+    },
+    setEditListName: (state) => {
+      state.editListName = !state.editListName;
+    },
+    setListName: (state, { payload: listName }) => {
+      state.listName = listName;
     },
   },
 });
@@ -106,6 +115,8 @@ export const {
   toggleShowSearch,
   undo,
   redo,
+  setEditListName,
+  setListName,
 } = tasksSlice.actions;
 
 const selectTasksState = state => state.tasks;
@@ -117,6 +128,9 @@ export const selectFetchStatus = state => selectTasksState(state).fetchStatus;
 export const selectShowSearch = state => selectTasksState(state).showSearch;
 export const selectUndoStack = state => selectTasksState(state).undoStack;
 export const selectRedoStack = state => selectTasksState(state).redoStack;
+export const selectListName = state => selectTasksState(state).listName;
+export const selectEditListName = state => selectTasksState(state).editListName;
+
 export const selectAreTasksEmpty = state => selectTasks(state).length === 0;
 export const selectIsEveryTaskDone = state => selectTasks(state).every(({ done }) => done);
 export const selectIsEveryTaskUndone = state => selectTasks(state).every(({ done }) => !done);

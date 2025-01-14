@@ -4,14 +4,16 @@ import FormButtons from "./FormButtons";
 import Form from "./Form";
 import Search from "./Search";
 import TasksList from "./TasksList";
-import TaskButtons from "./TasksButtons";
+import TasksButtons from "./TasksButtons";
 import SearchButtons from "./SearchButtons";
 import { useSelector } from "react-redux";
-import { selectEditedTask, selectShowSearch } from "../tasksSlice";
+import { selectEditedTask, selectListName, selectShowSearch } from "../tasksSlice";
+import { Name } from "./Name";
 
 const TasksPage = () => {
   const showSearch = useSelector(selectShowSearch);
   const editedTask = useSelector(selectEditedTask);
+  const listName = useSelector(selectListName);
 
   return (
     <>
@@ -28,9 +30,9 @@ const TasksPage = () => {
         hidden={!showSearch}
       />
       <Section
-        title="Lista zadań"
+        title={< Name content={listName} />}
         body={<TasksList />}
-        extraHeaderContent={<TaskButtons />}
+        extraHeaderContent={<TasksButtons />}
       />
     </>
   );

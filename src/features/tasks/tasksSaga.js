@@ -11,7 +11,7 @@ import {
   toggleHideDone
 } from "./tasksSlice";
 import { getExampleTasks } from "./getExampleTasks";
-import { saveSettingsInLocalStorage, saveTasksInLocalStorage } from "./tasksLocalStorage";
+import { saveSettingsInLocalStorage, saveTasksInLocalStorage } from "../../utils/localStorage";
 import { formatCurrentDate } from "../../utils/formatCurrentDate";
 
 function* fetchExampleTasksHandler() {

@@ -15,10 +15,16 @@ import {
   selectEditedTask,
   setAllUndone,
   selectIsEveryTaskUndone,
+  selectListName,
+  selectEditListName,
 } from "../../tasksSlice";
-import { Redo, Undo } from "./styled";
+import { addList, selectIsListWithName } from "../../../ListsPage/listsSlice";
+import { nanoid } from "@reduxjs/toolkit";
+import { useState } from "react";
+import Undo from "../../../../common/extraButtons/Undo";
+import Redo from "../../../../common/extraButtons/Redo";
 
-const TaskButtons = () => {
+const TasksButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
@@ -27,11 +33,39 @@ const TaskButtons = () => {
   const redoStack = useSelector(selectRedoStack);
   const tasks = useSelector(selectTasks);
   const editedTask = useSelector(selectEditedTask);
+  const editListName = useSelector(selectEditListName);
+  const listName = useSelector(selectListName);
+  const isListWithName = useSelector(state => selectIsListWithName(state, listName));
   const dispatch = useDispatch();
+  const [saveName, setSaveName] = useState("Zapisz listę");
+  const [isName, setIsName] = useState(false);
+
+  const onSaveListHandler = () => {
+    if (!isListWithName) {
+      dispatch(addList({ name: listName, list: tasks, id: nanoid() }));
+    }
+
+    setSaveName(isListWithName ? "Zmień nazwę" : "Zapisano! ✔️");
+    setIsName(isListWithName);
+
+    const timer = setTimeout(() => {
+      setSaveName("Zapisz listę");
+      setIsName(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  };
 
   return (
     <ButtonsContainer>
       <>
+        <Button
+          onClick={onSaveListHandler}
+          disabled={!listName || areTasksEmpty || editListName || isName}
+          error={isName}
+        >
+          {saveName}
+        </Button>
         <Button
           onClick={() => dispatch(toggleHideDone())}
           disabled={areTasksEmpty}
@@ -53,7 +87,7 @@ const TaskButtons = () => {
         >
           Odznacz wszystkie
         </Button>
-        <ButtonsContainer>
+        <ButtonsContainer sub>
           <Button
             disabled={undoStack.length === 0 || editedTask !== null}
             onClick={() => dispatch(undo())}
@@ -74,4 +108,4 @@ const TaskButtons = () => {
   );
 };
 
-export default TaskButtons;
+export default TasksButtons;

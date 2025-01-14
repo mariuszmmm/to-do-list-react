@@ -6,11 +6,12 @@ export const StyledSection = styled.section`
   box-shadow: 0 0 5px ${({ theme }) => theme.color.alto};;
 `;
 
-export const Header = styled.h2`
+export const Header = styled.header`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   font-size: 20px;
+  font-weight: 700;
   padding: 20px;
   margin: 0;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
