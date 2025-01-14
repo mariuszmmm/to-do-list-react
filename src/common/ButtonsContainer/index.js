@@ -10,6 +10,10 @@ export default styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     margin-top: 10px;
+
+    ${({ sub }) => sub && css`
+    margin-top: 0;
+  `};
   };
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {

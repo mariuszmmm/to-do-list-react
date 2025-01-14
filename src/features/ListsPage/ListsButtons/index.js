@@ -24,7 +24,7 @@ const ListsButtons = () => {
             Pobierz listę
           </Button>
         </StyledLink>
-        <ButtonsContainer>
+        <ButtonsContainer sub>
           <Button
             disabled={undoStack.length === 0}
             onClick={() => dispatch(undo())}
