@@ -19,7 +19,9 @@ const ListsList = () => {
           >
             {selectedListId === list.id ? "✔" : ""}
           </ToggleButton>
-          <Content>
+          <Content
+            onClick={() => dispatch(selectList(list.id))}
+          >
             <Task>{list.name}</Task>
           </Content>
           <RemoveButton

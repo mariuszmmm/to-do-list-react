@@ -8,6 +8,10 @@ export default styled.div`
   align-content: flex-start;
   row-gap: 15px;
 
+  ${({ sub }) => sub && css`
+    margin-top: 0;
+  `};
+
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     margin-top: 10px;
 
@@ -19,8 +23,4 @@ export default styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     justify-content: center;
   };
-
-  ${({ sub }) => sub && css`
-    margin-top: 0;
-  `};
 `;

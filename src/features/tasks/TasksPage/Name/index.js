@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectEditListName, setEditListName, setListName } from "../../tasksSlice";
+import { selectEditListName, selectListName, setEditListName, setListName } from "../../tasksSlice";
 import { Input } from "../../../../common/Input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../../../common/Button";
 import { NameContainer } from "./styled";
 import { SubTitle } from "../../../../common/SubTitle";
-import { saveListNameInLocalStorage } from "../../../../utils/localStorage";
 
 export const Name = ({ content }) => {
-  const [name, setName] = useState(content);
+  const listName = useSelector(selectListName);
+  const [name, setName] = useState(listName);
   const editListName = useSelector(selectEditListName);
   const inpurRef = useRef(null);
   const dispatch = useDispatch();
@@ -19,12 +19,15 @@ export const Name = ({ content }) => {
     const trimedContent = name.trim();
     if (trimedContent || !editListName) {
       dispatch(setListName(trimedContent))
-      saveListNameInLocalStorage(trimedContent);
       dispatch(setEditListName())
     } else {
       inpurRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    setName(listName)
+  }, [listName])
 
   return (
     <NameContainer onSubmit={onNameSubmit}>
@@ -41,10 +44,10 @@ export const Name = ({ content }) => {
           />
         </>
         :
-        content && <SubTitle>{content}</SubTitle>
+        listName && <SubTitle>{listName}</SubTitle>
       }
       <Button forName>
-        {editListName ? "Zapisz" : "Edytuj"}
+        {editListName ? "Zapisz nazwę" : "Edytuj nazwę listy"}
       </Button>
     </NameContainer>
   );

@@ -17,12 +17,12 @@ const ListsButtons = () => {
     <ButtonsContainer>
       <>
         <StyledLink to={`/zadania`}>
-          <Button
+          {selectedListId !== null && <Button
             onClick={() => dispatch(setListToDownload(listToDownload))}
             disabled={selectedListId === null}
           >
-            Pobierz listę
-          </Button>
+            Pobierz do listy zadań
+          </Button>}
         </StyledLink>
         <ButtonsContainer sub>
           <Button

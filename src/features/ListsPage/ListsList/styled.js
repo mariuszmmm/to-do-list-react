@@ -33,6 +33,7 @@ export const Content = styled.p`
   margin: 0;
   color: ${({ theme }) => theme.color.teal};
   margin: 0 5px;
+  cursor: default;  
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;

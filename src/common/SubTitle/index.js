@@ -1,10 +1,13 @@
 import styled from "styled-components";
 
 export const SubTitle = styled.span`
-  min-width: 150px;
+  min-width: 300px;
   width: content;
-  text-transform: capitalize;
-  padding-right: 15px;
+  padding-right: 5px;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     min-width: fit-content;

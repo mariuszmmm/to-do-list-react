@@ -5,15 +5,14 @@ export default styled.button`
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;
   background: transparent;
-  margin: 2px 0 0 20px;
-  padding: 0;
+  padding: 2px 0 0 20px;
   transition: filter 0.3s;
   user-select: none;
   width: 40px;
   min-width: max-content;
 
   ${({ forName }) => forName && css`
-      margin: 0;
+    padding: 0 0 0 2px;
   `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
@@ -22,7 +21,7 @@ export default styled.button`
     align-items: center;
 
     ${({ forName }) => forName && css`
-      margin: 0;
+      padding: 0 0 0 2px;
     `};
   }
 

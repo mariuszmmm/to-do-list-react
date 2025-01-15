@@ -5,4 +5,5 @@ export default styled(rotate)`
   width: 1rem;
   transform: scaleX(-1);
   margin-top: 2px;
+  margin: 0 15px;
 `;

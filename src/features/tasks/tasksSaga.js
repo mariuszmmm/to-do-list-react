@@ -8,10 +8,12 @@ import {
   toggleShowSearch,
   selectShowSearch,
   selectHideDone,
-  toggleHideDone
+  toggleHideDone,
+  selectListName,
+  setListName
 } from "./tasksSlice";
 import { getExampleTasks } from "./getExampleTasks";
-import { saveSettingsInLocalStorage, saveTasksInLocalStorage } from "../../utils/localStorage";
+import { saveListNameInLocalStorage, saveSettingsInLocalStorage, saveTasksInLocalStorage } from "../../utils/localStorage";
 import { formatCurrentDate } from "../../utils/formatCurrentDate";
 
 function* fetchExampleTasksHandler() {
@@ -21,7 +23,8 @@ function* fetchExampleTasksHandler() {
     const exampleTasks = yield call(getExampleTasks);
     const date = formatCurrentDate(new Date());
     const exampleTasksWithDate = exampleTasks.map(task => ({ ...task, date }));
-    yield put(setTasks({ tasks: exampleTasksWithDate, lastTasks: tasks }));
+    yield put(setTasks({ tasks: exampleTasksWithDate, listName: "Przykładowe zadania", lastTasks: tasks }));
+    yield put(setListName("Przykładowe zadania"));
   } catch (error) {
     yield put(fetchError());
     yield delay(3000);
@@ -30,10 +33,6 @@ function* fetchExampleTasksHandler() {
   }
 };
 
-function* saveTasksInLocalStorageHandler() {
-  const tasks = yield select(selectTasks);
-  yield call(saveTasksInLocalStorage, tasks);
-}
 function* saveSettingsInLocalStorageHandler() {
   const [showSearch, hideDone] = yield all([
     select(selectShowSearch),
@@ -42,6 +41,16 @@ function* saveSettingsInLocalStorageHandler() {
   yield call(saveSettingsInLocalStorage, { showSearch, hideDone });
 };
 
+function* saveTasksInLocalStorageHandler() {
+  const tasks = yield select(selectTasks);
+  yield call(saveTasksInLocalStorage, tasks);
+}
+
+function* saveListNameInLocalStorageHandler() {
+  const listName = yield select(selectListName);
+  yield call(saveListNameInLocalStorage, listName);
+}
+
 export function* tasksSaga() {
   yield takeLatest(fetchExampleTasks.type, fetchExampleTasksHandler);
   yield takeLatest(
@@ -49,4 +58,5 @@ export function* tasksSaga() {
     saveSettingsInLocalStorageHandler
   );
   yield takeEvery("*", saveTasksInLocalStorageHandler);
+  yield takeEvery("*", saveListNameInLocalStorageHandler);
 };

@@ -51,7 +51,7 @@ const TasksButtons = () => {
     const timer = setTimeout(() => {
       setSaveName("Zapisz listę");
       setIsName(false);
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   };
@@ -73,20 +73,22 @@ const TasksButtons = () => {
         >
           {hideDone ? "Pokaż" : "Ukryj"} ukończone
         </Button>
-        <Button
-          onClick={() => dispatch(setAllDone({ lastTasks: tasks }))}
-          disabled={isEveryTaskDone}
-          noDisplay={areTasksEmpty}
-        >
-          Ukończ wszystkie
-        </Button>
-        <Button
-          onClick={() => dispatch(setAllUndone({ lastTasks: tasks }))}
-          disabled={isEveryTaskUndone}
-          noDisplay={areTasksEmpty}
-        >
-          Odznacz wszystkie
-        </Button>
+        <ButtonsContainer sub>
+          <Button
+            onClick={() => dispatch(setAllDone({ lastTasks: tasks }))}
+            disabled={isEveryTaskDone}
+            noDisplay={areTasksEmpty}
+          >
+            Ukończ wszystkie
+          </Button>
+          <Button
+            onClick={() => dispatch(setAllUndone({ lastTasks: tasks }))}
+            disabled={isEveryTaskUndone}
+            noDisplay={areTasksEmpty}
+          >
+            Odznacz wszystkie
+          </Button>
+        </ButtonsContainer>
         <ButtonsContainer sub>
           <Button
             disabled={undoStack.length === 0 || editedTask !== null}

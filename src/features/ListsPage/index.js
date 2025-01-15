@@ -13,14 +13,14 @@ const ListsPage = () => {
 
   return (
     <>
-      <Header title="Listy" />
+      <Header title="Zapisane listy" />
       <Section
-        title={areListsEmpty ? "Brak zapisanych list 😯" : "Listy zapisane"}
+        title={areListsEmpty ? "Nie masz zapisanych list 😯" : "Wybierz listę"}
         body={<ListsList />}
         extraHeaderContent={<ListsButtons />}
       />
       {selecedListById?.list && <Section
-        title={`Lista - ${selecedListById.name}`}
+        title={selecedListById.name}
         body={<TasksList list={selecedListById.list} />}
       />}
     </>

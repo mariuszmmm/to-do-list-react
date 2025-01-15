@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { selectHideDone, toggleTaskDone, editTask, removeTasks, selectTasksByQuery, selectEditedTask, setTasks } from "../../tasksSlice";
+import { selectHideDone, toggleTaskDone, editTask, removeTasks, selectTasksByQuery, selectEditedTask, setTasks, setListName } from "../../tasksSlice";
 import { List, Item, Content, Task, StyledLink } from "./styled";
 import { useQueryParameter } from "../queryParameter";
 import searchQueryParamName from "../searchQueryParamName";
@@ -20,6 +20,7 @@ const TasksList = () => {
   useEffect(() => {
     if (listToDownload !== null) {
       dispatch(setTasks({ tasks: listToDownload.list, lastTasks: tasks }));
+      dispatch(setListName(listToDownload.name))
       dispatch(setListToDownload(null))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

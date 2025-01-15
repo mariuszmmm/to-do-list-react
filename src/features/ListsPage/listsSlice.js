@@ -16,10 +16,15 @@ const listsSlice = createSlice({
       state.lists.push({ name, list, id });
     },
     selectList: (state, { payload: listId }) => {
-      state.selectedListId = listId;
+      if (state.selectedListId === listId) {
+        state.selectedListId = null;
+      } else {
+        state.selectedListId = listId;
+      }
     },
     setListToDownload: (state, { payload: list }) => {
       state.listToDownload = list;
+      state.selectedListId = null;
     },
     removeList: (state, { payload: { listId, lastLists } }) => {
       state.undoStack.push([...lastLists]);

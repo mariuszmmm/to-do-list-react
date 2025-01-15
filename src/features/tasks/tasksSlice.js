@@ -11,7 +11,7 @@ const tasksSlice = createSlice({
     fetchStatus: "ready",
     undoStack: [],
     redoStack: [],
-    listName: getListNameFromLocalStorage() || "Lista zadań",
+    listName: getListNameFromLocalStorage() || "Nowa lista",
     editListName: false,
   },
   reducers: {
@@ -68,7 +68,6 @@ const tasksSlice = createSlice({
       state.undoStack.push([...lastTasks]);
       state.tasks = tasks;
       state.redoStack = [];
-      state.listName = "Lista zadań";
     },
     fetchExampleTasks: (state) => {
       state.fetchStatus = "loading";

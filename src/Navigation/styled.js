@@ -7,6 +7,8 @@ export const Nav = styled.nav`
   justify-content: center;
   height: 50px;
   user-select: none;
+  position: fixed;
+  width: 100%;
 `;
 
 export const NavList = styled.ul`
