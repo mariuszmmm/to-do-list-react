@@ -9,7 +9,7 @@ export const List = styled.ul`
 
 export const Item = styled.li`
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto ;
   grid-gap: 10px;
   align-items: center;
   padding: 10px;
@@ -24,7 +24,7 @@ export const Item = styled.li`
   `}
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto ;
   }
 `;
 
@@ -37,7 +37,7 @@ export const Content = styled.p`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;
-    grid-column: span 4;
+    grid-column: span 2;
     margin: 0;
   }
 

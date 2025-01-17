@@ -18,7 +18,7 @@ import {
   selectUndoTasksStack,
   selectRedoTasksStack,
 } from "../../tasksSlice";
-import { addList, selectIsListWithName } from "../../../ListsPage/listsSlice";
+import { addList, selectIsListWithName, selectLists } from "../../../ListsPage/listsSlice";
 import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
 import Undo from "../../../../common/extraButtons/Undo";
@@ -35,6 +35,7 @@ const TasksButtons = () => {
   const editedTask = useSelector(selectEditedTask);
   const listNameToEdit = useSelector(selectListNameToEdit);
   const listName = useSelector(selectListName);
+  const lists = useSelector(selectLists);
   const isListWithName = useSelector(state => selectIsListWithName(state, listName));
   const dispatch = useDispatch();
   const [saveName, setSaveName] = useState("Zapisz listę");
@@ -42,7 +43,7 @@ const TasksButtons = () => {
 
   const onSaveListHandler = () => {
     if (!isListWithName) {
-      dispatch(addList({ name: listName, list: tasks, id: nanoid() }));
+      dispatch(addList({ name: listName, list: tasks, id: nanoid(), lastLists: lists }));
     }
 
     setSaveName(isListWithName ? "Zmień nazwę" : "Zapisano! ✔️");

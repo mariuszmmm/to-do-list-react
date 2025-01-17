@@ -11,8 +11,10 @@ const listsSlice = createSlice({
     redoListsStack: [],
   },
   reducers: {
-    addList: (state, { payload: { name, list, id } }) => {
+    addList: (state, { payload: { name, list, id, lastLists } }) => {
+      state.undoListsStack.push(lastLists);
       state.lists.push({ name, list, id });
+      state.redoListsStack = [];
     },
     selectList: (state, { payload: listId }) => {
       if (state.selectedListId === listId) {
@@ -26,7 +28,7 @@ const listsSlice = createSlice({
       state.selectedListId = null;
     },
     removeList: (state, { payload: { listId, lastLists } }) => {
-      state.undoListsStack.push([...lastLists]);
+      state.undoListsStack.push(lastLists);
       const index = state.lists.findIndex(({ id }) => id === listId);
       if (index !== -1) {
         state.lists.splice(index, 1);

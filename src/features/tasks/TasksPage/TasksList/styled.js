@@ -36,7 +36,7 @@ export const Content = styled.p`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;
-    grid-column: span 4;
+    grid-column: span 3;
     margin: 0;
   }
 

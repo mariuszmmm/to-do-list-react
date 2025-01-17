@@ -17,7 +17,7 @@ const TasksList = () => {
   const date = formatCurrentDate(new Date());
 
   return (
-    <List >
+    <List>
       {tasksByQuery.map((task, index) => (
         <Item
           key={task.id}
