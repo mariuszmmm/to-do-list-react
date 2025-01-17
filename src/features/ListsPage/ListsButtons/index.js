@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../../common/Button";
-import Redo from "../../../common//extraButtons/Redo";
+import Redo from "../../../common/extraButtons/Redo";
 import Undo from "../../../common/extraButtons/Undo";
 import ButtonsContainer from "../../../common/ButtonsContainer";
-import { redo, selectRedoStack, selectSelectedListById, selectSelectedListId, selectUndoStack, setListToDownload, undo } from "../listsSlice";
+import { redoLists, selectRedoListsStack, selectSelectedListById, selectSelectedListId, selectUndoListsStack, selectUndoTasksStack, setListToLoad, undoLists } from "../listsSlice";
 import { StyledLink } from "./styled";
 
 const ListsButtons = () => {
-  const undoStack = useSelector(selectUndoStack);
-  const redoStack = useSelector(selectRedoStack);
+  const undoListsStack = useSelector(selectUndoListsStack);
+  const redoListsStack = useSelector(selectRedoListsStack);
   const selectedListId = useSelector(selectSelectedListId);
-  const listToDownload = useSelector(state => selectSelectedListById(state, selectedListId));
+  const listToLoad = useSelector(state => selectSelectedListById(state, selectedListId));
   const dispatch = useDispatch();
 
   return (
@@ -18,7 +18,7 @@ const ListsButtons = () => {
       <>
         <StyledLink to={`/zadania`}>
           {selectedListId !== null && <Button
-            onClick={() => dispatch(setListToDownload(listToDownload))}
+            onClick={() => dispatch(setListToLoad(listToLoad))}
             disabled={selectedListId === null}
           >
             Pobierz do listy zadań
@@ -26,16 +26,16 @@ const ListsButtons = () => {
         </StyledLink>
         <ButtonsContainer sub>
           <Button
-            disabled={undoStack.length === 0}
-            onClick={() => dispatch(undo())}
-            title={undoStack.length === 0 ? "" : "Cofnij"}
+            disabled={undoListsStack.length === 0}
+            onClick={() => dispatch(undoLists())}
+            title={undoListsStack.length === 0 ? "" : "Cofnij"}
           >
             <Undo />
           </Button>
           <Button
-            disabled={redoStack.length === 0}
-            onClick={() => dispatch(redo())}
-            title={redoStack.length === 0 ? "" : "Ponów"}
+            disabled={redoListsStack.length === 0}
+            onClick={() => dispatch(redoLists())}
+            title={redoListsStack.length === 0 ? "" : "Ponów"}
           >
             <Redo />
           </Button>

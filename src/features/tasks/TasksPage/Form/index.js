@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask, editTask, saveEditedTask, selectEditedTask, selectTasks } from '../../tasksSlice';
+import { addTask, setTaskToEdit, saveEditedTask, selectEditedTask, selectTasks, selectListName } from '../../tasksSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { StyledForm, Button } from "./styled";
 import { Input } from "../../../../common/Input";
@@ -10,6 +10,7 @@ import { formatCurrentDate } from '../../../../utils/formatCurrentDate';
 
 const Form = () => {
   const tasks = useSelector(selectTasks);
+  const listName = useSelector(selectListName);
   const editedTask = useSelector(selectEditedTask)
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
@@ -37,7 +38,7 @@ const Form = () => {
             id: nanoid(),
             date: formatedDate,
           },
-          lastTasks: tasks
+          stateForUndo: { tasks, listName },
         }
         ))
         :
@@ -49,11 +50,11 @@ const Form = () => {
               content: trimmedTaskContent,
               editedDate: formatedDate,
             },
-            lastTasks: tasks
+            stateForUndo: { tasks, listName },
           }
           ))
           :
-          dispatch(editTask())
+          dispatch(setTaskToEdit())
     };
 
     setTaskContent("");

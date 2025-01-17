@@ -5,34 +5,31 @@ export default styled.button`
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;
   background: transparent;
-  padding: 2px 0 0 20px;
+  margin: 2px 0 0 20px;
+  padding: 0;
   transition: filter 0.3s;
   user-select: none;
   width: 40px;
   min-width: max-content;
 
   ${({ forName }) => forName && css`
-    padding: 0 0 0 2px;
+    margin: 0;
   `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    ${({ forName }) => forName && css`
-      padding: 0 0 0 2px;
-    `};
-  }
+  };
 
   &:hover {
     cursor: pointer;
     filter: brightness(110%);
-  }
+  };
 
   &:active {
     filter: brightness(130%);
-  }
+  };
 
   &:disabled {
     color: ${({ theme }) => theme.color.silver};

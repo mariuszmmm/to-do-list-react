@@ -7,13 +7,12 @@ import TasksList from "./TasksList";
 import TasksButtons from "./TasksButtons";
 import SearchButtons from "./SearchButtons";
 import { useSelector } from "react-redux";
-import { selectEditedTask, selectListName, selectShowSearch } from "../tasksSlice";
+import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { Name } from "./Name";
 
 const TasksPage = () => {
   const showSearch = useSelector(selectShowSearch);
   const editedTask = useSelector(selectEditedTask);
-  const listName = useSelector(selectListName);
 
   return (
     <>
@@ -30,7 +29,7 @@ const TasksPage = () => {
         hidden={!showSearch}
       />
       <Section
-        title={< Name content={listName} />}
+        title={< Name />}
         body={<TasksList />}
         extraHeaderContent={<TasksButtons />}
       />

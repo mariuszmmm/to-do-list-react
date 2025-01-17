@@ -17,7 +17,7 @@ export const Header = styled.header`
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
   word-break: break-word;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     flex-direction: column;
     padding-bottom: 10px;
   }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const SubTitle = styled.span`
-  min-width: 300px;
+  min-width: 200px;
   width: content;
   padding-right: 5px;
 

@@ -10,21 +10,30 @@ import {
   selectHideDone,
   toggleHideDone,
   selectListName,
-  setListName
+  setListName,
+  undoTasks,
+  redoTasks,
+  addTask,
+  saveEditedTask,
+  toggleTaskDone,
+  removeTasks,
+  setAllDone,
+  setAllUndone,
 } from "./tasksSlice";
 import { getExampleTasks } from "./getExampleTasks";
 import { saveListNameInLocalStorage, saveSettingsInLocalStorage, saveTasksInLocalStorage } from "../../utils/localStorage";
 import { formatCurrentDate } from "../../utils/formatCurrentDate";
+import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 
 function* fetchExampleTasksHandler() {
   try {
     yield delay(1000);
     const tasks = yield select(selectTasks);
+    const listName = yield select(selectListName);
     const exampleTasks = yield call(getExampleTasks);
     const date = formatCurrentDate(new Date());
     const exampleTasksWithDate = exampleTasks.map(task => ({ ...task, date }));
-    yield put(setTasks({ tasks: exampleTasksWithDate, listName: "Przykładowe zadania", lastTasks: tasks }));
-    yield put(setListName("Przykładowe zadania"));
+    yield put(setTasks({ tasks: exampleTasksWithDate, listName: "Przykładowe zadania", stateForUndo: { tasks, listName } }));
   } catch (error) {
     yield put(fetchError());
     yield delay(3000);
@@ -41,22 +50,40 @@ function* saveSettingsInLocalStorageHandler() {
   yield call(saveSettingsInLocalStorage, { showSearch, hideDone });
 };
 
-function* saveTasksInLocalStorageHandler() {
+function* setListToLoadHandler() {
   const tasks = yield select(selectTasks);
-  yield call(saveTasksInLocalStorage, tasks);
-}
-
-function* saveListNameInLocalStorageHandler() {
   const listName = yield select(selectListName);
+  const listToLoad = yield select(selectListToLoad);
+  yield put(setTasks({ tasks: listToLoad.list, listName: listToLoad.name, stateForUndo: { tasks, listName } }));
+};
+
+function* saveDataInLocalStorageHandler() {
+  const tasks = yield select(selectTasks);
+  const listName = yield select(selectListName);
+  yield call(saveTasksInLocalStorage, tasks);
   yield call(saveListNameInLocalStorage, listName);
 }
 
 export function* tasksSaga() {
   yield takeLatest(fetchExampleTasks.type, fetchExampleTasksHandler);
-  yield takeLatest(
+  yield takeEvery(
     [toggleShowSearch.type, toggleHideDone.type],
     saveSettingsInLocalStorageHandler
   );
-  yield takeEvery("*", saveTasksInLocalStorageHandler);
-  yield takeEvery("*", saveListNameInLocalStorageHandler);
+  yield takeEvery(
+    [
+      addTask.type,
+      saveEditedTask.type,
+      toggleTaskDone.type,
+      removeTasks.type,
+      setAllDone.type,
+      setAllUndone.type,
+      setTasks.type,
+      setListName.type,
+      undoTasks.type,
+      redoTasks.type
+    ],
+    saveDataInLocalStorageHandler
+  );
+  yield takeEvery(setListToLoad.type, setListToLoadHandler);
 };

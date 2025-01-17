@@ -1,6 +1,6 @@
 import { call, select, takeEvery } from "redux-saga/effects";
 import { saveListsInLocalStorage } from "../../utils/localStorage";
-import { selectLists } from "./listsSlice";
+import { addList, redoLists, removeList, selectLists, undoLists } from "./listsSlice";
 
 function* getLocalStorageHandler() {
   const lists = yield select(selectLists);
@@ -9,5 +9,7 @@ function* getLocalStorageHandler() {
 };
 
 export function* listsSaga() {
-  yield takeEvery("*", getLocalStorageHandler);
+  yield takeEvery(
+    [addList.type, removeList.type, undoLists.type, redoLists.type],
+    getLocalStorageHandler);
 };

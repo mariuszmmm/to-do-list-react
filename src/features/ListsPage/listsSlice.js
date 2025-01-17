@@ -6,10 +6,9 @@ const listsSlice = createSlice({
   initialState: {
     lists: getListsFromLocalStorage(),
     selectedListId: null,
-    listToDownload: null,
-    fetchStatus: "ready",
-    undoStack: [],
-    redoStack: [],
+    listToLoad: null,
+    undoListsStack: [],
+    redoListsStack: [],
   },
   reducers: {
     addList: (state, { payload: { name, list, id } }) => {
@@ -22,12 +21,12 @@ const listsSlice = createSlice({
         state.selectedListId = listId;
       }
     },
-    setListToDownload: (state, { payload: list }) => {
-      state.listToDownload = list;
+    setListToLoad: (state, { payload: list }) => {
+      state.listToLoad = list;
       state.selectedListId = null;
     },
     removeList: (state, { payload: { listId, lastLists } }) => {
-      state.undoStack.push([...lastLists]);
+      state.undoListsStack.push([...lastLists]);
       const index = state.lists.findIndex(({ id }) => id === listId);
       if (index !== -1) {
         state.lists.splice(index, 1);
@@ -35,15 +34,15 @@ const listsSlice = createSlice({
           state.selectedListId = null;
         };
       };
-      state.redoStack = [];
+      state.redoListsStack = [];
     },
-    undo: (state) => {
-      state.redoStack.push([...state.lists]);
-      state.lists = state.undoStack.pop();
+    undoLists: (state) => {
+      state.redoListsStack.push(state.lists);
+      state.lists = state.undoListsStack.pop();
     },
-    redo: (state) => {
-      state.undoStack.push([...state.lists]);
-      state.lists = state.redoStack.pop();
+    redoLists: (state) => {
+      state.undoListsStack.push(state.lists);
+      state.lists = state.redoListsStack.pop();
     },
   },
 });
@@ -51,19 +50,19 @@ const listsSlice = createSlice({
 export const {
   addList,
   selectList,
-  setListToDownload,
+  setListToLoad,
   removeList,
-  undo,
-  redo,
+  undoLists,
+  redoLists,
 } = listsSlice.actions;
 
 const selectListsState = state => state.lists;
 
 export const selectLists = state => selectListsState(state).lists;
 export const selectSelectedListId = state => selectListsState(state).selectedListId;
-export const selectListToDownload = state => selectListsState(state).listToDownload;
-export const selectUndoStack = state => selectListsState(state).undoStack;
-export const selectRedoStack = state => selectListsState(state).redoStack;
+export const selectListToLoad = state => selectListsState(state).listToLoad;
+export const selectUndoListsStack = state => selectListsState(state).undoListsStack;
+export const selectRedoListsStack = state => selectListsState(state).redoListsStack;
 export const selectAreListsEmpty = state => selectLists(state).length === 0;
 export const selectIsListWithName = (state, listName) => selectLists(state).some(({ name }) => name === listName);
 export const selectSelectedListById = (state, listId) => selectLists(state).find(({ id }) => id === listId);

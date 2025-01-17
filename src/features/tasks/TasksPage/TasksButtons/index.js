@@ -7,16 +7,16 @@ import {
   selectIsEveryTaskDone,
   toggleHideDone,
   setAllDone,
-  selectUndoStack,
-  selectRedoStack,
-  undo,
-  redo,
+  undoTasks,
+  redoTasks,
   selectTasks,
   selectEditedTask,
   setAllUndone,
   selectIsEveryTaskUndone,
   selectListName,
-  selectEditListName,
+  selectListNameToEdit,
+  selectUndoTasksStack,
+  selectRedoTasksStack,
 } from "../../tasksSlice";
 import { addList, selectIsListWithName } from "../../../ListsPage/listsSlice";
 import { nanoid } from "@reduxjs/toolkit";
@@ -29,11 +29,11 @@ const TasksButtons = () => {
   const hideDone = useSelector(selectHideDone);
   const isEveryTaskDone = useSelector(selectIsEveryTaskDone);
   const isEveryTaskUndone = useSelector(selectIsEveryTaskUndone);
-  const undoStack = useSelector(selectUndoStack);
-  const redoStack = useSelector(selectRedoStack);
+  const undoTasksStack = useSelector(selectUndoTasksStack);
+  const redoTasksStack = useSelector(selectRedoTasksStack);
   const tasks = useSelector(selectTasks);
   const editedTask = useSelector(selectEditedTask);
-  const editListName = useSelector(selectEditListName);
+  const listNameToEdit = useSelector(selectListNameToEdit);
   const listName = useSelector(selectListName);
   const isListWithName = useSelector(state => selectIsListWithName(state, listName));
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const TasksButtons = () => {
       <>
         <Button
           onClick={onSaveListHandler}
-          disabled={!listName || areTasksEmpty || editListName || isName}
+          disabled={!listName || areTasksEmpty || listNameToEdit !== null || isName}
           error={isName}
         >
           {saveName}
@@ -73,34 +73,32 @@ const TasksButtons = () => {
         >
           {hideDone ? "Pokaż" : "Ukryj"} ukończone
         </Button>
+        <Button
+          onClick={() => dispatch(setAllDone({ tasks, listName }))}
+          disabled={isEveryTaskDone}
+          noDisplay={areTasksEmpty}
+        >
+          Ukończ wszystkie
+        </Button>
+        <Button
+          onClick={() => dispatch(setAllUndone({ tasks, listName }))}
+          disabled={isEveryTaskUndone}
+          noDisplay={areTasksEmpty}
+        >
+          Odznacz wszystkie
+        </Button>
         <ButtonsContainer sub>
           <Button
-            onClick={() => dispatch(setAllDone({ lastTasks: tasks }))}
-            disabled={isEveryTaskDone}
-            noDisplay={areTasksEmpty}
-          >
-            Ukończ wszystkie
-          </Button>
-          <Button
-            onClick={() => dispatch(setAllUndone({ lastTasks: tasks }))}
-            disabled={isEveryTaskUndone}
-            noDisplay={areTasksEmpty}
-          >
-            Odznacz wszystkie
-          </Button>
-        </ButtonsContainer>
-        <ButtonsContainer sub>
-          <Button
-            disabled={undoStack.length === 0 || editedTask !== null}
-            onClick={() => dispatch(undo())}
-            title={(undoStack.length === 0 || editedTask !== null) ? "" : "Cofnij"}
+            disabled={undoTasksStack.length === 0 || editedTask !== null}
+            onClick={() => dispatch(undoTasks())}
+            title={(undoTasksStack.length === 0 || editedTask !== null) ? "" : "Cofnij"}
           >
             <Undo />
           </Button>
           <Button
-            disabled={redoStack.length === 0 || editedTask !== null}
-            onClick={() => dispatch(redo())}
-            title={(redoStack.length === 0 || editedTask !== null) ? "" : "Ponów"}
+            disabled={redoTasksStack.length === 0 || editedTask !== null}
+            onClick={() => dispatch(redoTasks())}
+            title={(redoTasksStack.length === 0 || editedTask !== null) ? "" : "Ponów"}
           >
             <Redo />
           </Button>

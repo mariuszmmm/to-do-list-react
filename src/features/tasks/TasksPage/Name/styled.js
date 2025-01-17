@@ -7,8 +7,10 @@ export const NameContainer = styled.form`
   flex-wrap: wrap;
   flex-direction: column;
   max-width: fit-content;
+  min-height: 70px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     max-width: 100%;
+    min-height: auto;
   }
 `;
