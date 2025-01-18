@@ -16,6 +16,6 @@ const theme = {
     mobileMid: "570px",
     mobileMin: "350px",
   },
-};
+} as const;
 
 export default theme;

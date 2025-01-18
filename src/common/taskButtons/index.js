@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Button = styled.button`
+export const TaskButton = styled.button`
   border: none;
   color: ${({ theme }) => theme.color.white};
   width: 30px;
@@ -30,14 +30,14 @@ export const Button = styled.button`
   }
 `;
 
-export const ToggleButton = styled(Button)`
+export const ToggleButton = styled(TaskButton)`
   background: ${({ theme }) => theme.color.forestGreen};
 `;
 
-export const EditButton = styled(Button)`
+export const EditButton = styled(TaskButton)`
   background: ${({ theme }) => theme.color.empress};
 `;
 
-export const RemoveButton = styled(Button)`
+export const RemoveButton = styled(TaskButton)`
   background: ${({ theme }) => theme.color.crimson};
 `;

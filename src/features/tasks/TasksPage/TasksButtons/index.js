@@ -21,8 +21,8 @@ import {
 import { addList, selectIsListWithName, selectLists } from "../../../ListsPage/listsSlice";
 import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
-import Undo from "../../../../common/extraButtons/Undo";
-import Redo from "../../../../common/extraButtons/Redo";
+import Undo from "../../../../common/buttonIcons/Undo";
+import Redo from "../../../../common/buttonIcons/Redo";
 
 const TasksButtons = () => {
   const areTasksEmpty = useSelector(selectAreTasksEmpty);

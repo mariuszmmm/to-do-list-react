@@ -1,6 +1,10 @@
 import styled, { css } from "styled-components";
 
-export default styled.div`
+interface Props {
+  $sub?: boolean;
+}
+
+export default styled.div<Props>`
   display: flex;
   flex-wrap: wrap;
   justify-content: right;
@@ -8,21 +12,24 @@ export default styled.div`
   align-content: flex-start;
   row-gap: 15px;
 
-  ${({ $sub }) => $sub && css`
-    margin-top: 0;
-    width: 100%;
-  `};
+  ${({ $sub }) =>
+    $sub &&
+    css`
+      margin-top: 0;
+      width: 100%;
+    `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-
-  };
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     justify-content: center;
     margin-top: 10px;
 
-    ${({ $sub }) => $sub && css`
-      margin-top: 0;
-    `};
-  };
+    ${({ $sub }) =>
+      $sub &&
+      css`
+        margin-top: 0;
+      `};
+  }
 `;

@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../../common/Button";
-import Redo from "../../../common/extraButtons/Redo";
-import Undo from "../../../common/extraButtons/Undo";
+import Redo from "../../../common/buttonIcons/Redo";
+import Undo from "../../../common/buttonIcons/Undo";
 import ButtonsContainer from "../../../common/ButtonsContainer";
-import { redoLists, selectRedoListsStack, selectSelectedListById, selectSelectedListId, selectUndoListsStack, selectUndoTasksStack, setListToLoad, undoLists } from "../listsSlice";
+import { redoLists, selectRedoListsStack, selectSelectedListById, selectSelectedListId, selectUndoListsStack, setListToLoad, undoLists } from "../listsSlice";
 import { StyledLink } from "./styled";
 
 const ListsButtons = () => {

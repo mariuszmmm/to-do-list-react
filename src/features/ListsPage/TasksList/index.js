@@ -1,5 +1,5 @@
 import { List, Item, Content, Task } from "./styled";
-import { ToggleButton } from "../../../common/buttons";
+import { ToggleButton } from "../../../common/taskButtons";
 
 const TasksList = ({ list }) => (
   <List>

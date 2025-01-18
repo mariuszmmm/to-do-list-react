@@ -4,7 +4,7 @@ import { List, Item, Content, Task, StyledLink } from "./styled";
 import { useQueryParameter } from "../queryParameter";
 import searchQueryParamName from "../searchQueryParamName";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
-import { EditButton, RemoveButton, ToggleButton } from "../../../../common/buttons";
+import { EditButton, RemoveButton, ToggleButton } from "../../../../common/taskButtons";
 
 const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
