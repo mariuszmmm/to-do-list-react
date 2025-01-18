@@ -63,32 +63,32 @@ const TasksButtons = () => {
         <Button
           onClick={onSaveListHandler}
           disabled={!listName || areTasksEmpty || listNameToEdit !== null || isName}
-          error={isName}
+          $error={isName}
         >
           {saveName}
         </Button>
         <Button
           onClick={() => dispatch(toggleHideDone())}
           disabled={areTasksEmpty}
-          noDisplay={areTasksEmpty}
+          $noDisplay={areTasksEmpty}
         >
           {hideDone ? "Pokaż" : "Ukryj"} ukończone
         </Button>
         <Button
           onClick={() => dispatch(setAllDone({ tasks, listName }))}
           disabled={isEveryTaskDone}
-          noDisplay={areTasksEmpty}
+          $noDisplay={areTasksEmpty}
         >
           Ukończ wszystkie
         </Button>
         <Button
           onClick={() => dispatch(setAllUndone({ tasks, listName }))}
           disabled={isEveryTaskUndone}
-          noDisplay={areTasksEmpty}
+          $noDisplay={areTasksEmpty}
         >
           Odznacz wszystkie
         </Button>
-        <ButtonsContainer sub>
+        <ButtonsContainer $sub>
           <Button
             disabled={undoTasksStack.length === 0 || editedTask !== null}
             onClick={() => dispatch(undoTasks())}

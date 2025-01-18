@@ -24,7 +24,7 @@ const ListsButtons = () => {
             Pobierz do listy zadań
           </Button>
         </StyledLink>
-        <ButtonsContainer sub>
+        <ButtonsContainer $sub>
           <Button
             disabled={undoListsStack.length === 0}
             onClick={() => dispatch(undoLists())}

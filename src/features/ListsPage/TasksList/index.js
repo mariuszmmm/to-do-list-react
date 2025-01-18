@@ -7,7 +7,7 @@ const TasksList = ({ list }) => (
       <Item
         key={task.id}
       >
-        <ToggleButton disabled lists>
+        <ToggleButton disabled>
           {task.done ? "✔" : ""}
         </ToggleButton>
         <Content>

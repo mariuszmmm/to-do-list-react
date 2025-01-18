@@ -12,7 +12,7 @@ export default styled.button`
   width: 40px;
   min-width: max-content;
 
-  ${({ forName }) => forName && css`
+  ${({ $forName }) => $forName && css`
     margin: 0;
   `};
 
@@ -36,11 +36,11 @@ export default styled.button`
     filter: brightness(100%);
     cursor: auto;
 
-    ${({ error }) => error && css`
+    ${({ $error }) => $error && css`
       color: ${({ theme }) => theme.color.red};
     `};
 
-    ${({ noDisplay }) => noDisplay && css`
+    ${({ $noDisplay }) => $noDisplay && css`
       display: none;
     `};
   } 

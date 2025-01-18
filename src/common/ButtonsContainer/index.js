@@ -8,7 +8,7 @@ export default styled.div`
   align-content: flex-start;
   row-gap: 15px;
 
-  ${({ sub }) => sub && css`
+  ${({ $sub }) => $sub && css`
     margin-top: 0;
     width: 100%;
   `};
@@ -21,7 +21,7 @@ export default styled.div`
     justify-content: center;
     margin-top: 10px;
 
-    ${({ sub }) => sub && css`
+    ${({ $sub }) => $sub && css`
       margin-top: 0;
     `};
   };

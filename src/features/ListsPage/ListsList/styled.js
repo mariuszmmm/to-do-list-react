@@ -15,7 +15,7 @@ export const Item = styled.li`
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
 
-  ${({ edit, selected }) => (edit || selected) && css`
+  ${({ $edit, selected }) => ($edit || selected) && css`
     background-color: ${({ theme }) => theme.color.silver};
   `}
 
@@ -49,7 +49,7 @@ export const Content = styled.p`
 export const Task = styled.span`
   padding-left: 2px;
   
-  ${({ done }) => done && css`
+  ${({ $done }) => $done && css`
     text-decoration: 1px line-through black;
   `}
 `;

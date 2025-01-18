@@ -45,7 +45,7 @@ export const Name = () => {
           ref={inpurRef}
         />
       }
-      <Button forName>
+      <Button $forName>
         {listNameToEdit === null ? "Edytuj nazwę listy" : "Zapisz nazwę"}
       </Button>
     </NameContainer>

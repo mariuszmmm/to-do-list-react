@@ -79,7 +79,7 @@ const tasksSlice = createSlice({
       state.fetchStatus = "ready";
     },
     fetchError: (state) => {
-      state.fetchStatus = "error";
+      state.fetchStatus = "$error";
     },
     toggleShowSearch: state => {
       state.showSearch = !state.showSearch;

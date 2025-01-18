@@ -7,7 +7,7 @@ const CurrentDate = () => {
 
    return (
       <ContainerDate>
-         <Date description>
+         <Date $description>
             Dzisiaj jest
             {" "}
             {formatCurrentDay(currentDate)},

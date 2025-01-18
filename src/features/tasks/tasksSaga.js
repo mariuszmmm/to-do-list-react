@@ -34,7 +34,7 @@ function* fetchExampleTasksHandler() {
     const date = formatCurrentDate(new Date());
     const exampleTasksWithDate = exampleTasks.map(task => ({ ...task, date }));
     yield put(setTasks({ tasks: exampleTasksWithDate, listName: "Przykładowe zadania", stateForUndo: { tasks, listName } }));
-  } catch (error) {
+  } catch ($error) {
     yield put(fetchError());
     yield delay(3000);
   } finally {

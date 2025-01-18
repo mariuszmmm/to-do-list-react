@@ -22,7 +22,7 @@ const TasksList = () => {
         <Item
           key={task.id}
           hidden={task.done && hideDone}
-          edit={editedTask?.id === task.id}
+          $edit={editedTask?.id === task.id}
         >
           <ToggleButton
             onClick={() => dispatch(toggleTaskDone({ taskId: task.id, doneDate: task.done ? null : date, stateForUndo: { tasks, listName } }))}
@@ -32,7 +32,7 @@ const TasksList = () => {
           </ToggleButton>
           <Content>
             {(!query) ? <span>{index + 1}. </span> : ""}
-            <Task done={task.done}>
+            <Task $done={task.done}>
               <StyledLink to={`/zadania/${task.id}`}>{task.content}</StyledLink>
             </Task>
           </Content>

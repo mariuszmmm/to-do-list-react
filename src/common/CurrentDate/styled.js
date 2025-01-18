@@ -14,6 +14,6 @@ export const Date = styled.span`
    color: ${({ theme }) => theme.color.black};
 
    @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-      ${({ description }) => description && "display: none;"}
+      ${({ $description }) => $description && "display: none;"}
    }
 `;
