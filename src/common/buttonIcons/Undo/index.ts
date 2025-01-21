@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { ReactComponent as rotate } from "../../../images/rotate.svg";
+import { ReactComponent as Rotate } from "../../../images/rotate.svg";
 
-export default styled(rotate)`
+export default styled(Rotate)`
   width: 1rem;
-  margin-top: 2px;
-  margin: 0 15px;
+  margin: 2px 15px 0;
 `;

@@ -1,12 +1,12 @@
 import styled, { css } from "styled-components";
 
-interface Props {
+interface ButtonProps {
   $forName?: boolean;
   $error?: boolean;
   $noDisplay?: boolean;
 }
 
-export default styled.button<Props>`
+export default styled.button<ButtonProps>`
   border: none;
   color: ${({ theme }) => theme.color.teal};
   font-size: 16px;

@@ -1,10 +1,10 @@
 import styled, { css } from "styled-components";
 
-interface Props {
+interface ButtonsContainerProps {
   $sub?: boolean;
 }
 
-export default styled.div<Props>`
+export default styled.div<ButtonsContainerProps>`
   display: flex;
   flex-wrap: wrap;
   justify-content: right;
