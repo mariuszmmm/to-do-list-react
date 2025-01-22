@@ -14,7 +14,8 @@
     "styled-components": "^6.1.14"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "netlify dev",
+    "dev": "netlify dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
