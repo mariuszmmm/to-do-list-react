@@ -6,6 +6,7 @@ import AuthorPage from "./features/AuthorPage";
 import Container from "./common/Container";
 import CurrentDate from "./common/CurrentDate";
 import ListsPage from "./features/ListsPage";
+import Login from "./features/Login";
 
 const App = () => (
   <HashRouter>
@@ -17,6 +18,7 @@ const App = () => (
         <Route path="/zadania" element={<TasksPage />} />
         <Route path="/listy" element={<ListsPage />} />
         <Route path="/autor" element={<AuthorPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/zadania" />} />
       </Routes>
     </Container>

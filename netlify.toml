@@ -1,0 +1,54 @@
+[[redirects]]
+  from = "/login"
+  to = "/.netlify/functions/login"
+  status = 200
+
+[[redirects]]
+  from = "/example"
+  to = "/.netlify/functions/getExampleItems"
+  status = 200
+
+[[redirects]]
+  from = "/items"
+  to = "/.netlify/functions/getItems"
+  status = 200
+
+[[redirects]]
+  from = "/items/add"
+  to = "/.netlify/functions/addItem"
+  status = 200
+
+[[redirects]]
+  from = "/items/edit"
+  to = "/.netlify/functions/editItem"
+  status = 200
+
+[[redirects]]
+  from = "/items/delete"
+  to = "/.netlify/functions/deleteItem"
+  status = 200
+
+[[redirects]]
+  from = "/items/deleteImage"
+  to = "/.netlify/functions/deleteImage"
+  status = 200
+
+[[redirects]]
+  from = "/files"
+  to = "/.netlify/functions/getFilesList"
+  status = 200
+  
+[[redirects]]
+  from = "/users"
+  to = "/.netlify/functions/getUsersList"
+  status = 200
+
+[[redirects]]
+  from = "/user/add"
+  to = "/.netlify/functions/addUser"
+  status = 200
+
+[[redirects]]
+  from = "/user/password"
+  to = "/.netlify/functions/passwordChange"
+  status = 200
