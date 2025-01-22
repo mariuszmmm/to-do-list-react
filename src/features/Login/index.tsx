@@ -3,7 +3,6 @@ import Section from "../../common/Section";
 import LogForm from "./LogForm";
 
 const Login = () => {
-
   return (
     <>
       <Header title="Logowanie" />
