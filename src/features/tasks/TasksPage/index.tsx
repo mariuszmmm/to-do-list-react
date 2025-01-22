@@ -1,14 +1,14 @@
-import Header from "../../../common/Header";
-import Section from "../../../common/Section";
-import FormButtons from "./FormButtons";
-import Form from "./Form";
-import Search from "./Search";
-import TasksList from "./TasksList";
-import TasksButtons from "./TasksButtons";
-import SearchButtons from "./SearchButtons";
-import { selectEditedTask, selectShowSearch } from "../tasksSlice";
-import { Name } from "./Name";
 import { useAppSelector } from "../../../hooks";
+import { TaskFormButtons } from "./TaskFormButtons";
+import { Search } from "./Search";
+import { TasksList } from "./TasksList";
+import { TasksButtons } from "./TasksButtons";
+import { SearchButtons } from "./SearchButtons";
+import { EditableListName } from "./EditableListName";
+import { Header } from "../../../common/Header";
+import { Section } from "../../../common/Section";
+import { TaskForm } from "./TaskForm";
+import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 
 const TasksPage = () => {
   const showSearch = useAppSelector(selectShowSearch);
@@ -19,8 +19,8 @@ const TasksPage = () => {
       <Header title="Lista zadań" />
       <Section
         title={editedTask === null ? "Dodaj nowe zadanie" : "Edytuj zadanie"}
-        extraHeaderContent={<FormButtons />}
-        body={<Form />}
+        extraHeaderContent={<TaskFormButtons />}
+        body={<TaskForm />}
       />
       <Section
         title="Wyszukiwarka"
@@ -29,7 +29,7 @@ const TasksPage = () => {
         hidden={!showSearch}
       />
       <Section
-        title={< Name />}
+        title={<EditableListName />}
         body={<TasksList />}
         extraHeaderContent={<TasksButtons />}
       />

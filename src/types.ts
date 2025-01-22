@@ -1,3 +1,30 @@
+export interface AccountState {
+  loggedUser: string | null;
+  accountMode:
+    | "login"
+    | "logged"
+    | "changePassword"
+    | "savePassword"
+    | "registerAccount"
+    | "sendRegisterEmail"
+    | "deleteUser"
+    | "accountRecovery"
+    | "sendRecoveryEmail";
+  fetchStatus: "idle" | "loading" | "error";
+  message?: {
+    text: string;
+    type: "info" | "warning";
+  };
+}
+
+export type RecoveryStatus =
+  | "recovering"
+  | "resetPassword"
+  | "linkExpired"
+  | "passwordUpdated"
+  | "passwordNotUpdated"
+  | "savePassword";
+
 export interface Task {
   id: string;
   content: string;
@@ -8,8 +35,12 @@ export interface Task {
 }
 
 export interface List {
+  id: string;
   name: string;
   taskList: Task[];
-  id: string;
-  selected?: boolean;
+}
+
+export interface Data {
+  email: string;
+  lists: List[];
 }

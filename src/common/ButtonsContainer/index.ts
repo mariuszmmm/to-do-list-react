@@ -2,9 +2,10 @@ import styled, { css } from "styled-components";
 
 interface ButtonsContainerProps {
   $sub?: boolean;
+  $extra?: boolean;
 }
 
-export default styled.div<ButtonsContainerProps>`
+export const ButtonsContainer = styled.div<ButtonsContainerProps>`
   display: flex;
   flex-wrap: wrap;
   justify-content: right;
@@ -19,8 +20,13 @@ export default styled.div<ButtonsContainerProps>`
       width: 100%;
     `};
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-  }
+  ${({ $extra }) =>
+    $extra &&
+    css`
+      flex-direction: column;
+      justify-content: left;
+      margin-top: 10px;
+    `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     justify-content: center;

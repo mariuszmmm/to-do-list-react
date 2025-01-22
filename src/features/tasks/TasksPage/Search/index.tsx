@@ -1,3 +1,5 @@
+import { ChangeEventHandler } from "react";
+import { useAppSelector } from "../../../../hooks";
 import {
   useQueryParameter,
   useReplaceQueryParameter,
@@ -5,10 +7,8 @@ import {
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { Input } from "../../../../common/Input";
 import { selectShowSearch } from "../../tasksSlice";
-import { useAppSelector } from "../../../../hooks";
-import { ChangeEventHandler } from "react";
 
-const Search = () => {
+export const Search = () => {
   const query = useQueryParameter(searchQueryParamName);
   const replaceQueryParameter = useReplaceQueryParameter();
   const showSearch = useAppSelector(selectShowSearch);
@@ -29,5 +29,3 @@ const Search = () => {
     />
   );
 };
-
-export default Search;

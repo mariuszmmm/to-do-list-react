@@ -2,9 +2,13 @@
   "name": "to-do-list-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mariuszmmm.github.io/to-do-list-react/",
+  "homepage": "",
   "dependencies": {
+    "@netlify/functions": "^3.0.0",
     "@reduxjs/toolkit": "^2.5.0",
+    "gotrue-js": "^0.9.29",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
@@ -14,7 +18,8 @@
     "styled-components": "^6.1.14"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "netlify dev",
+    "dev": "netlify dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -40,6 +45,8 @@
     ]
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/mongoose": "^5.11.96",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3"
   }

@@ -1,0 +1,23 @@
+[[redirects]]
+  from = "/getData"
+  to = "/.netlify/functions/getData"
+  status = 200
+
+[[redirects]]
+  from = "/updateData"
+  to = "/.netlify/functions/updateData"
+  status = 200
+
+[[redirects]]
+  from = "/confirmUser"
+  to = "/.netlify/functions/confirmUser"
+  status = 200
+    
+[[redirects]]
+  from = "/deleteUser"
+  to = "/.netlify/functions/deleteUser"
+  status = 200
+
+
+
+

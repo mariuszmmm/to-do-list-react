@@ -1,14 +1,14 @@
-import Header from "../../common/Header";
-import Section from "../../common/Section";
+import { useAppSelector } from "../../hooks";
+import { ListsList } from "./ListsList";
+import { ListsButtons } from "./ListsButtons";
+import { TasksList } from "./TasksList";
+import { Header } from "../../common/Header";
+import { Section } from "../../common/Section";
 import {
   selectAreListsEmpty,
   selectSelectedListId,
   selectSelectedListById,
 } from "./listsSlice";
-import ListsList from "./ListsList";
-import ListsButtons from "./ListsButtons";
-import TasksList from "./TasksList";
-import { useAppSelector } from "../../hooks";
 
 const ListsPage = () => {
   const areListsEmpty = useAppSelector(selectAreListsEmpty);

@@ -1,3 +1,4 @@
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   removeList,
   selectList,
@@ -12,16 +13,15 @@ import {
   Task,
   RemoveButton,
 } from "./styled";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
 
-const ListsList = () => {
+export const ListsList = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const lists = useAppSelector(selectLists);
   const dispatch = useAppDispatch();
 
   return (
     <List>
-      {lists.map((list) => (
+      {lists?.map((list) => (
         <Item key={list.id} selected={selectedListId === list.id}>
           <ToggleButton onClick={() => dispatch(selectList(list.id))}>
             {selectedListId === list.id ? "✔" : ""}
@@ -29,11 +29,7 @@ const ListsList = () => {
           <Content onClick={() => dispatch(selectList(list.id))}>
             <Task>{list.name}</Task>
           </Content>
-          <RemoveButton
-            onClick={() =>
-              dispatch(removeList({ listId: list.id, lastLists: lists }))
-            }
-          >
+          <RemoveButton onClick={() => dispatch(removeList(list.id))}>
             🗑️
           </RemoveButton>
         </Item>
@@ -41,5 +37,3 @@ const ListsList = () => {
     </List>
   );
 };
-
-export default ListsList;

@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 interface InputProps {
   hidden?: boolean;
@@ -9,10 +9,9 @@ export const Input = styled.input<InputProps>`
   border: 1px solid ${({ theme }) => theme.color.alto};
   width: 100%;
   border-radius: 5px;
+  height: 42px;
 
-  ${({ hidden }) =>
-    hidden &&
-    css`
-      display: none;
-    `}
+  &:disabled {
+    color: ${({ theme }) => theme && theme.color.alto};
+  }
 `;

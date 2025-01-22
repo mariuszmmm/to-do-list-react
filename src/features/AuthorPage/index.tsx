@@ -1,6 +1,6 @@
-import Header from "../../common/Header";
-import Section from "../../common/Section";
-import Text from "../../common/Text";
+import { Header } from "../../common/Header";
+import { Section } from "../../common/Section";
+import { Text } from "../../common/Text";
 
 const AuthorPage = () => (
   <>

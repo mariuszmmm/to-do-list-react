@@ -1,11 +1,11 @@
-import { useCurrentDate } from "./useCurrentDate";
+import { useCurrentDate } from "../../hooks/useCurrentDate";
 import {
   formatCurrentDay,
   formatCurrentTime,
 } from "../../utils/formatCurrentDate";
 import { Date, DateContainer } from "./styled";
 
-const CurrentDate = () => {
+export const CurrentDate = () => {
   const currentDate = useCurrentDate();
 
   return (
@@ -15,5 +15,3 @@ const CurrentDate = () => {
     </DateContainer>
   );
 };
-
-export default CurrentDate;

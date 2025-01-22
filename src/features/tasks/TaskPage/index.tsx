@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { selectTaskById } from "../tasksSlice";
-import Header from "../../../common/Header";
-import Section from "../../../common/Section";
-import { DateInfo, Name } from "./styled";
 import { useAppSelector } from "../../../hooks";
+import { DateInfo, Name } from "./styled";
+import { Header } from "../../../common/Header";
+import { Section } from "../../../common/Section";
+import { selectTaskById } from "../tasksSlice";
 
 const TaskPage = () => {
   const { id } = useParams();

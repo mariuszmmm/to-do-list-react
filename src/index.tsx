@@ -6,6 +6,12 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import GlobalStyle from "./GlobalStyle";
 import App from "./App";
+import { getTokenFromURL } from "./utils/getTokenFromURL";
+import { clearLocalStorage } from "./utils/clearLocalStorage";
+
+const url = window.location.href;
+getTokenFromURL(url);
+clearLocalStorage();
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(

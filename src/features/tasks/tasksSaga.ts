@@ -14,7 +14,6 @@ import {
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
 import { Task } from "../../types";
-import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 import {
   addTask,
   fetchError,
@@ -36,6 +35,7 @@ import {
   toggleTaskDone,
   undoTasks,
 } from "./tasksSlice";
+import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 
 function* fetchExampleTasksHandler() {
   try {

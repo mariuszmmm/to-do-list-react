@@ -4,18 +4,26 @@ import { StyledSection, SectionHeader, SectionBody } from "./styled";
 interface SectionProps {
   title: string | ReactElement;
   body: ReactNode;
-  extraHeaderContent?: ReactNode;
+  extraHeaderContent?: ReactElement;
+  extraContent?: ReactElement;
   hidden?: boolean;
 }
 
-const Section = ({ title, body, extraHeaderContent, hidden }: SectionProps) => (
+export const Section = ({
+  title,
+  body,
+  extraHeaderContent,
+  extraContent,
+  hidden,
+}: SectionProps) => (
   <StyledSection>
     <SectionHeader>
       {title}
       {extraHeaderContent}
     </SectionHeader>
-    <SectionBody hidden={hidden}>{body}</SectionBody>
+    <SectionBody hidden={hidden}>
+      {body}
+      {extraContent}
+    </SectionBody>
   </StyledSection>
 );
-
-export default Section;

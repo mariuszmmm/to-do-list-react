@@ -1,3 +1,14 @@
+import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { StyledLink } from "../../../../common/StyledLink";
+import { List, Item, Content, Task } from "./styled";
+import { useQueryParameter } from "../../../../utils/queryParameter";
+import searchQueryParamName from "../../../../utils/searchQueryParamName";
+import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
+import {
+  EditButton,
+  RemoveButton,
+  ToggleButton,
+} from "../../../../common/taskButtons";
 import {
   selectHideDone,
   toggleTaskDone,
@@ -8,26 +19,17 @@ import {
   selectTasks,
   selectListName,
 } from "../../tasksSlice";
-import { List, Item, Content, Task, StyledLink } from "./styled";
-import { useQueryParameter } from "../../../../utils/queryParameter";
-import searchQueryParamName from "../../../../utils/searchQueryParamName";
-import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
-import {
-  EditButton,
-  RemoveButton,
-  ToggleButton,
-} from "../../../../common/taskButtons";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
 
-const TasksList = () => {
+export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
-  const tasksByQuery = useAppSelector((state) =>
-    selectTasksByQuery(state, query)
-  );
+
   const tasks = useAppSelector(selectTasks);
   const listName = useAppSelector(selectListName);
   const hideDone = useAppSelector(selectHideDone);
   const editedTask = useAppSelector(selectEditedTask);
+  const tasksByQuery = useAppSelector((state) =>
+    selectTasksByQuery(state, query)
+  );
   const dispatch = useAppDispatch();
   const date = formatCurrentDate(new Date());
 
@@ -83,5 +85,3 @@ const TasksList = () => {
     </List>
   );
 };
-
-export default TasksList;

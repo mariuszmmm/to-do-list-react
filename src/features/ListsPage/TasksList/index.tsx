@@ -2,7 +2,7 @@ import { StyledList, Item, Content, Task } from "./styled";
 import { ToggleButton } from "../../../common/taskButtons";
 import { List } from "../../../types";
 
-const TasksList = ({ list }: { list: List["taskList"] }) => (
+export const TasksList = ({ list }: { list: List["taskList"] }) => (
   <StyledList>
     {list?.map((task, index) => (
       <Item key={task.id}>
@@ -15,5 +15,3 @@ const TasksList = ({ list }: { list: List["taskList"] }) => (
     ))}
   </StyledList>
 );
-
-export default TasksList;

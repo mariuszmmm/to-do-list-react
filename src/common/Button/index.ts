@@ -1,33 +1,51 @@
 import styled, { css } from "styled-components";
 
 interface ButtonProps {
-  $forName?: boolean;
+  $special?: boolean;
+  $selected?: boolean;
   $error?: boolean;
   $noDisplay?: boolean;
+  width?: string;
 }
 
-export default styled.button<ButtonProps>`
-  border: none;
-  color: ${({ theme }) => theme.color.teal};
+export const Button = styled.button<ButtonProps>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: ${({ width }) => width || "40px"};
+  min-width: max-content;
   font-size: 16px;
-  background: transparent;
+  line-height: 16px;
   margin: 2px 0 0 20px;
   padding: 0;
+  background: transparent;
+  color: ${({ theme }) => theme.color.teal};
+  border: none;
   transition: filter 0.3s;
   user-select: none;
-  width: 40px;
-  min-width: max-content;
 
-  ${({ $forName }) =>
-    $forName &&
+  ${({ $special }) =>
+    $special &&
     css`
       margin: 0;
     `};
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    display: flex;
-    flex-direction: column;
+  ${({ $selected }) =>
+    $selected &&
+    css`
+      text-decoration: underline;
+      text-underline-offset: 5px;
+    `};
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    margin: 2px 10px 0;
     align-items: center;
+
+    ${({ $special }) =>
+      $special &&
+      css`
+        margin: 0;
+      `};
   }
 
   &:hover {
@@ -48,12 +66,6 @@ export default styled.button<ButtonProps>`
       $error &&
       css`
         color: ${({ theme }) => theme.color.red};
-      `};
-
-    ${({ $noDisplay }) =>
-      $noDisplay &&
-      css`
-        display: none;
       `};
   }
 `;
