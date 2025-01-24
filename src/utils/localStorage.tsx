@@ -4,6 +4,7 @@ const localStorageTasksKey = "tasks" as const;
 const localStorageListNameKey = "listName" as const;
 const localStorageListsKey = "lists" as const;
 const localStorageSettingsKey = "settings" as const;
+const localStorageUserKey = "gotrue.user" as const;
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const storedData = localStorage.getItem(localStorageTasksKey);
@@ -19,6 +20,11 @@ export const getListsFromLocalStorage = (): List[] => {
 };
 export const getSettingsFromLocalStorage = () => {
   const storedData = localStorage.getItem(localStorageSettingsKey);
+  return storedData !== null ? JSON.parse(storedData) : null;
+};
+
+export const getUserFromLocalStorage = () => {
+  const storedData = localStorage.getItem(localStorageUserKey);
   return storedData !== null ? JSON.parse(storedData) : null;
 };
 

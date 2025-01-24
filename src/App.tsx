@@ -9,6 +9,7 @@ import ListsPage from "./features/ListsPage";
 import Login from "./features/Login";
 import netlifyIdentity from "netlify-identity-widget";
 import { useEffect, useState } from "react";
+import { getUserFromLocalStorage } from "./utils/localStorage";
 
 netlifyIdentity.init();
 
@@ -16,22 +17,23 @@ const App = () => {
   const [user, setUser] = useState<netlifyIdentity.User | null>(null);
   const currentUser = netlifyIdentity.currentUser();
   useEffect(() => {
-    netlifyIdentity.on("login", (user: netlifyIdentity.User) => {
-      setUser(user);
-      netlifyIdentity.close();
-      console.log("login");
-    });
+    // netlifyIdentity.on("login", (user: netlifyIdentity.User) => {
+    //   setUser(user);
+    //   netlifyIdentity.close();
+    //   console.log("login");
+    // });
 
-    netlifyIdentity.on("logout", () => {
-      setUser(null);
-      netlifyIdentity.close();
-      console.log("logout");
-    });
+    // netlifyIdentity.on("logout", () => {
+    //   setUser(null);
+    //   netlifyIdentity.close();
+    //   console.log("logout");
+    // });
 
     // if (currentUser) {
     //   setUser(currentUser);
     //   console.log("user");
     // }
+    setUser(getUserFromLocalStorage());
   }, [user, currentUser]);
   console.log(user);
 
