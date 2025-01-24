@@ -28,15 +28,12 @@ const App = () => {
       console.log("logout");
     });
 
-    if (currentUser) {
-      setUser(currentUser);
-      console.log("user");
-    }
+    // if (currentUser) {
+    //   setUser(currentUser);
+    //   console.log("user");
+    // }
   }, [user, currentUser]);
   console.log(user);
-
-  // dlaczego po zmianie user z null na obiekt nie prekierowuje na ListsPage a dopiero po przeładowaniu strony
-  // const user = { id: "123", email: "
 
   return (
     <HashRouter>
