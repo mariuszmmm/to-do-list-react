@@ -15,7 +15,7 @@ netlifyIdentity.init();
 
 const App = () => {
   const [user, setUser] = useState<netlifyIdentity.User | null>(null);
-  const currentUser = netlifyIdentity.currentUser();
+  // const currentUser = netlifyIdentity.currentUser();
   useEffect(() => {
     netlifyIdentity.on("login", (user: netlifyIdentity.User) => {
       setUser(user);
