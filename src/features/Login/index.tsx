@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import Header from "../../common/Header";
-import Section from "../../common/Section";
-import LogForm from "./LogForm";
+// import Header from "../../common/Header";
+// import Section from "../../common/Section";
+// import LogForm from "./LogForm";
 import netlifyIdentity from "netlify-identity-widget";
 
 const Login = () => {
