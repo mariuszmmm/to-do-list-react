@@ -9,7 +9,7 @@ import ListsPage from "./features/ListsPage";
 import Login from "./features/Login";
 import netlifyIdentity from "netlify-identity-widget";
 
-// netlifyIdentity.init();
+netlifyIdentity.init();
 
 const App = () => {
   const user = netlifyIdentity.currentUser();
