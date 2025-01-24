@@ -32,9 +32,9 @@ const Login = () => {
     }
   }, []);
 
-  const handleLogin = () => {
-    netlifyIdentity.open(); // Otwiera panel logowania
-  };
+  // const handleLogin = () => {
+  //   netlifyIdentity.open(); // Otwiera panel logowania
+  // };
   // /confirmation_token=nT3KyZ_fSdQsvHrLlwo_6g
 
   return (
