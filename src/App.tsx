@@ -9,21 +9,11 @@ import ListsPage from "./features/ListsPage";
 import Login from "./features/Login";
 import netlifyIdentity from "netlify-identity-widget";
 
-netlifyIdentity.init();
+// netlifyIdentity.init();
 
 const App = () => {
   const user = netlifyIdentity.currentUser();
   console.log(user);
-  ///  inne z netlifyIdentity
-  netlifyIdentity.open();
-  // netlifyIdentity.close();
-  // netlifyIdentity.logout();
-  // netlifyIdentity.on("login", user => console.log("login", user));
-  // netlifyIdentity.on("logout", () => console.log("logout"));
-  // netlifyIdentity.on("error", err => console.error("error", err));
-  // netlifyIdentity.on("init", user => console.log("init", user));
-  // netlifyIdentity.on("open", () => console.log("widget opened"));
-  // netlifyIdentity.on("close", () => console.log("widget closed"));
 
   return (
     <HashRouter>
