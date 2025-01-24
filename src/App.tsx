@@ -19,15 +19,18 @@ const App = () => {
     netlifyIdentity.on("login", (user: netlifyIdentity.User) => {
       setUser(user);
       netlifyIdentity.close();
+      console.log("login");
     });
 
     netlifyIdentity.on("logout", () => {
       setUser(null);
       netlifyIdentity.close();
+      console.log("logout");
     });
 
     if (currentUser) {
       setUser(currentUser);
+      console.log("user");
     }
   }, [user, currentUser]);
   console.log(user);
