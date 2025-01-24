@@ -29,7 +29,7 @@ const App = () => {
     if (currentUser) {
       setUser(currentUser);
     }
-  }, []);
+  }, [user, currentUser]);
   console.log(user);
 
   // dlaczego po zmianie user z null na obiekt nie prekierowuje na ListsPage a dopiero po przeładowaniu strony
