@@ -14,6 +14,16 @@ netlifyIdentity.init();
 const App = () => {
   const user = netlifyIdentity.currentUser();
   console.log(user);
+  ///  inne z netlifyIdentity
+  netlifyIdentity.open();
+  // netlifyIdentity.close();
+  // netlifyIdentity.logout();
+  // netlifyIdentity.on("login", user => console.log("login", user));
+  // netlifyIdentity.on("logout", () => console.log("logout"));
+  // netlifyIdentity.on("error", err => console.error("error", err));
+  // netlifyIdentity.on("init", user => console.log("init", user));
+  // netlifyIdentity.on("open", () => console.log("widget opened"));
+  // netlifyIdentity.on("close", () => console.log("widget closed"));
 
   return (
     <HashRouter>
@@ -23,7 +33,10 @@ const App = () => {
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
-          <Route path="/listy" element={<ListsPage />} />
+          <Route
+            path="/listy"
+            element={user ? <ListsPage /> : <Navigate to="/login" />}
+          />
           <Route path="/autor" element={<AuthorPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/zadania" />} />
