@@ -11,7 +11,9 @@ import { saveUrlInLocalStorage } from "./utils/localStorage";
 const url = window.location.href;
 console.log("Current URL:", url);
 saveUrlInLocalStorage(url);
-window.location.href = "https://to-do-list-typescript-react.netlify.app/";
+if (url.includes("#confirmation_token")) {
+  window.location.href = "https://to-do-list-typescript-react.netlify.app/";
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
