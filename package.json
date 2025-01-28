@@ -4,7 +4,10 @@
   "private": true,
   "homepage": "https://to-do-list-typescript-react.netlify.app/",
   "dependencies": {
+    "@netlify/functions": "^3.0.0",
     "@reduxjs/toolkit": "^2.5.0",
+    "gotrue-js": "^0.9.29",
+    "mongoose": "^8.9.5",
     "netlify-identity-widget": "^1.9.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -42,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "@types/netlify-identity-widget": "^1.9.6",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3"
   }

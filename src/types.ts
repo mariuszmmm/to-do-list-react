@@ -13,3 +13,10 @@ export interface List {
   id: string;
   selected?: boolean;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  lists?: List[];
+  token?: string;
+}

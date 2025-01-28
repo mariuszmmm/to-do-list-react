@@ -6,52 +6,38 @@ import AuthorPage from "./features/AuthorPage";
 import Container from "./common/Container";
 import CurrentDate from "./common/CurrentDate";
 import ListsPage from "./features/ListsPage";
-import Login from "./features/Login";
-import netlifyIdentity from "netlify-identity-widget";
-import { useEffect, useState } from "react";
-import { getUserFromLocalStorage } from "./utils/localStorage";
-
-netlifyIdentity.init();
+import Account from "./features/Account";
+import { useSelector } from "react-redux";
+import { selectUser } from "./features/Account/loginSlice";
+import { Confiration } from "./Confiration";
+import { useEffect } from "react";
+import { getUrlFromLocalStorage } from "./utils/localStorage";
 
 const App = () => {
-  const [user, setUser] = useState<netlifyIdentity.User | null>(null);
-  // const currentUser = netlifyIdentity.currentUser();
+  const user = useSelector(selectUser);
+
   useEffect(() => {
-    netlifyIdentity.on("login", (user: netlifyIdentity.User) => {
-      setUser(user);
-      netlifyIdentity.close();
-      console.log("login");
-    });
-
-    netlifyIdentity.on("logout", () => {
-      setUser(null);
-      netlifyIdentity.close();
-      console.log("logout");
-    });
-
-    // if (currentUser) {
-    //   setUser(currentUser);
-    //   console.log("user");
-    // }
-    setUser(getUserFromLocalStorage());
+    const url = getUrlFromLocalStorage();
+    console.log("URL from localStorage:", url);
+    if (url && url.includes("#confirmation_token")) {
+      const token = url.split("#confirmation_token=")[1];
+      console.log("Token:", token);
+    }
   }, []);
-  console.log(user);
 
   return (
     <HashRouter>
       <Navigation />
       <Container>
+        <Confiration />
         <CurrentDate />
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
-          <Route
-            path="/listy"
-            element={user ? <ListsPage /> : <Navigate to="/login" />}
-          />
+          {user && <Route path="/listy" element={<ListsPage />} />}
           <Route path="/autor" element={<AuthorPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Navigate to="/zadania" />} />
+          <Route path="/konto" element={<Account />} />
+          <Route path="*" element={<Navigate to="/zadania" />} />
         </Routes>
       </Container>
     </HashRouter>

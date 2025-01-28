@@ -1,7 +1,9 @@
+import { all } from "redux-saga/effects";
 import styled, { css } from "styled-components";
 
 interface ButtonProps {
-  $forName?: boolean;
+  $special?: boolean;
+  $selected?: boolean;
   $error?: boolean;
   $noDisplay?: boolean;
 }
@@ -18,16 +20,33 @@ export default styled.button<ButtonProps>`
   width: 40px;
   min-width: max-content;
 
-  ${({ $forName }) =>
-    $forName &&
+  ${({ $special }) =>
+    $special &&
     css`
       margin: 0;
+    `};
+
+  ${({ $selected }) =>
+    $selected &&
+    css`
+      text-decoration: underline;
+      text-underline-offset: 5px;
     `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    margin: 2px 10px 0;
+
+    ${({ $special }) =>
+      $special &&
+      css`
+        margin: 0;
+      `};
   }
 
   &:hover {

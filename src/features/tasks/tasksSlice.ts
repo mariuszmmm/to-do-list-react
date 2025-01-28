@@ -4,13 +4,8 @@ import {
   getTasksFromLocalStorage,
   getListNameFromLocalStorage,
 } from "../../utils/localStorage";
-import { Task } from "../../types";
+import { List, Task } from "../../types";
 import { RootState } from "../../store";
-
-interface SelectedTaskState {
-  tasks: Task[];
-  listName: string;
-}
 
 interface TaskState {
   tasks: Task[];
@@ -18,10 +13,10 @@ interface TaskState {
   hideDone: boolean;
   showSearch: boolean;
   fetchStatus: "ready" | "loading" | "$error";
-  undoTasksStack: SelectedTaskState[];
-  redoTasksStack: SelectedTaskState[];
-  listName: string;
-  listNameToEdit: string | null;
+  undoTasksStack: { tasks: Task[]; listName: List["name"] }[];
+  redoTasksStack: { tasks: Task[]; listName: List["name"] }[];
+  listName: List["name"];
+  listNameToEdit: List["name"] | null;
 }
 
 const InitialListName =
@@ -49,7 +44,10 @@ const tasksSlice = createSlice({
       state,
       {
         payload: { task, stateForUndo },
-      }: PayloadAction<{ task: Task; stateForUndo: SelectedTaskState }>
+      }: PayloadAction<{
+        task: Task;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
+      }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       state.tasks.push(task);
@@ -72,7 +70,7 @@ const tasksSlice = createSlice({
         },
       }: PayloadAction<{
         task: Task;
-        stateForUndo: SelectedTaskState;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
@@ -92,7 +90,7 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskId: string;
         doneDate: string | null;
-        stateForUndo: SelectedTaskState;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
@@ -105,7 +103,10 @@ const tasksSlice = createSlice({
       state,
       {
         payload: { taskId, stateForUndo },
-      }: PayloadAction<{ taskId: string; stateForUndo: SelectedTaskState }>
+      }: PayloadAction<{
+        taskId: string;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
+      }>
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index !== -1) {
@@ -116,7 +117,9 @@ const tasksSlice = createSlice({
     },
     setAllDone: (
       state,
-      { payload: stateForUndo }: PayloadAction<SelectedTaskState>
+      {
+        payload: stateForUndo,
+      }: PayloadAction<{ tasks: Task[]; listName: List["name"] }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       for (const task of state.tasks) {
@@ -126,7 +129,9 @@ const tasksSlice = createSlice({
     },
     setAllUndone: (
       state,
-      { payload: stateForUndo }: PayloadAction<SelectedTaskState>
+      {
+        payload: stateForUndo,
+      }: PayloadAction<{ tasks: Task[]; listName: List["name"] }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       for (const task of state.tasks) {
@@ -141,7 +146,7 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         tasks: Task[];
         listName: string;
-        stateForUndo: SelectedTaskState;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
@@ -195,7 +200,10 @@ const tasksSlice = createSlice({
       state,
       {
         payload: { listName, stateForUndo },
-      }: PayloadAction<{ listName: string; stateForUndo: SelectedTaskState }>
+      }: PayloadAction<{
+        listName: string;
+        stateForUndo: { tasks: Task[]; listName: List["name"] };
+      }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       state.listName = listName;

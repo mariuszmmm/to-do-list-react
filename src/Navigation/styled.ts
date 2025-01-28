@@ -1,6 +1,10 @@
 import { NavLink } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ReactComponent as user } from "../images/user.svg";
+
+interface NavListProps {
+  $isLists: boolean;
+}
 
 export const Nav = styled.nav`
   background-color: ${({ theme }) => theme.color.teal};
@@ -13,15 +17,21 @@ export const Nav = styled.nav`
   width: 100%;
 `;
 
-export const NavList = styled.ul`
+export const NavList = styled.ul<NavListProps>`
   list-style: none;
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr auto auto auto 1fr;
+  grid-template-columns: 1fr auto auto 1fr;
   gap: clamp(10px, 5vw, 50px);
   padding: 0;
   min-width: max-content;
   width: 100%;
+
+  ${({ $isLists }) =>
+    $isLists &&
+    css`
+      grid-template-columns: 1fr auto auto auto 1fr;
+    `};
 
   li {
     text-align: right;

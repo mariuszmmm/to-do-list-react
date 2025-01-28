@@ -4,13 +4,13 @@ const localStorageTasksKey = "tasks" as const;
 const localStorageListNameKey = "listName" as const;
 const localStorageListsKey = "lists" as const;
 const localStorageSettingsKey = "settings" as const;
-const localStorageUserKey = "gotrue.user" as const;
+const localStorageUrl = "url" as const;
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const storedData = localStorage.getItem(localStorageTasksKey);
   return storedData !== null ? (JSON.parse(storedData) as Task[]) : [];
 };
-export const getListNameFromLocalStorage = () => {
+export const getListNameFromLocalStorage = (): List["name"] => {
   const storedData = localStorage.getItem(localStorageListNameKey);
   return storedData !== null ? JSON.parse(storedData) : "";
 };
@@ -18,19 +18,21 @@ export const getListsFromLocalStorage = (): List[] => {
   const storedData = localStorage.getItem(localStorageListsKey);
   return storedData !== null ? (JSON.parse(storedData) as List[]) : [];
 };
-export const getSettingsFromLocalStorage = () => {
+export const getSettingsFromLocalStorage = (): {
+  hideDone: boolean;
+  showSearch: boolean;
+} | null => {
   const storedData = localStorage.getItem(localStorageSettingsKey);
   return storedData !== null ? JSON.parse(storedData) : null;
 };
-
-export const getUserFromLocalStorage = () => {
-  const storedData = localStorage.getItem(localStorageUserKey);
+export const getUrlFromLocalStorage = (): string | null => {
+  const storedData = localStorage.getItem(localStorageUrl);
   return storedData !== null ? JSON.parse(storedData) : null;
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
   localStorage.setItem(localStorageTasksKey, JSON.stringify(tasks));
-export const saveListNameInLocalStorage = (listName: string) =>
+export const saveListNameInLocalStorage = (listName: List["name"]) =>
   localStorage.setItem(localStorageListNameKey, JSON.stringify(listName));
 export const saveListsInLocalStorage = (lists: List[]) =>
   localStorage.setItem(localStorageListsKey, JSON.stringify(lists));
@@ -38,3 +40,5 @@ export const saveSettingsInLocalStorage = (settings: {
   showSearch: boolean;
   hideDone: boolean;
 }) => localStorage.setItem(localStorageSettingsKey, JSON.stringify(settings));
+export const saveUrlInLocalStorage = (url: string) =>
+  localStorage.setItem(localStorageUrl, JSON.stringify(url));
