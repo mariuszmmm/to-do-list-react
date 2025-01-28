@@ -10,8 +10,8 @@ import { saveUrlInLocalStorage } from "./utils/localStorage";
 
 const url = window.location.href;
 console.log("Current URL:", url);
-saveUrlInLocalStorage(url);
 if (url.includes("#confirmation_token")) {
+  saveUrlInLocalStorage(url);
   window.location.href = "https://to-do-list-typescript-react.netlify.app/";
 }
 
