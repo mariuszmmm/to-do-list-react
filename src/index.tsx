@@ -6,14 +6,10 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import GlobalStyle from "./GlobalStyle";
 import App from "./App";
-import { saveUrlInLocalStorage } from "./utils/localStorage";
+import { containsToken } from "./utils/containsToken";
 
 const url = window.location.href;
-console.log("Current URL:", url);
-if (url.includes("#confirmation_token")) {
-  saveUrlInLocalStorage(url);
-  window.location.href = "https://to-do-list-typescript-react.netlify.app/";
-}
+containsToken(url);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(

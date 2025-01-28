@@ -10,20 +10,9 @@ import Account from "./features/Account";
 import { useSelector } from "react-redux";
 import { selectUser } from "./features/Account/loginSlice";
 import { Confiration } from "./Confiration";
-import { useEffect } from "react";
-import { getUrlFromLocalStorage } from "./utils/localStorage";
 
 const App = () => {
   const user = useSelector(selectUser);
-
-  useEffect(() => {
-    const url = getUrlFromLocalStorage();
-    console.log("URL from localStorage:", url);
-    if (url && url.includes("#confirmation_token")) {
-      const token = url.split("#confirmation_token=")[1];
-      console.log("Token:", token);
-    }
-  }, []);
 
   return (
     <HashRouter>

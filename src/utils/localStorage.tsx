@@ -4,7 +4,7 @@ const localStorageTasksKey = "tasks" as const;
 const localStorageListNameKey = "listName" as const;
 const localStorageListsKey = "lists" as const;
 const localStorageSettingsKey = "settings" as const;
-const localStorageUrl = "url" as const;
+const localStorageTokenKey = "token" as const;
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const storedData = localStorage.getItem(localStorageTasksKey);
@@ -25,9 +25,9 @@ export const getSettingsFromLocalStorage = (): {
   const storedData = localStorage.getItem(localStorageSettingsKey);
   return storedData !== null ? JSON.parse(storedData) : null;
 };
-export const getUrlFromLocalStorage = (): string | null => {
-  const storedData = localStorage.getItem(localStorageUrl);
-  return storedData !== null ? JSON.parse(storedData) : null;
+export const getTokenFromLocalStorage = (): string => {
+  const storedData = localStorage.getItem(localStorageTokenKey);
+  return storedData !== null ? JSON.parse(storedData) : "";
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
@@ -40,5 +40,5 @@ export const saveSettingsInLocalStorage = (settings: {
   showSearch: boolean;
   hideDone: boolean;
 }) => localStorage.setItem(localStorageSettingsKey, JSON.stringify(settings));
-export const saveUrlInLocalStorage = (url: string) =>
-  localStorage.setItem(localStorageUrl, JSON.stringify(url));
+export const saveTokenInLocalStorage = (token: string) =>
+  localStorage.setItem(localStorageTokenKey, JSON.stringify(token));

@@ -21,6 +21,7 @@ import { useAppDispatch } from "../../../hooks";
 import { User } from "../../../types";
 import { auth } from "../auth";
 import { emailPattern, passwordPattern } from "../patterns";
+import { getTokenFromLocalStorage } from "../../../utils/localStorage";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("mariuszmmm@op.pl");
@@ -79,8 +80,12 @@ const LoginForm = () => {
     if (authMode === "register") {
       try {
         const newUser = await auth.signup(email, password);
+        dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         dispatch(setAuthMode("login"));
         console.log("New user:", newUser);
+        const token = getTokenFromLocalStorage();
+        const confirmed = await auth.confirm(token, true);
+        console.log("Confirmed:", confirmed);
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
