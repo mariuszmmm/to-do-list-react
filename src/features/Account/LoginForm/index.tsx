@@ -46,11 +46,11 @@ const LoginForm = () => {
 
     if (savedToken) {
       const confirmation = async () => {
-        const confirmed = await auth.confirm(savedToken);
+        const confirmed = await auth.confirm(savedToken, true);
         console.log("Confirmed:", confirmed);
-        if (confirmed) {
-          login();
-        }
+        // if (confirmed) {
+        //   login();
+        // }
         clearTokenFromLocalStorage();
       };
 
