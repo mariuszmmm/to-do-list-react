@@ -63,9 +63,14 @@ const LoginForm = () => {
     try {
       const loggedInUser = await auth.login(email, password);
       console.log("Logged in user:", loggedInUser);
+      console.log(
+        "loggedInUser.token.access_token",
+        loggedInUser.token.access_token
+      );
+      console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
       const token =
         loggedInUser.token.access_token || getTokenFromLocalStorage();
-
+      console.log("token", token);
       if (token) {
         const response = await fetch("/konto", {
           method: "POST",
