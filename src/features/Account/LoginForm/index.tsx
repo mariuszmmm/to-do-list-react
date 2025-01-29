@@ -51,7 +51,7 @@ const LoginForm = () => {
         if (confirmed) {
           login();
         }
-        clearTokenFromLocalStorage();
+        // clearTokenFromLocalStorage();
       };
 
       confirmation();
