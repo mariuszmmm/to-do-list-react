@@ -21,7 +21,7 @@ import { User } from "../../../types";
 import { auth } from "../auth";
 import { emailPattern, passwordPattern } from "../patterns";
 import {
-  // clearTokenFromLocalStorage,
+  clearTokenFromLocalStorage,
   getTokenFromLocalStorage,
 } from "../../../utils/localStorage";
 
@@ -51,7 +51,7 @@ const LoginForm = () => {
         if (confirmed) {
           login();
         }
-        // clearTokenFromLocalStorage();
+        clearTokenFromLocalStorage();
       };
 
       confirmation();
