@@ -96,20 +96,20 @@ const LoginForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (userConfirmed === "waiting") {
-      const intervalId = setInterval(() => {
-        const user = auth.currentUser();
-        console.log("user:", user);
+  // useEffect(() => {
+  //   if (userConfirmed === "waiting") {
+  //     const intervalId = setInterval(() => {
+  //       const user = auth.currentUser();
+  //       console.log("user:", user);
 
-        // login();
-        // setUserConfirmed(true);
-        console.log("waiting for confirmation");
-      }, 3000);
+  //       // login();
+  //       // setUserConfirmed(true);
+  //       console.log("waiting for confirmation");
+  //     }, 3000);
 
-      return () => clearInterval(intervalId);
-    }
-  }, [userConfirmed]);
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [userConfirmed]);
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -161,7 +161,7 @@ const LoginForm = () => {
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
 
-        setUserConfirmed("waiting");
+        // setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
