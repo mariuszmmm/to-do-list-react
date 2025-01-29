@@ -1,4 +1,4 @@
-import { FormEventHandler, use, useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { useRef } from "react";
 import { Button, StyledForm } from "./styled";
 import ExtraButton from "../../../common/Button";
@@ -11,7 +11,6 @@ import {
   selectAuthMode,
   selectFetchStatus,
   setUser,
-  setAuthMode,
   selectErrorMessage,
   setErrorMessage,
   fetchError,
@@ -25,7 +24,6 @@ import {
   clearTokenFromLocalStorage,
   getTokenFromLocalStorage,
 } from "../../../utils/localStorage";
-import { set } from "mongoose";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("mariuszmmm@op.pl");
@@ -58,6 +56,7 @@ const LoginForm = () => {
 
       confirmation();
     }
+    // eslint-disable-next-line
   }, []);
 
   const login = async () => {
