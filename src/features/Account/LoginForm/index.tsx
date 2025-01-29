@@ -36,9 +36,9 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-    false
-  );
+  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
+  //   false
+  // );
 
   useEffect(() => {
     const savedToken = getTokenFromLocalStorage();
