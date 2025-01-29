@@ -8,5 +8,3 @@ declare module "*.svg" {
 declare module "netlify-identity-widget" {
   export default netlifyIdentity;
 }
-
-//

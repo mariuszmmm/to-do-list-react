@@ -42,3 +42,7 @@ export const saveSettingsInLocalStorage = (settings: {
 }) => localStorage.setItem(localStorageSettingsKey, JSON.stringify(settings));
 export const saveTokenInLocalStorage = (token: string) =>
   localStorage.setItem(localStorageTokenKey, JSON.stringify(token));
+
+export const clearTokenFromLocalStorage = () => {
+  localStorage.removeItem(localStorageTokenKey);
+};

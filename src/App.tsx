@@ -9,7 +9,6 @@ import ListsPage from "./features/ListsPage";
 import Account from "./features/Account";
 import { useSelector } from "react-redux";
 import { selectUser } from "./features/Account/loginSlice";
-import { Confiration } from "./Confiration";
 
 const App = () => {
   const user = useSelector(selectUser);
@@ -18,7 +17,6 @@ const App = () => {
     <HashRouter>
       <Navigation />
       <Container>
-        <Confiration />
         <CurrentDate />
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />

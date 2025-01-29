@@ -6,10 +6,10 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./theme";
 import GlobalStyle from "./GlobalStyle";
 import App from "./App";
-import { containsToken } from "./utils/containsToken";
+import { getToken } from "./utils/getToken";
 
 const url = window.location.href;
-containsToken(url);
+getToken(url);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
