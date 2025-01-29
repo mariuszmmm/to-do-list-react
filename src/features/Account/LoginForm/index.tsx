@@ -48,9 +48,9 @@ const LoginForm = () => {
       const confirmation = async () => {
         const confirmed = await auth.confirm(savedToken, true);
         console.log("Confirmed:", confirmed);
-        // if (confirmed) {
-        //   login();
-        // }
+        if (confirmed) {
+          login();
+        }
         clearTokenFromLocalStorage();
       };
 
@@ -63,7 +63,8 @@ const LoginForm = () => {
     try {
       const loggedInUser = await auth.login(email, password);
       console.log("Logged in user:", loggedInUser);
-      const token = loggedInUser.token.access_token;
+      const token =
+        loggedInUser.token.access_token || getTokenFromLocalStorage();
 
       if (token) {
         const response = await fetch("/konto", {
