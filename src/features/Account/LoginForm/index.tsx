@@ -88,13 +88,16 @@ const LoginForm = () => {
       console.log("user:", user);
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/.netlify/functions/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://to-do-list-typescript-react.netlify.app/.netlify/functions/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log("login response:", response);
         if (response.ok) {
           console.log("login response:", response.ok);
