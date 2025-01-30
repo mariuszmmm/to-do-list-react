@@ -2,7 +2,7 @@
   "name": "to-do-list-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://to-do-list-typescript-react.netlify.app/",
+  "homepage": "",
   "dependencies": {
     "@netlify/functions": "^3.0.0",
     "@reduxjs/toolkit": "^2.5.0",
