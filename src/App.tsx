@@ -24,6 +24,7 @@ const App = () => {
         if (token) {
           const confirmation = async () => {
             try {
+              console.log("potwierdzenie konta", auth);
               const confirmed = await auth.confirm(token);
               console.log("Confirmed:", confirmed);
 
