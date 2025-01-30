@@ -36,30 +36,30 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-    false
-  );
+  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
+  //   false
+  // );
 
-  useEffect(() => {
-    if (userConfirmed === "waiting") {
-      const savedToken = getTokenFromLocalStorage();
-      console.log("register token:", savedToken);
+  // useEffect(() => {
+  //   if (userConfirmed === "waiting") {
+  //     const savedToken = getTokenFromLocalStorage();
+  //     console.log("register token:", savedToken);
 
-      if (savedToken) {
-        const confirmation = async () => {
-          const confirmed = await auth.confirm(savedToken, true);
-          console.log("Confirmed:", confirmed);
-          if (confirmed) {
-            login();
-          }
-          // clearTokenFromLocalStorage();
-        };
+  //     if (savedToken) {
+  //       const confirmation = async () => {
+  //         const confirmed = await auth.confirm(savedToken, true);
+  //         console.log("Confirmed:", confirmed);
+  //         if (confirmed) {
+  //           login();
+  //         }
+  //         // clearTokenFromLocalStorage();
+  //       };
 
-        confirmation();
-      }
-    }
-    // eslint-disable-next-line
-  }, []);
+  //       confirmation();
+  //     }
+  //   }
+  //   // eslint-disable-next-line
+  // }, []);
 
   useEffect(() => {
     window.addEventListener("storage", (event) => {
@@ -67,25 +67,22 @@ const LoginForm = () => {
         const token = event.newValue;
         console.log("Wykryto nowy token:", token);
 
-        // Wywołanie API Netlify Identity
-        fetch(
-          "https://to-do-list-typescript-react.netlify.app/.netlify/identity/verify",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token }),
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Zalogowany użytkownik:", data);
-            localStorage.removeItem("auth_token"); // Usuwamy token po użyciu
-            console.log("data", data);
-            // netlifyIdentity.store.setUser(data); // Ręczne zapisanie użytkownika
-          })
-          .catch((error) => console.error("Błąd weryfikacji tokena:", error));
+        if (token) {
+          const confirmation = async () => {
+            const confirmed = await auth.confirm(token, true);
+            console.log("Confirmed:", confirmed);
+            if (confirmed) {
+              login();
+            }
+            // clearTokenFromLocalStorage();
+          };
+
+          confirmation();
+        }
       }
     });
+
+    // eslint-disable-next-line
   }, []);
 
   const login = async () => {
@@ -192,7 +189,7 @@ const LoginForm = () => {
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
-        setUserConfirmed("waiting");
+        // setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
