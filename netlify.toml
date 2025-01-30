@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "/login__"
+  from = "/login"
   to = "/.netlify/functions/login"
   status = 200
