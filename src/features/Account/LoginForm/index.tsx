@@ -36,9 +36,9 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-    false
-  );
+  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
+  //   false
+  // );
 
   // useEffect(() => {
   //   if (userConfirmed === "waiting") {
@@ -181,7 +181,7 @@ const LoginForm = () => {
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
-        setUserConfirmed("waiting");
+        // setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
