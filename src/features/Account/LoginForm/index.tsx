@@ -85,9 +85,10 @@ const LoginForm = () => {
         loggedInUser.token.access_token
       );
       console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
+      console.log("user:", user);
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/konto", {
+        const response = await fetch("/#/konto", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -95,10 +96,11 @@ const LoginForm = () => {
           },
         });
         console.log("login response:", response);
+
         if (response.ok) {
           const data = await response.json();
           console.log("response data:", data);
-
+          console.log("user:", user);
           const userData: User = {
             id: data.user.id,
             email: data.user.email,

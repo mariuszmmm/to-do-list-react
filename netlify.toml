@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "/konto"
+  from = "/#/konto"
   to = "/.netlify/functions/login"
   status = 200
