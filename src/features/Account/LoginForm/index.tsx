@@ -88,7 +88,7 @@ const LoginForm = () => {
       console.log("user:", user);
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/.netlify/functions/login", {
+        const response = await fetch("/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
