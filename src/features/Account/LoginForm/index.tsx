@@ -1,4 +1,4 @@
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { useRef } from "react";
 import { Button, StyledForm } from "./styled";
 import ExtraButton from "../../../common/Button";
@@ -60,6 +60,20 @@ const LoginForm = () => {
   //   }
   //   // eslint-disable-next-line
   // }, []);
+
+  useEffect(() => {
+    window.addEventListener("storage", (event) => {
+      if (event.key === "userConfirmed" && event.newValue) {
+        const userConfirmed = event.newValue;
+        console.log("userConfirmed", userConfirmed);
+        if (userConfirmed === "true") {
+          login();
+        }
+      }
+    });
+
+    // eslint-disable-next-line
+  }, []);
 
   const login = async () => {
     try {
