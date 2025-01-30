@@ -1,4 +1,4 @@
-[[redirects]]
-  from = "/login"
-  to = "/.netlify/functions/login"
-  status = 200
+# [[redirects]]
+#  from = "/login"
+#  to = "/.netlify/functions/login"
+#  status = 200
