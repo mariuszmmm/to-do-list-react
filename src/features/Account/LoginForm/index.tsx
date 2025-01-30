@@ -88,7 +88,7 @@ const LoginForm = () => {
       console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/konto", {
+        const response = await fetch("/#/konto", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
