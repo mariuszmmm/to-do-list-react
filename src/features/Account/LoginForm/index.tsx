@@ -63,13 +63,28 @@ const LoginForm = () => {
 
   useEffect(() => {
     window.addEventListener("storage", (event) => {
-      if (event.key === "userConfirmed" && event.newValue) {
-        const confirmed = event.newValue;
-        console.log("userConfirmed", confirmed);
+      if (event.key === "auth_token" && event.newValue) {
+        const token = event.newValue;
+        console.log("auth_token", token);
 
-        if (confirmed) {
-          console.log("logowanie");
-          login();
+        if (token) {
+          const confirmation = async () => {
+            try {
+              const confirmed = await auth.confirm(token);
+              console.log("Confirmed:", confirmed);
+
+              if (confirmed) {
+                console.log("logowanie");
+                login();
+              }
+            } catch (error) {
+              console.error("Błąd potwierdzenia konta:", error);
+            }
+
+            // clearTokenFromLocalStorage();
+          };
+
+          confirmation();
         }
       }
     });
@@ -88,7 +103,7 @@ const LoginForm = () => {
       console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/#/konto", {
+        const response = await fetch("/konto", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
