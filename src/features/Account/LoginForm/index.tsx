@@ -63,11 +63,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     window.addEventListener("storage", (event) => {
-      if (
-        event.key === "userConfirmed" &&
-        event.newValue &&
-        userConfirmed === "waiting"
-      ) {
+      if (event.key === "userConfirmed" && event.newValue) {
         const confirmed = event.newValue;
         console.log("userConfirmed", confirmed);
 
