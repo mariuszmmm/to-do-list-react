@@ -12,7 +12,7 @@ export const getToken = (url: string) => {
     if (token) {
       const confirmation = async () => {
         try {
-          const confirmed = await auth.confirm(token);
+          const confirmed = await auth.confirm(token, true);
           console.log("Confirmed:", confirmed);
 
           if (confirmed) {
