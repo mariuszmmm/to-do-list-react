@@ -36,28 +36,30 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-  //   false
-  // );
+  const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
+    false
+  );
 
-  // useEffect(() => {
-  //   const savedToken = getTokenFromLocalStorage();
-  //   console.log("register token:", savedToken);
+  useEffect(() => {
+    if (userConfirmed === "waiting") {
+      const savedToken = getTokenFromLocalStorage();
+      console.log("register token:", savedToken);
 
-  //   if (savedToken) {
-  //     const confirmation = async () => {
-  //       const confirmed = await auth.confirm(savedToken, true);
-  //       console.log("Confirmed:", confirmed);
-  //       if (confirmed) {
-  //         login();
-  //       }
-  //       // clearTokenFromLocalStorage();
-  //     };
+      if (savedToken) {
+        const confirmation = async () => {
+          const confirmed = await auth.confirm(savedToken, true);
+          console.log("Confirmed:", confirmed);
+          if (confirmed) {
+            login();
+          }
+          // clearTokenFromLocalStorage();
+        };
 
-  //     confirmation();
-  //   }
-  //   // eslint-disable-next-line
-  // }, []);
+        confirmation();
+      }
+    }
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     window.addEventListener("storage", (event) => {
@@ -95,9 +97,7 @@ const LoginForm = () => {
         loggedInUser.token.access_token
       );
       console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
-      const token =
-        loggedInUser.token.access_token || getTokenFromLocalStorage();
-      console.log("token", token);
+      const token = loggedInUser.token.access_token;
       if (token) {
         const response = await fetch("/konto", {
           method: "POST",
@@ -192,7 +192,7 @@ const LoginForm = () => {
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
-        // setUserConfirmed("waiting");
+        setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
