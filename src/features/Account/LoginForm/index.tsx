@@ -36,9 +36,9 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-  //   false
-  // );
+  const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
+    false
+  );
 
   // useEffect(() => {
   //   if (userConfirmed === "waiting") {
@@ -63,26 +63,17 @@ const LoginForm = () => {
 
   useEffect(() => {
     window.addEventListener("storage", (event) => {
-      if (event.key === "auth_token" && event.newValue) {
-        const token = event.newValue;
-        console.log("Wykryto nowy token:", token);
+      if (
+        event.key === "userConfirmed" &&
+        event.newValue &&
+        userConfirmed === "waiting"
+      ) {
+        const confirmed = event.newValue;
+        console.log("userConfirmed", confirmed);
 
-        if (token) {
-          const confirmation = async () => {
-            try {
-              const confirmed = await auth.confirm(token);
-              console.log("Confirmed:", confirmed);
-              if (confirmed) {
-                login();
-              }
-            } catch (error) {
-              console.error("Błąd potwierdzenia konta:", error);
-            }
-
-            // clearTokenFromLocalStorage();
-          };
-
-          confirmation();
+        if (confirmed) {
+          console.log("logowanie");
+          login();
         }
       }
     });
@@ -194,7 +185,7 @@ const LoginForm = () => {
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
-        // setUserConfirmed("waiting");
+        setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);
         dispatch(fetchError());
