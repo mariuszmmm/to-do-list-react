@@ -1,5 +1,8 @@
 import { auth } from "../features/Account/auth";
-import { saveTokenInLocalStorage } from "./localStorage";
+import {
+  saveTokenInLocalStorage,
+  saveUserConfirmedInLocalStorage,
+} from "./localStorage";
 
 export const getToken = (url: string) => {
   if (url.includes("#confirmation_token")) {
@@ -15,6 +18,7 @@ export const getToken = (url: string) => {
         try {
           const confirmed = await auth.confirm(token);
           console.log("Confirmed:", confirmed);
+          saveUserConfirmedInLocalStorage(true);
         } catch (error) {
           console.error("Błąd potwierdzenia konta:", error);
         }
