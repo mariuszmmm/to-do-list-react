@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "/konto"
-  to = "/.netlify/functions/login"
+  from = "/identity-login"
+  to = "/.netlify/functions/identity-login"
   status = 200

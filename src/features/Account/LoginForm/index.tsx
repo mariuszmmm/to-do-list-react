@@ -89,7 +89,7 @@ const LoginForm = () => {
       const token = loggedInUser.token.access_token;
       if (token) {
         const response = await fetch(
-          "https://to-do-list-typescript-react.netlify.app/login",
+          "https://to-do-list-typescript-react.netlify.app/identity-login",
           {
             method: "POST",
             headers: {
