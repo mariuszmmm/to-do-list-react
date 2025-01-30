@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useState } from "react";
 import { useRef } from "react";
 import { Button, StyledForm } from "./styled";
 import ExtraButton from "../../../common/Button";
