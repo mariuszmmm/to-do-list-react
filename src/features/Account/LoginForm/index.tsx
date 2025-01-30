@@ -40,23 +40,50 @@ const LoginForm = () => {
   //   false
   // );
 
+  // useEffect(() => {
+  //   const savedToken = getTokenFromLocalStorage();
+  //   console.log("register token:", savedToken);
+
+  //   if (savedToken) {
+  //     const confirmation = async () => {
+  //       const confirmed = await auth.confirm(savedToken, true);
+  //       console.log("Confirmed:", confirmed);
+  //       if (confirmed) {
+  //         login();
+  //       }
+  //       // clearTokenFromLocalStorage();
+  //     };
+
+  //     confirmation();
+  //   }
+  //   // eslint-disable-next-line
+  // }, []);
+
   useEffect(() => {
-    const savedToken = getTokenFromLocalStorage();
-    console.log("register token:", savedToken);
+    window.addEventListener("storage", (event) => {
+      if (event.key === "auth_token" && event.newValue) {
+        const token = event.newValue;
+        console.log("Wykryto nowy token:", token);
 
-    if (savedToken) {
-      const confirmation = async () => {
-        const confirmed = await auth.confirm(savedToken, true);
-        console.log("Confirmed:", confirmed);
-        if (confirmed) {
-          login();
-        }
-        // clearTokenFromLocalStorage();
-      };
-
-      confirmation();
-    }
-    // eslint-disable-next-line
+        // Wywołanie API Netlify Identity
+        fetch(
+          "https://to-do-list-typescript-react.netlify.app/.netlify/identity/verify",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token }),
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Zalogowany użytkownik:", data);
+            localStorage.removeItem("auth_token"); // Usuwamy token po użyciu
+            console.log("data", data);
+            // netlifyIdentity.store.setUser(data); // Ręczne zapisanie użytkownika
+          })
+          .catch((error) => console.error("Błąd weryfikacji tokena:", error));
+      }
+    });
   }, []);
 
   const login = async () => {
@@ -165,7 +192,6 @@ const LoginForm = () => {
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
         // dispatch(setAuthMode("login"));
         console.log("New user:", newUser, authMode);
-
         // setUserConfirmed("waiting");
       } catch (error: any) {
         console.log("error:", error.name);

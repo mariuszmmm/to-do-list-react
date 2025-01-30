@@ -4,7 +4,7 @@ const localStorageTasksKey = "tasks" as const;
 const localStorageListNameKey = "listName" as const;
 const localStorageListsKey = "lists" as const;
 const localStorageSettingsKey = "settings" as const;
-const localStorageTokenKey = "token" as const;
+const localStorageTokenKey = "auth_token" as const;
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const storedData = localStorage.getItem(localStorageTasksKey);
