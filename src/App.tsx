@@ -9,9 +9,42 @@ import ListsPage from "./features/ListsPage";
 import Account from "./features/Account";
 import { useSelector } from "react-redux";
 import { selectUser } from "./features/Account/loginSlice";
+import { useEffect } from "react";
+import { auth } from "./features/Account/auth";
 
 const App = () => {
   const user = useSelector(selectUser);
+
+  useEffect(() => {
+    window.addEventListener("storage", (event) => {
+      if (event.key === "auth_token" && event.newValue) {
+        const token = event.newValue;
+        console.log("auth_token", token);
+
+        if (token) {
+          const confirmation = async () => {
+            try {
+              const confirmed = await auth.confirm(token);
+              console.log("Confirmed:", confirmed);
+
+              if (confirmed) {
+                console.log("logowanie");
+                // login();
+              }
+            } catch (error) {
+              console.error("Błąd potwierdzenia konta:", error);
+            }
+
+            // clearTokenFromLocalStorage();
+          };
+
+          confirmation();
+        }
+      }
+    });
+
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <HashRouter>
