@@ -88,7 +88,7 @@ const LoginForm = () => {
       console.log("user:", user);
       const token = loggedInUser.token.access_token;
       if (token) {
-        const response = await fetch("/#/konto", {
+        const response = await fetch("/konto", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
