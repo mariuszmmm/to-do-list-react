@@ -69,11 +69,16 @@ const LoginForm = () => {
 
         if (token) {
           const confirmation = async () => {
-            const confirmed = await auth.confirm(token, true);
-            console.log("Confirmed:", confirmed);
-            if (confirmed) {
-              login();
+            try {
+              const confirmed = await auth.confirm(token);
+              console.log("Confirmed:", confirmed);
+              if (confirmed) {
+                login();
+              }
+            } catch (error) {
+              console.error("Błąd potwierdzenia konta:", error);
             }
+
             // clearTokenFromLocalStorage();
           };
 
