@@ -96,6 +96,9 @@ const LoginForm = () => {
           },
         });
         console.log("login response:", response);
+        if (response.ok) {
+          console.log("login response:", response.ok);
+        }
 
         if (response.ok) {
           const data = await response.json();
