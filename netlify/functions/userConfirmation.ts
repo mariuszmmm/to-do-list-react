@@ -1,4 +1,5 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
+const crypto = require("crypto");
 
 let confirmedUsers: string[] = ["test@poczta.pl"];
 let SECRET: string | undefined;
@@ -9,15 +10,26 @@ let test2: any;
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
-    const signature = event.headers["x-netlify-signature"];
+    const signatureFromNetlify = event.headers["x-webhook-signature"];
     test = event.headers;
     test1 = event.body;
     test2 = event.headers["x-netlify-signature"];
 
-    if (signature !== SECRET) {
+    if (!signatureFromNetlify) {
       return {
-        statusCode: 401,
-        body: JSON.stringify({ error: "Nieautoryzowany" }),
+        statusCode: 400,
+        body: JSON.stringify({ message: "Brak podpisu" }),
+      };
+    }
+
+    const hmac = crypto.createHmac("sha256", SECRET);
+    hmac.update(event.body, "utf8");
+    const calculatedSignature = hmac.digest("hex");
+
+    if (calculatedSignature !== signatureFromNetlify) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ message: "Błędny podpis. Webhook odrzucony!" }),
       };
     }
 
