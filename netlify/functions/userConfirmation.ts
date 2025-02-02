@@ -1,6 +1,5 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import crypto from "crypto";
-import jwt from "jsonwebtoken";
 
 let confirmedUsers: string[] = ["test@poczta.pl"];
 let SECRET: string | undefined;
@@ -31,16 +30,18 @@ const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ message: "Brak danych" }),
       };
     }
-    const bodyStr = JSON.parse(event.body);
+
     const hmac = crypto.createHmac("sha256", SECRET);
-    hmac.update(bodyStr, "utf8");
+    hmac.update(event.body, "utf8");
     const calculatedSignature = hmac.digest("hex");
 
-    const decoded = jwt.verify(signature, SECRET);
-    test4 = decoded;
-
     test2 = calculatedSignature;
-    test3 = bodyStr;
+    test3 = event.body;
+
+    console.log("SECRET:", SECRET);
+    console.log("Signature from header:", signature);
+    console.log("Calculated signature:", calculatedSignature);
+    console.log("Event body:", event.body);
 
     if (calculatedSignature !== signature) {
       return {
