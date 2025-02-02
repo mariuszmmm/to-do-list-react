@@ -1,6 +1,5 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
+import crypto from "crypto";
 
 let confirmedUsers: string[] = ["test@poczta.pl"];
 let SECRET: string | undefined;
@@ -12,9 +11,9 @@ const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
     const signature = event.headers["x-webhook-signature"];
-    test = event.headers;
 
-    test2 = signature;
+    test = event.headers;
+    test1 = signature;
 
     if (!signature || !SECRET) {
       return {
@@ -23,21 +22,29 @@ const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
-    try {
-      const decoded = jwt.verify(signature, SECRET);
-      test1 = decoded;
-    } catch (error) {
+    if (!event.body) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "Podpis jest nieprawidłowy" }),
+        body: JSON.stringify({ message: "Brak danych" }),
       };
     }
 
-    if (event.body) {
-      const { user } = JSON.parse(event.body);
-      const { email } = user;
-      confirmedUsers.push(email);
+    const hmac = crypto.createHmac("sha256", SECRET);
+    hmac.update(event.body, "utf8");
+    const calculatedSignature = hmac.digest("hex");
+
+    test2 = calculatedSignature;
+
+    if (calculatedSignature !== signature) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Podpis nie jest prawidłowy" }),
+      };
     }
+
+    const { user } = JSON.parse(event.body);
+    const { email } = user;
+    confirmedUsers.push(email);
 
     return {
       statusCode: 200,
