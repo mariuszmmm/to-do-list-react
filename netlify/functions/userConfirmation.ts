@@ -31,16 +31,16 @@ const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ message: "Brak danych" }),
       };
     }
-
+    const bodyStr = JSON.stringify(event.body);
     const hmac = crypto.createHmac("sha256", SECRET);
-    hmac.update(event.body, "utf8");
+    hmac.update(bodyStr, "utf8");
     const calculatedSignature = hmac.digest("hex");
 
     const decoded = jwt.verify(signature, SECRET);
     test4 = decoded;
 
     test2 = calculatedSignature;
-    test3 = event.body;
+    test3 = bodyStr;
 
     if (calculatedSignature !== signature) {
       return {
