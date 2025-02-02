@@ -8,10 +8,10 @@ let test: any;
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     if (event.body) {
-      const { email, confirmed } = JSON.parse(event.body);
-      users.push({ email, confirmed });
+      const { user } = JSON.parse(event.body);
+      const { email } = user;
+      users.push({ email, confirmed: true });
     }
-    if (event.body) test = JSON.parse(event.body);
 
     return {
       statusCode: 200,
