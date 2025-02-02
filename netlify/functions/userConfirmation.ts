@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 let confirmedUsers: string[] = ["test@poczta.pl"];
 let SECRET: string | undefined;
@@ -12,15 +13,19 @@ let test4: any;
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
+    if (!SECRET) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ message: "Brak klucza WEBHOOK_SECRET" }),
+      };
+    }
+
     const signature = event.headers["x-webhook-signature"];
-
-    test = event.headers;
-    test1 = signature;
-
-    if (!signature || !SECRET) {
+    test = signature;
+    if (!signature) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "Brak podpisu" }),
+        body: JSON.stringify({ message: "Brak podpisu w nagłówkach" }),
       };
     }
 
@@ -30,34 +35,50 @@ const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ message: "Brak danych" }),
       };
     }
+    test1 = event.body;
 
-    const hmac = crypto.createHmac("sha256", SECRET);
-    hmac.update(event.body, "utf8");
-    const calculatedSignature = hmac.digest("hex");
+    try {
+      // Odszyfruj JWT i pobierz hash `sha256`
+      const decoded = jwt.verify(signature, SECRET, {
+        issuer: "netlify",
+        algorithms: ["HS256"],
+      }) as any;
+      const expectedHash = decoded.sha256;
+      test2 = decoded;
+      test3 = expectedHash;
 
-    test2 = calculatedSignature;
-    test3 = event.body;
+      // Oblicz hash z event.body
+      const calculatedHash = crypto
+        .createHash("sha256")
+        .update(event.body || "")
+        .digest("hex");
+      test4 = calculatedHash;
 
-    console.log("SECRET:", SECRET);
-    console.log("Signature from header:", signature);
-    console.log("Calculated signature:", calculatedSignature);
-    console.log("Event body:", event.body);
+      // Sprawdź, czy hash się zgadza
+      if (calculatedHash !== expectedHash) {
+        return {
+          statusCode: 403,
+          body: JSON.stringify({ message: "Podpis jest nieprawidłowy" }),
+        };
+      }
 
-    if (calculatedSignature !== signature) {
+      const { user } = JSON.parse(event.body);
+      const { email } = user;
+      confirmedUsers.push(email);
+
       return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Podpis nie jest prawidłowy" }),
+        statusCode: 200,
+        body: JSON.stringify({ message: "Dodano użytkownika" }),
+      };
+    } catch (error) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({
+          message: "Błąd weryfikacji podpisu",
+          error: error.message,
+        }),
       };
     }
-
-    const { user } = JSON.parse(event.body);
-    const { email } = user;
-    confirmedUsers.push(email);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Dodano użytkownika" }),
-    };
   }
 
   if (event.httpMethod === "GET") {
