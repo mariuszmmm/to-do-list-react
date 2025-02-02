@@ -55,7 +55,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       // Oblicz hash z event.body
       const calculatedHash = crypto
         .createHash("sha256")
-        .update(event.body || "")
+        .update(event.body)
         .digest("hex");
       test4 = calculatedHash;
 
