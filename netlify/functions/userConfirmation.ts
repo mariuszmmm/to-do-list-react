@@ -1,19 +1,24 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 
-let users: { email: string; confirmed: boolean }[] = [
-  { email: "test@poczta.pl", confirmed: false },
-];
-let test: any;
+let confirmedUsers: string[] = ["test@poczta.pl"];
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
+    const SECRET = process.env.WEBHOOK_SECRET;
+    const signature = event.headers["x-netlify-signature"];
+
+    if (signature !== SECRET) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({ error: "Nieautoryzowany" }),
+      };
+    }
+
     if (event.body) {
       const { user } = JSON.parse(event.body);
       const { email } = user;
-      users.push({ email, confirmed: true });
+      confirmedUsers.push(email);
     }
-
-    test = JSON.stringify(event.body);
 
     return {
       statusCode: 200,
@@ -23,17 +28,16 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
-
-    console.log("email", email);
-    const user = users.find((user) => user.email === email);
+    const confirmedUser = confirmedUsers.find((user) => user === email);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: user ? "Pobrano użytkownika" : "Brak użytkownika",
-        user,
-        users,
-        test,
+        message: confirmedUser
+          ? "Użytkownik jest potwierdzony"
+          : "Użytkownik nie jest potwierdzony",
+        confirmedUser,
+        confirmedUsers,
       }),
     };
   }
