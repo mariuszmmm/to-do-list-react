@@ -11,7 +11,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
     const signatureFromNetlify = event.headers["x-webhook-signature"];
-    test = signatureFromNetlify;
+    test = event.headers;
 
     test2 = event.headers["x-netlify-signature"];
 
