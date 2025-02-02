@@ -13,6 +13,8 @@ const handler: Handler = async (event: HandlerEvent) => {
       users.push({ email, confirmed: true });
     }
 
+    test = JSON.stringify(event.body);
+
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "Dodano użytkownika" }),
