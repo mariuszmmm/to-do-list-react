@@ -11,8 +11,8 @@ const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
     const signatureFromNetlify = event.headers["x-webhook-signature"];
-    test = event.headers;
-    test1 = event.body;
+    test = signatureFromNetlify;
+
     test2 = event.headers["x-netlify-signature"];
 
     if (!signatureFromNetlify) {
@@ -22,9 +22,11 @@ const handler: Handler = async (event: HandlerEvent) => {
       };
     }
 
+    test1 = SECRET;
     const hmac = crypto.createHmac("sha256", SECRET);
     hmac.update(event.body, "utf8");
     const calculatedSignature = hmac.digest("hex");
+    test2 = calculatedSignature;
 
     if (calculatedSignature !== signatureFromNetlify) {
       return {
