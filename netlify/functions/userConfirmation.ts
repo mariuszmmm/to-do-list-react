@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 let confirmedUsers: string[] = ["test@poczta.pl"];
 let SECRET: string | undefined;
@@ -7,6 +8,7 @@ let test: any;
 let test1: any;
 let test2: any;
 let test3: any;
+let test4: any;
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
@@ -33,6 +35,9 @@ const handler: Handler = async (event: HandlerEvent) => {
     const hmac = crypto.createHmac("sha256", SECRET);
     hmac.update(event.body, "utf8");
     const calculatedSignature = hmac.digest("hex");
+
+    const decoded = jwt.verify(signature, SECRET);
+    test4 = decoded;
 
     test2 = calculatedSignature;
     test3 = event.body;
@@ -71,6 +76,7 @@ const handler: Handler = async (event: HandlerEvent) => {
         test1,
         test2,
         test3,
+        test4,
       }),
     };
   }
