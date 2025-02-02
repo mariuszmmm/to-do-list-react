@@ -31,7 +31,7 @@ const handler: Handler = async (event: HandlerEvent) => {
         body: JSON.stringify({ message: "Brak danych" }),
       };
     }
-    const bodyStr = JSON.stringify(event.body);
+    const bodyStr = JSON.parse(event.body);
     const hmac = crypto.createHmac("sha256", SECRET);
     hmac.update(bodyStr, "utf8");
     const calculatedSignature = hmac.digest("hex");
