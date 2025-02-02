@@ -3,6 +3,8 @@ import type { Handler, HandlerEvent } from "@netlify/functions";
 let users: { email: string; confirmed: boolean }[] = [
   { email: "test@poczta.pl", confirmed: false },
 ];
+let test: any;
+let test1: any;
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
@@ -10,6 +12,8 @@ const handler: Handler = async (event: HandlerEvent) => {
       const { email, confirmed } = JSON.parse(event.body);
       users.push({ email, confirmed });
     }
+    test = event.body;
+    test1 = event;
 
     return {
       statusCode: 200,
@@ -29,6 +33,8 @@ const handler: Handler = async (event: HandlerEvent) => {
         message: user ? "Pobrano użytkownika" : "Brak użytkownika",
         user,
         users,
+        test,
+        test1,
       }),
     };
   }

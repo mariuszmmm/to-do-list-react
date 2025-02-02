@@ -5,7 +5,7 @@ const handler: Handler = async (
   event: HandlerEvent,
   context: HandlerContext
 ) => {
-  if (!context.clientContext) {
+  if (!context.clientContext || !context.clientContext.user) {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "Dane nieprawidłowe" }),
