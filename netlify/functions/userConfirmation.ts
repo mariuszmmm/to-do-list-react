@@ -6,6 +6,7 @@ let SECRET: string | undefined;
 let test: any;
 let test1: any;
 let test2: any;
+let test3: any;
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
@@ -34,6 +35,7 @@ const handler: Handler = async (event: HandlerEvent) => {
     const calculatedSignature = hmac.digest("hex");
 
     test2 = calculatedSignature;
+    test3 = event.body;
 
     if (calculatedSignature !== signature) {
       return {
