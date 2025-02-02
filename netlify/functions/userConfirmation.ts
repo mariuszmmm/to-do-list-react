@@ -9,6 +9,7 @@ let test1: any;
 let test2: any;
 let test3: any;
 let test4: any;
+let test5: any;
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
@@ -63,6 +64,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       }
 
       const { user } = JSON.parse(event.body);
+      test5 = user;
       const { email } = user;
       confirmedUsers.push(email);
 
@@ -99,6 +101,7 @@ const handler: Handler = async (event: HandlerEvent) => {
         test2,
         test3,
         test4,
+        test5,
       }),
     };
   }
