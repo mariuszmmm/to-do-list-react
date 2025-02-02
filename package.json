@@ -46,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/netlify-identity-widget": "^1.9.6",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3"

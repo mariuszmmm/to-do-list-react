@@ -40,10 +40,14 @@ const handler: Handler = async (event: HandlerEvent) => {
 
     try {
       // Odszyfruj JWT i pobierz hash `sha256`
-      const decoded = jwt.verify(signature, SECRET, {
-        issuer: "netlify",
-        algorithms: ["HS256"],
-      }) as any;
+      const decoded = jwt.verify(
+        signature,
+        SECRET
+        //    {
+        //   issuer: "netlify",
+        //   algorithms: ["HS256"],
+        // }
+      ) as any;
       const expectedHash = decoded.sha256;
       test2 = decoded;
       test3 = expectedHash;
