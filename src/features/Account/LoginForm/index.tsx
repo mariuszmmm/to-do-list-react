@@ -46,8 +46,8 @@ const LoginForm = () => {
 
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
-      const email_ = "test@poczta.pl";
-      const response2 = await userConfirmation(email_);
+      // const email_ = "test@poczta.pl";
+      const response2 = await userConfirmation(email);
       console.log("response2", response2);
 
       // const response = await auth.login(email, password, true);
