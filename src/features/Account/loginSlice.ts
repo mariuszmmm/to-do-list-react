@@ -1,26 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { User } from "../../types";
-import { auth } from "./auth";
+import { UserData } from "../../types";
 
 interface LoginState {
-  user: User | null;
+  userData: UserData | null;
   authMode: "login" | "register";
   fetchState: "idle" | "loading" | "error";
   errorMessage: string;
 }
 
-const currentUser = auth.currentUser();
-
 const initialState: LoginState = {
-  user: !!currentUser
-    ? {
-        id: currentUser.id,
-        email: currentUser.email,
-        token: currentUser.token.access_token,
-        lists: [],
-      }
-    : null,
+  userData: null,
   authMode: "login",
   fetchState: "idle",
   errorMessage: "",
@@ -30,18 +20,14 @@ const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
-    setUser: (state, { payload: user }: PayloadAction<User>) => {
-      state.user = user;
+    setUserData: (state, { payload: data }: PayloadAction<UserData | null>) => {
+      state.userData = data;
     },
     setAuthMode: (
       state,
       { payload: mode }: PayloadAction<"login" | "register">
     ) => {
       state.authMode = mode;
-    },
-    logout: (state) => {
-      state.user = null;
-      state.fetchState = "idle";
     },
     loading: (state) => {
       state.fetchState = "loading";
@@ -61,9 +47,8 @@ const loginSlice = createSlice({
 });
 
 export const {
-  setUser,
+  setUserData,
   setAuthMode,
-  logout,
   loading,
   fetchSuccess,
   fetchError,
@@ -72,7 +57,8 @@ export const {
 
 const selectLoginState = (state: RootState) => state.login;
 
-export const selectUser = (state: RootState) => selectLoginState(state).user;
+export const selectUserData = (state: RootState) =>
+  selectLoginState(state).userData;
 export const selectAuthMode = (state: RootState) =>
   selectLoginState(state).authMode;
 export const selectFetchStatus = (state: RootState) =>

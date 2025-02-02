@@ -1,18 +1,18 @@
 import { useSelector } from "react-redux";
-import { Nav, NavList, StyledNavLink, User } from "./styled";
-import { selectUser } from "../features/Account/loginSlice";
+import { Nav, NavList, StyledNavLink, Account } from "./styled";
+import { selectUserData } from "../features/Account/loginSlice";
 
 const Navigation = () => {
-  const user = useSelector(selectUser);
+  const userData = useSelector(selectUserData);
 
   return (
     <Nav>
-      <NavList $isLists={!!user}>
+      <NavList $isLists={!!userData}>
         <li></li>
         <li>
           <StyledNavLink to="/zadania">Zadania</StyledNavLink>
         </li>
-        {user && (
+        {userData && (
           <li>
             <StyledNavLink to="/listy">Listy</StyledNavLink>
           </li>
@@ -22,7 +22,7 @@ const Navigation = () => {
         </li>
         <li>
           <StyledNavLink to="/konto">
-            <User />
+            <Account />
           </StyledNavLink>
         </li>
       </NavList>

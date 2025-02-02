@@ -1,13 +1,12 @@
 import { auth } from "../features/Account/auth";
-import {
-  saveTokenInLocalStorage,
-  saveUserConfirmedInLocalStorage,
-} from "./localStorage";
+import // saveTokenInLocalStorage,
+// saveUserConfirmedInLocalStorage,
+"./localStorage";
 
 export const getToken = (url: string) => {
   if (url.includes("#confirmation_token")) {
     const token = url.split("#confirmation_token=")[1];
-    saveTokenInLocalStorage(token);
+    // saveTokenInLocalStorage(token);
 
     if (token) {
       const confirmation = async () => {
@@ -15,11 +14,11 @@ export const getToken = (url: string) => {
           const confirmed = await auth.confirm(token, true);
           console.log("Confirmed:", confirmed);
 
-          if (confirmed) {
-            console.log("logowanie");
-            saveUserConfirmedInLocalStorage(true);
-            // login();
-          }
+          // if (confirmed) {
+          //   console.log("logowanie");
+          // saveUserConfirmedInLocalStorage(true);
+          // login();
+          // }
         } catch (error) {
           console.error("Błąd potwierdzenia konta:", error);
         }
@@ -32,6 +31,6 @@ export const getToken = (url: string) => {
     window.location.href =
       "https://to-do-list-typescript-react.netlify.app/#/autor";
     // window.location.href = "http://localhost:8888/#/konto";
-    console.log("token zapisany", token);
+    // console.log("token zapisany", token);
   }
 };

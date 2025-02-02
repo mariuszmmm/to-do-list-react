@@ -2,7 +2,7 @@ import Button from "../../../common/Button";
 import ButtonsContainer from "../../../common/ButtonsContainer";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
-  selectUser,
+  selectUserData,
   selectAuthMode,
   setAuthMode,
   selectFetchStatus,
@@ -11,7 +11,7 @@ import {
 
 const LoginButtons = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
+  const userData = useAppSelector(selectUserData);
   const authMode = useAppSelector(selectAuthMode);
   const fetchStatus = useAppSelector(selectFetchStatus);
 
@@ -26,7 +26,7 @@ const LoginButtons = () => {
 
   return (
     <>
-      {!user && (
+      {!userData && (
         <>
           <ButtonsContainer>
             <Button

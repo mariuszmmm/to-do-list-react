@@ -8,10 +8,10 @@ import CurrentDate from "./common/CurrentDate";
 import ListsPage from "./features/ListsPage";
 import Account from "./features/Account";
 import { useSelector } from "react-redux";
-import { selectUser } from "./features/Account/loginSlice";
+import { selectUserData } from "./features/Account/loginSlice";
 
 const App = () => {
-  const user = useSelector(selectUser);
+  const userData = useSelector(selectUserData);
 
   return (
     <HashRouter>
@@ -21,7 +21,7 @@ const App = () => {
         <Routes>
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
-          {user && <Route path="/listy" element={<ListsPage />} />}
+          {userData && <Route path="/listy" element={<ListsPage />} />}
           <Route path="/autor" element={<AuthorPage />} />
           <Route path="/konto" element={<Account />} />
           <Route path="*" element={<Navigate to="/zadania" />} />

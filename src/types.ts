@@ -14,9 +14,7 @@ export interface List {
   selected?: boolean;
 }
 
-export interface User {
-  id: string;
+export interface UserData {
   email: string;
   lists?: List[];
-  token?: string;
 }

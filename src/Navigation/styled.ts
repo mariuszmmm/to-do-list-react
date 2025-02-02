@@ -53,8 +53,8 @@ export const StyledNavLink = styled(NavLink)`
   }
 `;
 
-export const User = styled(user)`
+export const Account = styled(user)`
   margin-top: 0.1rem;
   margin-right: 20px;
-  width: 0.8rem;
+  width: 0.9rem;
 `;

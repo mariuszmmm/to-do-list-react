@@ -1,7 +1,10 @@
-[build]
-  functions = "netlify/functions"
+[[redirects]]
+  from = "/lists"
+  to = "/.netlify/functions/getUserData"
+  status = 200
 
-# [[redirects]]
-#  from = "/login"
-#  to = "/.netlify/functions/login"
-#  status = 200
+
+  [[redirects]]
+  from = "/userConfirmation"
+  to = "/.netlify/functions/userConfirmation"
+  status = 200

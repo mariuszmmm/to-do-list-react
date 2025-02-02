@@ -7,23 +7,18 @@ import Text from "../../../common/Text";
 import {
   fetchSuccess,
   loading,
-  logout,
   selectAuthMode,
   selectFetchStatus,
-  setUser,
   selectErrorMessage,
   setErrorMessage,
   fetchError,
+  setUserData,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../hooks";
-import { User } from "../../../types";
 import { auth } from "../auth";
 import { emailPattern, passwordPattern } from "../patterns";
-import {
-  // clearTokenFromLocalStorage,
-  getTokenFromLocalStorage,
-} from "../../../utils/localStorage";
+import { useFetch } from "./useFetch";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("mariuszmmm@op.pl");
@@ -36,119 +31,86 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  // const [userConfirmed, setUserConfirmed] = useState<boolean | "waiting">(
-  //   false
-  // );
+  const { getUserDataApi, userConfirmation } = useFetch();
 
-  // useEffect(() => {
-  //   if (userConfirmed === "waiting") {
-  //     const savedToken = getTokenFromLocalStorage();
-  //     console.log("register token:", savedToken);
+  const getUserData = async (token: string) => {
+    try {
+      const usesData = await getUserDataApi(token);
+      dispatch(setUserData(usesData));
+      dispatch(fetchSuccess());
+    } catch (error) {
+      dispatch(setErrorMessage("Błąd serwera"));
+      dispatch(fetchError());
+    }
+  };
 
-  //     if (savedToken) {
-  //       const confirmation = async () => {
-  //         const confirmed = await auth.confirm(savedToken, true);
-  //         console.log("Confirmed:", confirmed);
-  //         if (confirmed) {
-  //           login();
-  //         }
-  //         // clearTokenFromLocalStorage();
-  //       };
+  const waitingForConfirmation = () => {
+    const interval = setInterval(async () => {
+      const email_ = "test@poczta.pl";
+      const response2 = await userConfirmation(email_);
+      console.log("response2", response2);
 
-  //       confirmation();
-  //     }
-  //   }
-  //   // eslint-disable-next-line
-  // }, []);
+      // const response = await auth.login(email, password, true);
+      // console.log("response", response);
+      // const token = response.token.access_token;
+      // getUserData(token);
+      // if (response) {
+      //   clearInterval(interval);
+      //   return;
+      // }
+    }, 3000);
+
+    setTimeout(() => {
+      clearInterval(interval);
+    }, 60000);
+
+    return interval;
+  };
 
   useEffect(() => {
-    window.addEventListener("storage", (event) => {
-      if (event.key === "userConfirmed" && event.newValue) {
-        const userConfirmed = event.newValue;
-        console.log("userConfirmed", userConfirmed);
-        if (userConfirmed === "true") {
-          login();
-        }
-      }
-    });
+    const token = user?.token.access_token;
+    token && getUserData(token);
+
+    // window.addEventListener("storage", (event) => {
+    //   if (event.key === "userConfirmed" && event.newValue) {
+    //     const userConfirmed = event.newValue;
+    //     console.log("userConfirmed", userConfirmed);
+    //     if (userConfirmed === "true") {
+    //       login();
+    //     }
+    //   }
+    // });
 
     // eslint-disable-next-line
   }, []);
 
   const login = async () => {
     try {
-      console.log("email, password", email, password);
-      const loggedInUser = await auth.login(email, password, true);
-      console.log("Logged in user:", loggedInUser);
-      console.log(
-        "loggedInUser.token.access_token",
-        loggedInUser.token.access_token
-      );
-      console.log("getTokenFromLocalStorage", getTokenFromLocalStorage());
-      console.log("user:", user);
-      const token = loggedInUser.token.access_token;
-      if (token) {
-        const response = await fetch(
-          "https://to-do-list-typescript-react.netlify.app/.netlify/functions/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("login response:", response);
-        if (response.ok) {
-          console.log("login response:", response.ok);
-        }
+      const response = await auth.login(email, password, true);
+      console.log("response", response);
+      const token = response.token.access_token;
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("response data:", data);
-          console.log("user:", user);
-          const userData: User = {
-            id: data.user.id,
-            email: data.user.email,
-            lists: data.user.lists,
-          };
-          dispatch(setUser(userData));
-        }
-      }
-
-      dispatch(fetchSuccess());
-    } catch (error) {
-      console.error("Failed to log in:", error);
+      getUserData(token);
+    } catch (error: any) {
       dispatch(fetchError());
+      if (error.message === "Failed to fetch") {
+        dispatch(setErrorMessage("Brak połączenia z internetem."));
+        return;
+      }
       dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
     }
   };
-
-  // useEffect(() => {
-  //   if (userConfirmed === "waiting") {
-  //     const intervalId = setInterval(() => {
-  //       const user = auth.currentUser();
-  //       console.log("user:", user);
-
-  //       // login();
-  //       // setUserConfirmed(true);
-  //       console.log("waiting for confirmation");
-  //     }, 3000);
-
-  //     return () => clearInterval(intervalId);
-  //   }
-  // }, [userConfirmed]);
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     dispatch(setErrorMessage(""));
 
-    console.log("currentUser", user);
     if (user) {
       try {
         dispatch(loading());
-        await user.logout();
-        dispatch(logout());
+        const response = await user.logout();
+        console.log("response", response); //tymczasowo
+        dispatch(setUserData(null));
         dispatch(fetchSuccess());
       } catch (error) {
         dispatch(setErrorMessage("Błąd wylogowania"));
@@ -184,14 +146,19 @@ const LoginForm = () => {
 
     if (authMode === "register") {
       try {
-        const newUser = await auth.signup(email, password);
+        const response = await auth.signup(email, password);
+        console.log("response", response);
+
         dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
-        // dispatch(setAuthMode("login"));
-        console.log("New user:", newUser, authMode);
-        // setUserConfirmed("waiting");
+        waitingForConfirmation();
       } catch (error: any) {
-        console.log("error:", error.name);
         dispatch(fetchError());
+
+        if (error.message === "Failed to fetch") {
+          dispatch(setErrorMessage("Brak połączenia z internetem."));
+          return;
+        }
+        console.log("error:", error.name);
         switch (error.name) {
           case "JSONHTTPError":
             dispatch(
@@ -246,11 +213,13 @@ const LoginForm = () => {
           {user ? "Wyloguj" : authMode === "login" ? "Zaloguj" : "Zarejestruj"}
         </Button>
       </StyledForm>
-      {errorMessage && <Text $error>{errorMessage}</Text>}
-      {fetchStatus === "loading" && <Text disabled>Ładowanie...</Text>}
-      {authMode === "login" && !user && fetchStatus === "idle" && (
-        <ExtraButton $special>Przypomnij hasło</ExtraButton>
+      {!user && authMode === "login" && (
+        <ExtraButton $special disabled={fetchStatus === "loading"}>
+          Przypomnij hasło
+        </ExtraButton>
       )}
+      {fetchStatus === "loading" && <Text disabled>Ładowanie...</Text>}
+      {errorMessage && <Text $error>{errorMessage}</Text>}
     </>
   );
 };
