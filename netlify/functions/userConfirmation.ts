@@ -70,6 +70,7 @@ const handler: Handler = async (event: HandlerEvent) => {
         test,
         test1,
         test2,
+        test3,
       }),
     };
   }
