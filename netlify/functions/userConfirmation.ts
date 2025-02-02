@@ -15,6 +15,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     SECRET = process.env.WEBHOOK_SECRET;
     if (!SECRET) {
+      console.error("Brak klucza WEBHOOK_SECRET");
       return {
         statusCode: 500,
         body: JSON.stringify({ message: "Brak klucza WEBHOOK_SECRET" }),
@@ -24,6 +25,7 @@ const handler: Handler = async (event: HandlerEvent) => {
     const signature = event.headers["x-webhook-signature"];
     test = signature;
     if (!signature) {
+      console.error("Brak podpisu w nagłówkach");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "Brak podpisu w nagłówkach" }),
@@ -31,6 +33,7 @@ const handler: Handler = async (event: HandlerEvent) => {
     }
 
     if (!event.body) {
+      console.error("Brak danych");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "Brak danych" }),
@@ -48,7 +51,9 @@ const handler: Handler = async (event: HandlerEvent) => {
         //   algorithms: ["HS256"],
         // }
       ) as any;
+
       const expectedHash = decoded.sha256;
+
       test2 = decoded;
       test3 = expectedHash;
 
@@ -57,10 +62,12 @@ const handler: Handler = async (event: HandlerEvent) => {
         .createHash("sha256")
         .update(event.body)
         .digest("hex");
+
       test4 = calculatedHash;
 
       // Sprawdź, czy hash się zgadza
       if (calculatedHash !== expectedHash) {
+        console.error("Podpis jest nieprawidłowy");
         return {
           statusCode: 403,
           body: JSON.stringify({ message: "Podpis jest nieprawidłowy" }),
@@ -72,11 +79,14 @@ const handler: Handler = async (event: HandlerEvent) => {
       const { email } = user;
       confirmedUsers.push(email);
 
+      console.log("dodano użytkownika", email, confirmedUsers);
+
       return {
         statusCode: 200,
         body: JSON.stringify({ message: "Dodano użytkownika" }),
       };
     } catch (error) {
+      console.error("Błąd weryfikacji podpisu", error);
       return {
         statusCode: 403,
         body: JSON.stringify({
