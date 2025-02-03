@@ -50,7 +50,7 @@ const LoginForm = () => {
     const interval = setInterval(async () => {
       // const email_ = "test@poczta.pl";
       const confirmationResponse = await setUserApi(email);
-      const confirmedEmail = confirmationResponse.email;
+      const confirmedEmail = confirmationResponse?.email;
       if (confirmedEmail) {
         clearInterval(interval);
         return;
