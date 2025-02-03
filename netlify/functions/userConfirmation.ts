@@ -85,10 +85,11 @@ const handler: Handler = async (event: HandlerEvent) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        message: confirmedUser ? "User is confirmed" : "User is not confirmed",
-        confirmedUser,
-      }),
+      body: JSON.stringify(
+        confirmedUser
+          ? { message: "User is confirmed", email: confirmedUser.email }
+          : { message: "User is not confirmed" }
+      ),
     };
   }
 
