@@ -14,15 +14,7 @@ const handler: Handler = async (
   const { email }: { email: string } = context.clientContext.user;
 
   try {
-    let userDataFound = await UserData.findOne({ email });
-    if (!userDataFound) {
-      const userData = new UserData({
-        email,
-        lists: [],
-      });
-      await userData.save();
-      userDataFound = await UserData.findOne({ email });
-    }
+    const userDataFound = await UserData.findOne({ email });
 
     if (!userDataFound) {
       return {

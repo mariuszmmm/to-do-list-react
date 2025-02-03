@@ -1,7 +1,7 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-const RegisteredUser = require("./models/RegisteredUser");
+const UserData = require("./models/UserData");
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
@@ -51,13 +51,14 @@ const handler: Handler = async (event: HandlerEvent) => {
 
       const { user } = JSON.parse(event.body);
       const { email } = user;
-      const registeredUser = new RegisteredUser({ email, confirmed: true });
-      await registeredUser.save();
-
-      const confirmedUser = await RegisteredUser.findOne({
+      const registeredUser = new UserData({
         email,
         confirmed: true,
+        lists: [],
       });
+      await registeredUser.save();
+
+      const confirmedUser = await UserData.findOne({ email });
       console.log("confirmedUsers", confirmedUser);
 
       return {
@@ -78,7 +79,7 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
-    const confirmedUser = await RegisteredUser.findOne({
+    const confirmedUser = await UserData.findOne({
       email,
       confirmed: true,
     });

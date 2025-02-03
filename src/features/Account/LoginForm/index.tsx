@@ -33,7 +33,7 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
-  const { getUserDataApi, userConfirmation } = useFetch();
+  const { getUserDataApi, setUserApi } = useFetch();
 
   const getUserData = async (token: string) => {
     try {
@@ -49,7 +49,7 @@ const LoginForm = () => {
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
       // const email_ = "test@poczta.pl";
-      const confirmationResponse = await userConfirmation(email);
+      const confirmationResponse = await setUserApi(email);
       const confirmedEmail = confirmationResponse.email;
       if (confirmedEmail) {
         clearInterval(interval);

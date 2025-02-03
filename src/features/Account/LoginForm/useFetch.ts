@@ -2,7 +2,7 @@ import { UserData } from "../../../types";
 
 export const useFetch = () => {
   const getUserDataApi = async (token: string) => {
-    return fetch("/lists", {
+    return fetch("/getUserData", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -13,8 +13,8 @@ export const useFetch = () => {
         return null;
       });
   };
-  const userConfirmation = async (email: string) => {
-    return fetch(`/userConfirmation?email=${email}`)
+  const setUserApi = async (email: string) => {
+    return fetch(`/setUser?email=${email}`)
       .then((response) => response.json())
       .catch((error) => {
         console.error("Błąd pobierania danych", error);
@@ -22,5 +22,5 @@ export const useFetch = () => {
       });
   };
 
-  return { getUserDataApi, userConfirmation };
+  return { getUserDataApi, setUserApi };
 };

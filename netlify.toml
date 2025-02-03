@@ -1,10 +1,10 @@
 [[redirects]]
-  from = "/lists"
+  from = "/getUserData"
   to = "/.netlify/functions/getUserData"
   status = 200
 
 
   [[redirects]]
-  from = "/userConfirmation"
-  to = "/.netlify/functions/userConfirmation"
+  from = "/setUser"
+  to = "/.netlify/functions/setUser"
   status = 200
