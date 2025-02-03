@@ -1,73 +1,48 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-
-let confirmedUsers: string[] = ["test@poczta.pl"];
-let SECRET: string | undefined;
-let test: any;
-let test1: any;
-let test2: any;
-let test3: any;
-let test4: any;
-let test5: any;
+const RegisteredUser = require("./models/RegisteredUser");
 
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
-    SECRET = process.env.WEBHOOK_SECRET;
+    const SECRET = process.env.WEBHOOK_SECRET;
+
     if (!SECRET) {
-      console.error("Brak klucza WEBHOOK_SECRET");
+      console.error("Missing WEBHOOK_SECRET key");
       return {
         statusCode: 500,
-        body: JSON.stringify({ message: "Brak klucza WEBHOOK_SECRET" }),
+        body: JSON.stringify({ message: "Missing WEBHOOK_SECRET key" }),
       };
     }
 
     const signature = event.headers["x-webhook-signature"];
-    test = signature;
     if (!signature) {
-      console.error("Brak podpisu w nagłówkach");
+      console.error("Missing signature in headers");
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "Brak podpisu w nagłówkach" }),
+        body: JSON.stringify({ message: "Missing signature in headers" }),
       };
     }
 
     if (!event.body) {
-      console.error("Brak danych");
+      console.error("No data");
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "Brak danych" }),
+        body: JSON.stringify({ message: "No data" }),
       };
     }
-    test1 = event.body;
 
     try {
-      // Odszyfruj JWT i pobierz hash `sha256`
-      const decoded = jwt.verify(
-        signature,
-        SECRET
-        //    {
-        //   issuer: "netlify",
-        //   algorithms: ["HS256"],
-        // }
-      ) as any;
-
+      const decoded = jwt.verify(signature, SECRET) as any;
       const expectedHash = decoded.sha256;
 
-      test2 = decoded;
-      test3 = expectedHash;
-
-      // Oblicz hash z event.body
       const calculatedHash = crypto
         .createHash("sha256")
         .update(event.body)
         .digest("hex");
 
-      test4 = calculatedHash;
-
-      // Sprawdź, czy hash się zgadza
       if (calculatedHash !== expectedHash) {
-        console.error("Podpis jest nieprawidłowy");
+        console.error("Signature is invalid");
         return {
           statusCode: 403,
           body: JSON.stringify({ message: "Podpis jest nieprawidłowy" }),
@@ -75,18 +50,22 @@ const handler: Handler = async (event: HandlerEvent) => {
       }
 
       const { user } = JSON.parse(event.body);
-      test5 = user;
       const { email } = user;
-      confirmedUsers.push(email);
+      const registeredUser = new RegisteredUser({ email, confirmed: true });
+      await registeredUser.save();
 
-      console.log("dodano użytkownika", email, confirmedUsers);
+      const confirmedUser = await RegisteredUser.findOne({
+        email,
+        confirmed: true,
+      });
+      console.log("confirmedUsers", confirmedUser);
 
       return {
         statusCode: 200,
         body: JSON.stringify({ message: "Dodano użytkownika" }),
       };
     } catch (error) {
-      console.error("Błąd weryfikacji podpisu", error);
+      console.error("Signature verification error", error);
       return {
         statusCode: 403,
         body: JSON.stringify({
@@ -99,30 +78,23 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
-    const confirmedUser = confirmedUsers.find((user) => user === email);
+    const confirmedUser = await RegisteredUser.findOne({
+      email,
+      confirmed: true,
+    });
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: confirmedUser
-          ? "Użytkownik jest potwierdzony"
-          : "Użytkownik nie jest potwierdzony",
+        message: confirmedUser ? "User is confirmed" : "User is not confirmed",
         confirmedUser,
-        confirmedUsers,
-        SECRET,
-        test,
-        test1,
-        test2,
-        test3,
-        test4,
-        test5,
       }),
     };
   }
 
   return {
     statusCode: 405,
-    body: JSON.stringify({ message: "Metoda nie jest obsługiwana" }),
+    body: JSON.stringify({ message: "Method not supported" }),
   };
 };
 

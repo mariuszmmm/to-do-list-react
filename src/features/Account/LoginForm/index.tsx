@@ -13,6 +13,7 @@ import {
   setErrorMessage,
   fetchError,
   setUserData,
+  selectUserData,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../hooks";
@@ -25,6 +26,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("test");
   const loginInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  // const userData = useSelector(selectUserData);
   const authMode = useSelector(selectAuthMode);
   const fetchStatus = useSelector(selectFetchStatus);
   const errorMessage = useSelector(selectErrorMessage);
@@ -35,8 +37,8 @@ const LoginForm = () => {
 
   const getUserData = async (token: string) => {
     try {
-      const usesData = await getUserDataApi(token);
-      dispatch(setUserData(usesData));
+      const usersData = await getUserDataApi(token);
+      dispatch(setUserData(usersData));
       dispatch(fetchSuccess());
     } catch (error) {
       dispatch(setErrorMessage("Błąd serwera"));

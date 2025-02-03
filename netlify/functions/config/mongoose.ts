@@ -14,4 +14,4 @@ mongoose
     console.error("MongoDB connection error:", error);
   });
 
-module.exports = mongoose;
+export default mongoose;
