@@ -48,17 +48,17 @@ const LoginForm = () => {
 
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
-      // const email_ = "test@poczta.pl";
       const confirmationResponse = await setUserApi(email);
       const confirmedEmail = confirmationResponse?.email;
+
       if (confirmedEmail) {
+        const loginResponse = await auth.login(email, password, true);
+        const token = loginResponse.token.access_token;
+        getUserData(token);
+
         clearInterval(interval);
         return;
       }
-
-      const loginResponse = await auth.login(email, password, true);
-      const token = loginResponse.token.access_token;
-      getUserData(token);
     }, 3000);
 
     setTimeout(() => {
