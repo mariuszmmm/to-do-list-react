@@ -51,6 +51,7 @@ const LoginForm = () => {
       // const email_ = "test@poczta.pl";
       const response = await userConfirmation(email);
       const userConfirmed = response.email;
+      console.log("userConfirmed", userConfirmed);
       if (userConfirmed) {
         clearInterval(interval);
         return;
