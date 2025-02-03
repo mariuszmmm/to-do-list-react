@@ -50,8 +50,8 @@ const LoginForm = () => {
     const interval = setInterval(async () => {
       // const email_ = "test@poczta.pl";
       const confirmedUser = await userConfirmation(email);
-      console.log("emailConfirmed", confirmedUser);
-      if (confirmedUser) {
+      console.log("confirmedUser", confirmedUser);
+      if (confirmedUser.email === email) {
         clearInterval(interval);
         return;
       }
