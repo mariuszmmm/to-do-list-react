@@ -49,22 +49,16 @@ const LoginForm = () => {
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
       // const email_ = "test@poczta.pl";
-      const response = await userConfirmation(email);
-      const userConfirmed = response.email;
-      console.log("userConfirmed", userConfirmed);
-      if (userConfirmed) {
+      const confirmationResponse = await userConfirmation(email);
+      const confirmedEmail = confirmationResponse.email;
+      if (confirmedEmail) {
         clearInterval(interval);
         return;
       }
 
-      // const response = await auth.login(email, password, true);
-      // console.log("response", response);
-      // const token = response.token.access_token;
-      // getUserData(token);
-      // if (response) {
-      //   clearInterval(interval);
-      //   return;
-      // }
+      const loginResponse = await auth.login(email, password, true);
+      const token = loginResponse.token.access_token;
+      getUserData(token);
     }, 3000);
 
     setTimeout(() => {
