@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { UserData } from "../../types";
+import { auth } from "./auth";
+
+const loggedUsersEmail = auth.currentUser()?.email || null;
 
 interface LoginState {
+  logged: string | null;
   userData: UserData | null;
   authMode: "login" | "register";
   fetchState: "idle" | "loading" | "error";
@@ -10,6 +14,7 @@ interface LoginState {
 }
 
 const initialState: LoginState = {
+  logged: loggedUsersEmail,
   userData: null,
   authMode: "login",
   fetchState: "idle",
@@ -20,6 +25,13 @@ const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
+    setLogged: (state, { payload: email }: PayloadAction<string>) => {
+      state.logged = email;
+    },
+    setLogout: (state) => {
+      state.logged = null;
+      state.userData = null;
+    },
     setUserData: (state, { payload: data }: PayloadAction<UserData | null>) => {
       state.userData = data;
     },
@@ -47,6 +59,8 @@ const loginSlice = createSlice({
 });
 
 export const {
+  setLogged,
+  setLogout,
   setUserData,
   setAuthMode,
   loading,
@@ -57,6 +71,8 @@ export const {
 
 const selectLoginState = (state: RootState) => state.login;
 
+export const selectLogged = (state: RootState) =>
+  selectLoginState(state).logged;
 export const selectUserData = (state: RootState) =>
   selectLoginState(state).userData;
 export const selectAuthMode = (state: RootState) =>

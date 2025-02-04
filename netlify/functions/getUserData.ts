@@ -19,14 +19,14 @@ const handler: Handler = async (
     if (!userDataFound) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ message: "Błąd serwera" }),
+        body: JSON.stringify({ message: "Błąd bazy danych" }),
       };
     }
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Pobrano listy",
+        message: "Pobrano dane",
         userData: {
           email: userDataFound.email,
           lists: userDataFound.lists,

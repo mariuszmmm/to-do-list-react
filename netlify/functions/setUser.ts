@@ -51,15 +51,20 @@ const handler: Handler = async (event: HandlerEvent) => {
 
       const { user } = JSON.parse(event.body);
       const { email } = user;
-      const registeredUser = new UserData({
-        email,
-        confirmed: true,
-        lists: [],
-      });
-      await registeredUser.save();
 
-      const confirmedUser = await UserData.findOne({ email });
-      console.log("confirmedUsers", confirmedUser);
+      let findedUser = await UserData.findOne({ email });
+
+      if (!findedUser) {
+        const registeredUser = new UserData({
+          email,
+          confirmed: true,
+          lists: [],
+        });
+        await registeredUser.save();
+      }
+
+      findedUser = await UserData.findOne({ email });
+      console.log("confirmedUsers", findedUser);
 
       return {
         statusCode: 200,

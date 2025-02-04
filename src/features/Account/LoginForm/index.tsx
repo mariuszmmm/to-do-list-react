@@ -13,6 +13,8 @@ import {
   setErrorMessage,
   fetchError,
   setUserData,
+  setLogged,
+  setLogout,
   // selectUserData,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
@@ -38,10 +40,12 @@ const LoginForm = () => {
   const getUserData = async (token: string) => {
     try {
       const usersData = await getUserDataApi(token);
+      console.log("usersData", usersData);
+      if (!usersData) throw new Error();
       dispatch(setUserData(usersData));
       dispatch(fetchSuccess());
     } catch (error) {
-      dispatch(setErrorMessage("Błąd serwera"));
+      dispatch(setErrorMessage("Błąd pobierania danych"));
       dispatch(fetchError());
     }
   };
@@ -50,12 +54,10 @@ const LoginForm = () => {
     const interval = setInterval(async () => {
       const confirmationResponse = await setUserApi(email);
       const confirmedEmail = confirmationResponse?.email;
+      console.log("confirmedEmail", confirmedEmail);
 
       if (confirmedEmail) {
-        const loginResponse = await auth.login(email, password, true);
-        const token = loginResponse.token.access_token;
-        getUserData(token);
-
+        login();
         clearInterval(interval);
         return;
       }
@@ -90,7 +92,7 @@ const LoginForm = () => {
       const response = await auth.login(email, password, true);
       console.log("response", response);
       const token = response.token.access_token;
-
+      dispatch(setLogged(response.email));
       getUserData(token);
     } catch (error: any) {
       dispatch(fetchError());
@@ -111,7 +113,7 @@ const LoginForm = () => {
         dispatch(loading());
         const response = await user.logout();
         console.log("response", response); //tymczasowo
-        dispatch(setUserData(null));
+        dispatch(setLogout());
         dispatch(fetchSuccess());
       } catch (error) {
         dispatch(setErrorMessage("Błąd wylogowania"));
