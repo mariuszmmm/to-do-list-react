@@ -28,7 +28,8 @@ const App = () => {
     };
 
     getData();
-  }, [dispatch, getUserDataApi, user?.token.access_token]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <HashRouter>
