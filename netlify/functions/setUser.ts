@@ -3,6 +3,8 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 const UserData = require("./models/UserData");
 
+let test: any;
+
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     const SECRET = process.env.WEBHOOK_SECRET;
@@ -49,6 +51,8 @@ const handler: Handler = async (event: HandlerEvent) => {
         };
       }
 
+      test = JSON.parse(event.body);
+
       const { user } = JSON.parse(event.body);
       const { email } = user;
 
@@ -84,6 +88,8 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
+
+    console.log(test);
 
     // sprawdza czy użytkownik email jest pomyślnie potwierdzony
 

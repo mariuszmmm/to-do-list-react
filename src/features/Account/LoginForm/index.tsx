@@ -43,6 +43,8 @@ const LoginForm = () => {
         const confirmationResponse = await setUserApi(email);
         const confirmedEmail = confirmationResponse?.email;
 
+        console.log("confirmationResponse", confirmationResponse);
+
         if (confirmedEmail) {
           setErrorMessage("");
           await login();
@@ -55,6 +57,7 @@ const LoginForm = () => {
 
     const timeout = setTimeout(() => {
       clearInterval(interval);
+      // usuń użytkownika z bazy danych
     }, 60000);
 
     return () => {
@@ -114,6 +117,8 @@ const LoginForm = () => {
   const getUserData = async (token: string) => {
     try {
       const userData = await getUserDataApi(token);
+      console.log("userData", userData);
+      if (!userData) throw new Error();
       dispatch(setUserData(userData));
       dispatch(fetchSuccess());
     } catch (error) {
@@ -125,45 +130,50 @@ const LoginForm = () => {
   const login = async () => {
     try {
       const response = await auth.login(email, password, true);
+      console.log("login response", response);
       dispatch(setLogged(response.email));
       const token = response.token.access_token;
       await getUserData(token);
-    } catch (error) {
+    } catch (error: any) {
       dispatch(fetchError());
-      if ((error as { message: string }).message === "Failed to fetch") {
-        dispatch(setErrorMessage("Brak połączenia z internetem."));
-        return;
+      switch (error.message) {
+        case "Failed to fetch":
+          dispatch(setErrorMessage("Brak połączenia z internetem."));
+          break;
+        case "invalid_grant: Email not confirmed":
+          dispatch(setErrorMessage("E-mail nie został potwierdzony."));
+          break;
+        case "invalid_grant: No user found with that email, or password invalid.":
+          dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
+          break;
+        default:
+          dispatch(setErrorMessage("Błąd logowania."));
+          break;
       }
-      dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
     }
   };
 
   const registration = async () => {
     try {
-      await auth.signup(email, password);
+      const response = await auth.signup(email, password);
+      console.log("registration response", response);
       dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
       setIsWaitingForConfirmation(true);
     } catch (error: any) {
       dispatch(fetchError());
 
-      if (error.message === "Failed to fetch") {
-        dispatch(setErrorMessage("Brak połączenia z internetem."));
-        return;
-      }
-
-      switch (error.name) {
-        case "JSONHTTPError":
-          dispatch(
-            setErrorMessage(
-              "Użytkownik z tym adresem e-mail jest już zarejestrowany."
-            )
-          );
+      switch (error.message) {
+        case "Failed to fetch":
+          dispatch(setErrorMessage("Brak połączenia z internetem."));
           break;
-        case "invalid_grant":
-          dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
+        case "Unable to validate email address: invalid format":
+          dispatch(setErrorMessage("Wpisz poprawny adres e-mail."));
+          break;
+        case "Signup requires a valid password":
+          dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
           break;
         default:
-          dispatch(setErrorMessage("Błąd rejestracji"));
+          dispatch(setErrorMessage("Błąd rejestracji."));
           break;
       }
       return;
