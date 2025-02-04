@@ -1,5 +1,4 @@
-import { FormEventHandler, useEffect, useState } from "react";
-import { useRef } from "react";
+import { FormEventHandler, useState, useRef, useEffect } from "react";
 import { Button, StyledForm } from "./styled";
 import ExtraButton from "../../../common/Button";
 import { Input } from "../../../common/Input";
@@ -15,92 +14,156 @@ import {
   setUserData,
   setLogged,
   setLogout,
-  // selectUserData,
+  selectLogged,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../hooks";
 import { auth } from "../auth";
 import { emailPattern, passwordPattern } from "../patterns";
-import { useFetch } from "./useFetch";
+import { useFetch } from "../../../hooks/useFetch";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("mariuszmmm@op.pl");
   const [password, setPassword] = useState("test");
+  const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
+    useState(false);
   const loginInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  // const userData = useSelector(selectUserData);
+  const logged = useSelector(selectLogged);
   const authMode = useSelector(selectAuthMode);
   const fetchStatus = useSelector(selectFetchStatus);
   const errorMessage = useSelector(selectErrorMessage);
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
-
   const { getUserDataApi, setUserApi } = useFetch();
+
+  const waitingForConfirmation = () => {
+    const interval = setInterval(async () => {
+      try {
+        const confirmationResponse = await setUserApi(email);
+        const confirmedEmail = confirmationResponse?.email;
+        console.log("confirmedEmail", confirmedEmail);
+
+        if (confirmedEmail) {
+          login();
+          clearInterval(interval);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }, 3000);
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 60000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  };
+
+  useEffect(() => {
+    if (isWaitingForConfirmation) {
+      waitingForConfirmation();
+    }
+  }, [isWaitingForConfirmation]);
+
+  const logout = async () => {
+    try {
+      dispatch(loading());
+      if (user) {
+        await user.logout();
+      }
+      dispatch(setLogout());
+      dispatch(fetchSuccess());
+    } catch (error) {
+      dispatch(setErrorMessage("Błąd wylogowania"));
+    }
+  };
+  const validation = () => {
+    if (!email) {
+      dispatch(setErrorMessage("Wpisz adres e-mail."));
+      loginInputRef.current?.focus();
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      dispatch(setErrorMessage("Nieprawidłowy adres e-mail."));
+      loginInputRef.current?.focus();
+      return;
+    }
+
+    if (!password) {
+      dispatch(setErrorMessage("Wpisz hasło."));
+      passwordInputRef.current?.focus();
+      return;
+    }
+
+    if (!passwordPattern.test(password)) {
+      dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
+      passwordInputRef.current?.focus();
+      return;
+    }
+    return true;
+  };
 
   const getUserData = async (token: string) => {
     try {
-      const usersData = await getUserDataApi(token);
-      console.log("usersData", usersData);
-      if (!usersData) throw new Error();
-      dispatch(setUserData(usersData));
+      const userData = await getUserDataApi(token);
+      dispatch(setUserData(userData));
       dispatch(fetchSuccess());
     } catch (error) {
-      dispatch(setErrorMessage("Błąd pobierania danych"));
+      dispatch(setErrorMessage("Błąd pobierania danych"));
       dispatch(fetchError());
     }
   };
 
-  const waitingForConfirmation = () => {
-    const interval = setInterval(async () => {
-      const confirmationResponse = await setUserApi(email);
-      const confirmedEmail = confirmationResponse?.email;
-      console.log("confirmedEmail", confirmedEmail);
-
-      if (confirmedEmail) {
-        login();
-        clearInterval(interval);
-        return;
-      }
-    }, 3000);
-
-    setTimeout(() => {
-      clearInterval(interval);
-    }, 60000);
-
-    return interval;
-  };
-
-  useEffect(() => {
-    const token = user?.token.access_token;
-    token && getUserData(token);
-
-    // window.addEventListener("storage", (event) => {
-    //   if (event.key === "userConfirmed" && event.newValue) {
-    //     const userConfirmed = event.newValue;
-    //     console.log("userConfirmed", userConfirmed);
-    //     if (userConfirmed === "true") {
-    //       login();
-    //     }
-    //   }
-    // });
-
-    // eslint-disable-next-line
-  }, []);
-
   const login = async () => {
     try {
       const response = await auth.login(email, password, true);
-      console.log("response", response);
-      const token = response.token.access_token;
       dispatch(setLogged(response.email));
-      getUserData(token);
-    } catch (error: any) {
+      const token = response.token.access_token;
+      await getUserData(token);
+    } catch (error) {
       dispatch(fetchError());
-      if (error.message === "Failed to fetch") {
+      if ((error as { message: string }).message === "Failed to fetch") {
         dispatch(setErrorMessage("Brak połączenia z internetem."));
         return;
       }
       dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
+    }
+  };
+
+  const registration = async () => {
+    try {
+      await auth.signup(email, password);
+      dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
+      setIsWaitingForConfirmation(true);
+    } catch (error: any) {
+      dispatch(fetchError());
+
+      if (error.message === "Failed to fetch") {
+        dispatch(setErrorMessage("Brak połączenia z internetem."));
+        return;
+      }
+
+      switch (error.name) {
+        case "JSONHTTPError":
+          dispatch(
+            setErrorMessage(
+              "Użytkownik z tym adresem e-mail jest już zarejestrowany."
+            )
+          );
+          break;
+        case "invalid_grant":
+          dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
+          break;
+        default:
+          dispatch(setErrorMessage("Błąd rejestracji"));
+          break;
+      }
+      return;
     }
   };
 
@@ -109,80 +172,24 @@ const LoginForm = () => {
     dispatch(setErrorMessage(""));
 
     if (user) {
-      try {
-        dispatch(loading());
-        const response = await user.logout();
-        console.log("response", response); //tymczasowo
-        dispatch(setLogout());
-        dispatch(fetchSuccess());
-      } catch (error) {
-        dispatch(setErrorMessage("Błąd wylogowania"));
-      }
+      await logout();
       return;
     }
 
-    if (!email) {
-      dispatch(setErrorMessage("Wpisz adres e-mail."));
-      loginInputRef.current!.focus();
-      return;
-    }
-
-    if (!emailPattern.test(email)) {
-      dispatch(setErrorMessage("Nieprawidłowy adres e-mail."));
-      loginInputRef.current!.focus();
-      return;
-    }
-
-    if (!password) {
-      dispatch(setErrorMessage("Wpisz hasło."));
-      passwordInputRef.current!.focus();
-      return;
-    }
-
-    if (!passwordPattern.test(password)) {
-      dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
-      passwordInputRef.current!.focus();
+    if (!validation()) {
       return;
     }
 
     dispatch(loading());
 
     if (authMode === "register") {
-      try {
-        const response = await auth.signup(email, password);
-        console.log("response", response);
-
-        dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
-        waitingForConfirmation();
-      } catch (error: any) {
-        dispatch(fetchError());
-
-        if (error.message === "Failed to fetch") {
-          dispatch(setErrorMessage("Brak połączenia z internetem."));
-          return;
-        }
-        console.log("error:", error.name);
-        switch (error.name) {
-          case "JSONHTTPError":
-            dispatch(
-              setErrorMessage(
-                "Użytkownik z tym adresem e-mail jest już zarejestrowany."
-              )
-            );
-            break;
-          case "invalid_grant":
-            dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
-            break;
-          default:
-            dispatch(setErrorMessage("Błąd rejestracji"));
-            break;
-        }
-        return;
-      }
+      await registration();
+      return;
     }
 
     if (authMode === "login") {
-      login();
+      await login();
+      return;
     }
   };
 
@@ -196,7 +203,7 @@ const LoginForm = () => {
           placeholder="name@poczta.pl"
           onChange={({ target }) => setEmail(target.value)}
           ref={loginInputRef}
-          hidden={!!user}
+          hidden={!!logged}
           disabled={fetchStatus === "loading"}
         />
         <Input
@@ -205,7 +212,7 @@ const LoginForm = () => {
           placeholder="hasło"
           onChange={({ target }) => setPassword(target.value)}
           ref={passwordInputRef}
-          hidden={!!user}
+          hidden={!!logged}
           disabled={fetchStatus === "loading"}
         />
         <Button
@@ -213,15 +220,17 @@ const LoginForm = () => {
           disabled={fetchStatus === "loading"}
           $register={authMode === "register"}
         >
-          {user ? "Wyloguj" : authMode === "login" ? "Zaloguj" : "Zarejestruj"}
+          {logged
+            ? "Wyloguj"
+            : authMode === "login"
+            ? "Zaloguj"
+            : "Zarejestruj"}
         </Button>
       </StyledForm>
-      {!user && authMode === "login" && (
-        <ExtraButton $special disabled={fetchStatus === "loading"}>
-          Przypomnij hasło
-        </ExtraButton>
+      {!logged && authMode === "login" && fetchStatus !== "loading" && (
+        <ExtraButton $special>Przypomnij hasło</ExtraButton>
       )}
-      {fetchStatus === "loading" && <Text disabled>Ładowanie...</Text>}
+      {fetchStatus === "loading" && <Text $loading>Ładowanie...</Text>}
       {errorMessage && <Text $error>{errorMessage}</Text>}
     </>
   );

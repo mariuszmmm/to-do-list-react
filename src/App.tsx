@@ -7,11 +7,28 @@ import Container from "./common/Container";
 import CurrentDate from "./common/CurrentDate";
 import ListsPage from "./features/ListsPage";
 import Account from "./features/Account";
-import { useSelector } from "react-redux";
-import { selectUserData } from "./features/Account/loginSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUserData, setUserData } from "./features/Account/loginSlice";
+import { useFetch } from "./hooks/useFetch";
+import { auth } from "./features/Account/auth";
+import { useEffect } from "react";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { getUserDataApi } = useFetch();
   const userData = useSelector(selectUserData);
+  const user = auth.currentUser();
+
+  useEffect(() => {
+    const token = user?.token.access_token;
+    if (!token) return;
+    const getData = async () => {
+      const userData = await getUserDataApi(token);
+      userData && dispatch(setUserData(userData));
+    };
+
+    getData();
+  }, [dispatch, getUserDataApi, user?.token.access_token]);
 
   return (
     <HashRouter>

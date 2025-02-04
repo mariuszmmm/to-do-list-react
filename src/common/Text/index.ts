@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 
 interface TextProps {
   $error?: boolean;
-  disabled?: boolean;
+  $loading?: boolean;
 }
 
 const Text = styled.p<TextProps>`
@@ -14,8 +14,8 @@ const Text = styled.p<TextProps>`
       color: red;
     `}
 
-  ${({ disabled }) =>
-    disabled &&
+  ${({ $loading }) =>
+    $loading &&
     css`
       color: ${({ theme }) => theme.color.silver};
     `}

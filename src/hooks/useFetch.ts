@@ -1,4 +1,4 @@
-import { UserData } from "../../../types";
+import { UserData } from "../types";
 
 export const useFetch = () => {
   const getUserDataApi = async (token: string) => {
