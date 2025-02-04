@@ -67,6 +67,8 @@ const LoginForm = () => {
     if (isWaitingForConfirmation) {
       waitingForConfirmation();
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWaitingForConfirmation]);
 
   const logout = async () => {
