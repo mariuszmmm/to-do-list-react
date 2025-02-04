@@ -51,6 +51,8 @@ const handler: Handler = async (event: HandlerEvent) => {
         };
       }
 
+      console.log("event.body", event.body);
+
       test.push({ body: event.body });
 
       const { user } = JSON.parse(event.body);
