@@ -40,6 +40,7 @@ const LoginForm = () => {
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
       try {
+        console.log("waitingForConfirmation", email);
         const confirmationResponse = await setUserApi(email);
         const confirmedEmail = confirmationResponse?.email;
         console.log("confirmedEmail", confirmedEmail);
