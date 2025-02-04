@@ -40,13 +40,12 @@ const LoginForm = () => {
   const waitingForConfirmation = () => {
     const interval = setInterval(async () => {
       try {
-        console.log("waitingForConfirmation   TEST", email);
         const confirmationResponse = await setUserApi(email);
         const confirmedEmail = confirmationResponse?.email;
-        console.log("confirmedEmail", confirmedEmail);
 
         if (confirmedEmail) {
-          login();
+          setErrorMessage("");
+          await login();
           clearInterval(interval);
         }
       } catch (error) {
@@ -66,6 +65,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isWaitingForConfirmation) {
+      setIsWaitingForConfirmation(false);
       waitingForConfirmation();
     }
 

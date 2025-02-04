@@ -84,6 +84,9 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
+
+    // sprawdza czy użytkownik email jest pomyślnie potwierdzony
+
     const confirmedUser = await UserData.findOne({
       email,
       confirmed: true,
