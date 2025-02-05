@@ -1,25 +1,21 @@
 import { useEffect } from "react";
 import Header from "../../common/Header";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const ConfirmationPage = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const confirmed = sessionStorage.getItem("confirmed");
 
-  const searhParams = new URLSearchParams(location.search);
-  const confirmation = searhParams.get("confirmation");
+  console.log("confirmed:", confirmed);
 
   useEffect(() => {
-    if (confirmation !== "success" && confirmation !== "error") {
+    if (!confirmed) {
       navigate("/");
+      console.log("Nie potwierdzono konta");
     }
-  }, [confirmation, navigate]);
+  }, [confirmed, navigate]);
 
   return (
-    <Header
-      title={
-        confirmation === "success" ? "Rejestacja udana" : "Rejestacja nieudana"
-      }
-    />
+    <Header title={confirmed ? "Rejestacja udana" : "Rejestacja nieudana"} />
   );
 };

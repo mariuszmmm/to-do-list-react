@@ -3,14 +3,18 @@ import { auth } from "./auth";
 export const tokenConfirmation = (url: string) => {
   if (url.includes("#confirmation_token")) {
     const token = url.split("#confirmation_token=")[1];
-    let userConfirmed = false;
 
     if (token) {
       const confirmation = async () => {
         try {
           const confirmed = await auth.confirm(token);
           console.log("Confirmed:", confirmed);
-          userConfirmed = true;
+          // dodaj do sesion storage confirmed i ustaw na confirmed.email
+          const setSesion = sessionStorage.setItem(
+            "confirmed",
+            confirmed.email
+          );
+          console.log("setSesion:", setSesion);
         } catch (error) {
           console.error("Błąd potwierdzenia konta:", error);
         }
@@ -18,13 +22,7 @@ export const tokenConfirmation = (url: string) => {
 
       confirmation();
     }
-
-    if (!userConfirmed) {
-      window.location.href =
-        "https://to-do-list-typescript-react.netlify.app/#/confirmation?confirmation=error";
-    } else {
-      window.location.href =
-        "https://to-do-list-typescript-react.netlify.app/#/confirmation?confirmation=success";
-    }
+    window.location.href =
+      "https://to-do-list-typescript-react.netlify.app/#/confirmation";
   }
 };
