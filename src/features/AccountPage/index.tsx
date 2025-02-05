@@ -5,7 +5,7 @@ import LoginButtons from "./LoginButtons";
 import { useSelector } from "react-redux";
 import { selectLogged } from "./loginSlice";
 
-const Account = () => {
+const AccountPage = () => {
   const logged = useSelector(selectLogged);
 
   return (
@@ -20,4 +20,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default AccountPage;

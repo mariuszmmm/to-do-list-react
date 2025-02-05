@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { UserData } from "../../types";
-import { auth } from "./auth";
+import { auth } from "../../utils/auth";
 
 const loggedUsersEmail = auth.currentUser()?.email || null;
 

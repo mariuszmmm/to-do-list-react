@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Nav, NavList, StyledNavLink, Account } from "./styled";
-import { selectUserData } from "../features/Account/loginSlice";
+import { selectUserData } from "../features/AccountPage/loginSlice";
 
 const Navigation = () => {
   const userData = useSelector(selectUserData);

@@ -1,4 +1,4 @@
-import { auth } from "../features/Account/auth";
+import { auth } from "./auth";
 
 export const tokenConfirmation = (url: string) => {
   if (url.includes("#confirmation_token")) {
@@ -7,8 +7,10 @@ export const tokenConfirmation = (url: string) => {
     if (token) {
       const confirmation = async () => {
         try {
-          const confirmed = await auth.confirm(token, true);
+          const confirmed = await auth.confirm(token);
           console.log("Confirmed:", confirmed);
+          window.location.href =
+            "https://to-do-list-typescript-react.netlify.app/#/confirmation";
         } catch (error) {
           console.error("Błąd potwierdzenia konta:", error);
         }
@@ -16,7 +18,5 @@ export const tokenConfirmation = (url: string) => {
 
       confirmation();
     }
-    window.location.href =
-      "https://to-do-list-typescript-react.netlify.app/#/autor";
   }
 };

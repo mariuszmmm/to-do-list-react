@@ -3,8 +3,6 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 const UserData = require("./models/UserData");
 
-let test: any = [];
-
 const handler: Handler = async (event: HandlerEvent) => {
   if (event.httpMethod === "POST") {
     const SECRET = process.env.WEBHOOK_SECRET;
@@ -51,14 +49,10 @@ const handler: Handler = async (event: HandlerEvent) => {
         };
       }
 
-      console.log("event.body", event.body);
-
-      test.push({ body: event.body });
-
       const { user } = JSON.parse(event.body);
       const { email } = user;
 
-      let findedUser = await UserData.findOne({ email });
+      const findedUser = await UserData.findOne({ email });
 
       if (!findedUser) {
         const registeredUser = new UserData({
@@ -68,9 +62,6 @@ const handler: Handler = async (event: HandlerEvent) => {
         });
         await registeredUser.save();
       }
-
-      findedUser = await UserData.findOne({ email });
-      console.log("confirmedUsers", findedUser);
 
       return {
         statusCode: 200,
@@ -90,9 +81,6 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   if (event.httpMethod === "GET") {
     const email = event.queryStringParameters?.email;
-
-    // sprawdza czy użytkownik email jest pomyślnie potwierdzony
-    console.log("test", test);
 
     const confirmedUser = await UserData.findOne({
       email,

@@ -6,12 +6,13 @@ import AuthorPage from "./features/AuthorPage";
 import Container from "./common/Container";
 import CurrentDate from "./common/CurrentDate";
 import ListsPage from "./features/ListsPage";
-import Account from "./features/Account";
+import AccountPage from "./features/AccountPage";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserData, setUserData } from "./features/Account/loginSlice";
+import { selectUserData, setUserData } from "./features/AccountPage/loginSlice";
 import { useFetch } from "./hooks/useFetch";
-import { auth } from "./features/Account/auth";
+import { auth } from "./utils/auth";
 import { useEffect } from "react";
+import { ConfirmationPage } from "./features/ConfirmationPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -23,8 +24,8 @@ const App = () => {
     const token = user?.token.access_token;
     if (!token) return;
     const getData = async () => {
-      const userData = await getUserDataApi(token);
-      userData && dispatch(setUserData(userData));
+      const data = await getUserDataApi(token);
+      if (data) dispatch(setUserData(userData));
     };
 
     getData();
@@ -37,11 +38,12 @@ const App = () => {
       <Container>
         <CurrentDate />
         <Routes>
+          <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/zadania/:id" element={<TaskPage />} />
           <Route path="/zadania" element={<TasksPage />} />
           {userData && <Route path="/listy" element={<ListsPage />} />}
           <Route path="/autor" element={<AuthorPage />} />
-          <Route path="/konto" element={<Account />} />
+          <Route path="/konto" element={<AccountPage />} />
           <Route path="*" element={<Navigate to="/zadania" />} />
         </Routes>
       </Container>

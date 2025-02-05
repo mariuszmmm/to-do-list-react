@@ -18,7 +18,7 @@ import {
 } from "../loginSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../hooks";
-import { auth } from "../auth";
+import { auth } from "../../../utils/auth";
 import { emailPattern, passwordPattern } from "../patterns";
 import { useFetch } from "../../../hooks/useFetch";
 
