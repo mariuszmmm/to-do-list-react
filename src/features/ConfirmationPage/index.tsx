@@ -14,6 +14,17 @@ export const ConfirmationPage = () => {
     setUserConfirmed(sessionStorage.getItem("confirmed"));
     console.log("userConfirmed:", userConfirmed);
 
+    const interval = setInterval(() => {
+      console.log(userConfirmed);
+    }, 3000);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      console.log("clearInterval");
+    }, 60000);
+
+    return () => clearInterval(interval);
+
     // if (!userConfirmed) {
     //   navigate("/");
     // }
