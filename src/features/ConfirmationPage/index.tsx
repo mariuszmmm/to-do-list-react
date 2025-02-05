@@ -8,13 +8,15 @@ export const ConfirmationPage = () => {
   );
   const navigate = useNavigate();
 
+  console.log("userConfirmed:", userConfirmed);
+
   useEffect(() => {
     setUserConfirmed(sessionStorage.getItem("confirmed"));
     console.log("userConfirmed:", userConfirmed);
 
-    if (!userConfirmed) {
-      navigate("/");
-    }
+    // if (!userConfirmed) {
+    //   navigate("/");
+    // }
   }, [userConfirmed, navigate]);
 
   return (
