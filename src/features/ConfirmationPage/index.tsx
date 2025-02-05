@@ -11,10 +11,11 @@ export const ConfirmationPage = () => {
   console.log("userConfirmed:", userConfirmed);
 
   useEffect(() => {
-    setUserConfirmed(sessionStorage.getItem("confirmed"));
     console.log("userConfirmed:", userConfirmed);
 
     const interval = setInterval(() => {
+      setUserConfirmed(sessionStorage.getItem("confirmed"));
+
       console.log(userConfirmed);
     }, 3000);
 
