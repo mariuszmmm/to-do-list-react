@@ -9,12 +9,7 @@ export const tokenConfirmation = (url: string) => {
         try {
           const confirmed = await auth.confirm(token);
           console.log("Confirmed:", confirmed);
-          // dodaj do sesion storage confirmed i ustaw na confirmed.email
-          const setSesion = sessionStorage.setItem(
-            "confirmed",
-            confirmed.email
-          );
-          console.log("setSesion:", setSesion);
+          sessionStorage.setItem("confirmed", confirmed.email);
         } catch (error) {
           console.error("Błąd potwierdzenia konta:", error);
         }
