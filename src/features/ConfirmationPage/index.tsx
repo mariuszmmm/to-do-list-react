@@ -19,7 +19,8 @@ export const ConfirmationPage = () => {
       const confirmed = await auth.confirm(token);
       console.log("Confirmed:", confirmed);
       setUserConfirmedState("confirmed");
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error.message);
       setUserConfirmedState("error");
       console.error("Błąd potwierdzenia konta:", error);
     }
@@ -38,8 +39,8 @@ export const ConfirmationPage = () => {
           userConfirmedState === "waiting"
             ? "Rejestracja w toku, proszę czekać"
             : userConfirmedState === "confirmed"
-            ? "Rejestacja udana, możesz się zalogować"
-            : "Rejestacja nieudana, spróbuj ponownie"
+            ? "Rejestracja udana, możesz się zalogować"
+            : "Rejestracja nieudana, spróbuj ponownie"
         }
         body={null}
       />
