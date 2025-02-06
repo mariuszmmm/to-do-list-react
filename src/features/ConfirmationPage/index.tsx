@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 
+const userConfirmed = sessionStorage.getItem("confirmed");
+
 export const ConfirmationPage = () => {
   const [userConfirmedState, setUserConfirmedState] = useState<string>(
-    sessionStorage.getItem("confirmed") || "waiting"
+    userConfirmed || "waiting"
   );
 
   useEffect(() => {
