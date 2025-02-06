@@ -6,7 +6,7 @@ const userConfirmed = sessionStorage.getItem("confirmed");
 
 export const ConfirmationPage = () => {
   const [userConfirmedState, setUserConfirmedState] = useState<string>(
-    userConfirmed || "waiting"
+    userConfirmed ? userConfirmed : "waiting"
   );
 
   useEffect(() => {
