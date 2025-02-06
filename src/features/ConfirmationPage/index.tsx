@@ -1,41 +1,42 @@
 import { useEffect, useState } from "react";
 import Header from "../../common/Header";
-import { useNavigate } from "react-router-dom";
 
 export const ConfirmationPage = () => {
-  const [userConfirmed, setUserConfirmed] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [userConfirmedState, setUserConfirmedState] =
+    useState<string>("waiting");
 
-  console.log("userConfirmed:", userConfirmed);
+  console.log("userConfirmedState:", userConfirmedState);
 
   useEffect(() => {
-    console.log("userConfirmed:", userConfirmed);
+    console.log("userConfirmedState:", userConfirmedState);
 
     const interval = setInterval(() => {
       const userConfirmed = sessionStorage.getItem("confirmed");
+      console.log("userConfirmed:", userConfirmed);
 
-      setUserConfirmed(userConfirmed);
-
-      //  tu skączyłem
+      setUserConfirmedState(userConfirmed === null ? "waiting" : "confirmed");
 
       console.log(userConfirmed);
     }, 3000);
 
     setTimeout(() => {
       clearInterval(interval);
+      setUserConfirmedState("not confirmed");
       console.log("clearInterval");
     }, 60000);
 
     return () => clearInterval(interval);
-
-    // if (!userConfirmed) {
-    //   navigate("/");
-    // }
-  }, [userConfirmed, navigate]);
+  }, [userConfirmedState]);
 
   return (
     <Header
-      title={userConfirmed ? "Rejestacja udana" : "Rejestacja nieudana"}
+      title={
+        userConfirmedState === "waiting"
+          ? "Czekam na potwierdzenie konta"
+          : userConfirmedState === "confirmed"
+          ? "Rejestacja udana"
+          : "Rejestacja nieudana"
+      }
     />
   );
 };

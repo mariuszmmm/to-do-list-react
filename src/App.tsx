@@ -13,12 +13,16 @@ import { useFetch } from "./hooks/useFetch";
 import { auth } from "./utils/auth";
 import { useEffect } from "react";
 import { ConfirmationPage } from "./features/ConfirmationPage";
+import { tokenConfirmation } from "./utils/tokenConfirmation";
 
 const App = () => {
   const dispatch = useDispatch();
   const { getUserDataApi } = useFetch();
   const userData = useSelector(selectUserData);
   const user = auth.currentUser();
+
+  const url = window.location.href;
+  tokenConfirmation(url);
 
   useEffect(() => {
     const token = user?.token.access_token;
@@ -44,7 +48,7 @@ const App = () => {
           {userData && <Route path="/listy" element={<ListsPage />} />}
           <Route path="/autor" element={<AuthorPage />} />
           <Route path="/konto" element={<AccountPage />} />
-          <Route path="*" element={<Navigate to="/zadania" />} />
+          {/* <Route path="*" element={<Navigate to="/zadania" />} /> */}
         </Routes>
       </Container>
     </HashRouter>
