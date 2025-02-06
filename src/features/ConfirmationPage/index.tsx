@@ -11,6 +11,9 @@ export const ConfirmationPage = () => {
 
   const confirmation = async () => {
     const token = confirmationToken();
+    // czekaj 3 sekundy
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
       const confirmed = await auth.confirm(token);
