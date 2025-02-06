@@ -9,9 +9,11 @@ export const ConfirmationPage = () => {
     userConfirmed() || "waiting"
   );
 
+  console.log(userConfirmedState);
   useEffect(() => {
     const interval = setInterval(() => {
       const confirmed = userConfirmed();
+      console.log(confirmed);
       setUserConfirmedState(confirmed ? confirmed : "waiting");
       if (confirmed) clearInterval(interval);
     }, 3000);
