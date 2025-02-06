@@ -27,6 +27,7 @@ export const ConfirmationPage = () => {
 
   useEffect(() => {
     confirmation();
+    // eslint-disable-next-line
   }, []);
 
   return (
