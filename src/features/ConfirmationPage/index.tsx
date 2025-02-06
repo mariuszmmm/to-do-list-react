@@ -14,7 +14,7 @@ export const ConfirmationPage = () => {
 
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
-      const confirmed = await auth.confirm("token", true);
+      const confirmed = await auth.confirm(token);
       console.log("Confirmed:", confirmed);
       setUserConfirmedState("confirmed");
     } catch (error: any) {
@@ -35,10 +35,10 @@ export const ConfirmationPage = () => {
       <Section
         title={
           userConfirmedState === "waiting"
-            ? "Rejestracja w toku, proszę czekać"
+            ? "Sprawdzam stan rejestracji..."
             : userConfirmedState === "confirmed"
             ? "Rejestracja udana, możesz się zalogować"
-            : "Rejestracja nieudana, spróbuj ponownie"
+            : "Błąd rejestracji. Link wygasł lub został użyty"
         }
         body={null}
       />
