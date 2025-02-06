@@ -10,9 +10,9 @@ export const ConfirmationPage = () => {
     useState<string>("waiting");
 
   const confirmation = async () => {
-    const token = confirmationToken();
     // czekaj 3 sekundy
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const token = confirmationToken();
 
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
