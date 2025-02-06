@@ -48,7 +48,7 @@ const App = () => {
           {userData && <Route path="/listy" element={<ListsPage />} />}
           <Route path="/autor" element={<AuthorPage />} />
           <Route path="/konto" element={<AccountPage />} />
-          {/* <Route path="*" element={<Navigate to="/zadania" />} /> */}
+          <Route path="*" element={<Navigate to="/zadania" />} />
         </Routes>
       </Container>
     </HashRouter>
