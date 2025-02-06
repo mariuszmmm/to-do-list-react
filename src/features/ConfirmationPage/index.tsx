@@ -14,7 +14,7 @@ export const ConfirmationPage = () => {
 
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
-      const confirmed = await auth.confirm(token, true);
+      const confirmed = await auth.confirm("token", true);
       console.log("Confirmed:", confirmed);
       setUserConfirmedState("confirmed");
     } catch (error: any) {
