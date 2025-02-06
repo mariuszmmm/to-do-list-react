@@ -7,7 +7,7 @@ export const tokenConfirmation = (url: string) => {
     if (token) {
       const confirmation = async () => {
         try {
-          const confirmed = await auth.confirm("token");
+          const confirmed = await auth.confirm(token);
           console.log("Confirmed:", confirmed);
           sessionStorage.setItem("confirmed", confirmed.email);
         } catch (error) {

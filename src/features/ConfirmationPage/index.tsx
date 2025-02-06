@@ -32,7 +32,8 @@ export const ConfirmationPage = () => {
 
   return (
     <>
-      <Header
+      <Header title="Potwierdzenie rejestracji" />
+      <Section
         title={
           userConfirmedState === "waiting"
             ? "Rejestracja w toku, proszę czekać"
@@ -40,17 +41,8 @@ export const ConfirmationPage = () => {
             ? "Rejestacja udana"
             : "Rejestacja nieudana"
         }
+        body={null}
       />
-      {userConfirmedState !== "waiting" && (
-        <Section
-          title={
-            userConfirmedState === "confirmed"
-              ? "Możesz się zalogować"
-              : "Ponów próbę rejestracji"
-          }
-          body={null}
-        />
-      )}
     </>
   );
 };
