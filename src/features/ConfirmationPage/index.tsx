@@ -1,38 +1,29 @@
 import { useEffect, useState } from "react";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
+import { auth } from "../../utils/auth";
 
-const userConfirmed = () => sessionStorage.getItem("confirmed");
+const confirmationToken = () => sessionStorage.getItem("confirmation_token");
 
 export const ConfirmationPage = () => {
-  const [userConfirmedState, setUserConfirmedState] = useState<string>(
-    userConfirmed() ? "confirmed" : "waiting"
-  );
+  const [userConfirmedState, setUserConfirmedState] =
+    useState<string>("waiting");
 
-  console.log(userConfirmedState);
+  const confirmation = async () => {
+    const token = confirmationToken();
+    try {
+      if (!token) throw new Error("Brak tokenu potwierdzającego");
+      const confirmed = await auth.confirm(token);
+      console.log("Confirmed:", confirmed);
+      setUserConfirmedState("confirmed");
+    } catch (error) {
+      setUserConfirmedState("error");
+      console.error("Błąd potwierdzenia konta:", error);
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      const confirmed = userConfirmed();
-
-      console.log(confirmed);
-
-      if (confirmed) {
-        setUserConfirmedState("confirmed");
-        clearInterval(interval);
-        clearTimeout(timeout);
-      }
-    }, 3000);
-
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      setUserConfirmedState("not confirmed");
-    }, 60000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-    // eslint-disable-next-line
+    confirmation();
   }, []);
 
   return (
