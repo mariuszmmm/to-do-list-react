@@ -3,27 +3,21 @@ import Header from "../../common/Header";
 import Section from "../../common/Section";
 
 export const ConfirmationPage = () => {
-  const [userConfirmedState, setUserConfirmedState] =
-    useState<string>("waiting");
-
-  console.log("userConfirmedState:", userConfirmedState);
+  const [userConfirmedState, setUserConfirmedState] = useState<string>(
+    sessionStorage.getItem("confirmed") || "waiting"
+  );
 
   useEffect(() => {
-    console.log("userConfirmedState:", userConfirmedState);
-
     const interval = setInterval(() => {
       const userConfirmed = sessionStorage.getItem("confirmed");
-      console.log("userConfirmed:", userConfirmed);
 
       setUserConfirmedState(userConfirmed === null ? "waiting" : "confirmed");
-
-      console.log(userConfirmed);
+      if (userConfirmed) clearInterval(interval);
     }, 3000);
 
     setTimeout(() => {
       clearInterval(interval);
       setUserConfirmedState("not confirmed");
-      console.log("clearInterval");
     }, 60000);
 
     return () => clearInterval(interval);
@@ -38,8 +32,8 @@ export const ConfirmationPage = () => {
           userConfirmedState === "waiting"
             ? "Rejestracja w toku, proszę czekać"
             : userConfirmedState === "confirmed"
-            ? "Rejestacja udana"
-            : "Rejestacja nieudana"
+            ? "Rejestacja udana, możesz się zalogować"
+            : "Rejestacja nieudana, spróbuj ponownie"
         }
         body={null}
       />

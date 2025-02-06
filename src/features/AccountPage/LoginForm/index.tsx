@@ -172,6 +172,11 @@ const LoginForm = () => {
         case "Signup requires a valid password":
           dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
           break;
+        case "A user with this email address has already been registered":
+          dispatch(
+            setErrorMessage("Użytkownik z tym adresem e-mail już istnieje.")
+          );
+          break;
         default:
           dispatch(setErrorMessage("Błąd rejestracji."));
           break;
