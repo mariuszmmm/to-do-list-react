@@ -8,7 +8,7 @@ export const ConfirmationPage = () => {
 
   useEffect(() => {
     const userConfirmed = () => sessionStorage.getItem("confirmed");
-    setUserConfirmedState(userConfirmed === null ? "waiting" : "confirmed");
+    setUserConfirmedState(userConfirmed() === null ? "waiting" : "confirmed");
 
     const interval = setInterval(() => {
       setUserConfirmedState(userConfirmed() === null ? "waiting" : "confirmed");
