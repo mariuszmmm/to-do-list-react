@@ -13,6 +13,7 @@ export const ConfirmationPage = () => {
     setUserConfirmedState(confirmed ? confirmed : "waiting");
 
     const interval = setInterval(() => {
+      const confirmed = userConfirmed();
       console.log(confirmed);
       setUserConfirmedState(confirmed ? confirmed : "waiting");
       if (confirmed) clearInterval(interval);
