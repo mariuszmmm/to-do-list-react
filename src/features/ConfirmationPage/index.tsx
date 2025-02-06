@@ -3,16 +3,16 @@ import Header from "../../common/Header";
 import Section from "../../common/Section";
 import { auth } from "../../utils/auth";
 
-const confirmationToken = () => sessionStorage.getItem("confirmation_token");
-
 export const ConfirmationPage = () => {
   const [userConfirmedState, setUserConfirmedState] =
     useState<string>("waiting");
+  const confirmationToken = () => sessionStorage.getItem("confirmation_token");
 
   const confirmation = async () => {
     // czekaj 3 sekundy
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     const token = confirmationToken();
+    console.log("Token:", token);
 
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
