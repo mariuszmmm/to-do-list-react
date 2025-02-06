@@ -9,14 +9,12 @@ export const ConfirmationPage = () => {
   const confirmationToken = () => sessionStorage.getItem("confirmation_token");
 
   const confirmation = async () => {
-    // czekaj 3 sekundy
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     const token = confirmationToken();
     console.log("Token:", token);
 
     try {
       if (!token) throw new Error("Brak tokenu potwierdzającego");
-      const confirmed = await auth.confirm(token);
+      const confirmed = await auth.confirm(token, true);
       console.log("Confirmed:", confirmed);
       setUserConfirmedState("confirmed");
     } catch (error: any) {
