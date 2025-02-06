@@ -10,21 +10,27 @@ export const ConfirmationPage = () => {
   console.log(userConfirmedState);
   useEffect(() => {
     const confirmed = userConfirmed();
-    setUserConfirmedState(confirmed ? confirmed : "waiting");
+    setUserConfirmedState(confirmed ? "confirmed" : "waiting");
 
     const interval = setInterval(() => {
       const confirmed = userConfirmed();
       console.log(confirmed);
-      setUserConfirmedState(confirmed ? confirmed : "waiting");
-      if (confirmed) clearInterval(interval);
+      setUserConfirmedState(confirmed ? "confirmed" : "waiting");
+      if (confirmed) {
+        clearInterval(interval);
+        clearTimeout(timeout);
+      }
     }, 3000);
 
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       clearInterval(interval);
       setUserConfirmedState("not confirmed");
     }, 60000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
     // eslint-disable-next-line
   }, []);
 
