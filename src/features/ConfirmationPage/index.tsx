@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 
-const userConfirmed = () => sessionStorage.getItem("confirmed");
-
 export const ConfirmationPage = () => {
-  const [userConfirmedState, setUserConfirmedState] = useState<string>(
-    userConfirmed() || "waiting"
-  );
+  const [userConfirmedState, setUserConfirmedState] =
+    useState<string>("waiting");
+  const userConfirmed = () => sessionStorage.getItem("confirmed");
 
   console.log(userConfirmedState);
   useEffect(() => {
+    const confirmed = userConfirmed();
+    setUserConfirmedState(confirmed ? confirmed : "waiting");
+
     const interval = setInterval(() => {
-      const confirmed = userConfirmed();
       console.log(confirmed);
       setUserConfirmedState(confirmed ? confirmed : "waiting");
       if (confirmed) clearInterval(interval);
