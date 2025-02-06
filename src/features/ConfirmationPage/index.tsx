@@ -3,9 +3,7 @@ import Header from "../../common/Header";
 import { useNavigate } from "react-router-dom";
 
 export const ConfirmationPage = () => {
-  const [userConfirmed, setUserConfirmed] = useState(
-    sessionStorage.getItem("confirmed")
-  );
+  const [userConfirmed, setUserConfirmed] = useState<string | null>(null);
   const navigate = useNavigate();
 
   console.log("userConfirmed:", userConfirmed);
@@ -14,7 +12,11 @@ export const ConfirmationPage = () => {
     console.log("userConfirmed:", userConfirmed);
 
     const interval = setInterval(() => {
-      setUserConfirmed(sessionStorage.getItem("confirmed"));
+      const userConfirmed = sessionStorage.getItem("confirmed");
+
+      setUserConfirmed(userConfirmed);
+
+      //  tu skączyłem
 
       console.log(userConfirmed);
     }, 3000);
