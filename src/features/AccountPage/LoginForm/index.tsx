@@ -15,6 +15,7 @@ import {
   setLogged,
   setLogout,
   selectLogged,
+  setAuthMode,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../hooks";
@@ -47,7 +48,7 @@ const LoginForm = () => {
 
         if (confirmedEmail) {
           clearInterval(interval);
-          // setErrorMessage("");
+          dispatch(setErrorMessage(""));
           await login();
         }
       } catch (error) {
@@ -56,7 +57,8 @@ const LoginForm = () => {
     }, 3000);
 
     const timeout = setTimeout(() => {
-      setErrorMessage("");
+      dispatch(setAuthMode("login"));
+      dispatch(setErrorMessage(""));
       dispatch(fetchError());
       clearInterval(interval);
     }, 60000);
