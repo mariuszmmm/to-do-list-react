@@ -56,8 +56,9 @@ const LoginForm = () => {
     }, 3000);
 
     const timeout = setTimeout(() => {
+      setErrorMessage("");
+      dispatch(fetchError());
       clearInterval(interval);
-      // usuń użytkownika z bazy danych
     }, 60000);
 
     return () => {

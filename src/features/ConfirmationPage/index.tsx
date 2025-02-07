@@ -11,20 +11,13 @@ export const ConfirmationPage = () => {
 
   const confirmation = async () => {
     const token = confirmationToken();
-    console.log("Token:", token);
 
     try {
-      if (!token) {
-        setUserConfirmedState("token_error");
-        return;
-      }
-      const confirmed = await auth.confirm(token);
-      console.log("Confirmed:", confirmed);
+      if (!token) throw new Error("Brak tokenu potwierdzającego");
+      await auth.confirm(token);
       setUserConfirmedState("confirmed");
     } catch (error: any) {
-      console.log(error.message);
       setUserConfirmedState("error");
-      console.error("Błąd potwierdzenia konta:", error);
     }
   };
 
@@ -42,9 +35,7 @@ export const ConfirmationPage = () => {
             ? "Sprawdzam stan rejestracji..."
             : userConfirmedState === "confirmed"
             ? "Rejestracja udana, możesz się zalogować"
-            : userConfirmedState === "token_error"
-            ? "Link nieprawidłowy"
-            : "Link wygasł lub został już użyty"
+            : "Link wygasł lub został użyty"
         }
         extraHeaderContent={
           userConfirmedState === "confirmed" && <ConfirmationButtons />
