@@ -47,6 +47,7 @@ const LoginForm = () => {
 
         if (confirmedEmail) {
           clearInterval(interval);
+          // setErrorMessage("");
           await login();
         }
       } catch (error) {
@@ -128,7 +129,6 @@ const LoginForm = () => {
   };
 
   const login = async () => {
-    setErrorMessage("");
     try {
       const response = await auth.login(email, password, true);
       console.log("login response", response);
@@ -155,7 +155,6 @@ const LoginForm = () => {
   };
 
   const registration = async () => {
-    setErrorMessage("");
     try {
       const response = await auth.signup(email, password);
       console.log("registration response", response);
