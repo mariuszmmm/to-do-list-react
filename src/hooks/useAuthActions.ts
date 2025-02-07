@@ -17,6 +17,7 @@ export const useAuthActions = (
   email: string,
   password: string,
   setIsWaitingForConfirmation: (value: boolean) => void,
+  errorMessage: string,
   user: User | null
 ) => {
   const { getUserDataApi, setUserApi } = useFetch();
@@ -64,7 +65,7 @@ export const useAuthActions = (
 
         if (confirmedEmail) {
           clearInterval(interval);
-          dispatch(setErrorMessage(""));
+          if (errorMessage) dispatch(setErrorMessage(""));
           await login();
         }
       } catch (error) {
@@ -74,7 +75,7 @@ export const useAuthActions = (
 
     const timeout = setTimeout(() => {
       dispatch(setAuthMode("login"));
-      dispatch(setErrorMessage(""));
+      if (errorMessage) dispatch(setErrorMessage(""));
       dispatch(fetchError());
       clearInterval(interval);
     }, 60000);

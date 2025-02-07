@@ -4,5 +4,6 @@ export const tokenConfirmation = (url: string) => {
     sessionStorage.setItem("confirmation_token", token);
     window.location.href =
       "https://to-do-list-typescript-react.netlify.app/#/confirmation";
+    window.close();
   }
 };

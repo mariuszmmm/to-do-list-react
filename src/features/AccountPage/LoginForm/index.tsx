@@ -36,6 +36,7 @@ const LoginForm = () => {
     email,
     password,
     setIsWaitingForConfirmation,
+    errorMessage,
     auth.currentUser()
   );
   const { validation } = useValidation(
@@ -57,7 +58,7 @@ const LoginForm = () => {
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(setErrorMessage(""));
+    if (errorMessage) dispatch(setErrorMessage(""));
 
     if (user) {
       await logout();

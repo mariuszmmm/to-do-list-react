@@ -34,7 +34,7 @@ export const ConfirmationPage = () => {
           userConfirmedState === "waiting"
             ? "Sprawdzam stan rejestracji..."
             : userConfirmedState === "confirmed"
-            ? "Rejestracja udana, możesz się zalogować"
+            ? "Rejestracja udana, zamknij stronę"
             : "Link wygasł lub został użyty"
         }
         extraHeaderContent={

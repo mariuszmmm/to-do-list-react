@@ -9,6 +9,7 @@ import {
   selectLogged,
   selectRecoverPassword,
   setRecoverPassword,
+  selectErrorMessage,
 } from "../loginSlice";
 
 const LoginButtons = () => {
@@ -17,15 +18,16 @@ const LoginButtons = () => {
   const recoverPassword = useAppSelector(selectRecoverPassword);
   const authMode = useAppSelector(selectAuthMode);
   const fetchStatus = useAppSelector(selectFetchStatus);
+  const errorMessage = useAppSelector(selectErrorMessage);
 
   const handleRegister = () => {
     if (recoverPassword) dispatch(setRecoverPassword(false));
     dispatch(setAuthMode("register"));
-    dispatch(setErrorMessage(""));
+    if (errorMessage) dispatch(setErrorMessage(""));
   };
   const handleLogin = () => {
     dispatch(setAuthMode("login"));
-    dispatch(setErrorMessage(""));
+    if (errorMessage) dispatch(setErrorMessage(""));
   };
 
   return (
