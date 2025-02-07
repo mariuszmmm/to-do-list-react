@@ -5,7 +5,7 @@ import {
 } from "../../tasksSlice";
 import ButtonsContainer from "../../../../common/ButtonsContainer";
 import Button from "../../../../common/Button";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 
 const FormButtons = () => {
   const dispatch = useAppDispatch();

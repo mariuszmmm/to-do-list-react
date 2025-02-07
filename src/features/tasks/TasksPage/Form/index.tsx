@@ -13,7 +13,7 @@ import { Input } from "../../../../common/Input";
 import { useReplaceQueryParameter } from "../../../../utils/queryParameter";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 
 const Form = () => {
   const tasks = useAppSelector(selectTasks);

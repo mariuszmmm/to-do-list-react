@@ -17,7 +17,7 @@ import {
   RemoveButton,
   ToggleButton,
 } from "../../../../common/taskButtons";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import { StyledLink } from "../../../../common/StyledLink";
 
 const TasksList = () => {

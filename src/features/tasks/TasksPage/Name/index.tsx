@@ -10,7 +10,7 @@ import { FormEventHandler, useEffect, useRef, useState } from "react";
 import Button from "../../../../common/Button";
 import { NameContainer } from "./styled";
 import { SubTitle } from "../../../../common/SubTitle";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 
 export const Name = () => {
   const tasks = useAppSelector(selectTasks);

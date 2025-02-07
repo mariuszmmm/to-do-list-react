@@ -5,7 +5,7 @@ import {
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { Input } from "../../../../common/Input";
 import { selectShowSearch } from "../../tasksSlice";
-import { useAppSelector } from "../../../../hooks";
+import { useAppSelector } from "../../../../hooks/hooks";
 import { ChangeEventHandler } from "react";
 
 const Search = () => {

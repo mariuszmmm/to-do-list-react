@@ -4,24 +4,20 @@ import ExtraButton from "../../../common/Button";
 import { Input } from "../../../common/Input";
 import Text from "../../../common/Text";
 import {
-  fetchSuccess,
   loading,
   selectAuthMode,
   selectFetchStatus,
   selectErrorMessage,
   setErrorMessage,
-  fetchError,
-  setUserData,
-  setLogged,
-  setLogout,
   selectLogged,
-  setAuthMode,
+  selectRecoverPassword,
+  setRecoverPassword,
 } from "../loginSlice";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch } from "../../../hooks/hooks";
 import { auth } from "../../../utils/auth";
-import { emailPattern, passwordPattern } from "../patterns";
-import { useFetch } from "../../../hooks/useFetch";
+import { useAuthActions } from "../../../hooks/useAuthActions";
+import { useValidation } from "../../../hooks/useValidation";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("mariuszmmm@op.pl");
@@ -31,43 +27,24 @@ const LoginForm = () => {
   const loginInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const logged = useSelector(selectLogged);
+  const recoverPassword = useSelector(selectRecoverPassword);
   const authMode = useSelector(selectAuthMode);
   const fetchStatus = useSelector(selectFetchStatus);
   const errorMessage = useSelector(selectErrorMessage);
   const dispatch = useAppDispatch();
+  const { register, waitingForConfirmation, login, logout } = useAuthActions(
+    email,
+    password,
+    setIsWaitingForConfirmation,
+    auth.currentUser()
+  );
+  const { validation } = useValidation(
+    email,
+    password,
+    loginInputRef,
+    passwordInputRef
+  );
   const user = auth.currentUser();
-  const { getUserDataApi, setUserApi } = useFetch();
-
-  const waitingForConfirmation = () => {
-    const interval = setInterval(async () => {
-      try {
-        const confirmationResponse = await setUserApi(email);
-        const confirmedEmail = confirmationResponse?.email;
-
-        console.log("confirmationResponse", confirmationResponse);
-
-        if (confirmedEmail) {
-          clearInterval(interval);
-          dispatch(setErrorMessage(""));
-          await login();
-        }
-      } catch (error) {
-        console.error("error", error);
-      }
-    }, 3000);
-
-    const timeout = setTimeout(() => {
-      dispatch(setAuthMode("login"));
-      dispatch(setErrorMessage(""));
-      dispatch(fetchError());
-      clearInterval(interval);
-    }, 60000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  };
 
   useEffect(() => {
     if (isWaitingForConfirmation) {
@@ -75,118 +52,8 @@ const LoginForm = () => {
       waitingForConfirmation();
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [isWaitingForConfirmation]);
-
-  const logout = async () => {
-    try {
-      dispatch(loading());
-      if (user) {
-        await user.logout();
-      }
-      dispatch(setLogout());
-      dispatch(fetchSuccess());
-    } catch (error) {
-      dispatch(setErrorMessage("Błąd wylogowania"));
-    }
-  };
-  const validation = () => {
-    if (!email) {
-      dispatch(setErrorMessage("Wpisz adres e-mail."));
-      loginInputRef.current?.focus();
-      return;
-    }
-
-    if (!emailPattern.test(email)) {
-      dispatch(setErrorMessage("Nieprawidłowy adres e-mail."));
-      loginInputRef.current?.focus();
-      return;
-    }
-
-    if (!password) {
-      dispatch(setErrorMessage("Wpisz hasło."));
-      passwordInputRef.current?.focus();
-      return;
-    }
-
-    if (!passwordPattern.test(password)) {
-      dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
-      passwordInputRef.current?.focus();
-      return;
-    }
-    return true;
-  };
-
-  const getUserData = async (token: string) => {
-    try {
-      const userData = await getUserDataApi(token);
-      console.log("userData", userData);
-      if (!userData) throw new Error();
-      dispatch(setUserData(userData));
-      dispatch(fetchSuccess());
-    } catch (error) {
-      dispatch(setErrorMessage("Błąd pobierania danych"));
-      dispatch(fetchError());
-    }
-  };
-
-  const login = async () => {
-    try {
-      const response = await auth.login(email, password, true);
-      console.log("login response", response);
-      dispatch(setLogged(response.email));
-      const token = response.token.access_token;
-      await getUserData(token);
-    } catch (error: any) {
-      dispatch(fetchError());
-      switch (error.message) {
-        case "Failed to fetch":
-          dispatch(setErrorMessage("Brak połączenia z internetem."));
-          break;
-        case "invalid_grant: Email not confirmed":
-          dispatch(setErrorMessage("E-mail nie został potwierdzony."));
-          break;
-        case "invalid_grant: No user found with that email, or password invalid.":
-          dispatch(setErrorMessage("Nieprawidłowy adres e-mail lub hasło."));
-          break;
-        default:
-          dispatch(setErrorMessage("Błąd logowania."));
-          break;
-      }
-    }
-  };
-
-  const registration = async () => {
-    try {
-      const response = await auth.signup(email, password);
-      console.log("registration response", response);
-      dispatch(setErrorMessage("Potwierdź rejestrację w wiadomości e-mail."));
-      setIsWaitingForConfirmation(true);
-    } catch (error: any) {
-      dispatch(fetchError());
-
-      switch (error.message) {
-        case "Failed to fetch":
-          dispatch(setErrorMessage("Brak połączenia z internetem."));
-          break;
-        case "Unable to validate email address: invalid format":
-          dispatch(setErrorMessage("Wpisz poprawny adres e-mail."));
-          break;
-        case "Signup requires a valid password":
-          dispatch(setErrorMessage("Hasło musi mieć co najmniej 4 znaki."));
-          break;
-        case "A user with this email address has already been registered":
-          dispatch(
-            setErrorMessage("Użytkownik z tym adresem e-mail już istnieje.")
-          );
-          break;
-        default:
-          dispatch(setErrorMessage("Błąd rejestracji."));
-          break;
-      }
-      return;
-    }
-  };
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -197,14 +64,12 @@ const LoginForm = () => {
       return;
     }
 
-    if (!validation()) {
-      return;
-    }
+    if (!validation()) return;
 
     dispatch(loading());
 
     if (authMode === "register") {
-      await registration();
+      await register();
       return;
     }
 
@@ -233,7 +98,7 @@ const LoginForm = () => {
           placeholder="hasło"
           onChange={({ target }) => setPassword(target.value)}
           ref={passwordInputRef}
-          hidden={!!logged}
+          hidden={!!logged || (authMode === "login" && recoverPassword)}
           disabled={fetchStatus === "loading"}
         />
         <Button
@@ -244,12 +109,19 @@ const LoginForm = () => {
           {logged
             ? "Wyloguj"
             : authMode === "login"
-            ? "Zaloguj"
+            ? recoverPassword
+              ? "Przypomnij hasło"
+              : "Zaloguj"
             : "Zarejestruj"}
         </Button>
       </StyledForm>
       {!logged && authMode === "login" && fetchStatus !== "loading" && (
-        <ExtraButton $special>Przypomnij hasło</ExtraButton>
+        <ExtraButton
+          $special
+          onClick={() => dispatch(setRecoverPassword(!recoverPassword))}
+        >
+          {recoverPassword ? "Anuluj" : "Przypomnij hasło"}
+        </ExtraButton>
       )}
       {fetchStatus === "loading" && <Text $loading>Ładowanie...</Text>}
       {errorMessage && <Text $error>{errorMessage}</Text>}

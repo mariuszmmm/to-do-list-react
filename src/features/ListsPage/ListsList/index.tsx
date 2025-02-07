@@ -12,7 +12,7 @@ import {
   Task,
   RemoveButton,
 } from "./styled";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 
 const ListsList = () => {
   const selectedListId = useAppSelector(selectSelectedListId);

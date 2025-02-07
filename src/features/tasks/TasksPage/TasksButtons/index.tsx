@@ -26,7 +26,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { useState } from "react";
 import Undo from "../../../../common/buttonIcons/Undo";
 import Redo from "../../../../common/buttonIcons/Redo";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 
 const TasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);

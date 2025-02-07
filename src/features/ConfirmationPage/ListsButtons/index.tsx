@@ -10,7 +10,7 @@ import {
   selectUndoListsStack,
   setListToLoad,
   undoLists,
-} from "../listsSlice";
+} from "../../ListsPage/listsSlice";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import { StyledLink } from "../../../common/StyledLink";
 

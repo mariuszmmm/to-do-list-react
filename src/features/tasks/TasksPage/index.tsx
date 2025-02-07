@@ -8,7 +8,7 @@ import TasksButtons from "./TasksButtons";
 import SearchButtons from "./SearchButtons";
 import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { Name } from "./Name";
-import { useAppSelector } from "../../../hooks";
+import { useAppSelector } from "../../../hooks/hooks";
 
 const TasksPage = () => {
   const showSearch = useAppSelector(selectShowSearch);
@@ -29,7 +29,7 @@ const TasksPage = () => {
         hidden={!showSearch}
       />
       <Section
-        title={< Name />}
+        title={<Name />}
         body={<TasksList />}
         extraHeaderContent={<TasksButtons />}
       />

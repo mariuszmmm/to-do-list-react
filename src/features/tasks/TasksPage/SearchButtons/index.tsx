@@ -6,7 +6,7 @@ import {
   useQueryParameter,
   useReplaceQueryParameter,
 } from "../../../../utils/queryParameter";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 
 const SearchButtons = () => {
   const dispatch = useAppDispatch();

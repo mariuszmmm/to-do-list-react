@@ -1,21 +1,25 @@
 import Button from "../../../common/Button";
 import ButtonsContainer from "../../../common/ButtonsContainer";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/hooks";
 import {
   selectAuthMode,
   setAuthMode,
   selectFetchStatus,
   setErrorMessage,
   selectLogged,
+  selectRecoverPassword,
+  setRecoverPassword,
 } from "../loginSlice";
 
 const LoginButtons = () => {
   const dispatch = useAppDispatch();
   const logged = useAppSelector(selectLogged);
+  const recoverPassword = useAppSelector(selectRecoverPassword);
   const authMode = useAppSelector(selectAuthMode);
   const fetchStatus = useAppSelector(selectFetchStatus);
 
   const handleRegister = () => {
+    if (recoverPassword) dispatch(setRecoverPassword(false));
     dispatch(setAuthMode("register"));
     dispatch(setErrorMessage(""));
   };

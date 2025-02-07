@@ -8,7 +8,7 @@ import {
 import ListsList from "./ListsList";
 import ListsButtons from "./ListsButtons";
 import TasksList from "./TasksList";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector } from "../../hooks/hooks";
 
 const ListsPage = () => {
   const areListsEmpty = useAppSelector(selectAreListsEmpty);
