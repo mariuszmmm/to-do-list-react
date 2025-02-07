@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
 interface ItemProps {
@@ -66,18 +65,4 @@ export const Task = styled.span<TaskProps>`
     css`
       text-decoration: 1px line-through black;
     `}
-`;
-
-export const StyledLink = styled(Link)`
-  color: ${({ theme }) => theme.color.teal};
-  text-decoration: none;
-
-  &:hover {
-    cursor: pointer;
-    filter: brightness(110%);
-  }
-
-  &:active {
-    filter: brightness(120%);
-  }
 `;

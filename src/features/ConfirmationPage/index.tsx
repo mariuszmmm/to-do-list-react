@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 import { auth } from "../../utils/auth";
+import ConfirmationButtons from "./ConfirmationButtons";
 
 export const ConfirmationPage = () => {
   const [userConfirmedState, setUserConfirmedState] =
@@ -13,7 +14,10 @@ export const ConfirmationPage = () => {
     console.log("Token:", token);
 
     try {
-      if (!token) throw new Error("Brak tokenu potwierdzającego");
+      if (!token) {
+        setUserConfirmedState("token_error");
+        return;
+      }
       const confirmed = await auth.confirm(token);
       console.log("Confirmed:", confirmed);
       setUserConfirmedState("confirmed");
@@ -38,7 +42,12 @@ export const ConfirmationPage = () => {
             ? "Sprawdzam stan rejestracji..."
             : userConfirmedState === "confirmed"
             ? "Rejestracja udana, możesz się zalogować"
-            : "Błąd rejestracji. Link wygasł lub został użyty"
+            : userConfirmedState === "token_error"
+            ? "Link nieprawidłowy"
+            : "Link wygasł lub został już użyty"
+        }
+        extraHeaderContent={
+          userConfirmedState === "confirmed" && <ConfirmationButtons />
         }
         body={null}
       />

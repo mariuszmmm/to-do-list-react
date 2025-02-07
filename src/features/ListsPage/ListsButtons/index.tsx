@@ -11,8 +11,8 @@ import {
   setListToLoad,
   undoLists,
 } from "../listsSlice";
-import { StyledLink } from "./styled";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { StyledLink } from "../../../common/StyledLink";
 
 const ListsButtons = () => {
   const undoListsStack = useAppSelector(selectUndoListsStack);

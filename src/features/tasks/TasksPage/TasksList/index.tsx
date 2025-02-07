@@ -8,7 +8,7 @@ import {
   selectTasks,
   selectListName,
 } from "../../tasksSlice";
-import { List, Item, Content, Task, StyledLink } from "./styled";
+import { List, Item, Content, Task } from "./styled";
 import { useQueryParameter } from "../../../../utils/queryParameter";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
@@ -18,6 +18,7 @@ import {
   ToggleButton,
 } from "../../../../common/taskButtons";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { StyledLink } from "../../../../common/StyledLink";
 
 const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
