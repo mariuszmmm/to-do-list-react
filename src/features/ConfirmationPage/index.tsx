@@ -41,7 +41,6 @@ export const ConfirmationPage = () => {
         clearInterval(interval);
       };
     }
-    window.close();
     // eslint-disable-next-line
   }, [userConfirmedState]);
 
@@ -49,7 +48,6 @@ export const ConfirmationPage = () => {
     dispatch(setIsConfirmation());
     console.log("isConfirmation", isConfirmation);
     confirmation();
-    window.close();
     // eslint-disable-next-line
   }, []);
 
