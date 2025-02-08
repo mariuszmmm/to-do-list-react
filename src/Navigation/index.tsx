@@ -1,13 +1,15 @@
 import { useSelector } from "react-redux";
 import { Nav, NavList, StyledNavLink, Account } from "./styled";
 import { selectUserData } from "../features/AccountPage/loginSlice";
+import { selectIsConfirmation } from "../features/ConfirmationPage/confirmationSlice";
 
 const Navigation = () => {
   const userData = useSelector(selectUserData);
+  const isConfirmation = useSelector(selectIsConfirmation);
 
   return (
     <Nav>
-      <NavList $isLists={!!userData}>
+      <NavList $isLists={!!userData} $noDisplay={isConfirmation}>
         <li></li>
         <li>
           <StyledNavLink to="/zadania">Zadania</StyledNavLink>

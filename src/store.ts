@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import tasksReducer from "./features/tasks/tasksSlice";
 import listsReducer from "./features/ListsPage/listsSlice";
 import loginReducer from "./features/AccountPage/loginSlice";
+import confirmationReducer from "./features/ConfirmationPage/confirmationSlice";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./rootSaga";
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     tasks: tasksReducer,
     lists: listsReducer,
     login: loginReducer,
+    confirmation: confirmationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

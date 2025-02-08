@@ -4,6 +4,7 @@ import { ReactComponent as user } from "../images/user.svg";
 
 interface NavListProps {
   $isLists: boolean;
+  $noDisplay: boolean;
 }
 
 export const Nav = styled.nav`
@@ -19,7 +20,7 @@ export const Nav = styled.nav`
 
 export const NavList = styled.ul<NavListProps>`
   list-style: none;
-  display: grid;
+  display: ${({ $noDisplay }) => ($noDisplay ? "none" : "grid")};
   align-items: center;
   grid-template-columns: 1fr auto auto 1fr;
   gap: clamp(10px, 5vw, 50px);
