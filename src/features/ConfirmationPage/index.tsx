@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../common/Header";
 import Section from "../../common/Section";
 import { auth } from "../../utils/auth";

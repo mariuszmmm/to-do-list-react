@@ -1,10 +1,4 @@
-import {
-  HashRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
@@ -31,6 +25,12 @@ const App = () => {
   const [isConfirming, setIsConfirming] = useState(() => {
     return sessionStorage.getItem("isConfirming") === "true";
   });
+
+  useEffect(() => {
+    if (sessionStorage.getItem("confirmation_token")) {
+      setIsConfirming(true);
+    }
+  }, []);
 
   // const url = window.location.href;
   // tokenConfirmation(url);
