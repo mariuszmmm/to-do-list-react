@@ -22,15 +22,15 @@ const App = () => {
   const userData = useSelector(selectUserData);
   const user = auth.currentUser();
 
-  const [isConfirming, setIsConfirming] = useState(() => {
-    return sessionStorage.getItem("isConfirming") === "true";
-  });
+  // const [isConfirming, setIsConfirming] = useState(() => {
+  //   return sessionStorage.getItem("isConfirming") === "true";
+  // });
 
-  useEffect(() => {
-    if (sessionStorage.getItem("confirmation_token")) {
-      setIsConfirming(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (sessionStorage.getItem("confirmation_token")) {
+  //     setIsConfirming(true);
+  //   }
+  // }, []);
 
   // const url = window.location.href;
   // tokenConfirmation(url);
@@ -56,18 +56,18 @@ const App = () => {
         <Routes>
           <Route path="/confirmation" element={<ConfirmationPage />} />
 
-          {isConfirming ? (
+          {/* {isConfirming ? (
             <Route path="*" element={<Navigate to="/confirmation" replace />} />
           ) : (
-            <>
-              <Route path="/zadania/:id" element={<TaskPage />} />
-              <Route path="/zadania" element={<TasksPage />} />
-              {userData && <Route path="/listy" element={<ListsPage />} />}
-              <Route path="/autor" element={<AuthorPage />} />
-              <Route path="/konto" element={<AccountPage />} />
-              <Route path="*" element={<Navigate to="/zadania" replace />} />
-            </>
-          )}
+            <> */}
+          <Route path="/zadania/:id" element={<TaskPage />} />
+          <Route path="/zadania" element={<TasksPage />} />
+          {userData && <Route path="/listy" element={<ListsPage />} />}
+          <Route path="/autor" element={<AuthorPage />} />
+          <Route path="/konto" element={<AccountPage />} />
+          <Route path="*" element={<Navigate to="/zadania" />} />
+          {/* </>
+          )} */}
         </Routes>
       </Container>
     </HashRouter>

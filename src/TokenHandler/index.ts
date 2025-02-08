@@ -9,7 +9,7 @@ const TokenHandler = () => {
     if (url.includes("#confirmation_token")) {
       const token = url.split("#confirmation_token=")[1];
       sessionStorage.setItem("confirmation_token", token);
-      sessionStorage.setItem("isConfirming", "true");
+      // sessionStorage.setItem("isConfirming", "true");
       navigate("/confirmation", { replace: true });
     }
   }, [navigate]);

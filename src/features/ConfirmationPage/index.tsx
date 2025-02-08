@@ -32,7 +32,6 @@ export const ConfirmationPage = () => {
       const interval = setInterval(() => {
         setLeftTime((prev) => prev - 1);
         if (leftTime === 0) {
-          clearInterval(interval);
           window.close();
         }
       }, 1000);
