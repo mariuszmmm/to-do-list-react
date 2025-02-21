@@ -4,6 +4,11 @@
   status = 200
 
 [[redirects]]
+  from = "/getVersion"
+  to = "/.netlify/functions/getVersion"
+  status = 200
+
+[[redirects]]
   from = "/updateData"
   to = "/.netlify/functions/updateData"
   status = 200
@@ -17,7 +22,3 @@
   from = "/deleteUser"
   to = "/.netlify/functions/deleteUser"
   status = 200
-
-
-
-

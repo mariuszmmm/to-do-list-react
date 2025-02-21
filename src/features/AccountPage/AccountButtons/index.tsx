@@ -4,35 +4,28 @@ import { Button } from "../../../common/Button";
 import {
   selectAccountMode,
   setAccountMode,
-  selectFetchStatus,
-  selectLoggedUser,
+  selectLoggedUserEmail,
+  deleteAccountRequest,
 } from "../accountSlice";
 
 export const AccountButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
-  const fetchStatus = useAppSelector(selectFetchStatus);
-  const userLogged = useAppSelector(selectLoggedUser);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
 
   return (
     <ButtonsContainer>
-      {!userLogged ? (
+      {!loggedUserEmail ? (
         <>
           <Button
             onClick={() => dispatch(setAccountMode("registerAccount"))}
             $selected={accountMode === "registerAccount"}
-            disabled={
-              fetchStatus === "loading" && accountMode !== "registerAccount"
-            }
           >
             Rejestracja
           </Button>
           <Button
             onClick={() => dispatch(setAccountMode("login"))}
             $selected={accountMode === "login"}
-            disabled={
-              fetchStatus === "loading" && accountMode !== "registerAccount"
-            }
           >
             Logowanie
           </Button>
@@ -40,15 +33,15 @@ export const AccountButtons = () => {
       ) : (
         <>
           <Button
-            onClick={() => dispatch(setAccountMode("deleteUser"))}
-            disabled={fetchStatus === "loading"}
-            $selected={accountMode === "deleteUser"}
+            onClick={() => {
+              dispatch(deleteAccountRequest());
+              dispatch(setAccountMode("logged"));
+            }}
           >
             Usuń konto
           </Button>
           <Button
             onClick={() => dispatch(setAccountMode("changePassword"))}
-            disabled={fetchStatus === "loading"}
             $selected={accountMode === "changePassword"}
           >
             Zmień hasło

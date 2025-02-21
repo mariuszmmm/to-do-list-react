@@ -1,6 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppSelector } from "./hooks";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
@@ -11,24 +10,11 @@ import UserConfirmationPage from "./features/UserConfirmationPage";
 import AccountRecoveryPage from "./features/AccountRecoveryPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
-import { getDataApi } from "./utils/fetchApi";
-import { getUserTokenFromLocalStorage } from "./utils/localStorage";
-import { selectLists, setLists } from "./features/ListsPage/listsSlice";
+import { selectLists } from "./features/ListsPage/listsSlice";
+import { Modal } from "./Modal";
 
 const App = () => {
-  const dispatch = useAppDispatch();
   const lists = useAppSelector(selectLists);
-
-  useEffect(() => {
-    const token = getUserTokenFromLocalStorage();
-    if (!token) return;
-    const getData = async () => {
-      const data = await getDataApi(token);
-      if (lists === null && data) dispatch(setLists(data.lists));
-    };
-
-    getData();
-  }, [lists, dispatch]);
 
   return (
     <HashRouter>
@@ -46,6 +32,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/zadania" />} />
         </Routes>
       </Container>
+      <Modal />
     </HashRouter>
   );
 };

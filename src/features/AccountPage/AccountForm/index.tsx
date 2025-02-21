@@ -1,53 +1,47 @@
 import { FormEventHandler, useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { useAuthActions } from "../../../hooks/useAuthActions";
 import { useValidation } from "../../../hooks/useValidation";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
-import { AccountModal } from "../AccountModal";
 import {
+  accountRecoveryRequest,
+  loginRequest,
+  logoutRequest,
+  registerRequest,
+  savePasswordRequest,
   selectAccountMode,
-  selectFetchStatus,
-  selectLoggedUser,
+  selectIsWaitingForConfirmation,
+  selectLoggedUserEmail,
   selectMessage,
-  setAccountMode,
   setMessage,
 } from "../accountSlice";
+import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
 
 export const AccountForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
-    useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const accountMode = useAppSelector(selectAccountMode);
-  const fetchStatus = useAppSelector(selectFetchStatus);
   const message = useAppSelector(selectMessage);
-  const userLogged = useAppSelector(selectLoggedUser);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const isWaitingForConfirmation = useAppSelector(
+    selectIsWaitingForConfirmation
+  );
   const dispatch = useAppDispatch();
-
-  const {
-    register,
-    waitingForConfirmation,
-    login,
-    accountRecovery,
-    logout,
-    changePassword,
-  } = useAuthActions({
+  const { waitingForConfirmation } = useWaitingForConfirmation({
     email,
     password,
     message,
-    isWaitingForConfirmation,
-    setIsWaitingForConfirmation,
   });
+
   const { emailValidation, passwordValidation } = useValidation({
     email,
     password,
     emailInputRef,
     passwordInputRef,
-    setMessage: (text) => dispatch(setMessage({ text, type: "warning" })),
+    setMessage: (text) => dispatch(setMessage(text)),
   });
 
   useEffect(() => {
@@ -58,49 +52,49 @@ export const AccountForm = () => {
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    if (message) dispatch(setMessage());
 
     switch (accountMode) {
       case "login":
-        if (!emailValidation() || !passwordValidation()) return;
-        await login();
+        if (!(emailValidation() && passwordValidation())) break;
+        dispatch(loginRequest({ email, password }));
         setPassword("");
-        return;
+        break;
       case "registerAccount":
-        if (!emailValidation() || !passwordValidation()) return;
-        await register();
-        return;
+        if (!emailValidation() || !passwordValidation()) break;
+        dispatch(registerRequest({ email, password }));
+        break;
       case "accountRecovery":
-        if (!emailValidation()) return;
-        await accountRecovery();
-        return;
+        if (!emailValidation()) break;
+        dispatch(accountRecoveryRequest({ email }));
+        break;
       case "changePassword":
-        if (!passwordValidation()) return;
-        dispatch(setAccountMode("savePassword"));
-        changePassword();
+        if (!passwordValidation()) {
+          break;
+        }
+        dispatch(savePasswordRequest({ password }));
         setPassword("");
-        return;
+        break;
       case "logged":
-        await logout();
+        dispatch(logoutRequest());
         setPassword("");
-        return;
-      default:
         break;
     }
   };
 
+  useEffect(() => {
+    if (accountMode === "changePassword") {
+      setPassword("");
+    }
+  }, [accountMode]);
+
   return (
     <>
-      {(accountMode === "deleteUser" ||
-        accountMode === "savePassword" ||
-        accountMode === "sendRecoveryEmail" ||
-        accountMode === "sendRegisterEmail") && <AccountModal />}
       <Form
         onSubmit={onFormSubmit}
         $singleInput={
           accountMode === "accountRecovery" || accountMode === "changePassword"
         }
-        $noInputs={!!userLogged && accountMode !== "changePassword"}
+        $noInputs={!!loggedUserEmail && accountMode !== "changePassword"}
       >
         <Input
           autoFocus
@@ -110,40 +104,40 @@ export const AccountForm = () => {
           placeholder="name@poczta.pl"
           onChange={({ target }) => setEmail(target.value)}
           ref={emailInputRef}
-          hidden={!!userLogged}
-          disabled={fetchStatus === "loading"}
+          hidden={!!loggedUserEmail}
         />
         <Input
           value={password}
           name="password"
           type="password"
-          placeholder="hasło"
+          placeholder={
+            accountMode === "changePassword" ? "nowe hasło" : "hasło"
+          }
+          autoComplete={accountMode === "changePassword" ? "new-password" : ""}
           onChange={({ target }) => setPassword(target.value)}
           ref={passwordInputRef}
           hidden={
-            (!!userLogged || accountMode === "accountRecovery") &&
+            (!!loggedUserEmail || accountMode === "accountRecovery") &&
             accountMode !== "changePassword"
           }
-          disabled={fetchStatus === "loading"}
         />
         <FormButton
           type="submit"
-          disabled={fetchStatus === "loading"}
           $singleInput={
             accountMode === "accountRecovery" ||
             accountMode === "changePassword"
           }
-          $noInputs={!!userLogged && accountMode !== "changePassword"}
+          $noInputs={!!loggedUserEmail && accountMode !== "changePassword"}
         >
           {accountMode === "registerAccount"
             ? "Zarejestruj"
             : accountMode === "accountRecovery"
-            ? "Zresetuj"
+            ? "Zresetuj hasło"
             : accountMode === "changePassword"
             ? "Zapisz"
-            : !userLogged
-            ? "Zaloguj"
-            : "Wyloguj"}
+            : loggedUserEmail
+            ? "Wyloguj"
+            : "Zaloguj"}
         </FormButton>
       </Form>
     </>

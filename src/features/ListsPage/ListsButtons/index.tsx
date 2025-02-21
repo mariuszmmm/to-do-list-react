@@ -19,10 +19,10 @@ export const ListsButtons = () => {
     <ButtonsContainer>
       <StyledLink to={`/zadania`}>
         <Button
-          onClick={() => listToLoad && dispatch(setListToLoad(listToLoad))}
+          onClick={() => dispatch(setListToLoad(listToLoad))}
           disabled={selectedListId === null}
         >
-          Pobierz do listy zadań
+          Załaduj wybraną listę
         </Button>
       </StyledLink>
     </ButtonsContainer>

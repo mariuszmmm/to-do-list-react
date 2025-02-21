@@ -1,12 +1,10 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import {
-  useQueryParameter,
-  useReplaceQueryParameter,
-} from "../../../../utils/queryParameter";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { toggleShowSearch, selectShowSearch } from "../../tasksSlice";
+import { useQueryParameter } from "../../../../hooks/useQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
 
 export const SearchButtons = () => {
   const dispatch = useAppDispatch();

@@ -3,8 +3,8 @@ import "dotenv/config";
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DATABASE;
 
-if (!uri) {
-  throw new Error("MONGODB_URI is not defined");
+if (!uri || !dbName) {
+  throw new Error("MONGODB_URI  or MONGODB_DATABASE is missing in .env file");
 }
 
 mongoose

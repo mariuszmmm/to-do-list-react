@@ -23,6 +23,7 @@ export const Item = styled.li<ItemProps>`
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
+  transition: background-color 0.25s;
 
   ${({ $edit, selected }) =>
     ($edit || selected) &&

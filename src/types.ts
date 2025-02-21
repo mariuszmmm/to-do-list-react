@@ -1,20 +1,17 @@
+export type Version = number | null;
+
 export interface AccountState {
-  loggedUser: string | null;
   accountMode:
     | "login"
     | "logged"
     | "changePassword"
-    | "savePassword"
     | "registerAccount"
-    | "sendRegisterEmail"
-    | "deleteUser"
     | "accountRecovery"
-    | "sendRecoveryEmail";
-  fetchStatus: "idle" | "loading" | "error";
-  message?: {
-    text: string;
-    type: "info" | "warning";
-  };
+    | "userConfirmation";
+  isWaitingForConfirmation: boolean;
+  loggedUserEmail: string | null;
+  message: string;
+  version: Version;
 }
 
 export type RecoveryStatus =
@@ -43,4 +40,5 @@ export interface List {
 export interface Data {
   email: string;
   lists: List[];
+  version: Version;
 }

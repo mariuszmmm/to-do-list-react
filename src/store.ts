@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import tasksReducer from "./features/tasks/tasksSlice";
 import listsReducer from "./features/ListsPage/listsSlice";
 import accountReducer from "./features/AccountPage/accountSlice";
+import modalReducer from "./Modal/modalSlice";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./rootSaga";
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     tasks: tasksReducer,
     lists: listsReducer,
     account: accountReducer,
+    modal: modalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

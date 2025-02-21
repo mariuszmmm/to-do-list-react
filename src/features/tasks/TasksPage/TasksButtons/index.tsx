@@ -21,8 +21,11 @@ import {
   selectUndoTasksStack,
   selectRedoTasksStack,
 } from "../../tasksSlice";
-import { addList, selectIsListWithName } from "../../../ListsPage/listsSlice";
-import { selectLoggedUser } from "../../../AccountPage/accountSlice";
+import {
+  addListRequest,
+  selectIsListWithName,
+  selectLists,
+} from "../../../ListsPage/listsSlice";
 
 export const TasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
@@ -35,7 +38,7 @@ export const TasksButtons = () => {
   const editedTask = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const listName = useAppSelector(selectListName);
-  const loggedUser = useAppSelector(selectLoggedUser);
+  const lists = useAppSelector(selectLists);
   const isListWithName = useAppSelector((state) =>
     selectIsListWithName(state, listName)
   );
@@ -46,7 +49,7 @@ export const TasksButtons = () => {
   const onSaveListHandler = () => {
     if (!isListWithName) {
       dispatch(
-        addList({
+        addListRequest({
           id: nanoid(),
           name: listName,
           taskList: tasks,
@@ -54,7 +57,7 @@ export const TasksButtons = () => {
       );
     }
 
-    setSaveName(isListWithName ? "Zmień nazwę listy" : "Zapisano! ✔️");
+    setSaveName(isListWithName ? "Zmień nazwę listy" : "Zapisz listę");
     setIsName(isListWithName ? true : false);
 
     const timer = setTimeout(() => {
@@ -67,7 +70,7 @@ export const TasksButtons = () => {
 
   return (
     <ButtonsContainer>
-      {loggedUser && (
+      {lists && (
         <Button
           onClick={onSaveListHandler}
           disabled={

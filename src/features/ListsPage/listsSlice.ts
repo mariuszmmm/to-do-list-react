@@ -21,12 +21,14 @@ const listsSlice = createSlice({
     setLists: (state, { payload: lists }: PayloadAction<List[] | null>) => {
       state.lists = lists;
     },
-    addList: (
-      state,
-      { payload: { id, name, taskList } }: PayloadAction<List>
-    ) => {
+    addListRequest: (state, action: PayloadAction<List>) => {},
+    addListSuccess: (state, { payload: list }: PayloadAction<List>) => {
       if (state.lists === null) return;
-      state.lists.push({ id, name, taskList });
+      state.lists.push({
+        id: list.id,
+        name: list.name,
+        taskList: list.taskList,
+      });
     },
     selectList: (state, { payload: listId }: PayloadAction<string>) => {
       if (state.selectedListId === listId) {
@@ -35,11 +37,20 @@ const listsSlice = createSlice({
         state.selectedListId = listId;
       }
     },
-    setListToLoad: (state, { payload: taskList }: PayloadAction<List>) => {
+    setListToLoad: (
+      state,
+      { payload: taskList }: PayloadAction<List | null>
+    ) => {
       state.listToLoad = taskList;
-      state.selectedListId = null;
+      if (taskList === null) state.selectedListId = null;
     },
-    removeList: (state, { payload: listId }: PayloadAction<string>) => {
+    removeListRequest: (
+      state,
+      {
+        payload: { listId, listName },
+      }: PayloadAction<{ listId: string; listName: string }>
+    ) => {},
+    removeListSuccess: (state, { payload: listId }: PayloadAction<string>) => {
       if (state.lists === null) return;
       const index = state.lists.findIndex(({ id }) => id === listId);
       if (index !== -1) {
@@ -52,8 +63,15 @@ const listsSlice = createSlice({
   },
 });
 
-export const { setLists, addList, selectList, setListToLoad, removeList } =
-  listsSlice.actions;
+export const {
+  setLists,
+  addListRequest,
+  addListSuccess,
+  selectList,
+  setListToLoad,
+  removeListRequest,
+  removeListSuccess,
+} = listsSlice.actions;
 
 const selectListsState = (state: RootState) => state.lists;
 

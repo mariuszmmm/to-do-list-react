@@ -12,7 +12,7 @@ interface TaskState {
   editedTask: Task | null;
   hideDone: boolean;
   showSearch: boolean;
-  fetchStatus: "ready" | "loading" | "$error";
+  fetchStatus: "ready" | "loading" | "error";
   undoTasksStack: { tasks: Task[]; listName: string }[];
   redoTasksStack: { tasks: Task[]; listName: string }[];
   listName: string;
@@ -165,7 +165,7 @@ const tasksSlice = createSlice({
       state.fetchStatus = "ready";
     },
     fetchError: (state) => {
-      state.fetchStatus = "$error";
+      state.fetchStatus = "error";
     },
     toggleShowSearch: (state) => {
       state.showSearch = !state.showSearch;
@@ -213,6 +213,17 @@ const tasksSlice = createSlice({
       state.listName = listName;
       state.redoTasksStack = [];
     },
+    clearStorage: (state) => {
+      state.tasks = [];
+      state.editedTask = null;
+      state.hideDone = false;
+      state.showSearch = false;
+      state.fetchStatus = "ready";
+      state.undoTasksStack = [];
+      state.redoTasksStack = [];
+      state.listName = "Nowa lista";
+      state.listNameToEdit = null;
+    },
   },
 });
 
@@ -234,6 +245,7 @@ export const {
   redoTasks,
   setListNameToEdit,
   setListName,
+  clearStorage,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;

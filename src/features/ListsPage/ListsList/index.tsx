@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { selectModalIsOpen } from "../../../Modal/modalSlice";
 import {
-  removeList,
+  removeListRequest,
   selectList,
   selectLists,
   selectSelectedListId,
@@ -17,19 +18,29 @@ import {
 export const ListsList = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const lists = useAppSelector(selectLists);
+  const modalIsOpen = useAppSelector(selectModalIsOpen);
   const dispatch = useAppDispatch();
 
   return (
     <List>
       {lists?.map((list) => (
-        <Item key={list.id} selected={selectedListId === list.id}>
-          <ToggleButton onClick={() => dispatch(selectList(list.id))}>
-            {selectedListId === list.id ? "✔" : ""}
-          </ToggleButton>
-          <Content onClick={() => dispatch(selectList(list.id))}>
+        <Item
+          key={list.id}
+          selected={selectedListId === list.id}
+          onClick={() => dispatch(selectList(list.id))}
+        >
+          <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          <Content>
             <Task>{list.name}</Task>
           </Content>
-          <RemoveButton onClick={() => dispatch(removeList(list.id))}>
+          <RemoveButton
+            onClick={() =>
+              dispatch(
+                removeListRequest({ listId: list.id, listName: list.name })
+              )
+            }
+            disabled={modalIsOpen}
+          >
             🗑️
           </RemoveButton>
         </Item>

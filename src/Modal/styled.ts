@@ -5,9 +5,10 @@ export const ModalBackground = styled.div`
   top: 0;
   left: 0;
   min-height: fit-content;
-  height: 100vh;
+  height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
   z-index: 1;
 `;
 
@@ -19,6 +20,10 @@ export const ModalContainer = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     padding: 156px 2% 2%;
+  }
+
+  @media (max-height: 400px) {
+    padding: 80px 2% 2%;
   }
 `;
 
@@ -80,14 +85,14 @@ const ModalButton = styled.button`
   }
 `;
 
-export const ModalButtonClose = styled(ModalButton)`
-  background-color: ${({ theme }) => theme.color.teal};
-`;
-
-export const ModalButtonDelete = styled(ModalButton)`
+export const ModalConfirmButton = styled(ModalButton)`
   background-color: ${({ theme }) => theme.color.crimson};
 `;
 
-export const ModalButtonCancel = styled(ModalButton)`
+export const ModalCancelButton = styled(ModalButton)`
   background-color: ${({ theme }) => theme.color.empress};
+`;
+
+export const ModalCloseButton = styled(ModalButton)`
+  background-color: ${({ theme }) => theme.color.teal};
 `;

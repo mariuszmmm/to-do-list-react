@@ -4,47 +4,41 @@ import { Button } from "../../../common/Button";
 import { Info } from "../../../common/Info";
 import {
   selectAccountMode,
-  selectFetchStatus,
-  selectLoggedUser,
+  selectLoggedUserEmail,
   selectMessage,
   setAccountMode,
 } from "../accountSlice";
 
 export const AccountExtraButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
-  const fetchStatus = useAppSelector(selectFetchStatus);
   const message = useAppSelector(selectMessage);
-  const loggedUser = useAppSelector(selectLoggedUser);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
 
   return (
     <ButtonsContainer $extra>
-      {!!loggedUser && accountMode === "changePassword" ? (
-        <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
-          Anuluj
-        </Button>
-      ) : fetchStatus === "loading" ? (
-        <Info $loading>Ładowanie...</Info>
-      ) : !loggedUser &&
-        (accountMode === "login" || accountMode === "accountRecovery") ? (
-        <Button
-          $special
-          onClick={() =>
-            dispatch(
-              setAccountMode(
-                accountMode === "login" ? "accountRecovery" : "login"
-              )
-            )
-          }
-        >
-          {accountMode === "accountRecovery" ? "Anuluj" : "Zresetuj hasło"}
-        </Button>
-      ) : (
-        !message && <Info />
-      )}
-      {!!message && (
-        <Info $warning={message.type === "warning"}>{message.text}</Info>
-      )}
+      {!loggedUserEmail
+        ? (accountMode === "login" || accountMode === "accountRecovery") && (
+            <Button
+              $special
+              onClick={() =>
+                dispatch(
+                  setAccountMode(
+                    accountMode === "login" ? "accountRecovery" : "login"
+                  )
+                )
+              }
+            >
+              {accountMode === "login" ? "Zresetuj hasło" : "Anuluj"}
+            </Button>
+          )
+        : accountMode === "changePassword" && (
+            <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
+              Anuluj
+            </Button>
+          )}
+
+      {!!message && <Info $warning>{message}</Info>}
     </ButtonsContainer>
   );
 };

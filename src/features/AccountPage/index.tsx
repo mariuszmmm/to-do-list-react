@@ -4,16 +4,16 @@ import { Section } from "../../common/Section";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
-import { selectLoggedUser } from "./accountSlice";
+import { selectLoggedUserEmail } from "./accountSlice";
 
 const AccountPage = () => {
-  const loggedUser = useAppSelector(selectLoggedUser);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
 
   return (
     <>
       <Header title="Twoje konto" />
       <Section
-        title={loggedUser || "Jesteś niezalogowany"}
+        title={loggedUserEmail || "Jesteś niezalogowany"}
         extraHeaderContent={<AccountButtons />}
         body={<AccountForm />}
         extraContent={<AccountExtraButtons />}

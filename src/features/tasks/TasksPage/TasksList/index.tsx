@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import { List, Item, Content, Task } from "./styled";
-import { useQueryParameter } from "../../../../utils/queryParameter";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
 import {
@@ -22,7 +22,6 @@ import {
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
-
   const tasks = useAppSelector(selectTasks);
   const listName = useAppSelector(selectListName);
   const hideDone = useAppSelector(selectHideDone);

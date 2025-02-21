@@ -26,10 +26,13 @@ const ListsPage = () => {
         extraHeaderContent={<ListsButtons />}
       />
       {selectedListById !== null && (
-        <Section
-          title={selectedListById.name}
-          body={<TasksList list={selectedListById.taskList} />}
-        />
+        <>
+          <Header title="Wybrana lista" />
+          <Section
+            title={selectedListById.name}
+            body={<TasksList list={selectedListById.taskList} />}
+          />
+        </>
       )}
     </>
   );

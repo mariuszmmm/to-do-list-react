@@ -16,7 +16,7 @@ export const Button = styled.button<ButtonProps>`
   min-width: max-content;
   font-size: 16px;
   line-height: 16px;
-  margin: 2px 0 0 20px;
+  margin: 3px 0 0 20px;
   padding: 0;
   background: transparent;
   color: ${({ theme }) => theme.color.teal};

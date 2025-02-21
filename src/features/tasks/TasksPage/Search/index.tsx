@@ -1,12 +1,10 @@
 import { ChangeEventHandler } from "react";
 import { useAppSelector } from "../../../../hooks";
-import {
-  useQueryParameter,
-  useReplaceQueryParameter,
-} from "../../../../utils/queryParameter";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { Input } from "../../../../common/Input";
 import { selectShowSearch } from "../../tasksSlice";
+import { useQueryParameter } from "../../../../hooks/useQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
 
 export const Search = () => {
   const query = useQueryParameter(searchQueryParamName);

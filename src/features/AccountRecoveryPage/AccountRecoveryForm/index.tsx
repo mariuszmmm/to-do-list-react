@@ -4,53 +4,59 @@ import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";
 import { FormButton } from "../../../common/FormButton";
-import { auth } from "../../../utils/auth";
-import { AccountRecoveryModal } from "../AccountRecoveryModal";
-import { getRecoveryTokenFromSessionStorage } from "../../../utils/sessionStorage";
-import { RecoveryStatus } from "../../../types";
+import { auth } from "../../../api/auth";
+import {
+  clearSessionStorage,
+  getRecoveryTokenFromSessionStorage,
+} from "../../../utils/sessionStorage";
+import { openModal } from "../../../Modal/modalSlice";
+import { useAppDispatch } from "../../../hooks";
+import { RecoveryStatus } from "..";
 
-export const AccountRecoveryForm = () => {
-  const [recoveryStatus, setRecoveryStatus] =
-    useState<RecoveryStatus>("recovering");
+export const AccountRecoveryForm = ({
+  setStatus,
+}: {
+  setStatus: (status: RecoveryStatus) => void;
+}) => {
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
   useEffect(() => {
     const recover = async () => {
       try {
+        dispatch(
+          openModal({
+            title: "Odzyskiwanie konta",
+            message: "Proszę czekać...",
+            type: "loading",
+          })
+        );
         const token = getRecoveryTokenFromSessionStorage();
         if (!token) throw new Error();
         await auth.recover(token);
-        setRecoveryStatus("resetPassword");
+        dispatch(
+          openModal({
+            message: "Konto zostało odzyskane, ustaw nowe hasło.",
+            endButtonText: "Dalej",
+            type: "info",
+          })
+        );
       } catch (error) {
-        setRecoveryStatus("linkExpired");
+        dispatch(
+          openModal({
+            message: "Link wygasł lub został użyty.",
+            type: "error",
+          })
+        );
+        setStatus("linkExpired");
+        clearSessionStorage();
       }
     };
 
     recover();
-  }, []);
-
-  useEffect(() => {
-    const updatePassword = async () => {
-      if (!password) return;
-      try {
-        if (!user) throw new Error();
-        await user.update({ password });
-        setRecoveryStatus("passwordUpdated");
-        setPassword("");
-        sessionStorage.removeItem("recovery_token");
-      } catch (error) {
-        setRecoveryStatus("passwordNotUpdated");
-      }
-    };
-
-    if (recoveryStatus === "savePassword") {
-      updatePassword();
-    }
-
-    // eslint-disable-next-line
-  }, [recoveryStatus]);
+  }, [dispatch, setStatus]);
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { passwordValidation } = useValidation({
@@ -61,17 +67,39 @@ export const AccountRecoveryForm = () => {
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    if (message) setMessage("");
 
     if (!passwordValidation()) return;
-    setRecoveryStatus("savePassword");
+    try {
+      dispatch(
+        openModal({
+          title: "Odzyskiwanie konta",
+          message: "Zapisywanie hasła...",
+          type: "loading",
+        })
+      );
+      if (!user) throw new Error();
+      await user.update({ password }).then((user) => user.logout());
+      dispatch(
+        openModal({
+          message: "Hasło zostało zaktualizowane, zamknij stronę.",
+          type: "success",
+        })
+      );
+      setPassword("");
+      setStatus("accountRecovered");
+      clearSessionStorage();
+    } catch (error) {
+      dispatch(
+        openModal({
+          message: "Wystąpił błąd podczas aktualizacji hasła.",
+          type: "error",
+        })
+      );
+    }
   };
 
   return (
     <>
-      {recoveryStatus !== "resetPassword" && (
-        <AccountRecoveryModal recoveryStatus={recoveryStatus} />
-      )}
       <Form $singleInput onSubmit={onFormSubmit}>
         <Input
           value={password}
@@ -80,13 +108,8 @@ export const AccountRecoveryForm = () => {
           placeholder="nowe hasło"
           onChange={({ target }) => setPassword(target.value)}
           ref={passwordInputRef}
-          disabled={recoveryStatus !== "resetPassword"}
         />
-        <FormButton
-          type="submit"
-          $singleInput
-          disabled={recoveryStatus !== "resetPassword"}
-        >
+        <FormButton type="submit" $singleInput>
           Zapisz
         </FormButton>
         {!!message && <Info $warning>{message}</Info>}

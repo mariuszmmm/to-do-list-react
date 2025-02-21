@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken";
 import UserData from "./models/UserData";
 
 const handler: Handler = async (event: HandlerEvent) => {
-  console.log("running confirmUser in serverless function");
-
   if (event.httpMethod === "POST") {
     const SECRET = process.env.WEBHOOK_SECRET;
 
@@ -59,16 +57,21 @@ const handler: Handler = async (event: HandlerEvent) => {
           email,
           account: "active",
           lists: [],
+          version: 1,
         });
         await registeredUser.save();
       } else {
         findedUser.account = "active";
+        findedUser.version += 1;
         await findedUser.save();
       }
 
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: "User confirmed" }),
+        body: JSON.stringify({
+          message: "User confirmed",
+          version: findedUser?.version || 1,
+        }),
       };
     } catch (error) {
       console.error("Signature verification error", error);
@@ -91,7 +94,11 @@ const handler: Handler = async (event: HandlerEvent) => {
       statusCode: 200,
       body: JSON.stringify(
         confirmedUser
-          ? { message: "User is confirmed", email: confirmedUser.email }
+          ? {
+              message: "User is confirmed",
+              email: confirmedUser.email,
+              version: confirmedUser.version,
+            }
           : { message: "User is not confirmed" }
       ),
     };

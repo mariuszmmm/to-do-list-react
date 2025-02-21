@@ -11,6 +11,7 @@ export const getTokenFromURL = (url: string) => {
     if (confirmationUrl) window.location.href = confirmationUrl;
     return;
   }
+
   if (url.includes("#recovery_token")) {
     const token = url.split("#recovery_token=")[1];
     saveRecoveryTokenFromSessionStorage(token);

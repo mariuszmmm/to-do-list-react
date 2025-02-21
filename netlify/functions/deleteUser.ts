@@ -44,7 +44,11 @@ const handler = async (event: HandlerEvent, context: HandlerContext) => {
       };
     }
 
-    await UserData.updateOne({ email }, { account: "deleted" });
+    await UserData.updateOne(
+      { email },
+      { account: "deleted" },
+      { version: userData.version + 1 }
+    );
 
     return { statusCode: 204 };
   } catch (error) {

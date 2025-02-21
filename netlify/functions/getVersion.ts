@@ -9,7 +9,7 @@ const handler: Handler = async (
     console.error("Unauthorized");
 
     return {
-      statusCode: 200,
+      statusCode: 400,
       body: JSON.stringify({ message: "Unauthorized" }),
     };
   }
@@ -29,11 +29,7 @@ const handler: Handler = async (
       statusCode: 200,
       body: JSON.stringify({
         message: "User data found",
-        data: {
-          email: userData.email,
-          lists: userData.lists,
-          version: userData.version,
-        },
+        version: userData.version,
       }),
     };
   } catch (error) {

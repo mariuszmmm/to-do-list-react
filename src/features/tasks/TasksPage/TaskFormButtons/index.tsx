@@ -13,22 +13,20 @@ export const TaskFormButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
 
   return (
-    <>
-      {areTasksEmpty && (
-        <ButtonsContainer>
-          <Button
-            onClick={() => dispatch(fetchExampleTasks())}
-            disabled={fetchStatus === "loading" || fetchStatus === "$error"}
-            $error={fetchStatus === "$error"}
-          >
-            {fetchStatus === "ready"
-              ? "Pobierz przykładowe zadania"
-              : fetchStatus === "loading"
-              ? "Ładowanie..."
-              : "Błąd ładowania danych"}
-          </Button>
-        </ButtonsContainer>
-      )}
-    </>
+    <ButtonsContainer>
+      <Button
+        onClick={() => dispatch(fetchExampleTasks())}
+        disabled={
+          fetchStatus === "loading" || fetchStatus === "error" || !areTasksEmpty
+        }
+        $error={fetchStatus === "error"}
+      >
+        {fetchStatus === "ready"
+          ? "Pobierz przykładowe zadania"
+          : fetchStatus === "loading"
+          ? "Ładowanie..."
+          : "Błąd ładowania danych"}
+      </Button>
+    </ButtonsContainer>
   );
 };

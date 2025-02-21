@@ -15,6 +15,7 @@ const UserDataSchema = new Schema({
     required: true,
   },
   lists: { type: [ListSchema], default: [] },
+  version: { type: Number, default: 1 },
 });
 
 const UserData = mongoose.model("UserData", UserDataSchema);

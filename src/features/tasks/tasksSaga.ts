@@ -7,7 +7,7 @@ import {
   takeLatest,
 } from "redux-saga/effects";
 import { formatCurrentDate } from "../../utils/formatCurrentDate";
-import { getExampleTasks } from "../../utils/getExampleTasks";
+import { getExampleTasks } from "../../api/getExampleTasks";
 import {
   saveListNameInLocalStorage,
   saveSettingsInLocalStorage,
@@ -36,6 +36,7 @@ import {
   undoTasks,
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
+import { openModal } from "../../Modal/modalSlice";
 
 function* fetchExampleTasksHandler() {
   try {
@@ -80,21 +81,30 @@ function* saveSettingsInLocalStorageHandler() {
 }
 
 function* setListToLoadHandler() {
+  const listToLoad: ReturnType<typeof selectListToLoad> = yield select(
+    selectListToLoad
+  );
+  if (listToLoad === null) return;
+
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const listName: ReturnType<typeof selectListName> = yield select(
     selectListName
   );
-  const listToLoad: ReturnType<typeof selectListToLoad> = yield select(
-    selectListToLoad
+  yield put(
+    setTasks({
+      tasks: listToLoad.taskList,
+      listName: listToLoad.name,
+      stateForUndo: { tasks, listName },
+    })
   );
-  if (listToLoad !== null)
-    yield put(
-      setTasks({
-        tasks: listToLoad.taskList,
-        listName: listToLoad.name,
-        stateForUndo: { tasks, listName },
-      })
-    );
+  yield put(setListToLoad(null));
+  yield put(
+    openModal({
+      title: "Ładowanie listy",
+      message: `Lista ${listToLoad.name} została załadowana do bieżacej listy zadań.`,
+      type: "info",
+    })
+  );
 }
 
 function* saveDataInLocalStorageHandler() {

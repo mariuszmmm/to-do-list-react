@@ -1,11 +1,5 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import searchQueryParamName from "./searchQueryParamName";
-
-export const useQueryParameter = (key: typeof searchQueryParamName) => {
-  const { search } = useLocation();
-
-  return new URLSearchParams(search).get(key);
-};
+import { useLocation, useNavigate } from "react-router-dom";
+import searchQueryParamName from "../utils/searchQueryParamName";
 
 export const useReplaceQueryParameter = () => {
   const navigate = useNavigate();

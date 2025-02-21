@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { FormEventHandler, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
@@ -24,23 +24,25 @@ export const EditableListName = () => {
     event.preventDefault();
 
     const trimedContent = name.trim();
-    if (trimedContent || listNameToEdit === null) {
-      if (listNameToEdit !== null)
+    if (trimedContent) {
+      if (listNameToEdit !== null) {
         dispatch(
           setListName({
             listName: trimedContent,
             stateForUndo: { tasks, listName },
           })
         );
-      dispatch(setListNameToEdit(listNameToEdit === null ? listName : null));
+        dispatch(setListNameToEdit(null));
+
+        setName(trimedContent);
+      } else {
+        dispatch(setListNameToEdit(listName));
+        setName(listName);
+      }
     } else {
       inpurRef.current!.focus();
     }
   };
-
-  useEffect(() => {
-    setName(listName);
-  }, [listName]);
 
   return (
     <NameContainer onSubmit={onNameSubmit}>
