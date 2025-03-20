@@ -4,6 +4,23 @@ import { ReactComponent as CircleCheck } from "../../images/circle-check.svg";
 import { ReactComponent as CircleInfo } from "../../images/circle-info.svg";
 import { ReactComponent as CircleWarning } from "../../images/circle-warning.svg";
 import { ReactComponent as CircleLoading } from "../../images/circle-loading.svg";
+import { ReactComponent as Eye } from "../../images/eye.svg";
+import { ReactComponent as EyeSlash } from "../../images/eye-slash.svg";
+
+const eyeIconStyles = css`
+  width: 1.2rem;
+  color: ${({ theme }) => theme.color.empress};
+  cursor: pointer;
+`;
+
+export const EyeIcon = styled(Eye)`
+  ${eyeIconStyles}
+  width: 1.1rem;
+`;
+
+export const EyeSlashIcon = styled(EyeSlash)`
+  ${eyeIconStyles}
+`;
 
 const rotateIconStyles = css`
   width: 1rem;

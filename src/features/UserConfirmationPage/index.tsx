@@ -5,7 +5,6 @@ import { useAppDispatch } from "../../hooks";
 import { openModal } from "../../Modal/modalSlice";
 import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";
-import { setAccountMode } from "../AccountPage/accountSlice";
 
 type Status = "waiting" | "success" | "error";
 
@@ -14,7 +13,6 @@ const UserConfirmationPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setAccountMode("userConfirmation"));
     const confirmation = async () => {
       try {
         dispatch(

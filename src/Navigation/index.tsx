@@ -10,9 +10,9 @@ import {
 } from "../features/AccountPage/accountSlice";
 
 const Navigation = () => {
-  const lists = useAppSelector(selectLists);
-  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
+  const lists = useAppSelector(selectLists);
   const user = auth.currentUser();
 
   useEffect(() => {

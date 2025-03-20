@@ -1,16 +1,19 @@
 import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { useValidation } from "../../../hooks/useValidation";
+import { useAppDispatch } from "../../../hooks";
 import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";
 import { FormButton } from "../../../common/FormButton";
+import { InputContainer } from "../../../common/InputContainer";
+import { EyeIconContainer } from "../../../common/EyeIconContainer";
+import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import { auth } from "../../../api/auth";
 import {
   clearSessionStorage,
   getRecoveryTokenFromSessionStorage,
 } from "../../../utils/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
-import { useAppDispatch } from "../../../hooks";
 import { RecoveryStatus } from "..";
 
 export const AccountRecoveryForm = ({
@@ -19,6 +22,7 @@ export const AccountRecoveryForm = ({
   setStatus: (status: RecoveryStatus) => void;
 }) => {
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<string>("");
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
@@ -101,14 +105,25 @@ export const AccountRecoveryForm = ({
   return (
     <>
       <Form $singleInput onSubmit={onFormSubmit}>
-        <Input
-          value={password}
-          name="password"
-          type="password"
-          placeholder="nowe hasło"
-          onChange={({ target }) => setPassword(target.value)}
-          ref={passwordInputRef}
-        />
+        <InputContainer>
+          <Input
+            value={password}
+            name="password"
+            type="password"
+            placeholder="nowe hasło"
+            onChange={({ target }) => setPassword(target.value)}
+            ref={passwordInputRef}
+          />
+          <EyeIconContainer
+            onMouseUp={() => setShowPassword(false)}
+            onMouseDown={() => setShowPassword(true)}
+            onTouchStart={() => setShowPassword(true)}
+            onTouchEnd={() => setShowPassword(false)}
+            hidden={!password}
+          >
+            {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+          </EyeIconContainer>
+        </InputContainer>
         <FormButton type="submit" $singleInput>
           Zapisz
         </FormButton>

@@ -1,5 +1,6 @@
 import {
   call,
+  delay,
   put,
   race,
   take,
@@ -17,13 +18,13 @@ import {
   setIsWaitingForConfirmation,
   setLoggedUserEmail,
 } from "./accountSlice";
+import { clearStorage } from "../tasks/tasksSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { auth } from "../../api/auth";
 import { deleteUserApi } from "../../api/fetchUserApi";
 import { getUserToken } from "../../utils/getUserToken";
 import { User } from "gotrue-js";
 import { clearLocalStorage } from "../../utils/localStorage";
-import { clearStorage } from "../tasks/tasksSlice";
 
 function* accountRecoveryHandler({
   payload: { email },
@@ -119,6 +120,7 @@ function* deleteAccountHandler(): Generator {
         })
       );
       yield put(setLoggedUserEmail(null));
+      yield delay(2000);
       yield put(
         openModal({
           title: "Czyszczenie danych",

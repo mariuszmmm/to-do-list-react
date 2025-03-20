@@ -24,7 +24,6 @@ const accountSlice = createSlice({
         | "changePassword"
         | "registerAccount"
         | "accountRecovery"
-        | "userConfirmation"
       >
     ) => {
       state.accountMode = mode;

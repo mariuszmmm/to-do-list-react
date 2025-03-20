@@ -29,6 +29,7 @@ export const useValidation = ({
       return false;
     }
 
+    setMessage("");
     return true;
   };
 
@@ -45,6 +46,7 @@ export const useValidation = ({
       return false;
     }
 
+    setMessage("");
     return true;
   };
 

@@ -1,9 +1,13 @@
 import { FormEventHandler, useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { useValidation } from "../../../hooks/useValidation";
+import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
+import { InputContainer } from "../../../common/InputContainer";
+import { EyeIconContainer } from "../../../common/EyeIconContainer";
+import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import {
   accountRecoveryRequest,
   loginRequest,
@@ -16,11 +20,11 @@ import {
   selectMessage,
   setMessage,
 } from "../accountSlice";
-import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
 
 export const AccountForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const accountMode = useAppSelector(selectAccountMode);
@@ -106,21 +110,35 @@ export const AccountForm = () => {
           ref={emailInputRef}
           hidden={!!loggedUserEmail}
         />
-        <Input
-          value={password}
-          name="password"
-          type="password"
-          placeholder={
-            accountMode === "changePassword" ? "nowe hasło" : "hasło"
-          }
-          autoComplete={accountMode === "changePassword" ? "new-password" : ""}
-          onChange={({ target }) => setPassword(target.value)}
-          ref={passwordInputRef}
+        <InputContainer
           hidden={
             (!!loggedUserEmail || accountMode === "accountRecovery") &&
             accountMode !== "changePassword"
           }
-        />
+        >
+          <Input
+            value={password}
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder={
+              accountMode === "changePassword" ? "nowe hasło" : "hasło"
+            }
+            autoComplete={
+              accountMode === "changePassword" ? "new-password" : ""
+            }
+            onChange={({ target }) => setPassword(target.value)}
+            ref={passwordInputRef}
+          />
+          <EyeIconContainer
+            onMouseUp={() => setShowPassword(false)}
+            onMouseDown={() => setShowPassword(true)}
+            onTouchStart={() => setShowPassword(true)}
+            onTouchEnd={() => setShowPassword(false)}
+            hidden={!password}
+          >
+            {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+          </EyeIconContainer>
+        </InputContainer>
         <FormButton
           type="submit"
           $singleInput={
