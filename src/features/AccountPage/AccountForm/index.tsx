@@ -132,9 +132,7 @@ export const AccountForm = () => {
           <EyeIconContainer
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onTouchStart={() => setShowPassword(true)}
-            onTouchEnd={() => setShowPassword(false)}
-            hidden={!password}
+            onTouchStart={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </EyeIconContainer>

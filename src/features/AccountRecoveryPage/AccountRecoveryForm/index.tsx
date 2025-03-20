@@ -119,7 +119,6 @@ export const AccountRecoveryForm = ({
             onMouseDown={() => setShowPassword(true)}
             onTouchStart={() => setShowPassword(true)}
             onTouchEnd={() => setShowPassword(false)}
-            hidden={!password}
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </EyeIconContainer>

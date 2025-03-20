@@ -30,27 +30,27 @@ const handler: Handler = async (event, context) => {
   const { email }: { email: string } = context.clientContext.user;
   const user = await UserData.findOne({ email, account: "active" });
 
-  if (!user) {
-    console.error("User not found");
-
-    return {
-      statusCode: 404,
-      body: JSON.stringify({ message: "User not found" }),
-    };
-  }
-
-  const data: Data = JSON.parse(event.body);
-
-  if (user.version !== data.version) {
-    console.error("Version mismatch");
-
-    return {
-      statusCode: 409,
-      body: JSON.stringify({ message: "Version mismatch" }),
-    };
-  }
-
   try {
+    if (!user) {
+      console.error("User not found");
+
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "User not found" }),
+      };
+    }
+
+    const data: Data = JSON.parse(event.body);
+
+    if (user.version !== data.version) {
+      console.error("Version mismatch");
+
+      return {
+        statusCode: 409,
+        body: JSON.stringify({ message: "Version mismatch" }),
+      };
+    }
+
     if (event.httpMethod === "PUT") {
       if (!data.list) {
         console.error("No list provided");
@@ -108,6 +108,29 @@ const handler: Handler = async (event, context) => {
       user.version += 1;
       await user.save();
     }
+
+    const userData = await UserData.findOne({ email, account: "active" });
+
+    if (!userData) {
+      console.error("User not found");
+
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "User not found" }),
+      };
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "Data updated",
+        data: {
+          email: userData.email,
+          lists: userData.lists,
+          version: userData.version,
+        },
+      }),
+    };
   } catch (error) {
     console.error("Error:", error);
 
@@ -116,11 +139,6 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({ message: "Internal Server Error" }),
     };
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Data updated", version: user.version }),
-  };
 };
 
 module.exports = { handler };

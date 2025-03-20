@@ -24,7 +24,10 @@ import { auth } from "../../api/auth";
 import { deleteUserApi } from "../../api/fetchUserApi";
 import { getUserToken } from "../../utils/getUserToken";
 import { User } from "gotrue-js";
-import { clearLocalStorage } from "../../utils/localStorage";
+import {
+  clearLocalStorage,
+  clearUserFromLocalStorage,
+} from "../../utils/localStorage";
 
 function* accountRecoveryHandler({
   payload: { email },
@@ -98,7 +101,7 @@ function* deleteAccountHandler(): Generator {
 
       if (!userToken || !user) {
         yield put(setLoggedUserEmail(null));
-        throw new Error("Użytkownik został wylogowany");
+        throw new Error("Użytkownik jest wylogowany");
       }
 
       yield put(
@@ -112,7 +115,6 @@ function* deleteAccountHandler(): Generator {
         statusCode: number;
       };
       if (response.statusCode !== 204) throw new Error();
-
       yield put(
         openModal({
           message: "Konto zostało usunięte.",
@@ -155,6 +157,7 @@ function* deleteAccountHandler(): Generator {
           type: "error",
         })
       );
+      yield call(clearUserFromLocalStorage);
     }
   } else if (canceled) {
     yield put(closeModal());
@@ -256,6 +259,7 @@ function* logoutHandler(): Generator {
         })
       );
       yield put(setLoggedUserEmail(null));
+      yield call(clearUserFromLocalStorage);
     }
   } else if (canceled) {
     yield put(closeModal());
@@ -297,6 +301,7 @@ function* savePasswordHandler({
         type: "error",
       })
     );
+    yield call(clearUserFromLocalStorage);
   }
 }
 

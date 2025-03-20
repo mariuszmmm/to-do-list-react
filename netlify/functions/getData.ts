@@ -9,16 +9,18 @@ const handler: Handler = async (
     console.error("Unauthorized");
 
     return {
-      statusCode: 200,
+      statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
     };
   }
-  const { email }: { email: string } = context.clientContext.user;
 
   try {
+    const { email }: { email: string } = context.clientContext.user;
     const userData = await UserData.findOne({ email, account: "active" });
 
     if (!userData) {
+      console.error("User not found");
+
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),

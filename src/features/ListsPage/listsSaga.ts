@@ -26,6 +26,7 @@ import {
 } from "../AccountPage/accountSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { getUserToken } from "../../utils/getUserToken";
+import { clearUserFromLocalStorage } from "../../utils/localStorage";
 
 function* setLoggedUserEmailHandler(): Generator {
   const loggedUserEmail = (yield select(selectLoggedUserEmail)) as ReturnType<
@@ -60,7 +61,7 @@ function* setLoggedUserEmailHandler(): Generator {
     }
 
     const data = (yield call(getDataApi, token)) as Data | null;
-    if (!data || !data.lists) throw new Error("No data");
+    if (!data || !data.lists || !data.version) throw new Error("No data");
     yield put(setLists(data.lists));
     yield put(setVersion(data.version));
     yield put(
@@ -78,6 +79,7 @@ function* setLoggedUserEmailHandler(): Generator {
     );
     if (lists) yield put(setLists(null));
     yield put(setLoggedUserEmail(null));
+    yield call(clearUserFromLocalStorage);
   }
 }
 
@@ -125,19 +127,19 @@ function* addListRequestHandler({
       throw new Error("No token found");
     }
 
-    const response = (yield call(addDataApi, token, version, list)) as {
-      version: Version;
-    };
-    if (!response) throw new Error("No response");
+    const data = (yield call(addDataApi, token, version, list)) as Data | null;
+    if (!data) throw new Error("No data");
 
-    const newVersion = response.version;
-    if (newVersion === null) {
+    if (!data.version) {
       yield refreshListsHandler();
       return;
     }
 
+    if (!data.lists) throw new Error("No lists");
+
     yield put(addListSuccess(list));
-    yield put(setVersion(newVersion));
+    yield put(setLists(data.lists));
+    yield put(setVersion(data.version));
     yield put(
       openModal({
         message: `Lista ${list.name} została zapisana w bazie danych.`,
@@ -151,6 +153,7 @@ function* addListRequestHandler({
         type: "error",
       })
     );
+    yield call(clearUserFromLocalStorage);
   }
 }
 
@@ -190,20 +193,24 @@ function* removeListRequestHandler({
         throw new Error("No token found");
       }
 
-      const response = (yield call(removeDataApi, token, version, listId)) as {
-        version: Version;
-      };
-      if (!response) throw new Error("No response");
+      const data = (yield call(
+        removeDataApi,
+        token,
+        version,
+        listId
+      )) as Data | null;
+      if (!data) throw new Error("No data");
 
-      const newVersion = response.version;
-
-      if (newVersion === null) {
+      if (!data.version) {
         yield refreshListsHandler();
         return;
       }
 
+      if (!data.lists) throw new Error("No lists");
+
       yield put(removeListSuccess(listId));
-      yield put(setVersion(newVersion));
+      yield put(setLists(data.lists));
+      yield put(setVersion(data.version));
       yield put(
         openModal({
           message: "Lista została usunięta z bazy danych.",
@@ -217,6 +224,7 @@ function* removeListRequestHandler({
           type: "error",
         })
       );
+      yield call(clearUserFromLocalStorage);
     }
   } else if (canceled) {
     yield put(closeModal());
