@@ -3,7 +3,6 @@ import { Task } from "../types";
 const settingsKey = "settings" as const;
 const listNameKey = "listName" as const;
 const tasksKey = "tasks" as const;
-const userKey = "gotrue.user" as const;
 
 interface Settings {
   showSearch: boolean;
@@ -11,7 +10,6 @@ interface Settings {
 }
 
 export const clearLocalStorage = () => localStorage.clear();
-export const clearUserFromLocalStorage = () => localStorage.removeItem(userKey);
 
 export const saveSettingsInLocalStorage = (settings: Settings) =>
   localStorage.setItem(settingsKey, JSON.stringify(settings));

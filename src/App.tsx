@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
@@ -10,11 +10,32 @@ import UserConfirmationPage from "./features/UserConfirmationPage";
 import AccountRecoveryPage from "./features/AccountRecoveryPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
-import { selectLists } from "./features/ListsPage/listsSlice";
+import { selectLists, setLists } from "./features/ListsPage/listsSlice";
 import { Modal } from "./Modal";
+import { useEffect } from "react";
+import { auth } from "./api/auth";
+import { refreshData } from "./utils/refreshData";
+import { setVersion } from "./features/AccountPage/accountSlice";
 
 const App = () => {
   const lists = useAppSelector(selectLists);
+  const dispatch = useAppDispatch();
+  const user = auth.currentUser();
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(async () => {
+      const data = await refreshData();
+      if (!data) return;
+      dispatch(setVersion(data.version));
+      dispatch(setLists(data.lists));
+    }, 1000 * 60);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [user, dispatch]);
 
   return (
     <HashRouter>

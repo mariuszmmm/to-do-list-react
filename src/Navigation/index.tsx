@@ -25,18 +25,18 @@ const Navigation = () => {
   }, [user, dispatch]);
 
   useEffect(() => {
+    const handleStorageEvent = (event: StorageEvent) => {
+      if (event.key === "gotrue.user") {
+        window.location.reload();
+      }
+    };
+
     if (pathname !== "/user-confirmation" && pathname !== "/account-recovery") {
-      window.addEventListener("storage", (event) => {
-        if (event.key === "gotrue.user") {
-          window.location.reload();
-        }
-      });
-    } else {
-      window.removeEventListener("storage", () => {});
+      window.addEventListener("storage", handleStorageEvent);
     }
 
     return () => {
-      window.removeEventListener("storage", () => {});
+      window.removeEventListener("storage", handleStorageEvent);
     };
 
     // eslint-disable-next-line

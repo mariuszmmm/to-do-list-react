@@ -14,7 +14,16 @@ export const SearchButtons = () => {
 
   return (
     <ButtonsContainer>
-      <Button onClick={() => dispatch(toggleShowSearch())}>
+      <Button
+        onClick={() => {
+          if (showSearch) {
+            replaceQueryParameter({
+              key: searchQueryParamName,
+            });
+          }
+          dispatch(toggleShowSearch());
+        }}
+      >
         {showSearch ? "Ukryj" : "Pokaż"} filtr
       </Button>
       <Button

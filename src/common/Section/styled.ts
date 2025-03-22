@@ -1,7 +1,7 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-interface SectionBodyProps {
-  hidden?: boolean;
+interface SectionHeaderProps {
+  $bodyHidden?: boolean;
 }
 
 export const StyledSection = styled.section`
@@ -11,7 +11,7 @@ export const StyledSection = styled.section`
   border-radius: 5px;
 `;
 
-export const SectionHeader = styled.header`
+export const SectionHeader = styled.header<SectionHeaderProps>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -19,8 +19,9 @@ export const SectionHeader = styled.header`
   font-weight: 700;
   padding: 20px;
   margin: 0;
-  border-bottom: 1px solid ${({ theme }) => theme.color.alto};
   word-break: break-word;
+  border-bottom: ${({ $bodyHidden, theme }) =>
+    $bodyHidden ? "none" : `1px solid ${theme.color.alto}`};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     flex-direction: column;
@@ -28,12 +29,6 @@ export const SectionHeader = styled.header`
   }
 `;
 
-export const SectionBody = styled.div<SectionBodyProps>`
+export const SectionBody = styled.div`
   padding: 20px;
-
-  ${({ hidden }) =>
-    hidden &&
-    css`
-      display: none;
-    `}
 `;

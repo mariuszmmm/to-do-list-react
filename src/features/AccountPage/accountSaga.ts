@@ -24,10 +24,7 @@ import { auth } from "../../api/auth";
 import { deleteUserApi } from "../../api/fetchUserApi";
 import { getUserToken } from "../../utils/getUserToken";
 import { User } from "gotrue-js";
-import {
-  clearLocalStorage,
-  clearUserFromLocalStorage,
-} from "../../utils/localStorage";
+import { clearLocalStorage } from "../../utils/localStorage";
 
 function* accountRecoveryHandler({
   payload: { email },
@@ -157,7 +154,6 @@ function* deleteAccountHandler(): Generator {
           type: "error",
         })
       );
-      yield call(clearUserFromLocalStorage);
     }
   } else if (canceled) {
     yield put(closeModal());
@@ -258,8 +254,6 @@ function* logoutHandler(): Generator {
           type: "error",
         })
       );
-      yield put(setLoggedUserEmail(null));
-      yield call(clearUserFromLocalStorage);
     }
   } else if (canceled) {
     yield put(closeModal());
@@ -301,7 +295,6 @@ function* savePasswordHandler({
         type: "error",
       })
     );
-    yield call(clearUserFromLocalStorage);
   }
 }
 

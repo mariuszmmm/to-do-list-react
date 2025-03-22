@@ -24,9 +24,9 @@ const TasksPage = () => {
       />
       <Section
         title="Wyszukiwarka"
-        body={<Search />}
+        body={showSearch && <Search />}
         extraHeaderContent={<SearchButtons />}
-        hidden={!showSearch}
+        bodyHidden={!showSearch}
       />
       <Section
         title={<EditableListName />}

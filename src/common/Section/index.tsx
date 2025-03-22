@@ -6,7 +6,7 @@ interface SectionProps {
   body: ReactNode;
   extraHeaderContent?: ReactElement;
   extraContent?: ReactElement;
-  hidden?: boolean;
+  bodyHidden?: boolean;
 }
 
 export const Section = ({
@@ -14,14 +14,14 @@ export const Section = ({
   body,
   extraHeaderContent,
   extraContent,
-  hidden,
+  bodyHidden,
 }: SectionProps) => (
   <StyledSection>
-    <SectionHeader>
+    <SectionHeader $bodyHidden={bodyHidden}>
       {title}
       {extraHeaderContent}
     </SectionHeader>
-    <SectionBody hidden={hidden}>
+    <SectionBody hidden={bodyHidden}>
       {body}
       {extraContent}
     </SectionBody>
