@@ -21,15 +21,6 @@ const listsSlice = createSlice({
     setLists: (state, { payload: lists }: PayloadAction<List[] | null>) => {
       state.lists = lists;
     },
-    addListRequest: (state, action: PayloadAction<List>) => {},
-    addListSuccess: (state, { payload: list }: PayloadAction<List>) => {
-      if (state.lists === null) return;
-      state.lists.push({
-        id: list.id,
-        name: list.name,
-        taskList: list.taskList,
-      });
-    },
     selectList: (state, { payload: listId }: PayloadAction<string>) => {
       if (state.selectedListId === listId) {
         state.selectedListId = null;
@@ -44,33 +35,22 @@ const listsSlice = createSlice({
       state.listToLoad = taskList;
       if (taskList === null) state.selectedListId = null;
     },
+    addListRequest: (state, action: PayloadAction<List>) => {},
     removeListRequest: (
       state,
       {
         payload: { listId, listName },
       }: PayloadAction<{ listId: string; listName: string }>
     ) => {},
-    removeListSuccess: (state, { payload: listId }: PayloadAction<string>) => {
-      if (state.lists === null) return;
-      const index = state.lists.findIndex(({ id }) => id === listId);
-      if (index !== -1) {
-        state.lists.splice(index, 1);
-        if (state.selectedListId === listId) {
-          state.selectedListId = null;
-        }
-      }
-    },
   },
 });
 
 export const {
   setLists,
-  addListRequest,
-  addListSuccess,
   selectList,
   setListToLoad,
+  addListRequest,
   removeListRequest,
-  removeListSuccess,
 } = listsSlice.actions;
 
 const selectListsState = (state: RootState) => state.lists;

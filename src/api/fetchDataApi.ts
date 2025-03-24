@@ -30,7 +30,7 @@ export const addDataApi = async (
     .then((response) => {
       if (!response.ok) {
         if (response.status === 409) {
-          return { version: null };
+          return { data: null };
         } else throw new Error(response.statusText);
       }
       return response.json();
@@ -38,9 +38,6 @@ export const addDataApi = async (
     .then((data) => data)
     .catch((error) => {
       console.error("Błąd aktualizacji danych", error.message);
-      if (error.message === "Conflict") {
-        return { version: null };
-      }
     });
 };
 
@@ -57,7 +54,7 @@ export const removeDataApi = async (
     .then((response) => {
       if (!response.ok) {
         if (response.status === 409) {
-          return { version: null };
+          return { data: null };
         } else throw new Error(response.statusText);
       }
       return response.json();

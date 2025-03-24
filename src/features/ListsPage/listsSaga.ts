@@ -11,9 +11,7 @@ import { addDataApi, getDataApi, removeDataApi } from "../../api/fetchDataApi";
 import { Data, Version } from "../../types";
 import {
   addListRequest,
-  addListSuccess,
   removeListRequest,
-  removeListSuccess,
   selectLists,
   selectListToLoad,
   setLists,
@@ -64,8 +62,8 @@ function* setLoggedUserEmailHandler(): Generator {
 
     if (!data || !data.lists || !data.version) throw new Error("No data");
 
-    yield put(setVersion(data.version));
     yield put(setLists(data.lists));
+    yield put(setVersion(data.version));
     yield put(
       openModal({
         message: "Listy zostały pobrane.",
@@ -126,28 +124,26 @@ function* addListRequestHandler({
     const token = (yield call(getUserToken)) as string | null;
 
     if (!token) {
-      yield put(setLoggedUserEmail(null));
       yield put(setLists(null));
+      yield put(setVersion(null));
+      yield put(setLoggedUserEmail(null));
       throw new Error("No token found");
     }
 
     const response = (yield call(addDataApi, token, version, list)) as {
-      data?: Data;
+      data: Data;
     };
     const { data } = response;
 
-    if (!data) throw new Error("No data");
-
-    if (!data.version) {
+    if (!data) {
       yield refreshListsHandler();
       return;
     }
 
-    if (!data.lists) throw new Error("No lists");
+    if (!data.lists || !data.version) throw new Error("No lists or version");
 
-    yield put(addListSuccess(list));
-    yield put(setVersion(data.version));
     yield put(setLists(data.lists));
+    yield put(setVersion(data.version));
     yield put(
       openModal({
         message: `Lista ${list.name} została zapisana w bazie danych.`,
@@ -194,28 +190,26 @@ function* removeListRequestHandler({
       const token = (yield call(getUserToken)) as string | null;
 
       if (!token) {
-        yield put(setLoggedUserEmail(null));
         yield put(setLists(null));
+        yield put(setVersion(null));
+        yield put(setLoggedUserEmail(null));
         throw new Error("No token found");
       }
 
       const response = (yield call(removeDataApi, token, version, listId)) as {
-        data?: Data;
+        data: Data;
       };
       const { data } = response;
 
-      if (!data) throw new Error("No data");
-
-      if (!data.version) {
+      if (!data) {
         yield refreshListsHandler();
         return;
       }
 
-      if (!data.lists) throw new Error("No lists");
+      if (!data.lists || !data.version) throw new Error("No lists");
 
-      yield put(removeListSuccess(listId));
-      yield put(setVersion(data.version));
       yield put(setLists(data.lists));
+      yield put(setVersion(data.version));
       yield put(
         openModal({
           message: "Lista została usunięta z bazy danych.",

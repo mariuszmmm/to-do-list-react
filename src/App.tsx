@@ -28,8 +28,8 @@ const App = () => {
     const interval = setInterval(async () => {
       const data = await refreshData();
       if (!data) return;
-      dispatch(setVersion(data.version));
       dispatch(setLists(data.lists));
+      dispatch(setVersion(data.version));
     }, 1000 * 60);
 
     return () => {
