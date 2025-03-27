@@ -23,6 +23,7 @@ export const SearchButtons = () => {
           }
           dispatch(toggleShowSearch());
         }}
+        width="100px"
       >
         {showSearch ? "Ukryj" : "Pokaż"} filtr
       </Button>
@@ -33,6 +34,7 @@ export const SearchButtons = () => {
           })
         }
         disabled={!query}
+        width="100px"
       >
         Wyczyść filtr
       </Button>

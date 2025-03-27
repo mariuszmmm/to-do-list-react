@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface ButtonProps {
   $singleInput?: boolean;
   $noInputs?: boolean;
+  width?: string;
 }
 
 export const FormButton = styled.button<ButtonProps>`
@@ -14,6 +15,7 @@ export const FormButton = styled.button<ButtonProps>`
   border-radius: 5px;
   transition: filter 0.25s;
   user-select: none;
+  width: ${({ width }) => width || "auto"};
   height: 42px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {

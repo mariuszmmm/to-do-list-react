@@ -89,7 +89,7 @@ export const TaskForm = () => {
         onChange={({ target }) => setTaskContent(target.value)}
         ref={inputRef}
       />
-      <FormButton $singleInput>
+      <FormButton $singleInput width="135px">
         {editedTask !== null ? "Zapisz zmiany" : "Dodaj zadanie"}
       </FormButton>
     </Form>
