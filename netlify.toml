@@ -4,11 +4,6 @@
   status = 200
 
 [[redirects]]
-  from = "/getVersion"
-  to = "/.netlify/functions/getVersion"
-  status = 200
-
-[[redirects]]
   from = "/updateData"
   to = "/.netlify/functions/updateData"
   status = 200
