@@ -6,7 +6,6 @@ import { Input } from "../../../../common/Input";
 import { Form } from "../../../../common/Form";
 import { FormButton } from "../../../../common/FormButton";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
-import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
 import {
   addTask,
   setTaskToEdit,
@@ -25,7 +24,7 @@ export const TaskForm = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const replaceQueryParameter = useReplaceQueryParameter();
-  const formatedDate = formatCurrentDate(new Date());
+  const formatedDate = new Date();
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();

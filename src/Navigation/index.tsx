@@ -1,8 +1,9 @@
-import { Nav, NavList, StyledNavLink, Account } from "./styled";
-import { useLocation } from "react-router-dom";
-import { selectLists } from "../features/ListsPage/listsSlice";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
+import { selectLists } from "../features/ListsPage/listsSlice";
 import { auth } from "../api/auth";
 import {
   setAccountMode,
@@ -10,9 +11,10 @@ import {
 } from "../features/AccountPage/accountSlice";
 
 const Navigation = () => {
-  const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const lists = useAppSelector(selectLists);
+  const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
   useEffect(() => {
@@ -47,17 +49,36 @@ const Navigation = () => {
       {pathname !== "/user-confirmation" &&
         pathname !== "/account-recovery" && (
           <NavList $isLists={lists !== null}>
-            <li></li>
             <li>
-              <StyledNavLink to="/zadania">Zadania</StyledNavLink>
+              <NavButton
+                onClick={() => i18n.changeLanguage("en")}
+                $isActive={i18n.language === "en"}
+              >
+                EN
+              </NavButton>
+              <NavButton
+                onClick={() => i18n.changeLanguage("pl")}
+                $isActive={i18n.language === "pl"}
+              >
+                PL
+              </NavButton>
+            </li>
+            <li>
+              <StyledNavLink to="/zadania" $inactive={pathname !== "/zadania"}>
+                {t("navigation.tasks")}
+              </StyledNavLink>
             </li>
             {lists !== null && (
               <li>
-                <StyledNavLink to="/listy">Listy</StyledNavLink>
+                <StyledNavLink to="/listy">
+                  {t("navigation.lists")}
+                </StyledNavLink>
               </li>
             )}
             <li>
-              <StyledNavLink to="/autor">O autorze</StyledNavLink>
+              <StyledNavLink to="/autor">
+                {t("navigation.author")}{" "}
+              </StyledNavLink>
             </li>
             <li>
               <StyledNavLink to="/konto">

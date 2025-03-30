@@ -6,7 +6,6 @@ import {
   takeEvery,
   takeLatest,
 } from "redux-saga/effects";
-import { formatCurrentDate } from "../../utils/formatCurrentDate";
 import { getExampleTasks } from "../../api/getExampleTasks";
 import {
   saveListNameInLocalStorage,
@@ -46,7 +45,8 @@ function* fetchExampleTasksHandler() {
       selectListName
     );
     const exampleTasks: Task[] = yield call(getExampleTasks);
-    const date = formatCurrentDate(new Date());
+    const date = new Date();
+
     const exampleTasksWithDate = exampleTasks.map((task) => ({
       ...task,
       date,

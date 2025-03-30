@@ -7,6 +7,7 @@ import { theme } from "./theme";
 import GlobalStyle from "./GlobalStyle";
 import App from "./App";
 import { getTokenFromURL } from "./utils/getTokenFromURL";
+import "./i18n";
 
 const url = window.location.href;
 getTokenFromURL(url);

@@ -1,10 +1,10 @@
-export const formatCurrentDay = (currentDate: Date) =>
-  currentDate.toLocaleString(undefined, {
+export const formatCurrentDay = (currentDate: Date, locale: string) =>
+  currentDate.toLocaleString(locale, {
     weekday: "long",
   });
 
-export const formatCurrentTime = (currentDate: Date) =>
-  currentDate.toLocaleString(undefined, {
+export const formatCurrentTime = (currentDate: Date, locale: string) =>
+  currentDate.toLocaleString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -12,8 +12,8 @@ export const formatCurrentTime = (currentDate: Date) =>
     month: "long",
   });
 
-export const formatCurrentDate = (currentDate: Date) =>
-  currentDate.toLocaleString(undefined, {
+export const formatCurrentDate = (currentDate: Date, locale: string) =>
+  currentDate.toLocaleString(locale, {
     day: "numeric",
     month: "numeric",
     year: "numeric",

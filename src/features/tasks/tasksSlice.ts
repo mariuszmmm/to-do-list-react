@@ -93,7 +93,7 @@ const tasksSlice = createSlice({
         payload: { taskId, doneDate, stateForUndo },
       }: PayloadAction<{
         taskId: string;
-        doneDate: string | null;
+        doneDate: Date | null;
         stateForUndo: { tasks: Task[]; listName: string };
       }>
     ) => {

@@ -3,7 +3,6 @@ import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import { List, Item, Content, Task } from "./styled";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
-import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
 import {
   EditButton,
   RemoveButton,
@@ -30,7 +29,7 @@ export const TasksList = () => {
     selectTasksByQuery(state, query)
   );
   const dispatch = useAppDispatch();
-  const date = formatCurrentDate(new Date());
+  const date = new Date();
 
   return (
     <List>
