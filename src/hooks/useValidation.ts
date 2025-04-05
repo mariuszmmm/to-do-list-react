@@ -1,5 +1,6 @@
-import { RefObject } from "react";
+import { RefObject, useEffect } from "react";
 import { emailPattern, passwordPattern } from "../utils/patterns";
+import { useTranslation } from "react-i18next";
 
 interface UseValidationProps {
   email?: string;
@@ -16,15 +17,24 @@ export const useValidation = ({
   passwordInputRef,
   setMessage,
 }: UseValidationProps) => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage",
+  });
+
+  useEffect(() => {
+    setMessage("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
+
   const emailValidation = () => {
     if (!email) {
-      setMessage("Wpisz adres e-mail.");
+      setMessage(t("form.message.email"));
       emailInputRef?.current?.focus();
       return false;
     }
 
     if (!emailPattern.test(email)) {
-      setMessage("Nieprawidłowy adres e-mail.");
+      setMessage(t("form.message.emailMessage"));
       emailInputRef?.current?.focus();
       return false;
     }
@@ -35,13 +45,13 @@ export const useValidation = ({
 
   const passwordValidation = () => {
     if (!password) {
-      setMessage("Wpisz hasło.");
+      setMessage(t("form.message.password"));
       passwordInputRef?.current?.focus();
       return false;
     }
 
     if (!passwordPattern.test(password)) {
-      setMessage("Hasło musi mieć co najmniej 4 znaki.");
+      setMessage(t("form.message.passwordMessage"));
       passwordInputRef?.current?.focus();
       return false;
     }

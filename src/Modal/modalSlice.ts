@@ -1,20 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { ModalTranslationKeys } from "../@types/i18next";
+import langPl from "../utils/i18n/locales/pl";
 
 interface ModalPayload {
   title?: string;
-  message?: string;
-  confirmButtonText?: string;
-  endButtonText?: string;
+  message?: {
+    key: ModalTranslationKeys<typeof langPl, "modal">;
+    values?: Record<string, string>;
+  };
+  confirmButton?: string;
+  endButton?: string;
   type?: "info" | "confirm" | "loading" | "success" | "error";
 }
 
 interface ModalState {
   isOpen: boolean;
   title?: string;
-  message?: string;
-  confirmButtonText?: string;
-  endButtonText?: string;
+  message?: {
+    key: ModalTranslationKeys<typeof langPl, "modal">;
+    values?: Record<string, string>;
+  };
+  confirmButton?: string;
+  endButton?: string;
   type?: "info" | "confirm" | "loading" | "success" | "error";
 }
 
@@ -22,8 +30,8 @@ const initialState: ModalState = {
   isOpen: false,
   title: undefined,
   message: undefined,
-  confirmButtonText: undefined,
-  endButtonText: undefined,
+  confirmButton: undefined,
+  endButton: undefined,
   type: undefined,
 };
 
@@ -34,24 +42,17 @@ export const modalSlice = createSlice({
     openModal: (
       state,
       {
-        payload: { title, message, confirmButtonText, endButtonText, type },
+        payload: { title, message, confirmButton, endButton, type },
       }: PayloadAction<ModalPayload>
     ) => {
       state.isOpen = true;
       if (title) state.title = title;
       if (message) state.message = message;
-      if (confirmButtonText) state.confirmButtonText = confirmButtonText;
-      if (endButtonText) state.endButtonText = endButtonText;
+      if (confirmButton) state.confirmButton = confirmButton;
+      if (endButton) state.endButton = endButton;
       if (type) state.type = type;
     },
-    closeModal: (state) => {
-      state.isOpen = initialState.isOpen;
-      state.title = initialState.title;
-      state.message = initialState.message;
-      state.confirmButtonText = initialState.confirmButtonText;
-      state.endButtonText = initialState.endButtonText;
-      state.type = initialState.type;
-    },
+    closeModal: () => initialState,
     confirm: () => {},
     cancel: () => {},
   },

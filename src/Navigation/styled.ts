@@ -1,9 +1,16 @@
 import { NavLink } from "react-router-dom";
-import styled, { css } from "styled-components";
+import styled, { css, Styled } from "styled-components";
 import { ReactComponent as user } from "../images/user.svg";
 
 interface NavListProps {
   $isLists: boolean;
+}
+interface ButtonProps {
+  $isActive?: boolean;
+}
+
+interface StyledNavLinkProps {
+  $inactive?: boolean;
 }
 
 export const Nav = styled.nav`
@@ -33,14 +40,23 @@ export const NavList = styled.ul<NavListProps>`
     $isLists &&
     css`
       grid-template-columns: 1fr auto auto auto 1fr;
+
+      @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+        grid-template-columns: 1fr auto auto auto auto;
+      }
     `};
 
   li {
     text-align: right;
   }
+
+  li:first-child {
+    text-align: left;
+    margin-left: 20px;
+  }
 `;
 
-export const StyledNavLink = styled(NavLink)`
+export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
   color: ${({ theme }) => theme.color.white};
   height: 50px;
@@ -52,6 +68,32 @@ export const StyledNavLink = styled(NavLink)`
 
   &.active {
     font-weight: 700;
+    ${({ $inactive }) =>
+      $inactive &&
+      css`
+        font-weight: 400;
+      `}
+  }
+`;
+
+export const NavButton = styled.button<ButtonProps>`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.color.white};
+  height: 50px;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      font-weight: 700;
+    `};
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    display: none;
   }
 `;
 

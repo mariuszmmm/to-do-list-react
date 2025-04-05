@@ -15,6 +15,7 @@ import {
 } from "../../../utils/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
 import { RecoveryStatus } from "..";
+import i18n from "../../../utils/i18n";
 
 export const AccountRecoveryForm = ({
   setStatus,
@@ -32,8 +33,8 @@ export const AccountRecoveryForm = ({
       try {
         dispatch(
           openModal({
-            title: "Odzyskiwanie konta",
-            message: "Proszę czekać...",
+            title: i18n.t("modal.recoveryAccount.title"),
+            message: { key: "modal.recoveryAccount.message.loading" },
             type: "loading",
           })
         );
@@ -42,15 +43,15 @@ export const AccountRecoveryForm = ({
         await auth.recover(token);
         dispatch(
           openModal({
-            message: "Konto zostało odzyskane, ustaw nowe hasło.",
-            endButtonText: "Dalej",
-            type: "info",
+            message: { key: "modal.recoveryAccount.message.success" },
+            endButton: i18n.t("modal.buttons.nextButton"),
+            type: "success",
           })
         );
       } catch (error) {
         dispatch(
           openModal({
-            message: "Link wygasł lub został użyty.",
+            message: { key: "modal.recoveryAccount.message.error.linkExpired" },
             type: "error",
           })
         );
@@ -76,8 +77,8 @@ export const AccountRecoveryForm = ({
     try {
       dispatch(
         openModal({
-          title: "Odzyskiwanie konta",
-          message: "Zapisywanie hasła...",
+          title: i18n.t("modal.changeEmail.title"),
+          message: { key: "modal.changeEmail.message.loading" },
           type: "loading",
         })
       );
@@ -85,7 +86,7 @@ export const AccountRecoveryForm = ({
       await user.update({ password }).then((user) => user.logout());
       dispatch(
         openModal({
-          message: "Hasło zostało zaktualizowane, zamknij stronę.",
+          message: { key: "modal.changeEmail.message.success" },
           type: "success",
         })
       );
@@ -95,7 +96,7 @@ export const AccountRecoveryForm = ({
     } catch (error) {
       dispatch(
         openModal({
-          message: "Wystąpił błąd podczas aktualizacji hasła.",
+          message: { key: "modal.changeEmail.message.error.default" },
           type: "error",
         })
       );

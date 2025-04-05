@@ -62,7 +62,7 @@ export const ModalButtonContainer = styled.div`
 
 const ModalButton = styled.button`
   padding: 10px;
-  width: 100px;
+  min-width: 100px;
   color: ${({ theme }) => theme.color.white};
   border: none;
   border-radius: 5px;

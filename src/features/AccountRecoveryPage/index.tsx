@@ -5,6 +5,7 @@ import { auth } from "../../api/auth";
 import { Container } from "../../common/Container";
 import { Text } from "../../common/Text";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 export type RecoveryStatus =
   | "accountRecovered"
@@ -13,15 +14,18 @@ export type RecoveryStatus =
 
 const AccountRecoveryPage = () => {
   const [status, setStatus] = useState<RecoveryStatus>("changePassword");
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountRecoveryPage",
+  });
   const user = auth.currentUser();
 
   return (
     <>
       {status === "changePassword" ? (
         <>
-          <Header title="Zmiana hasła" />
+          <Header title={t("title")} />
           <Section
-            title={user?.email || "Wpisz nowe hasło"}
+            title={user?.email || t("subTitle")}
             body={<AccountRecoveryForm setStatus={setStatus} />}
           />
         </>
@@ -29,12 +33,13 @@ const AccountRecoveryPage = () => {
         <Container>
           <Text>
             <b>
-              {status === "accountRecovered"
-                ? "Konto zostało odzyskane"
-                : "Link wygasł lub został użyty"}
-              ,
-              <br />
-              zamknij stronę.
+              <Trans
+                i18nKey={
+                  status === "accountRecovered"
+                    ? "accountRecoveryPage.message.success"
+                    : "accountRecoveryPage.message.error"
+                }
+              />
             </b>
           </Text>
         </Container>

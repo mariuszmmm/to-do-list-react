@@ -30,6 +30,7 @@ export const FormButton = styled.button<ButtonProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-column: 1 / -1;
+    width: 100%;
   }
 
   &:hover {

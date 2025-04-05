@@ -19,7 +19,7 @@ export type RecoveryStatus =
   | "linkExpired"
   | "passwordUpdated"
   | "passwordNotUpdated"
-  | "savePassword";
+  | "changePassword";
 
 export interface Task {
   id: string;

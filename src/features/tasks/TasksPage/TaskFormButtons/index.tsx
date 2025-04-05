@@ -6,11 +6,15 @@ import {
   fetchExampleTasks,
   selectAreTasksEmpty,
 } from "../../tasksSlice";
+import { useTranslation } from "react-i18next";
 
 export const TaskFormButtons = () => {
-  const dispatch = useAppDispatch();
   const fetchStatus = useAppSelector(selectFetchStatus);
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
+  const { t } = useTranslation("translation", {
+    keyPrefix: "tasksPage",
+  });
+  const dispatch = useAppDispatch();
 
   return (
     <ButtonsContainer>
@@ -22,10 +26,10 @@ export const TaskFormButtons = () => {
         $error={fetchStatus === "error"}
       >
         {fetchStatus === "ready"
-          ? "Pobierz przykładowe zadania"
+          ? t("form.buttons.fetchExampleTasks")
           : fetchStatus === "loading"
-          ? "Ładowanie..."
-          : "Błąd ładowania danych"}
+          ? t("form.buttons.loading")
+          : t("form.buttons.error")}
       </Button>
     </ButtonsContainer>
   );

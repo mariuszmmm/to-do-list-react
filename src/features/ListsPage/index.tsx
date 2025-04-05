@@ -9,6 +9,7 @@ import {
   selectSelectedListId,
   selectSelectedListById,
 } from "./listsSlice";
+import { useTranslation } from "react-i18next";
 
 const ListsPage = () => {
   const areListsEmpty = useAppSelector(selectAreListsEmpty);
@@ -16,18 +17,21 @@ const ListsPage = () => {
   const selectedListById = useAppSelector((state) =>
     selectedListId ? selectSelectedListById(state, selectedListId) : null
   );
+  const { t } = useTranslation("translation", {
+    keyPrefix: "listsPage",
+  });
 
   return (
     <>
-      <Header title="Zapisane listy" />
+      <Header title={t("title")} />
       <Section
-        title={areListsEmpty ? "Nie masz zapisanych list 😯" : "Wybierz listę"}
+        title={areListsEmpty ? t("lists.empty") : t("lists.select")}
         body={<ListsList />}
         extraHeaderContent={<ListsButtons />}
       />
       {selectedListById !== null && (
         <>
-          <Header title="Wybrana lista" />
+          <Header title={t("subTitle")} sub />
           <Section
             title={selectedListById.name}
             body={<TasksList list={selectedListById.taskList} />}

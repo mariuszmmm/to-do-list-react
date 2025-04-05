@@ -25,6 +25,7 @@ import {
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { getUserToken } from "../../utils/getUserToken";
 import { auth } from "../../api/auth";
+import i18n from "../../utils/i18n";
 
 function* setLoggedUserEmailHandler(): Generator {
   const loggedUserEmail = (yield select(selectLoggedUserEmail)) as ReturnType<
@@ -45,8 +46,8 @@ function* setLoggedUserEmailHandler(): Generator {
   try {
     yield put(
       openModal({
-        title: "Pobieranie list",
-        message: "Trwa pobieranie list...",
+        title: i18n.t("modal.downloadLists.title"),
+        message: { key: "modal.downloadLists.message.loading" },
         type: "loading",
       })
     );
@@ -66,14 +67,14 @@ function* setLoggedUserEmailHandler(): Generator {
     yield put(setVersion(data.version));
     yield put(
       openModal({
-        message: "Listy zostały pobrane.",
+        message: { key: "modal.downloadLists.message.success" },
         type: "success",
       })
     );
   } catch (error) {
     yield put(
       openModal({
-        message: "Wystąpił błąd podczas pobierania list.",
+        message: { key: "modal.downloadLists.message.error.default" },
         type: "error",
       })
     );
@@ -89,10 +90,9 @@ function* setLoggedUserEmailHandler(): Generator {
 function* refreshListsHandler(): Generator {
   yield put(
     openModal({
-      message:
-        "Operacja nie mogła być wykonana poprawnie, ponieważ pobrane listy są nieaktualne. Odśwież i sprobuj ponownie.",
+      message: { key: "modal.refreshLists.message.confirm" },
+      confirmButton: i18n.t("modal.buttons.refreshButton"),
       type: "confirm",
-      confirmButtonText: "Odśwież",
     })
   );
 
@@ -114,8 +114,11 @@ function* addListRequestHandler({
   try {
     yield put(
       openModal({
-        title: "Zapisywanie listy",
-        message: `Zapisywanie listy ${list.name} w bazie danych...`,
+        title: i18n.t("modal.saveList.title"),
+        message: {
+          key: "modal.saveList.message.loading",
+          values: { listName: list.name },
+        },
         type: "loading",
       })
     );
@@ -146,14 +149,17 @@ function* addListRequestHandler({
     yield put(setVersion(data.version));
     yield put(
       openModal({
-        message: `Lista ${list.name} została zapisana w bazie danych.`,
+        message: {
+          key: "modal.saveList.message.success",
+          values: { listName: list.name },
+        },
         type: "success",
       })
     );
   } catch (error: any) {
     yield put(
       openModal({
-        message: "Wystąpił błąd podczas dodawania listy do bazy danych.",
+        message: { key: "modal.saveList.message.error.default" },
         type: "error",
       })
     );
@@ -165,10 +171,13 @@ function* removeListRequestHandler({
 }: ReturnType<typeof removeListRequest>): Generator {
   yield put(
     openModal({
-      title: "Usuwanie listy",
-      message: `Czy na pewno chcesz usunąć listę: ${listName} ?`,
+      title: i18n.t("modal.removeList.title"),
+      message: {
+        key: "modal.removeList.message.confirm",
+        values: { listName: listName },
+      },
       type: "confirm",
-      confirmButtonText: "Usuń",
+      confirmButton: i18n.t("modal.buttons.deleteButton"),
     })
   );
 
@@ -181,7 +190,7 @@ function* removeListRequestHandler({
     try {
       yield put(
         openModal({
-          message: "Trwa usuwanie listy...",
+          message: { key: "modal.removeList.message.loading" },
           type: "loading",
         })
       );
@@ -212,14 +221,14 @@ function* removeListRequestHandler({
       yield put(setVersion(data.version));
       yield put(
         openModal({
-          message: "Lista została usunięta z bazy danych.",
+          message: { key: "modal.removeList.message.success" },
           type: "success",
         })
       );
     } catch (error) {
       yield put(
         openModal({
-          message: "Wystąpił błąd podczas usuwania listy.",
+          message: { key: "modal.removeList.message.error.default" },
           type: "error",
         })
       );
