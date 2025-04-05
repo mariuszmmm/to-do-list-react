@@ -30,7 +30,15 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     justify-content: center;
-    margin-top: 10px;
+
+    ${({ $extra }) =>
+      $extra
+        ? css`
+            margin-top: 10px;
+          `
+        : css`
+            margin: 10px 40px 0;
+          `}
 
     ${({ $sub }) =>
       $sub &&

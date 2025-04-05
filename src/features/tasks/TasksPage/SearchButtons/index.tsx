@@ -5,12 +5,16 @@ import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { toggleShowSearch, selectShowSearch } from "../../tasksSlice";
 import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
+import { useTranslation } from "react-i18next";
 
 export const SearchButtons = () => {
   const dispatch = useAppDispatch();
   const showSearch = useAppSelector(selectShowSearch);
   const query = useQueryParameter(searchQueryParamName);
   const replaceQueryParameter = useReplaceQueryParameter();
+  const { t, i18n } = useTranslation("translation", {
+    keyPrefix: "tasksPage",
+  });
 
   return (
     <ButtonsContainer>
@@ -23,9 +27,9 @@ export const SearchButtons = () => {
           }
           dispatch(toggleShowSearch());
         }}
-        width="100px"
+        width={i18n.language === "de" ? "140px" : "100px"}
       >
-        {showSearch ? "Ukryj" : "Pokaż"} filtr
+        {showSearch ? t("search.buttons.hide") : t("search.buttons.show")}
       </Button>
       <Button
         onClick={() =>
@@ -34,9 +38,9 @@ export const SearchButtons = () => {
           })
         }
         disabled={!query}
-        width="100px"
+        width={i18n.language === "de" ? "140px" : "100px"}
       >
-        Wyczyść filtr
+        {t("search.buttons.clear")}
       </Button>
     </ButtonsContainer>
   );

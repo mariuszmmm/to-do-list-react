@@ -7,10 +7,14 @@ import {
   selectLoggedUserEmail,
   deleteAccountRequest,
 } from "../accountSlice";
+import { useTranslation } from "react-i18next";
 
 export const AccountButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage",
+  });
   const dispatch = useAppDispatch();
 
   return (
@@ -18,16 +22,16 @@ export const AccountButtons = () => {
       {!loggedUserEmail ? (
         <>
           <Button
-            onClick={() => dispatch(setAccountMode("registerAccount"))}
-            $selected={accountMode === "registerAccount"}
-          >
-            Rejestracja
-          </Button>
-          <Button
             onClick={() => dispatch(setAccountMode("login"))}
             $selected={accountMode === "login"}
           >
-            Logowanie
+            {t("buttons.login")}
+          </Button>
+          <Button
+            onClick={() => dispatch(setAccountMode("registerAccount"))}
+            $selected={accountMode === "registerAccount"}
+          >
+            {t("buttons.register")}
           </Button>
         </>
       ) : (
@@ -38,13 +42,13 @@ export const AccountButtons = () => {
               dispatch(setAccountMode("logged"));
             }}
           >
-            Usuń konto
+            {t("buttons.deleteAccount")}
           </Button>
           <Button
             onClick={() => dispatch(setAccountMode("changePassword"))}
             $selected={accountMode === "changePassword"}
           >
-            Zmień hasło
+            {t("buttons.changePassword")}
           </Button>
         </>
       )}

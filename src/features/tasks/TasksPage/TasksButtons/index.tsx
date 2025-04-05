@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks";
 import { nanoid } from "@reduxjs/toolkit";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
@@ -26,6 +26,7 @@ import {
   selectIsListWithName,
   selectLists,
 } from "../../../ListsPage/listsSlice";
+import { useTranslation } from "react-i18next";
 
 export const TasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
@@ -43,8 +44,16 @@ export const TasksButtons = () => {
     selectIsListWithName(state, listName)
   );
   const dispatch = useAppDispatch();
-  const [saveName, setSaveName] = useState("Zapisz listę");
+  const { t, i18n } = useTranslation("translation", {
+    keyPrefix: "tasksPage",
+  });
+  const [saveName, setSaveName] = useState<string>(t("tasks.buttons.save"));
   const [isName, setIsName] = useState(false);
+
+  useEffect(() => {
+    setSaveName(t(isName ? "tasks.buttons.change" : "tasks.buttons.save"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
 
   const onSaveListHandler = () => {
     if (!isListWithName) {
@@ -55,13 +64,14 @@ export const TasksButtons = () => {
           taskList: tasks,
         })
       );
+      return;
     }
 
-    setSaveName(isListWithName ? "Zmień nazwę listy" : "Zapisz listę");
-    setIsName(isListWithName ? true : false);
+    setSaveName(t("tasks.buttons.change"));
+    setIsName(true);
 
     const timer = setTimeout(() => {
-      setSaveName("Zapisz listę");
+      setSaveName(t("tasks.buttons.save"));
       setIsName(false);
     }, 2000);
 
@@ -77,7 +87,7 @@ export const TasksButtons = () => {
             !listName || areTasksEmpty || listNameToEdit !== null || isName
           }
           $error={isName}
-          width="150px"
+          width={i18n.language === "pl" ? "150px" : "120px"}
         >
           {saveName}
         </Button>
@@ -85,30 +95,32 @@ export const TasksButtons = () => {
       <Button
         onClick={() => dispatch(toggleHideDone())}
         disabled={areTasksEmpty}
-        width="150px"
+        width={i18n.language === "pl" ? "150px" : "120px"}
       >
-        {hideDone ? "Pokaż" : "Ukryj"} ukończone
+        {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, listName }))}
         disabled={isEveryTaskDone || areTasksEmpty}
-        width="150px"
+        width={i18n.language === "pl" ? "150px" : "120px"}
       >
-        Ukończ wszystkie
+        {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, listName }))}
         disabled={isEveryTaskUndone || areTasksEmpty}
-        width="150px"
+        width={i18n.language === "pl" ? "150px" : "120px"}
       >
-        Odznacz wszystkie
+        {t("tasks.buttons.allUndone")}
       </Button>
       <ButtonsContainer $sub>
         <Button
           disabled={undoTasksStack.length === 0 || editedTask !== null}
           onClick={() => dispatch(undoTasks())}
           title={
-            undoTasksStack.length === 0 || editedTask !== null ? "" : "Cofnij"
+            undoTasksStack.length === 0 || editedTask !== null
+              ? ""
+              : t("tasks.buttons.undo")
           }
         >
           <UndoIcon />
@@ -117,7 +129,9 @@ export const TasksButtons = () => {
           disabled={redoTasksStack.length === 0 || editedTask !== null}
           onClick={() => dispatch(redoTasks())}
           title={
-            redoTasksStack.length === 0 || editedTask !== null ? "" : "Ponów"
+            redoTasksStack.length === 0 || editedTask !== null
+              ? ""
+              : t("tasks.buttons.redo")
           }
         >
           <RedoIcon />

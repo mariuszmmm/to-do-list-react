@@ -13,13 +13,14 @@ import {
   loginRequest,
   logoutRequest,
   registerRequest,
-  savePasswordRequest,
+  changePasswordRequest,
   selectAccountMode,
   selectIsWaitingForConfirmation,
   selectLoggedUserEmail,
   selectMessage,
   setMessage,
 } from "../accountSlice";
+import { useTranslation } from "react-i18next";
 
 export const AccountForm = () => {
   const [email, setEmail] = useState("");
@@ -33,6 +34,9 @@ export const AccountForm = () => {
   const isWaitingForConfirmation = useAppSelector(
     selectIsWaitingForConfirmation
   );
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage",
+  });
   const dispatch = useAppDispatch();
   const { waitingForConfirmation } = useWaitingForConfirmation({
     email,
@@ -75,7 +79,7 @@ export const AccountForm = () => {
         if (!passwordValidation()) {
           break;
         }
-        dispatch(savePasswordRequest({ password }));
+        dispatch(changePasswordRequest({ password }));
         setPassword("");
         break;
       case "logged":
@@ -105,7 +109,7 @@ export const AccountForm = () => {
           value={email}
           type="email"
           name="login"
-          placeholder="name@poczta.pl"
+          placeholder={t("form.placeholderInput.email")}
           onChange={({ target }) => setEmail(target.value)}
           ref={emailInputRef}
           hidden={!!loggedUserEmail}
@@ -121,7 +125,9 @@ export const AccountForm = () => {
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder={
-              accountMode === "changePassword" ? "nowe hasło" : "hasło"
+              accountMode === "changePassword"
+                ? t("form.placeholderInput.newPassword")
+                : t("form.placeholderInput.password")
             }
             autoComplete={
               accountMode === "changePassword" ? "new-password" : ""
@@ -146,14 +152,14 @@ export const AccountForm = () => {
           $noInputs={!!loggedUserEmail && accountMode !== "changePassword"}
         >
           {accountMode === "registerAccount"
-            ? "Zarejestruj"
+            ? t("form.buttons.register")
             : accountMode === "accountRecovery"
-            ? "Zresetuj hasło"
+            ? t("form.buttons.reset")
             : accountMode === "changePassword"
-            ? "Zapisz"
+            ? t("form.buttons.save")
             : loggedUserEmail
-            ? "Wyloguj"
-            : "Zaloguj"}
+            ? t("form.buttons.logout")
+            : t("form.buttons.login")}
         </FormButton>
       </Form>
     </>

@@ -56,7 +56,7 @@ const accountSlice = createSlice({
       payload: PayloadAction<{ email: string; password: string }>
     ) => {},
     logoutRequest: (state) => {},
-    savePasswordRequest: (
+    changePasswordRequest: (
       state,
       payload: PayloadAction<{ password: string }>
     ) => {},
@@ -82,7 +82,7 @@ export const {
   deleteAccountRequest,
   loginRequest,
   logoutRequest,
-  savePasswordRequest,
+  changePasswordRequest,
   registerRequest,
 } = accountSlice.actions;
 

@@ -1,0 +1,281 @@
+import langPl from "./pl";
+
+const langEn: typeof langPl = {
+  navigation: {
+    tasksPage: "Tasks",
+    lists: "Lists",
+    author: "About author",
+  },
+  currentDate: { desc: "Today is " },
+  tasksPage: {
+    title: "Task List",
+    form: {
+      title: {
+        addTask: "Add new task",
+        editTask: "Edit task",
+      },
+      buttons: {
+        fetchExampleTasks: "Fetch example tasks",
+        loading: "Loading...",
+        error: "Error loading data",
+      },
+      inputPlaceholder: "What to do ?",
+      inputButton: {
+        addTask: "Add task",
+        saveChanges: "Save changes",
+      },
+    },
+    search: {
+      title: "Search",
+      buttons: {
+        hide: "Hide filter",
+        show: "Show filter",
+        clear: "Clear filter",
+      },
+      inputPlaceholder: "Filter tasks",
+    },
+    tasks: {
+      inputPlaceholder: "Enter list name",
+      buttons: {
+        titleButtons: {
+          change: "Change list name",
+          save: "Save",
+        },
+        save: "Save list",
+        change: "Change name",
+        hide: "Hide done",
+        show: "Show done",
+        allDone: "Done all",
+        allUndone: "Undone all",
+        undo: "Undo",
+        redo: "Redo",
+      },
+    },
+  },
+  listsPage: {
+    title: "Saved lists",
+    lists: {
+      select: "Select a list",
+      empty: "You have no saved lists 😯",
+    },
+    buttons: {
+      load: "Load selected list",
+    },
+    subTitle: "Selected list",
+  },
+  authorPage: {
+    title: "About author",
+    name: "Mariusz Matusiewicz",
+    description: {
+      part1:
+        "Creating front-end applications is my passion, especially with <b>React</b>. I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
+      part2:
+        "Beyond programming, I love the mountains. Hiking is my way to relax and recharge. The <b>React</b> Mountains are especially close to my heart—their tranquility and natural beauty inspire me every time I return. I combine my passion for technology with my curiosity about the world. Thanks to this, I eagerly take on new challenges that help me grow and create projects I can be proud of. 😊🚀",
+    },
+  },
+  accountPage: {
+    title: "Your account",
+    notLoggedIn: "You are not logged in",
+    buttons: {
+      register: "Registration",
+      login: "Login",
+      deleteAccount: "Delete account",
+      changePassword: "Change password",
+      resetPassword: "Reset password",
+      cancel: "Cancel",
+    },
+    form: {
+      buttons: {
+        login: "Log in",
+        logout: "Logout",
+        register: "Register",
+        save: "Save",
+        reset: "Reset password",
+      },
+      placeholderInput: {
+        email: "Enter email address",
+        password: "Enter password",
+        newPassword: "New password",
+      },
+      message: {
+        email: "Enter email address",
+        emailMessage: "Invalid email address",
+        password: "Enter password",
+        passwordMessage: "Password must be at least 4 characters long",
+      },
+    },
+  },
+  confirmationPage: {
+    message: {
+      success: "Registration successful, <br/> close the page.",
+      error: "Registration failed, <br/> close the page.",
+    },
+  },
+  accountRecoveryPage: {
+    title: "Change password",
+    subTitle: "Enter new password",
+    message: {
+      success: "Account has been recovered, <br/> close the page.",
+      error: "Link has expired or has been used, <br/> close the page.",
+    },
+  },
+  modal: {
+    buttons: {
+      confirmButton: "Confirm",
+      cancelButton: "Cancel",
+      deleteButton: "Delete",
+      closeButton: "Close",
+      logoutButton: "Logout",
+      nextButton: "Next",
+      refreshButton: "Refresh",
+    },
+    login: {
+      title: "Login",
+      message: {
+        loading: "Logging in...",
+        success: "Logged in as <b>{{user}}</b>",
+        error: {
+          noConnection: "No internet connection.",
+          notFound: "User not found or invalid password.",
+          default: "Login error",
+        },
+      },
+    },
+    logout: {
+      title: "Logout",
+      message: {
+        confirm: "Are you sure you want to log out?",
+        loading: "Logging out...",
+        success: "You have been logged out.",
+        error: {
+          default: "Logout error.",
+        },
+      },
+    },
+    changePassword: {
+      title: "Change password",
+      message: {
+        loading: "Changing password...",
+        success: "Password has been changed.",
+        error: {
+          default: "Error changing password.",
+        },
+      },
+    },
+    registerAccount: {
+      title: "Account registration",
+      message: {
+        loading: "Registering...",
+        info: "An email has been sent to the provided email address to register an account.",
+        error: {
+          noConnection: "No internet connection.",
+          emailFormat: "Invalid email format.",
+          invalidEmail: "Cannot verify email address: invalid format.",
+          userExists: "User with this email address is already registered.",
+          default: "Registration error.",
+        },
+      },
+    },
+    recoveryAccount: {
+      title: "Account recovery",
+      message: {
+        loading: "Recovering account...",
+        info: "A link to reset your password has been sent to the provided email address. If you haven't received the message, try again in 15 minutes.",
+        success: "Account has been recovered, set a new password.",
+        error: {
+          noConnection: "No internet connection.",
+          notFound: "User not found with this email address.",
+          default: "Password recovery error.",
+          linkExpired: "The link has expired or has been used.",
+        },
+      },
+    },
+    changeEmail: {
+      title: "Change password",
+      message: {
+        loading: "Changing password...",
+        success: "Password has been updated, close the page.",
+        error: {
+          default: "An error occurred while updating the password.",
+        },
+      },
+    },
+    deleteAccount: {
+      title: "Deleting account",
+      message: {
+        confirm: "Are you sure you want to delete your account?",
+        loading: "Deleting account...",
+        success: "Account has been deleted.",
+        error: {
+          default: "Error deleting account.",
+        },
+      },
+    },
+    dataRemoval: {
+      title: "Data removal",
+      message: {
+        confirm: "Do you want to remove all data from the application?",
+        info: "All data has been removed.",
+      },
+    },
+    downloadLists: {
+      title: "Downloading lists",
+      message: {
+        loading: "Downloading lists...",
+        success: "Lists have been downloaded.",
+        error: {
+          default: "An error occurred while downloading lists.",
+        },
+      },
+    },
+    refreshLists: {
+      message: {
+        confirm:
+          "The operation could not be completed correctly because the downloaded lists are outdated. Refresh and try again.",
+      },
+    },
+    saveList: {
+      title: "Saving list",
+      message: {
+        loading: "Saving list  <b>{{listName}}</b> to the database...",
+        success: "List <b>{{listName}}</b> has been saved to the database.",
+        error: {
+          default: "An error occurred while adding the list to the database.",
+        },
+      },
+    },
+    removeList: {
+      title: "Deleting list",
+      message: {
+        confirm:
+          "Are you sure you want to delete the list: <b>{{listName}}</b> ?",
+        loading: "Deleting list...",
+        success: "The list has been removed from the database.",
+        error: {
+          default: "An error occurred while deleting the list.",
+        },
+      },
+    },
+    loadList: {
+      title: "Loading list",
+      message: {
+        info: "The list has been loaded from the database.",
+        error: {
+          default: "An error occurred while loading the list.",
+        },
+      },
+    },
+    confirmation: {
+      title: "Registration confirmation",
+      message: {
+        loading: "Checking registration status...",
+        success: "Registration successful, close the page.",
+        error: {
+          default: "The link has expired or has been used.",
+        },
+      },
+    },
+  },
+};
+
+export default langEn;

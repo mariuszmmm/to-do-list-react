@@ -29,7 +29,7 @@ export const TasksList = () => {
     selectTasksByQuery(state, query)
   );
   const dispatch = useAppDispatch();
-  const date = new Date();
+  const date = new Date().toISOString();
 
   return (
     <List>

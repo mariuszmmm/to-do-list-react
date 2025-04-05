@@ -11,7 +11,9 @@ import {
 } from "../features/AccountPage/accountSlice";
 
 const Navigation = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("translation", {
+    keyPrefix: "navigation",
+  });
   const { pathname } = useLocation();
   const lists = useAppSelector(selectLists);
   const dispatch = useAppDispatch();
@@ -51,6 +53,12 @@ const Navigation = () => {
           <NavList $isLists={lists !== null}>
             <li>
               <NavButton
+                onClick={() => i18n.changeLanguage("de")}
+                $isActive={i18n.language === "de"}
+              >
+                DE
+              </NavButton>
+              <NavButton
                 onClick={() => i18n.changeLanguage("en")}
                 $isActive={i18n.language === "en"}
               >
@@ -65,20 +73,16 @@ const Navigation = () => {
             </li>
             <li>
               <StyledNavLink to="/zadania" $inactive={pathname !== "/zadania"}>
-                {t("navigation.tasks")}
+                {t("tasksPage")}
               </StyledNavLink>
             </li>
             {lists !== null && (
               <li>
-                <StyledNavLink to="/listy">
-                  {t("navigation.lists")}
-                </StyledNavLink>
+                <StyledNavLink to="/listy">{t("lists")}</StyledNavLink>
               </li>
             )}
             <li>
-              <StyledNavLink to="/autor">
-                {t("navigation.author")}{" "}
-              </StyledNavLink>
+              <StyledNavLink to="/autor">{t("author")} </StyledNavLink>
             </li>
             <li>
               <StyledNavLink to="/konto">

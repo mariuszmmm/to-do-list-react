@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "react-i18next";
 import {
   CircleCheckIcon,
   CircleInfoIcon,
@@ -20,8 +21,9 @@ import {
 } from "./styled";
 
 export const Modal = () => {
-  const { isOpen, title, message, confirmButtonText, endButtonText, type } =
+  const { isOpen, title, message, confirmButton, endButton, type } =
     useAppSelector(selectModalState);
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   if (!isOpen) return null;
@@ -37,16 +39,24 @@ export const Modal = () => {
             {(type === "confirm" || type === "error") && <CircleWarningIcon />}
             <HeaderContent>{title}</HeaderContent>
           </ModalHeader>
-          <ModalDescription>{message}</ModalDescription>
+          {message && (
+            <ModalDescription>
+              <Trans
+                i18nKey={message.key}
+                values={message.values}
+                components={{ b: <b />, br: <br /> }}
+              />
+            </ModalDescription>
+          )}
           {
             <ModalButtonContainer>
               {type === "confirm" ? (
                 <>
                   <ModalCancelButton onClick={() => dispatch(cancel())}>
-                    Anuluj
+                    {t("modal.buttons.cancelButton")}
                   </ModalCancelButton>
                   <ModalConfirmButton onClick={() => dispatch(confirm())}>
-                    {confirmButtonText || "Potwierdz"}
+                    {confirmButton || t("modal.buttons.confirmButton")}
                   </ModalConfirmButton>
                 </>
               ) : (
@@ -54,7 +64,7 @@ export const Modal = () => {
                   onClick={() => dispatch(closeModal())}
                   disabled={type === "loading"}
                 >
-                  {endButtonText || "Zamknij"}
+                  {endButton || t("modal.buttons.closeButton")}
                 </ModalCloseButton>
               )}
             </ModalButtonContainer>

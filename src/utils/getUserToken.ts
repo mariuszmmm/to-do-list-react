@@ -8,10 +8,7 @@ export const getUserToken = async () => {
   }
 
   const expires_at = user.token.expires_at;
-  const isTokenExpired = Date.now() > expires_at - 60000;
-
-  console.log("Date.now()", Date.now()); // test
-  console.log("new Date().getTime()", new Date().getTime()); //test
+  const isTokenExpired = new Date().getTime() > expires_at - 60000;
 
   const refreshToken = async () => {
     try {

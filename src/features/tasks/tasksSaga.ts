@@ -36,6 +36,7 @@ import {
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 import { openModal } from "../../Modal/modalSlice";
+import i18n from "../../utils/i18n";
 
 function* fetchExampleTasksHandler() {
   try {
@@ -45,7 +46,7 @@ function* fetchExampleTasksHandler() {
       selectListName
     );
     const exampleTasks: Task[] = yield call(getExampleTasks);
-    const date = new Date();
+    const date = new Date().toISOString();
 
     const exampleTasksWithDate = exampleTasks.map((task) => ({
       ...task,
@@ -100,8 +101,11 @@ function* setListToLoadHandler() {
   yield put(setListToLoad(null));
   yield put(
     openModal({
-      title: "Ładowanie listy",
-      message: `Lista ${listToLoad.name} została załadowana do bieżacej listy zadań.`,
+      title: i18n.t("modal.loadList.title"),
+      message: {
+        key: "modal.loadList.message.info",
+        values: { listName: listToLoad.name },
+      },
       type: "info",
     })
   );
