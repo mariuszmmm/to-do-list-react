@@ -45,7 +45,7 @@ function* fetchExampleTasksHandler() {
       selectListName
     );
     const exampleTasks: Task[] = yield call(getExampleTasks);
-    const date = new Date();
+    const date = new Date().toISOString();
 
     const exampleTasksWithDate = exampleTasks.map((task) => ({
       ...task,
@@ -97,11 +97,13 @@ function* setListToLoadHandler() {
       stateForUndo: { tasks, listName },
     })
   );
-  yield put(setListToLoad(null));
   yield put(
     openModal({
-      title: "Ładowanie listy",
-      message: `Lista ${listToLoad.name} została załadowana do bieżacej listy zadań.`,
+      title: { key: "modal.loadList.title" },
+      message: {
+        key: "modal.loadList.message.info",
+        values: { listName: listToLoad.name },
+      },
       type: "info",
     })
   );

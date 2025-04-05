@@ -14,6 +14,7 @@ import {
   selectTasks,
   selectListName,
 } from "../../tasksSlice";
+import { useTranslation } from "react-i18next";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -24,7 +25,10 @@ export const TaskForm = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
   const replaceQueryParameter = useReplaceQueryParameter();
-  const formatedDate = new Date();
+  const { t, i18n } = useTranslation("translation", {
+    keyPrefix: "tasksPage",
+  });
+  const formatedDate = new Date().toISOString();
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -84,12 +88,17 @@ export const TaskForm = () => {
         autoFocus
         value={taskContent}
         name="taskName"
-        placeholder="Co jest do zrobienia ?"
+        placeholder={t("form.inputPlaceholder")}
         onChange={({ target }) => setTaskContent(target.value)}
         ref={inputRef}
       />
-      <FormButton $singleInput width="135px">
-        {editedTask !== null ? "Zapisz zmiany" : "Dodaj zadanie"}
+      <FormButton
+        $singleInput
+        width={i18n.language === "de" ? "210px" : "135px"}
+      >
+        {editedTask !== null
+          ? t("form.inputButton.saveChanges")
+          : t("form.inputButton.addTask")}
       </FormButton>
     </Form>
   );

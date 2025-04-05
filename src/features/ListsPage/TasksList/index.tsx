@@ -9,7 +9,7 @@ export const TasksList = ({ list }: { list: List["taskList"] }) => (
         <ToggleButton disabled>{task.done ? "✔" : ""}</ToggleButton>
         <Content>
           {<span>{index + 1}. </span>}
-          <Task>{task.content}</Task>
+          <Task $done={task.done}>{task.content}</Task>
         </Content>
       </Item>
     ))}

@@ -5,15 +5,19 @@ import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
 import { selectLoggedUserEmail } from "./accountSlice";
+import { useTranslation } from "react-i18next";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage",
+  });
 
   return (
     <>
-      <Header title="Twoje konto" />
+      <Header title={t("title")} />
       <Section
-        title={loggedUserEmail || "Jesteś niezalogowany"}
+        title={loggedUserEmail || t("notLoggedIn")}
         extraHeaderContent={<AccountButtons />}
         body={<AccountForm />}
         extraContent={<AccountExtraButtons />}

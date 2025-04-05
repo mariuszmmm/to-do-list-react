@@ -7,12 +7,16 @@ import {
   selectSelectedListId,
   setListToLoad,
 } from "../listsSlice";
+import { useTranslation } from "react-i18next";
 
 export const ListsButtons = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const listToLoad = useAppSelector((state) =>
     selectedListId ? selectSelectedListById(state, selectedListId) : null
   );
+  const { t } = useTranslation("translation", {
+    keyPrefix: "listsPage",
+  });
   const dispatch = useAppDispatch();
 
   return (
@@ -22,7 +26,7 @@ export const ListsButtons = () => {
           onClick={() => dispatch(setListToLoad(listToLoad))}
           disabled={selectedListId === null}
         >
-          Załaduj wybraną listę
+          {t("buttons.load")}
         </Button>
       </StyledLink>
     </ButtonsContainer>

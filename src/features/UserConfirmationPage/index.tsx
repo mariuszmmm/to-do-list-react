@@ -5,6 +5,7 @@ import { useAppDispatch } from "../../hooks";
 import { openModal } from "../../Modal/modalSlice";
 import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";
+import { Trans } from "react-i18next";
 
 type Status = "waiting" | "success" | "error";
 
@@ -17,8 +18,8 @@ const UserConfirmationPage = () => {
       try {
         dispatch(
           openModal({
-            title: "Potwierdzenie rejestracji",
-            message: "Sprawdzam stan rejestracji...",
+            title: { key: "modal.confirmation.title" },
+            message: { key: "modal.confirmation.message.loading" },
             type: "loading",
           })
         );
@@ -27,7 +28,7 @@ const UserConfirmationPage = () => {
         await auth.confirm(token);
         dispatch(
           openModal({
-            message: "Rejestracja udana, zamknij stronę.",
+            message: { key: "modal.confirmation.message.success" },
             type: "success",
           })
         );
@@ -35,7 +36,7 @@ const UserConfirmationPage = () => {
       } catch (error) {
         dispatch(
           openModal({
-            message: "Link wygasł lub został użyty.",
+            message: { key: "modal.confirmation.message.error.default" },
             type: "error",
           })
         );
@@ -52,9 +53,13 @@ const UserConfirmationPage = () => {
         <Container>
           <Text>
             <b>
-              Rejestracja {status === "error" && "nie"}udana,
-              <br />
-              zamknij stronę.
+              <Trans
+                i18nKey={
+                  status === "error"
+                    ? "confirmationPage.message.error"
+                    : "confirmationPage.message.success"
+                }
+              />
             </b>
           </Text>
         </Container>

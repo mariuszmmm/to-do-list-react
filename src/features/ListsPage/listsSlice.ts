@@ -20,9 +20,10 @@ const listsSlice = createSlice({
   reducers: {
     setLists: (state, { payload: lists }: PayloadAction<List[] | null>) => {
       state.lists = lists;
+      if (lists === null) state.selectedListId = null;
     },
-    selectList: (state, { payload: listId }: PayloadAction<string>) => {
-      if (state.selectedListId === listId) {
+    selectList: (state, { payload: listId }: PayloadAction<string | null>) => {
+      if (state.selectedListId === listId || listId === null) {
         state.selectedListId = null;
       } else {
         state.selectedListId = listId;

@@ -9,22 +9,29 @@ import {
   setAccountMode,
   setLoggedUserEmail,
 } from "../features/AccountPage/accountSlice";
+import { supportedLanguages } from "../utils/i18n/languageResources";
 
 const Navigation = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("translation", {
+    keyPrefix: "navigation",
+  });
   const { pathname } = useLocation();
   const lists = useAppSelector(selectLists);
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
   useEffect(() => {
-    if (pathname !== "/user-confirmation" && pathname !== "/account-recovery") {
+    if (
+      pathname !== "/user-confirmation" &&
+      pathname !== "/account-recovery" &&
+      user
+    ) {
       dispatch(setAccountMode(user ? "logged" : "login"));
       dispatch(setLoggedUserEmail(user ? user.email : null));
     }
 
     // eslint-disable-next-line
-  }, [user, dispatch]);
+  }, []);
 
   useEffect(() => {
     const handleStorageEvent = (event: StorageEvent) => {
@@ -50,35 +57,28 @@ const Navigation = () => {
         pathname !== "/account-recovery" && (
           <NavList $isLists={lists !== null}>
             <li>
-              <NavButton
-                onClick={() => i18n.changeLanguage("en")}
-                $isActive={i18n.language === "en"}
-              >
-                EN
-              </NavButton>
-              <NavButton
-                onClick={() => i18n.changeLanguage("pl")}
-                $isActive={i18n.language === "pl"}
-              >
-                PL
-              </NavButton>
+              {supportedLanguages.map((lang) => (
+                <NavButton
+                  onClick={() => i18n.changeLanguage(lang)}
+                  $isActive={i18n.language === lang}
+                  key={lang}
+                >
+                  {lang.toUpperCase()}
+                </NavButton>
+              ))}
             </li>
             <li>
               <StyledNavLink to="/zadania" $inactive={pathname !== "/zadania"}>
-                {t("navigation.tasks")}
+                {t("tasksPage")}
               </StyledNavLink>
             </li>
             {lists !== null && (
               <li>
-                <StyledNavLink to="/listy">
-                  {t("navigation.lists")}
-                </StyledNavLink>
+                <StyledNavLink to="/listy">{t("lists")}</StyledNavLink>
               </li>
             )}
             <li>
-              <StyledNavLink to="/autor">
-                {t("navigation.author")}{" "}
-              </StyledNavLink>
+              <StyledNavLink to="/autor">{t("author")} </StyledNavLink>
             </li>
             <li>
               <StyledNavLink to="/konto">

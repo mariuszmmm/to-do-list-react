@@ -8,11 +8,15 @@ import {
   selectMessage,
   setAccountMode,
 } from "../accountSlice";
+import { useTranslation } from "react-i18next";
 
 export const AccountExtraButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
   const message = useAppSelector(selectMessage);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage",
+  });
   const dispatch = useAppDispatch();
 
   return (
@@ -29,12 +33,14 @@ export const AccountExtraButtons = () => {
                 )
               }
             >
-              {accountMode === "login" ? "Zresetuj hasło" : "Anuluj"}
+              {accountMode === "login"
+                ? t("buttons.resetPassword")
+                : t("buttons.cancel")}
             </Button>
           )
         : accountMode === "changePassword" && (
             <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
-              Anuluj
+              {t("buttons.cancel")}
             </Button>
           )}
 

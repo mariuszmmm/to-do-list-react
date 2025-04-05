@@ -19,15 +19,15 @@ export type RecoveryStatus =
   | "linkExpired"
   | "passwordUpdated"
   | "passwordNotUpdated"
-  | "savePassword";
+  | "changePassword";
 
 export interface Task {
   id: string;
   content: string;
   done: boolean;
-  date: Date;
-  doneDate?: Date | null;
-  editedDate?: Date | null;
+  date: string;
+  doneDate?: string | null;
+  editedDate?: string | null;
 }
 
 export interface List {
@@ -40,32 +40,4 @@ export interface Data {
   email: string;
   lists: List[];
   version: Version;
-}
-
-export interface Translation {
-  navigation: {
-    tasks: "Tasks" | "Zadania";
-    lists: "Lists" | "Listy";
-    author: "About author" | "O autorze";
-  };
-  currentDate: "Today is " | "Dziś jest ";
-  tasks: {
-    title: "Task List" | "Lista zadań";
-    mainForm: {
-      title: {
-        addTask: "Add new task" | "Dodaj nowe zadanie";
-        editTask: "Edit task" | "Edytuj zadanie";
-      };
-      buttons: {
-        fetchExampleTasks:
-          | "Fetch example tasks"
-          | "Pobierz przykładowe zadania";
-      };
-      inputPlaceholder: "What to do ?" | "Co jest do zrobienia ?";
-      inputButton: {
-        addTask: "Add task" | "Dodaj zadanie";
-        saveChanges: "Save changes" | "Zapisz zmiany";
-      };
-    };
-  };
 }

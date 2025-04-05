@@ -1,3 +1,4 @@
+import { Trans } from "react-i18next";
 import {
   CircleCheckIcon,
   CircleInfoIcon,
@@ -20,7 +21,7 @@ import {
 } from "./styled";
 
 export const Modal = () => {
-  const { isOpen, title, message, confirmButtonText, endButtonText, type } =
+  const { isOpen, title, message, confirmButton, endButton, type } =
     useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
@@ -35,18 +36,32 @@ export const Modal = () => {
             {type === "success" && <CircleCheckIcon />}
             {type === "loading" && <CircleLoadingIcon />}
             {(type === "confirm" || type === "error") && <CircleWarningIcon />}
-            <HeaderContent>{title}</HeaderContent>
+            {title && (
+              <HeaderContent>
+                <Trans i18nKey={title.key} />
+              </HeaderContent>
+            )}
           </ModalHeader>
-          <ModalDescription>{message}</ModalDescription>
+          {message && (
+            <ModalDescription>
+              <Trans i18nKey={message.key} values={message.values} />
+            </ModalDescription>
+          )}
           {
             <ModalButtonContainer>
               {type === "confirm" ? (
                 <>
                   <ModalCancelButton onClick={() => dispatch(cancel())}>
-                    Anuluj
+                    <Trans i18nKey="modal.buttons.cancelButton" />
                   </ModalCancelButton>
                   <ModalConfirmButton onClick={() => dispatch(confirm())}>
-                    {confirmButtonText || "Potwierdz"}
+                    <Trans
+                      i18nKey={
+                        confirmButton
+                          ? confirmButton.key
+                          : "modal.buttons.confirmButton"
+                      }
+                    />
                   </ModalConfirmButton>
                 </>
               ) : (
@@ -54,7 +69,11 @@ export const Modal = () => {
                   onClick={() => dispatch(closeModal())}
                   disabled={type === "loading"}
                 >
-                  {endButtonText || "Zamknij"}
+                  <Trans
+                    i18nKey={
+                      endButton ? endButton.key : "modal.buttons.closeButton"
+                    }
+                  />
                 </ModalCloseButton>
               )}
             </ModalButtonContainer>

@@ -13,7 +13,7 @@ import {
   loginRequest,
   logoutRequest,
   registerRequest,
-  savePasswordRequest,
+  changePasswordRequest,
   setAccountMode,
   setIsWaitingForConfirmation,
   setLoggedUserEmail,
@@ -32,16 +32,15 @@ function* accountRecoveryHandler({
   try {
     yield put(
       openModal({
-        title: "Odzyskiwanie konta",
-        message: "Trwa odzyskiwanie konta...",
+        title: { key: "modal.recoveryAccount.title" },
+        message: { key: "modal.recoveryAccount.message.loading" },
         type: "loading",
       })
     );
     yield auth.requestPasswordRecovery(email);
     yield put(
       openModal({
-        message:
-          "Na podany adres e-mail został wysłany link do zresetowania hasła. Jeśli nie otrzymałeś wiadomości, spróbuj ponownie za 15 minut.",
+        message: { key: "modal.recoveryAccount.message.info" },
         type: "info",
       })
     );
@@ -51,7 +50,9 @@ function* accountRecoveryHandler({
       case undefined:
         yield put(
           openModal({
-            message: "Brak połączenia z internetem.",
+            message: {
+              key: "modal.recoveryAccount.message.error.noConnection",
+            },
             type: "error",
           })
         );
@@ -59,7 +60,7 @@ function* accountRecoveryHandler({
       case 404:
         yield put(
           openModal({
-            message: "Nie znaleziono użytkownika z tym adresem e-mail.",
+            message: { key: "modal.recoveryAccount.message.error.notFound" },
             type: "error",
           })
         );
@@ -67,7 +68,7 @@ function* accountRecoveryHandler({
       default:
         yield put(
           openModal({
-            message: "Błąd odzyskiwania hasła.",
+            message: { key: "modal.recoveryAccount.message.error.default" },
             type: "error",
           })
         );
@@ -79,10 +80,10 @@ function* accountRecoveryHandler({
 function* deleteAccountHandler(): Generator {
   yield put(
     openModal({
-      title: "Usuwanie konta",
-      message: "Czy na pewno chcesz usunąć swoje konto?",
+      title: { key: "modal.deleteAccount.title" },
+      message: { key: "modal.deleteAccount.message.confirm" },
+      confirmButton: { key: "modal.buttons.deleteButton" },
       type: "confirm",
-      confirmButtonText: "Usuń",
     })
   );
 
@@ -103,7 +104,7 @@ function* deleteAccountHandler(): Generator {
 
       yield put(
         openModal({
-          message: "Trwa usuwanie konta...",
+          message: { key: "modal.deleteAccount.message.loading" },
           type: "loading",
         })
       );
@@ -114,7 +115,7 @@ function* deleteAccountHandler(): Generator {
       if (response.statusCode !== 204) throw new Error();
       yield put(
         openModal({
-          message: "Konto zostało usunięte.",
+          message: { key: "modal.deleteAccount.message.success" },
           type: "success",
         })
       );
@@ -122,10 +123,10 @@ function* deleteAccountHandler(): Generator {
       yield delay(2000);
       yield put(
         openModal({
-          title: "Czyszczenie danych",
-          message: "Czy chcesz usunąć wszystkie dane z aplikacji?",
+          title: { key: "modal.dataRemoval.title" },
+          message: { key: "modal.dataRemoval.message.confirm" },
+          confirmButton: { key: "modal.buttons.deleteButton" },
           type: "confirm",
-          confirmButtonText: "Usuń",
         })
       );
 
@@ -139,8 +140,8 @@ function* deleteAccountHandler(): Generator {
         yield call(clearLocalStorage);
         yield put(
           openModal({
-            title: "Czyszczenie danych",
-            message: "Wszystkie dane zostały usunięte.",
+            title: { key: "modal.dataRemoval.title" },
+            message: { key: "modal.dataRemoval.message.info" },
             type: "info",
           })
         );
@@ -150,7 +151,7 @@ function* deleteAccountHandler(): Generator {
     } catch (error: any) {
       yield put(
         openModal({
-          message: "Błąd podczas usuwania konta.",
+          message: { key: "modal.deleteAccount.message.error.default" },
           type: "error",
         })
       );
@@ -168,27 +169,32 @@ function* loginHandler({
   try {
     yield put(
       openModal({
-        title: "Logowanie",
-        message: "Trwa logowanie...",
+        title: { key: "modal.login.title" },
+        message: { key: "modal.login.message.loading" },
         type: "loading",
       })
     );
     const response = (yield auth.login(email, password, true)) as User;
-    yield put(setAccountMode("logged"));
-    yield put(setLoggedUserEmail(response.email));
+
     yield put(
       openModal({
-        title: "Logowanie",
-        message: `Zalogowany jako ${response.email}`,
+        message: {
+          key: "modal.login.message.success",
+          values: { user: response.email },
+        },
         type: "success",
       })
     );
+
+    yield take(closeModal.type);
+    yield put(setAccountMode("logged"));
+    yield put(setLoggedUserEmail(response.email));
   } catch (error: any) {
     switch (error.status) {
       case undefined:
         yield put(
           openModal({
-            message: "Brak połączenia z internetem.",
+            message: { key: "modal.login.message.error.noConnection" },
             type: "error",
           })
         );
@@ -196,8 +202,7 @@ function* loginHandler({
       case 400:
         yield put(
           openModal({
-            message:
-              "Nie znaleziono użytkownika z tym adresem e-mail lub hasło jest nieprawidłowe.",
+            message: { key: "modal.login.message.error.notFound" },
             type: "error",
           })
         );
@@ -205,7 +210,7 @@ function* loginHandler({
       default:
         yield put(
           openModal({
-            message: "Błąd logowania",
+            message: { key: "modal.login.message.error.default" },
             type: "error",
           })
         );
@@ -217,10 +222,10 @@ function* loginHandler({
 function* logoutHandler(): Generator {
   yield put(
     openModal({
-      title: "Wylogowanie",
-      message: "Czy na pewno chcesz się wylogować?",
+      title: { key: "modal.logout.title" },
+      message: { key: "modal.logout.message.confirm" },
+      confirmButton: { key: "modal.buttons.logoutButton" },
       type: "confirm",
-      confirmButtonText: "Wyloguj",
     })
   );
 
@@ -233,7 +238,7 @@ function* logoutHandler(): Generator {
     try {
       yield put(
         openModal({
-          message: "Trwa wylogowywanie...",
+          message: { key: "modal.logout.message.loading" },
           type: "loading",
         })
       );
@@ -243,14 +248,14 @@ function* logoutHandler(): Generator {
       yield put(setLoggedUserEmail(null));
       yield put(
         openModal({
-          message: "Zostałeś wylogowany.",
+          message: { key: "modal.logout.message.success" },
           type: "success",
         })
       );
     } catch (error: any) {
       yield put(
         openModal({
-          message: "Błąd wylogowania.",
+          message: { key: "modal.logout.message.error.default" },
           type: "error",
         })
       );
@@ -260,17 +265,17 @@ function* logoutHandler(): Generator {
   }
 }
 
-function* savePasswordHandler({
+function* changePasswordHandler({
   payload: { password },
-}: ReturnType<typeof savePasswordRequest>): Generator {
+}: ReturnType<typeof changePasswordRequest>): Generator {
   const user = auth.currentUser();
   const userToken = (yield call(getUserToken)) as string;
 
   try {
     yield put(
       openModal({
-        title: "Zmiana hasła",
-        message: "Trwa zmiana hasła...",
+        title: { key: "modal.changePassword.title" },
+        message: { key: "modal.changePassword.message.loading" },
         type: "loading",
       })
     );
@@ -283,7 +288,7 @@ function* savePasswordHandler({
     yield user.update({ password });
     yield put(
       openModal({
-        message: "Hasło zostało zmienione.",
+        message: { key: "modal.changePassword.message.success" },
         type: "success",
       })
     );
@@ -291,7 +296,7 @@ function* savePasswordHandler({
   } catch (error: any) {
     yield put(
       openModal({
-        message: "Błąd podczas zmiany hasła.",
+        message: { key: "modal.changePassword.message.error.default" },
         type: "error",
       })
     );
@@ -303,8 +308,8 @@ function* registerHandler({
 }: ReturnType<typeof registerRequest>): Generator {
   yield put(
     openModal({
-      title: "Rejestracja konta",
-      message: "Trwa rejestracja...",
+      title: { key: "modal.registerAccount.title" },
+      message: { key: "modal.registerAccount.message.loading" },
       type: "loading",
     })
   );
@@ -314,8 +319,7 @@ function* registerHandler({
     yield put(setIsWaitingForConfirmation(true));
     yield put(
       openModal({
-        message:
-          "Na podany adres e-mail został wysłany link do rejestracji konta.",
+        message: { key: "modal.registerAccount.message.info" },
         type: "info",
       })
     );
@@ -324,21 +328,27 @@ function* registerHandler({
       case undefined:
         yield put(
           openModal({
-            message: "Brak połączenia z internetem.",
+            message: {
+              key: "modal.registerAccount.message.error.noConnection",
+            },
             type: "error",
           })
         );
         break;
       case "Unable to validate email address: invalid format":
         yield put(
-          openModal({ message: "Błędny format adresu e-mail.", type: "error" })
+          openModal({
+            message: { key: "modal.registerAccount.message.error.emailFormat" },
+            type: "error",
+          })
         );
         break;
       case 422:
         yield put(
           openModal({
-            message:
-              "Nie można zweryfikować adresu e-mail: nieprawidłowy format.",
+            message: {
+              key: "modal.registerAccount.message.error.invalidEmail",
+            },
             type: "error",
           })
         );
@@ -346,13 +356,18 @@ function* registerHandler({
       case 400:
         yield put(
           openModal({
-            message: "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
+            message: { key: "modal.registerAccount.message.error.userExists" },
             type: "error",
           })
         );
         break;
       default:
-        yield put(openModal({ message: "Błąd rejestracji", type: "error" }));
+        yield put(
+          openModal({
+            message: { key: "modal.registerAccount.message.error.default" },
+            type: "error",
+          })
+        );
         break;
     }
     return;
@@ -364,6 +379,6 @@ export function* accountSaga() {
   yield takeLatest(deleteAccountRequest.type, deleteAccountHandler);
   yield takeLatest(loginRequest.type, loginHandler);
   yield takeLatest(logoutRequest.type, logoutHandler);
-  yield takeLatest(savePasswordRequest.type, savePasswordHandler);
+  yield takeLatest(changePasswordRequest.type, changePasswordHandler);
   yield takeLatest(registerRequest.type, registerHandler);
 }

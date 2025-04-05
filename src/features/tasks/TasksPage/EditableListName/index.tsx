@@ -11,6 +11,7 @@ import {
   setListName,
   selectTasks,
 } from "../../tasksSlice";
+import { useTranslation } from "react-i18next";
 
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
@@ -19,6 +20,9 @@ export const EditableListName = () => {
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const inpurRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation("translation", {
+    keyPrefix: "tasksPage",
+  });
 
   const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -52,13 +56,17 @@ export const EditableListName = () => {
         <Input
           type="text"
           value={name}
-          placeholder="Wpisz nazwę"
+          placeholder={t("tasks.inputPlaceholder")}
           onChange={({ target }) => setName(target.value)}
           autoFocus
           ref={inpurRef}
         />
       )}
-      <Button $special>{listNameToEdit === null ? "Zmień" : "Zapisz"}</Button>
+      <Button $special>
+        {listNameToEdit === null
+          ? t("tasks.buttons.titleButtons.change")
+          : t("tasks.buttons.titleButtons.save")}
+      </Button>
     </NameContainer>
   );
 };
