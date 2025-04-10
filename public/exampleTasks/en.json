@@ -1,0 +1,15 @@
+{
+  "listName": "Example tasks",
+  "tasks": [
+    {
+      "content": "Mark task as done",
+      "done": false,
+      "id": "roXt0YGHyOJj3EP9TfrMY"
+    },
+    {
+      "content": "Finish all tasks",
+      "done": false,
+      "id": "QyXJv9ZId2xUVaDy6vuIy"
+    }
+  ]
+}

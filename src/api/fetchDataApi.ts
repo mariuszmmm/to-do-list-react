@@ -13,7 +13,7 @@ export const getDataApi = async (token: string) => {
     })
     .then(({ data }: { data: Data }) => data)
     .catch((error) => {
-      console.error("Błąd pobierania danych", error);
+      console.error("Error fetching data", error);
     });
 };
 
@@ -37,7 +37,7 @@ export const addDataApi = async (
     })
     .then((data) => data)
     .catch((error) => {
-      console.error("Błąd aktualizacji danych", error.message);
+      console.error("Error updating data", error.message);
     });
 };
 
@@ -61,6 +61,6 @@ export const removeDataApi = async (
     })
     .then((data) => data)
     .catch((error) => {
-      console.error("Błąd aktualizacji danych", error.message);
+      console.error("Error updating data", error.message);
     });
 };

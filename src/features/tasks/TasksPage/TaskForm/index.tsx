@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEventHandler } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useReplaceQueryParameter } from "../../../../hooks/useQuery/useReplaceQueryParameter";
 import { nanoid } from "@reduxjs/toolkit";
 import { Input } from "../../../../common/Input";
 import { Form } from "../../../../common/Form";
@@ -85,7 +85,6 @@ export const TaskForm = () => {
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
       <Input
-        autoFocus
         value={taskContent}
         name="taskName"
         placeholder={t("form.inputPlaceholder")}

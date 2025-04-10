@@ -42,7 +42,6 @@ const langEn: typeof langPl = {
           save: "Save",
         },
         save: "Save list",
-        change: "Change name",
         hide: "Hide done",
         show: "Show done",
         allDone: "Done all",
@@ -51,6 +50,18 @@ const langEn: typeof langPl = {
         redo: "Redo",
       },
     },
+  },
+  taskPage: {
+    title: "Task details",
+    noContent: "Task not found 😥",
+    done: {
+      title: "Done",
+      yes: "Yes",
+      no: "No",
+    },
+    dateCreated: "Date of creation",
+    dateEdited: "Date of modification",
+    dateDone: "Date of completion",
   },
   listsPage: {
     title: "Saved lists",
@@ -237,10 +248,13 @@ const langEn: typeof langPl = {
     saveList: {
       title: "Saving list",
       message: {
+        confirm:
+          'List with the name <strong>"{{listName}}"</strong> already exists in the database. Do you want to replace it?',
+        cancel: "Change the name of the list and save again.",
         loading:
-          "Saving list  <strong>{{listName}}</strong> to the database...",
+          'Saving list  <strong>"{{listName}}"</strong> to the database...',
         success:
-          "List <strong>{{listName}}</strong> has been saved to the database.",
+          'List <strong>"{{listName}}"</strong> has been saved to the database.',
         error: {
           default: "An error occurred while adding the list to the database.",
         },
@@ -250,7 +264,7 @@ const langEn: typeof langPl = {
       title: "Deleting list",
       message: {
         confirm:
-          "Are you sure you want to delete the list: <strong>{{listName}}</strong> ?",
+          'Are you sure you want to delete the list: <strong>"{{listName}}"</strong> ?',
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
@@ -261,7 +275,7 @@ const langEn: typeof langPl = {
     loadList: {
       title: "Loading list",
       message: {
-        info: "The list <strong>{{listName}}</strong> has been loaded from the database.",
+        info: 'The list <strong>"{{listName}}"</strong> has been loaded from the database.',
       },
     },
     confirmation: {

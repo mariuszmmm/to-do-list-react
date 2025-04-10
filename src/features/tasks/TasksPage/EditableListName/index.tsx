@@ -1,5 +1,5 @@
 import { FormEventHandler, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
 import { ListName } from "./ListName";

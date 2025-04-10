@@ -1,6 +1,6 @@
 import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { useValidation } from "../../../hooks/useValidation";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch } from "../../../hooks/redux";
 import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";

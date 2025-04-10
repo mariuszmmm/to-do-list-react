@@ -99,7 +99,7 @@ function* deleteAccountHandler(): Generator {
 
       if (!userToken || !user) {
         yield put(setLoggedUserEmail(null));
-        throw new Error("Użytkownik jest wylogowany");
+        throw new Error("User is logged out");
       }
 
       yield put(
@@ -243,7 +243,7 @@ function* logoutHandler(): Generator {
         })
       );
       const user: User | null = auth.currentUser();
-      if (!user) throw new Error("Brak użytkownika");
+      if (!user) throw new Error("No user found");
       yield user.logout();
       yield put(setLoggedUserEmail(null));
       yield put(
@@ -282,7 +282,7 @@ function* changePasswordHandler({
 
     if (!userToken || !user) {
       yield put(setLoggedUserEmail(null));
-      throw new Error("Użytkownik został wylogowany");
+      throw new Error("User is logged out");
     }
 
     yield user.update({ password });

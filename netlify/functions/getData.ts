@@ -39,7 +39,7 @@ const handler: Handler = async (
       }),
     };
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error:", error);
 
     return {
       statusCode: 500,

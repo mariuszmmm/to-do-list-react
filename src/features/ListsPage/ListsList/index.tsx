@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { selectModalIsOpen } from "../../../Modal/modalSlice";
 import {
   removeListRequest,

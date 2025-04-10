@@ -1,0 +1,15 @@
+{
+  "listName": "Beispiel Aufgaben",
+  "tasks": [
+    {
+      "content": "Aufgabe als erledigt markieren",
+      "done": false,
+      "id": "APd4N7pA-FfNAhd97KOhF"
+    },
+    {
+      "content": "Alle Aufgaben abschließen",
+      "done": false,
+      "id": "gzSGVuOpNnRMYj8417fuG"
+    }
+  ]
+}

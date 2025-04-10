@@ -63,8 +63,8 @@ export const selectListToLoad = (state: RootState) =>
   selectListsState(state).listToLoad;
 export const selectAreListsEmpty = (state: RootState) =>
   selectLists(state)?.length === 0;
-export const selectIsListWithName = (state: RootState, listName: string) =>
-  selectLists(state)?.some(({ name }) => name === listName);
+export const selectListAlreadyExists = (state: RootState, listName: string) =>
+  selectLists(state)?.some(({ name }) => name === listName) || false;
 export const selectSelectedListById = (state: RootState, listId: string) => {
   const list = selectLists(state)?.find(({ id }) => id === listId) || null;
   return list;

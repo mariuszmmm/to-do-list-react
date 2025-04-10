@@ -12,7 +12,7 @@ import {
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
-import { Task } from "../../types";
+import { ExampleTasks } from "../../types";
 import {
   addTask,
   fetchError,
@@ -36,6 +36,7 @@ import {
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 import { openModal } from "../../Modal/modalSlice";
+import i18n from "../../utils/i18n";
 
 function* fetchExampleTasksHandler() {
   try {
@@ -44,17 +45,18 @@ function* fetchExampleTasksHandler() {
     const listName: ReturnType<typeof selectListName> = yield select(
       selectListName
     );
-    const exampleTasks: Task[] = yield call(getExampleTasks);
+    const lang = i18n.language;
+    const exampleTasks: ExampleTasks = yield call(getExampleTasks, lang);
     const date = new Date().toISOString();
 
-    const exampleTasksWithDate = exampleTasks.map((task) => ({
+    const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
       ...task,
       date,
     }));
     yield put(
       setTasks({
         tasks: exampleTasksWithDate,
-        listName: "Przykładowe zadania",
+        listName: exampleTasks.listName,
         stateForUndo: {
           tasks,
           listName,

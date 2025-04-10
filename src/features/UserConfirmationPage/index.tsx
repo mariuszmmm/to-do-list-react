@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../api/auth";
 import { getConfimationTokenFromSessionStorage } from "../../utils/sessionStorage";
-import { useAppDispatch } from "../../hooks";
+import { useAppDispatch } from "../../hooks/redux";
 import { openModal } from "../../Modal/modalSlice";
 import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";

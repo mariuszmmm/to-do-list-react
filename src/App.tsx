@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
@@ -45,12 +45,12 @@ const App = () => {
         <Routes>
           <Route path="/account-recovery" element={<AccountRecoveryPage />} />
           <Route path="/user-confirmation" element={<UserConfirmationPage />} />
-          <Route path="/zadania/:id" element={<TaskPage />} />
-          <Route path="/zadania" element={<TasksPage />} />
-          {lists && <Route path="/listy" element={<ListsPage />} />}
-          <Route path="/autor" element={<AuthorPage />} />
-          <Route path="/konto" element={<AccountPage />} />
-          <Route path="*" element={<Navigate to="/zadania" />} />
+          <Route path="/tasks/:id" element={<TaskPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          {lists && <Route path="/lists" element={<ListsPage />} />}
+          <Route path="/author" element={<AuthorPage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="*" element={<Navigate to="/tasks" />} />
         </Routes>
       </Container>
       <Modal />

@@ -42,7 +42,6 @@ const langDe: typeof langPl = {
           save: "Speichern",
         },
         save: "Liste speichern",
-        change: "Namen ändern",
         hide: "Abgeschlossene ausblenden",
         show: "Abgeschlossene anzeigen",
         allDone: "Alle abschließen",
@@ -51,6 +50,18 @@ const langDe: typeof langPl = {
         redo: "Wiederholen",
       },
     },
+  },
+  taskPage: {
+    title: "Aufgabendetails",
+    noContent: "Aufgabe nicht gefunden 😥",
+    done: {
+      title: "Abgeschlossen",
+      yes: "Ja",
+      no: "Nein",
+    },
+    dateCreated: "Erstellungsdatum",
+    dateEdited: "Änderungsdatum",
+    dateDone: "Abschlussdatum",
   },
   listsPage: {
     title: "Gespeicherte Listen",
@@ -241,10 +252,13 @@ const langDe: typeof langPl = {
     saveList: {
       title: "Liste speichern",
       message: {
+        confirm:
+          'Die Liste <strong>"{{listName}}"</strong> existiert bereits in der Datenbank. Möchtest du sie ersetzen?',
+        cancel: "Ändere den Namen der Liste und speichere sie erneut.",
         loading:
-          "Liste <strong>{{listName}}</strong> wird in der Datenbank gespeichert...",
+          'Liste <strong>"{{listName}}"</strong> wird in der Datenbank gespeichert...',
         success:
-          "Liste <strong>{{listName}}</strong> wurde in der Datenbank gespeichert.",
+          'Liste <strong>"{{listName}}"</strong> wurde in der Datenbank gespeichert.',
         error: {
           default: "Fehler beim Hinzufügen der Liste zur Datenbank.",
         },
@@ -254,7 +268,7 @@ const langDe: typeof langPl = {
       title: "Liste löschen",
       message: {
         confirm:
-          "Möchtest du die Liste <strong>{{listName}}</strong> wirklich löschen?",
+          'Möchtest du die Liste <strong>"{{listName}}"</strong> wirklich löschen?',
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
@@ -265,7 +279,7 @@ const langDe: typeof langPl = {
     loadList: {
       title: "Liste laden",
       message: {
-        info: "Die Liste <strong>{{listName}}</strong> wurde in die aktuelle Aufgabenliste geladen.",
+        info: 'Die Liste <strong>"{{listName}}"</strong> wurde in die aktuelle Aufgabenliste geladen.',
       },
     },
     confirmation: {

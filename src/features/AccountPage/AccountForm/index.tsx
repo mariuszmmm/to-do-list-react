@@ -1,5 +1,5 @@
 import { FormEventHandler, useState, useRef, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useValidation } from "../../../hooks/useValidation";
 import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
 import { Form } from "../../../common/Form";

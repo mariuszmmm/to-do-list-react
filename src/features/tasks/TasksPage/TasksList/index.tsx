@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
-import { useQueryParameter } from "../../../../hooks/useQueryParameter";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useQueryParameter } from "../../../../hooks/useQuery/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import { List, Item, Content, Task } from "./styled";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
@@ -56,7 +56,7 @@ export const TasksList = () => {
           <Content>
             {!query ? <span>{index + 1}. </span> : ""}
             <Task $done={task.done}>
-              <StyledLink to={`/zadania/${task.id}`}>{task.content}</StyledLink>
+              <StyledLink to={`/tasks/${task.id}`}>{task.content}</StyledLink>
             </Task>
           </Content>
           <EditButton

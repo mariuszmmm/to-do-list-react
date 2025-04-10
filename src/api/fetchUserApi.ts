@@ -3,7 +3,7 @@ export const confirmUserApi = async (email: string) => {
     .then((response) => response.json())
     .then((data) => data)
     .catch((error) => {
-      console.error("Błąd pobierania danych", error);
+      console.error("Error fetching data", error);
     });
 };
 
@@ -14,15 +14,15 @@ export const deleteUserApi = async (token: string) => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Błąd usuwania użytkownika: ${response.statusText}`);
+        throw new Error(`Error deleting user: ${response.statusText}`);
       }
       return {
         statusCode: response.status,
-        message: `Usunięto użytkownika!`,
+        message: "User deleted successfully",
       };
     })
     .catch((error) => {
-      console.error("Błąd:", error);
+      console.error("Error deleting user", error);
       return {
         statusCode: 500,
         message: `Internal Server Error: ${error.message}`,
@@ -42,6 +42,6 @@ export const resetPasswordApi = async (token: string) => {
       return response.json();
     })
     .catch((error) => {
-      console.error("Błąd resetowania hasła", error);
+      console.error("Error resetting password", error);
     });
 };

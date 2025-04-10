@@ -14,12 +14,12 @@ export const getUserToken = async () => {
     try {
       const user = auth.currentUser();
       if (!user) {
-        throw new Error("Brak użytkownika");
+        throw new Error("No user found");
       }
       const token = await user.jwt();
       return token;
     } catch (error) {
-      console.error("Błąd odnowienia tokena", error);
+      console.error("Error renewing token", error);
       return null;
     }
   };

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
 import { selectLists } from "../features/ListsPage/listsSlice";
 import { auth } from "../api/auth";
@@ -68,21 +68,21 @@ const Navigation = () => {
               ))}
             </li>
             <li>
-              <StyledNavLink to="/zadania" $inactive={pathname !== "/zadania"}>
+              <StyledNavLink to="/tasks" $inactive={pathname !== "/tasks"}>
                 {t("tasksPage")}
               </StyledNavLink>
             </li>
             {lists !== null && (
               <li>
-                <StyledNavLink to="/listy">{t("lists")}</StyledNavLink>
+                <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
               </li>
             )}
             <li>
-              <StyledNavLink to="/autor">{t("author")} </StyledNavLink>
+              <StyledNavLink to="/author">{t("author")} </StyledNavLink>
             </li>
             <li>
-              <StyledNavLink to="/konto">
-                <Account />
+              <StyledNavLink to="/account">
+                <Account $isActive={pathname === "/account"} />
               </StyledNavLink>
             </li>
           </NavList>

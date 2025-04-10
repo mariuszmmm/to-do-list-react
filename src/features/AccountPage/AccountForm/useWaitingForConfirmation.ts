@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch } from "../../../hooks/redux";
 import { AccountState } from "../../../types";
 import { confirmUserApi } from "../../../api/fetchUserApi";
 import {
@@ -43,7 +43,7 @@ export const useWaitingForConfirmation = ({
         clearInterval(interval);
         clearTimeout(timeout);
         dispatch(setIsWaitingForConfirmation(false));
-        console.error("error", error);
+        console.error("Error confirming user", error);
       }
     }, 2000);
 

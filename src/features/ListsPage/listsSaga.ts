@@ -13,6 +13,7 @@ import {
   addListRequest,
   removeListRequest,
   selectList,
+  selectListAlreadyExists,
   selectLists,
   setLists,
 } from "./listsSlice";
@@ -105,6 +106,43 @@ function* refreshListsHandler(): Generator {
 function* addListRequestHandler({
   payload: list,
 }: ReturnType<typeof addListRequest>): Generator {
+  const listAlreadyExists = (yield select(
+    selectListAlreadyExists,
+    list.name
+  )) as boolean;
+
+  if (listAlreadyExists) {
+    yield put(
+      openModal({
+        title: { key: "modal.saveList.title" },
+        message: {
+          key: "modal.saveList.message.confirm",
+          values: { listName: list.name },
+        },
+        type: "confirm",
+      })
+    );
+
+    const { canceled } = (yield race({
+      confirmed: take(confirm.type),
+      canceled: take(cancel.type),
+    })) as { confirmed: TakeEffect; canceled: TakeEffect };
+
+    if (canceled) {
+      yield put(
+        openModal({
+          title: { key: "modal.saveList.title" },
+          message: {
+            key: "modal.saveList.message.cancel",
+          },
+          type: "info",
+        })
+      );
+
+      return;
+    }
+  }
+
   try {
     yield put(
       openModal({

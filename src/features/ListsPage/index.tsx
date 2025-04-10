@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../hooks";
+import { useAppSelector } from "../../hooks/redux";
 import { ListsList } from "./ListsList";
 import { ListsButtons } from "./ListsButtons";
 import { TasksList } from "./TasksList";

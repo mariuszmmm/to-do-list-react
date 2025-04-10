@@ -67,6 +67,9 @@ const handler: Handler = async (event, context) => {
         { new: true }
       );
 
+      // dodać sprawdzenie czy lista już istnieje
+      // jeśli nie istnieje to dodać ją do listy, jeśli istnieje to zaktualizować jej zawartość
+
       if (!userUpdated) {
         console.error("User not found");
 

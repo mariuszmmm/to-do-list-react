@@ -7,5 +7,5 @@ export const DateInfo = styled.p`
 `;
 
 export const Name = styled.strong`
-  min-width: 150px;
+  min-width: 180px;
 `;

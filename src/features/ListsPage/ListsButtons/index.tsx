@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { StyledLink } from "../../../common/StyledLink";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
@@ -21,7 +21,7 @@ export const ListsButtons = () => {
 
   return (
     <ButtonsContainer>
-      <StyledLink to={`/zadania`}>
+      <StyledLink to={`/tasks`}>
         <Button
           onClick={() => dispatch(setListToLoad(listToLoad))}
           disabled={selectedListId === null}

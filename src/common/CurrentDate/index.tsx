@@ -4,7 +4,7 @@ import {
   formatCurrentDay,
   formatCurrentTime,
 } from "../../utils/formatCurrentDate";
-import { Date, DateContainer } from "./styled";
+import { StyledDate, DateContainer } from "./styled";
 
 export const CurrentDate = () => {
   const currentDate = useCurrentDate();
@@ -14,11 +14,11 @@ export const CurrentDate = () => {
 
   return (
     <DateContainer>
-      <Date $description>
+      <StyledDate $comentary>
         {t("desc")}
         {formatCurrentDay(currentDate, i18n.language)},
-      </Date>
-      <Date>{formatCurrentTime(currentDate, i18n.language)}</Date>
+      </StyledDate>
+      <StyledDate>{formatCurrentTime(currentDate, i18n.language)}</StyledDate>
     </DateContainer>
   );
 };

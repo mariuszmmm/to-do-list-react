@@ -5,7 +5,7 @@ import {
   CircleLoadingIcon,
   CircleWarningIcon,
 } from "../common/icons";
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { cancel, closeModal, confirm, selectModalState } from "./modalSlice";
 import {
   ModalBackground,

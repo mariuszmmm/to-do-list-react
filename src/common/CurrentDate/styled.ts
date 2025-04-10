@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
-interface DateProps {
-  $description?: boolean;
+interface StyledDateProps {
+  $comentary?: boolean;
 }
 
 export const DateContainer = styled.div`
@@ -10,7 +10,7 @@ export const DateContainer = styled.div`
   column-gap: 10px;
 `;
 
-export const Date = styled.span<DateProps>`
+export const StyledDate = styled.span<StyledDateProps>`
   font-family: "Roboto Mono", monospace;
   font-size: 14px;
   margin: 0;
@@ -18,8 +18,8 @@ export const Date = styled.span<DateProps>`
   color: ${({ theme }) => theme.color.black};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    ${({ $description }) =>
-      $description &&
+    ${({ $comentary }) =>
+      $comentary &&
       css`
         display: none;
       `};

@@ -12,6 +12,9 @@ interface ButtonProps {
 interface StyledNavLinkProps {
   $inactive?: boolean;
 }
+interface AccountProps {
+  $isActive?: boolean;
+}
 
 export const Nav = styled.nav`
   background-color: ${({ theme }) => theme.color.teal};
@@ -101,8 +104,14 @@ export const NavButton = styled.button<ButtonProps>`
   }
 `;
 
-export const Account = styled(user)`
+export const Account = styled(user)<AccountProps>`
   margin-top: 0.1rem;
   margin-right: 20px;
   width: 0.9rem;
+
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      scale: 1.1;
+    `};
 `;

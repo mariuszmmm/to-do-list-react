@@ -40,7 +40,6 @@ const langPl = {
           save: "Zapisz",
         },
         save: "Zapisz listę",
-        change: "Zmień nazwę",
         hide: "Ukryj ukończone",
         show: "Pokaż ukończone",
         allDone: "Ukończ wszystkie",
@@ -49,6 +48,18 @@ const langPl = {
         redo: "Ponów",
       },
     },
+  },
+  taskPage: {
+    title: "Szczegóły zadania",
+    noContent: "Nie znaleziono zadania 😥",
+    done: {
+      title: "Ukończone",
+      yes: "Tak",
+      no: "Nie",
+    },
+    dateCreated: "Data utworzenia",
+    dateEdited: "Data modyfikacji",
+    dateDone: "Data ukończenia",
   },
   listsPage: {
     title: "Zapisane listy",
@@ -238,10 +249,13 @@ const langPl = {
     saveList: {
       title: "Zapisywanie listy",
       message: {
+        confirm:
+          'Lista o nazwie <strong>"{{listName}}"</strong> już isnieje w bazie danych. Czy chcesz ją zastąpić?',
+        cancel: "Zmień nazwę listy i zapisz ponownie.",
         loading:
-          "Zapisywanie listy <strong>{{listName}}</strong> w bazie danych...",
+          'Zapisywanie listy <strong>"{{listName}}"</strong> w bazie danych...',
         success:
-          "Lista <strong>{{listName}}</strong> została zapisana w bazie danych.",
+          'Lista <strong>"{{listName}}"</strong> została zapisana w bazie danych.',
         error: {
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
@@ -251,7 +265,7 @@ const langPl = {
       title: "Usuwanie listy",
       message: {
         confirm:
-          "Czy na pewno chcesz usunąć listę: <strong>{{listName}}</strong> ?",
+          'Czy na pewno chcesz usunąć listę: <strong>"{{listName}}"</strong> ?',
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
@@ -262,7 +276,7 @@ const langPl = {
     loadList: {
       title: "Ładowanie listy",
       message: {
-        info: "Lista <strong>{{listName}}</strong> została załadowana do bieżacej listy zadań.",
+        info: 'Lista <strong>"{{listName}}"</strong> została załadowana do bieżacej listy zadań.',
       },
     },
     confirmation: {

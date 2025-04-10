@@ -1,10 +1,10 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { toggleShowSearch, selectShowSearch } from "../../tasksSlice";
-import { useQueryParameter } from "../../../../hooks/useQueryParameter";
-import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
+import { useQueryParameter } from "../../../../hooks/useQuery/useQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/useQuery/useReplaceQueryParameter";
 import { useTranslation } from "react-i18next";
 
 export const SearchButtons = () => {

@@ -1,0 +1,15 @@
+{
+  "listName": "Przykładowe zadania",
+  "tasks": [
+    {
+      "content": "Oznaczyć zadanie jako ukończone",
+      "done": false,
+      "id": "2vyYxIFiEB_6kDjdsKyhZ"
+    },
+    {
+      "content": "Ukończyć wszystkie zadania",
+      "done": false,
+      "id": "RrTM901lMjHaIdOZCEhNG"
+    }
+  ]
+}

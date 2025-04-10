@@ -1,10 +1,12 @@
-import { Task } from "../types";
+import { ExampleTasks } from "../types";
 
-export const getExampleTasks = async () => {
-  const response = await fetch("/exampleTasks.json");
+export const getExampleTasks = async (lang: string) => {
+  const response = await fetch(`/exampleTasks/${lang}.json`);
   if (!response.ok) {
     new Error(response.statusText);
   }
 
-  return (await response.json()) as Task[];
+  const exampleTasks = (await response.json()) as ExampleTasks;
+
+  return exampleTasks;
 };

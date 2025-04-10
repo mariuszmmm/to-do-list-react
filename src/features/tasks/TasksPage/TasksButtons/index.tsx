@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { nanoid } from "@reduxjs/toolkit";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
@@ -21,11 +20,7 @@ import {
   selectUndoTasksStack,
   selectRedoTasksStack,
 } from "../../tasksSlice";
-import {
-  addListRequest,
-  selectIsListWithName,
-  selectLists,
-} from "../../../ListsPage/listsSlice";
+import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
 
 export const TasksButtons = () => {
@@ -40,43 +35,19 @@ export const TasksButtons = () => {
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const listName = useAppSelector(selectListName);
   const lists = useAppSelector(selectLists);
-  const isListWithName = useAppSelector((state) =>
-    selectIsListWithName(state, listName)
-  );
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-  const [saveName, setSaveName] = useState<string>(t("tasks.buttons.save"));
-  const [isName, setIsName] = useState(false);
-
-  useEffect(() => {
-    setSaveName(t(isName ? "tasks.buttons.change" : "tasks.buttons.save"));
-
-    // eslint-disable-next-line
-  }, [t]);
 
   const onSaveListHandler = () => {
-    if (!isListWithName) {
-      dispatch(
-        addListRequest({
-          id: nanoid(),
-          name: listName,
-          taskList: tasks,
-        })
-      );
-      return;
-    }
-
-    setSaveName(t("tasks.buttons.change"));
-    setIsName(true);
-
-    const timer = setTimeout(() => {
-      setSaveName(t("tasks.buttons.save"));
-      setIsName(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    dispatch(
+      addListRequest({
+        id: nanoid(),
+        name: listName,
+        taskList: tasks,
+      })
+    );
   };
 
   return (
@@ -84,13 +55,10 @@ export const TasksButtons = () => {
       {lists && (
         <Button
           onClick={onSaveListHandler}
-          disabled={
-            !listName || areTasksEmpty || listNameToEdit !== null || isName
-          }
-          $error={isName}
+          disabled={!listName || areTasksEmpty || listNameToEdit !== null}
           width={i18n.language === "pl" ? "150px" : "120px"}
         >
-          {saveName}
+          {t("tasks.buttons.save")}
         </Button>
       )}
       <Button
