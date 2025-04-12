@@ -81,8 +81,8 @@ export const AccountRecoveryForm = ({
     try {
       dispatch(
         openModal({
-          title: { key: "modal.changeEmail.title" },
-          message: { key: "modal.changeEmail.message.loading" },
+          title: { key: "modal.changePassword.title" },
+          message: { key: "modal.changePassword.message.loading" },
           type: "loading",
         })
       );
@@ -90,7 +90,7 @@ export const AccountRecoveryForm = ({
       await user.update({ password }).then((user) => user.logout());
       dispatch(
         openModal({
-          message: { key: "modal.changeEmail.message.success" },
+          message: { key: "modal.changePassword.message.success" },
           type: "success",
         })
       );
@@ -100,7 +100,7 @@ export const AccountRecoveryForm = ({
     } catch (error) {
       dispatch(
         openModal({
-          message: { key: "modal.changeEmail.message.error.default" },
+          message: { key: "modal.changePassword.message.error.default" },
           type: "error",
         })
       );

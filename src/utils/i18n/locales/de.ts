@@ -79,7 +79,7 @@ const langDe: typeof langPl = {
     name: "Mariusz Matusiewicz",
     description: {
       part1:
-        "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>. Ich liebe es, neue Technologien zu erforschen und meine Fähigkeiten ständig weiterzuentwickeln. Die größte Zufriedenheit bereitet mir das Entwerfen intuitiver und ästhetischer Benutzeroberflächen, die das Leben der Nutzer erleichtern.",
+        "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>.<br/> Ich liebe es, neue Technologien zu erforschen und meine Fähigkeiten ständig weiterzuentwickeln. Die größte Zufriedenheit bereitet mir das Entwerfen intuitiver und ästhetischer Benutzeroberflächen, die das Leben der Nutzer erleichtern.",
       part2:
         "Abseits des Programmierens liebe ich die Berge. Wanderungen sind für mich eine Möglichkeit, mich zu entspannen und neue Energie zu tanken. Besonders am Herzen liegen mir die <strong>Bieszczady</strong> – ihre Ruhe und natürliche Schönheit inspirieren mich jedes Mal, wenn ich dorthin zurückkehre. Ich verbinde meine Leidenschaft für Technologie mit meiner Neugier auf die Welt. Dadurch nehme ich mit Begeisterung neue Herausforderungen an, die es mir ermöglichen, mich weiterzuentwickeln und Projekte zu schaffen, auf die ich stolz sein kann. 😊🚀",
     },
@@ -205,16 +205,6 @@ const langDe: typeof langPl = {
         },
       },
     },
-    changeEmail: {
-      title: "Passwort ändern",
-      message: {
-        loading: "Passwortänderung läuft...",
-        success: "Das Passwort wurde aktualisiert, schließe die Seite.",
-        error: {
-          default: "Fehler beim Aktualisieren des Passworts.",
-        },
-      },
-    },
     deleteAccount: {
       title: "Konto löschen",
       message: {
@@ -253,12 +243,12 @@ const langDe: typeof langPl = {
       title: "Liste speichern",
       message: {
         confirm:
-          'Die Liste <strong>"{{listName}}"</strong> existiert bereits in der Datenbank. Möchtest du sie ersetzen?',
+          "Die Liste <strong>{{listName}}</strong> existiert bereits in der Datenbank.<br/> Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
         loading:
-          'Liste <strong>"{{listName}}"</strong> wird in der Datenbank gespeichert...',
+          "Liste <strong>{{listName}}</strong> wird in der Datenbank gespeichert...",
         success:
-          'Liste <strong>"{{listName}}"</strong> wurde in der Datenbank gespeichert.',
+          "Liste <strong>{{listName}}</strong> wurde in der Datenbank gespeichert.",
         error: {
           default: "Fehler beim Hinzufügen der Liste zur Datenbank.",
         },
@@ -268,7 +258,7 @@ const langDe: typeof langPl = {
       title: "Liste löschen",
       message: {
         confirm:
-          'Möchtest du die Liste <strong>"{{listName}}"</strong> wirklich löschen?',
+          "Möchtest du die Liste <strong>{{listName}}</strong> wirklich löschen?",
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
@@ -279,7 +269,7 @@ const langDe: typeof langPl = {
     loadList: {
       title: "Liste laden",
       message: {
-        info: 'Die Liste <strong>"{{listName}}"</strong> wurde in die aktuelle Aufgabenliste geladen.',
+        info: "Die Liste <strong>{{listName}}</strong> wurde in die aktuelle Aufgabenliste geladen.",
       },
     },
     confirmation: {

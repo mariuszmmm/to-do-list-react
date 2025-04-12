@@ -79,7 +79,7 @@ const langEn: typeof langPl = {
     name: "Mariusz Matusiewicz",
     description: {
       part1:
-        "Creating front-end applications is my passion, especially with <strong>React</strong>. I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
+        "Creating front-end applications is my passion, especially with <strong>React</strong>.<br/> I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
       part2:
         "Beyond programming, I love the mountains. Hiking is my way to relax and recharge. The <strong>Bieszczady</strong> Mountains are especially close to my heart—their tranquility and natural beauty inspire me every time I return. I combine my passion for technology with my curiosity about the world. Thanks to this, I eagerly take on new challenges that help me grow and create projects I can be proud of. 😊🚀",
     },
@@ -191,23 +191,13 @@ const langEn: typeof langPl = {
       title: "Account recovery",
       message: {
         loading: "Recovering account...",
-        info: "A link to reset your password has been sent to the provided email address.<br/> If you haven't received the message, try again in 15 minutes.",
+        info: "A password reset link has been sent to your email address.<br/> If you don't receive it, please try again in 15 minutes.",
         success: "Account has been recovered, set a new password.",
         error: {
           noConnection: "No internet connection.",
           notFound: "User not found with this email address.",
           default: "Password recovery error.",
           linkExpired: "The link has expired or has been used.",
-        },
-      },
-    },
-    changeEmail: {
-      title: "Change password",
-      message: {
-        loading: "Changing password...",
-        success: "Password has been updated, close the page.",
-        error: {
-          default: "An error occurred while updating the password.",
         },
       },
     },
@@ -249,12 +239,11 @@ const langEn: typeof langPl = {
       title: "Saving list",
       message: {
         confirm:
-          'List with the name <strong>"{{listName}}"</strong> already exists in the database. Do you want to replace it?',
+          "List with the name <strong>{{listName}}</strong> already exists in the database.<br/> Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
-        loading:
-          'Saving list  <strong>"{{listName}}"</strong> to the database...',
+        loading: "Saving list <strong>{{listName}}</strong> to the database...",
         success:
-          'List <strong>"{{listName}}"</strong> has been saved to the database.',
+          "List <strong>{{listName}}</strong> has been saved to the database.",
         error: {
           default: "An error occurred while adding the list to the database.",
         },
@@ -264,7 +253,7 @@ const langEn: typeof langPl = {
       title: "Deleting list",
       message: {
         confirm:
-          'Are you sure you want to delete the list: <strong>"{{listName}}"</strong> ?',
+          "Are you sure you want to delete the list: <strong>{{listName}}</strong> ?",
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
@@ -275,7 +264,7 @@ const langEn: typeof langPl = {
     loadList: {
       title: "Loading list",
       message: {
-        info: 'The list <strong>"{{listName}}"</strong> has been loaded from the database.',
+        info: "The list <strong>{{listName}}</strong> has been loaded from the database.",
       },
     },
     confirmation: {

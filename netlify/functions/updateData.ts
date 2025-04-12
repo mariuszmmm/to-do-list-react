@@ -28,10 +28,11 @@ const handler: Handler = async (event, context) => {
   }
 
   const { email }: { email: string } = context.clientContext.user;
-  const user = await UserData.findOne({ email, account: "active" });
 
   try {
-    if (!user) {
+    const foundUser = await UserData.findOne({ email, account: "active" });
+
+    if (!foundUser) {
       console.error("User not found");
 
       return {
@@ -42,7 +43,7 @@ const handler: Handler = async (event, context) => {
 
     const data: Data = JSON.parse(event.body);
 
-    if (user.version !== data.version) {
+    if (foundUser.version !== data.version) {
       console.error("Version mismatch");
 
       return {
@@ -61,26 +62,20 @@ const handler: Handler = async (event, context) => {
         };
       }
 
-      const userUpdated = await UserData.findOneAndUpdate(
-        { email: email },
-        { $push: { lists: data.list } },
-        { new: true }
+      const listIndex = foundUser.lists.findIndex(
+        (list) => list.name === data.list?.name
       );
 
-      // dodać sprawdzenie czy lista już istnieje
-      // jeśli nie istnieje to dodać ją do listy, jeśli istnieje to zaktualizować jej zawartość
-
-      if (!userUpdated) {
-        console.error("User not found");
-
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ message: "User not found" }),
-        };
+      if (listIndex !== -1) {
+        foundUser.lists[listIndex].id = data.list.id;
+        foundUser.lists[listIndex].name = data.list.name;
+        foundUser.lists[listIndex].taskList = data.list.taskList;
+      } else {
+        foundUser.lists.push(data.list);
       }
 
-      user.version += 1;
-      await user.save();
+      foundUser.version += 1;
+      await foundUser.save();
     }
 
     if (event.httpMethod === "DELETE") {
@@ -93,34 +88,16 @@ const handler: Handler = async (event, context) => {
         };
       }
 
-      const userUpdated = await UserData.findOneAndUpdate(
-        { email: email },
-        { $pull: { lists: { id: data.listId } } },
-        { new: true }
+      const listIndex = foundUser.lists.findIndex(
+        (list) => list.id === data.listId
       );
 
-      if (!userUpdated) {
-        console.error("User not found");
+      if (listIndex !== -1) {
+        foundUser.lists.splice(listIndex, 1);
+        foundUser.version += 1;
 
-        return {
-          statusCode: 404,
-          body: JSON.stringify({ message: "User not found" }),
-        };
+        await foundUser.save();
       }
-
-      user.version += 1;
-      await user.save();
-    }
-
-    const userData = await UserData.findOne({ email, account: "active" });
-
-    if (!userData) {
-      console.error("User not found");
-
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: "User not found" }),
-      };
     }
 
     return {
@@ -128,9 +105,9 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({
         message: "Data updated",
         data: {
-          email: userData.email,
-          lists: userData.lists,
-          version: userData.version,
+          email: foundUser.email,
+          lists: foundUser.lists,
+          version: foundUser.version,
         },
       }),
     };

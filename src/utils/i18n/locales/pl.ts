@@ -77,7 +77,7 @@ const langPl = {
     name: "Mariusz Matusiewicz",
     description: {
       part1:
-        "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. Największą satysfakcję daje mi projektowanie intuicyjnych i estetycznych interfejsów, które ułatwiają życie użytkownikom.",
+        "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>.<br/> Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. Największą satysfakcję daje mi projektowanie intuicyjnych i estetycznych interfejsów, które ułatwiają życie użytkownikom.",
       part2:
         "Poza programowaniem kocham góry. Wędrówki to dla mnie sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łączę zamiłowanie do technologii z ciekawością świata. Dzięki temu z entuzjazmem podejmuję nowe wyzwania, które pozwalają mi rozwijać się i tworzyć projekty, z których mogę być dumny. 😊🚀",
     },
@@ -202,16 +202,6 @@ const langPl = {
         },
       },
     },
-    changeEmail: {
-      title: "Zmiana hasła",
-      message: {
-        loading: "Trwa zmiana hasła...",
-        success: "Hasło zostało zaktualizowane, zamknij stronę.",
-        error: {
-          default: "Wystąpił błąd podczas aktualizacji hasła.",
-        },
-      },
-    },
     deleteAccount: {
       title: "Usuwanie konta",
       message: {
@@ -250,12 +240,12 @@ const langPl = {
       title: "Zapisywanie listy",
       message: {
         confirm:
-          'Lista o nazwie <strong>"{{listName}}"</strong> już isnieje w bazie danych. Czy chcesz ją zastąpić?',
+          "Lista o nazwie <strong>{{listName}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
         cancel: "Zmień nazwę listy i zapisz ponownie.",
         loading:
-          'Zapisywanie listy <strong>"{{listName}}"</strong> w bazie danych...',
+          "Zapisywanie listy <strong>{{listName}}</strong> w bazie danych...",
         success:
-          'Lista <strong>"{{listName}}"</strong> została zapisana w bazie danych.',
+          "Lista <strong>{{listName}}</strong> została zapisana w bazie danych.",
         error: {
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
@@ -265,7 +255,7 @@ const langPl = {
       title: "Usuwanie listy",
       message: {
         confirm:
-          'Czy na pewno chcesz usunąć listę: <strong>"{{listName}}"</strong> ?',
+          "Czy na pewno chcesz usunąć listę: <strong>{{listName}}</strong> ?",
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
@@ -276,7 +266,7 @@ const langPl = {
     loadList: {
       title: "Ładowanie listy",
       message: {
-        info: 'Lista <strong>"{{listName}}"</strong> została załadowana do bieżacej listy zadań.',
+        info: "Lista <strong>{{listName}}</strong> została załadowana do bieżacej listy zadań.",
       },
     },
     confirmation: {
