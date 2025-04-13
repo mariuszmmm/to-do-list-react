@@ -1,3 +1,4 @@
+import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { selectModalIsOpen } from "../../../Modal/modalSlice";
 import {
@@ -6,14 +7,7 @@ import {
   selectLists,
   selectSelectedListId,
 } from "../listsSlice";
-import {
-  List,
-  Item,
-  ToggleButton,
-  Content,
-  Task,
-  RemoveButton,
-} from "./styled";
+import { List, Item, Content, Task } from "./styled";
 
 export const ListsList = () => {
   const selectedListId = useAppSelector(selectSelectedListId);

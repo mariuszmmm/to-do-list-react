@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const TaskButton = styled.button`
+  border-radius: 3px;
   border: none;
   color: ${({ theme }) => theme.color.white};
   width: 30px;

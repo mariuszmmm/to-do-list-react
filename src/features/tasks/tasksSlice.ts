@@ -3,9 +3,11 @@ import {
   getSettingsFromLocalStorage,
   getTasksFromLocalStorage,
   getListNameFromLocalStorage,
+  clearLocalStorage,
 } from "../../utils/localStorage";
 import { Task } from "../../types";
 import { RootState } from "../../store";
+import { t } from "i18next";
 
 interface TaskState {
   tasks: Task[];
@@ -19,20 +21,15 @@ interface TaskState {
   listNameToEdit: string | null;
 }
 
-const InitialListName =
-  getTasksFromLocalStorage().length > 0 && getListNameFromLocalStorage()
-    ? getListNameFromLocalStorage()
-    : "Nowa lista";
-
 const initialState: TaskState = {
-  tasks: getTasksFromLocalStorage(),
+  tasks: getTasksFromLocalStorage() || [],
   editedTask: null,
   hideDone: getSettingsFromLocalStorage()?.hideDone || false,
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
   fetchStatus: "ready",
   undoTasksStack: [],
   redoTasksStack: [],
-  listName: InitialListName,
+  listName: getListNameFromLocalStorage() || "",
   listNameToEdit: null,
 };
 
@@ -103,7 +100,7 @@ const tasksSlice = createSlice({
       state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
       state.redoTasksStack = [];
     },
-    removeTasks: (
+    removeTask: (
       state,
       {
         payload: { taskId, stateForUndo },
@@ -118,6 +115,15 @@ const tasksSlice = createSlice({
         state.tasks.splice(index, 1);
         state.redoTasksStack = [];
       }
+    },
+    removeTasks: (state) => {
+      state.undoTasksStack.push({
+        tasks: state.tasks,
+        listName: state.listName,
+      });
+      state.listName = t("tasksPage.tasks.defaultListName");
+      state.tasks = [];
+      state.redoTasksStack = [];
     },
     setAllDone: (
       state,
@@ -213,16 +219,9 @@ const tasksSlice = createSlice({
       state.listName = listName;
       state.redoTasksStack = [];
     },
-    clearStorage: (state) => {
-      state.tasks = [];
-      state.editedTask = null;
-      state.hideDone = false;
-      state.showSearch = false;
-      state.fetchStatus = "ready";
-      state.undoTasksStack = [];
-      state.redoTasksStack = [];
-      state.listName = "Nowa lista";
-      state.listNameToEdit = null;
+    clearStorage: () => {
+      clearLocalStorage();
+      return initialState;
     },
   },
 });
@@ -233,6 +232,7 @@ export const {
   saveEditedTask,
   toggleHideDone,
   toggleTaskDone,
+  removeTask,
   removeTasks,
   setAllDone,
   setAllUndone,

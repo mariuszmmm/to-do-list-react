@@ -35,6 +35,7 @@ const langDe: typeof langPl = {
       inputPlaceholder: "Aufgaben filtern",
     },
     tasks: {
+      defaultListName: "Neue Liste",
       inputPlaceholder: "Listenname eingeben",
       buttons: {
         titleButtons: {
@@ -42,6 +43,7 @@ const langDe: typeof langPl = {
           save: "Speichern",
         },
         save: "Liste speichern",
+        remove: "Liste löschen",
         hide: "Abgeschlossene ausblenden",
         show: "Abgeschlossene anzeigen",
         allDone: "Alle abschließen",

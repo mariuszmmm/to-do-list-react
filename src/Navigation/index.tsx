@@ -60,7 +60,7 @@ const Navigation = () => {
               {supportedLanguages.map((lang) => (
                 <NavButton
                   onClick={() => i18n.changeLanguage(lang)}
-                  $isActive={i18n.language === lang}
+                  $isActive={i18n.language.split("-")[0] === lang}
                   key={lang}
                 >
                   {lang.toUpperCase()}

@@ -12,7 +12,7 @@ import {
   selectHideDone,
   toggleTaskDone,
   setTaskToEdit,
-  removeTasks,
+  removeTask,
   selectTasksByQuery,
   selectEditedTask,
   selectTasks,
@@ -68,7 +68,7 @@ export const TasksList = () => {
           <RemoveButton
             onClick={() =>
               dispatch(
-                removeTasks({
+                removeTask({
                   taskId: task.id,
                   stateForUndo: { tasks, listName },
                 })

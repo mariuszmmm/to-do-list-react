@@ -24,7 +24,6 @@ import { auth } from "../../api/auth";
 import { deleteUserApi } from "../../api/fetchUserApi";
 import { getUserToken } from "../../utils/getUserToken";
 import { User } from "gotrue-js";
-import { clearLocalStorage } from "../../utils/localStorage";
 
 function* accountRecoveryHandler({
   payload: { email },
@@ -137,7 +136,6 @@ function* deleteAccountHandler(): Generator {
 
       if (confirmed) {
         yield put(clearStorage());
-        yield call(clearLocalStorage);
         yield put(
           openModal({
             title: { key: "modal.dataRemoval.title" },

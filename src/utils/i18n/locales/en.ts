@@ -35,6 +35,7 @@ const langEn: typeof langPl = {
       inputPlaceholder: "Filter tasks",
     },
     tasks: {
+      defaultListName: "New list",
       inputPlaceholder: "Enter list name",
       buttons: {
         titleButtons: {
@@ -42,6 +43,7 @@ const langEn: typeof langPl = {
           save: "Save",
         },
         save: "Save list",
+        remove: "Delete list",
         hide: "Hide done",
         show: "Show done",
         allDone: "Done all",

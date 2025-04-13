@@ -16,18 +16,18 @@ import { useTranslation } from "react-i18next";
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
   const listName = useAppSelector(selectListName);
-  const [name, setName] = useState(listName);
-  const listNameToEdit = useAppSelector(selectListNameToEdit);
-  const inpurRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+  const [name, setName] = useState(listName || t("tasks.defaultListName"));
+  const listNameToEdit = useAppSelector(selectListNameToEdit);
+  const inpurRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
 
   const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-
     const trimedContent = name.trim();
+
     if (trimedContent) {
       if (listNameToEdit !== null) {
         dispatch(
@@ -40,8 +40,8 @@ export const EditableListName = () => {
 
         setName(trimedContent);
       } else {
-        dispatch(setListNameToEdit(listName));
-        setName(listName);
+        dispatch(setListNameToEdit(listName || t("tasks.defaultListName")));
+        setName(listName || t("tasks.defaultListName"));
       }
     } else {
       inpurRef.current!.focus();
@@ -51,7 +51,7 @@ export const EditableListName = () => {
   return (
     <NameContainer onSubmit={onNameSubmit}>
       {listNameToEdit === null ? (
-        listName && <ListName>{listName}</ListName>
+        <ListName>{listName || t("tasks.defaultListName")}</ListName>
       ) : (
         <Input
           type="text"

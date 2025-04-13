@@ -19,6 +19,7 @@ import {
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
+  removeTasks,
 } from "../../tasksSlice";
 import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
@@ -56,31 +57,31 @@ export const TasksButtons = () => {
         <Button
           onClick={onSaveListHandler}
           disabled={!listName || areTasksEmpty || listNameToEdit !== null}
-          width={i18n.language === "pl" ? "150px" : "120px"}
         >
           {t("tasks.buttons.save")}
         </Button>
       )}
-      <Button
-        onClick={() => dispatch(toggleHideDone())}
-        disabled={areTasksEmpty}
-        width={i18n.language === "pl" ? "150px" : "120px"}
-      >
-        {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
+      <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
+        {t("tasks.buttons.remove")}
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, listName }))}
         disabled={isEveryTaskDone || areTasksEmpty}
-        width={i18n.language === "pl" ? "150px" : "120px"}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, listName }))}
         disabled={isEveryTaskUndone || areTasksEmpty}
-        width={i18n.language === "pl" ? "150px" : "120px"}
       >
         {t("tasks.buttons.allUndone")}
+      </Button>
+      <Button
+        onClick={() => dispatch(toggleHideDone())}
+        disabled={areTasksEmpty}
+        width={i18n.language === "en" ? "92px" : "142px"}
+      >
+        {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
       </Button>
       <ButtonsContainer $sub>
         <Button

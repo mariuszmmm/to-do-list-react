@@ -12,7 +12,7 @@ export const Button = styled.button<ButtonProps>`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  width: ${({ width }) => width || "40px"};
+  width: ${({ width }) => width || "auto"};
   min-width: max-content;
   font-size: 16px;
   line-height: 16px;

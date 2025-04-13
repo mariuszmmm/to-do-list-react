@@ -30,6 +30,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     width: min-content;
+    min-width: 230px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {

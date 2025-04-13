@@ -33,6 +33,7 @@ const langPl = {
       inputPlaceholder: "Filtruj zadania",
     },
     tasks: {
+      defaultListName: "Nowa lista",
       inputPlaceholder: "Wpisz nazwę listy",
       buttons: {
         titleButtons: {
@@ -40,6 +41,7 @@ const langPl = {
           save: "Zapisz",
         },
         save: "Zapisz listę",
+        remove: "Usuń listę",
         hide: "Ukryj ukończone",
         show: "Pokaż ukończone",
         allDone: "Ukończ wszystkie",
