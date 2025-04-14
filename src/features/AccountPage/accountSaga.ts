@@ -31,15 +31,15 @@ function* accountRecoveryHandler({
   try {
     yield put(
       openModal({
-        title: { key: "modal.recoveryAccount.title" },
-        message: { key: "modal.recoveryAccount.message.loading" },
+        title: { key: "modal.accountRecovery.title" },
+        message: { key: "modal.accountRecovery.message.loading" },
         type: "loading",
       })
     );
     yield auth.requestPasswordRecovery(email);
     yield put(
       openModal({
-        message: { key: "modal.recoveryAccount.message.info" },
+        message: { key: "modal.accountRecovery.message.info" },
         type: "info",
       })
     );
@@ -50,7 +50,7 @@ function* accountRecoveryHandler({
         yield put(
           openModal({
             message: {
-              key: "modal.recoveryAccount.message.error.noConnection",
+              key: "modal.accountRecovery.message.error.noConnection",
             },
             type: "error",
           })
@@ -59,7 +59,7 @@ function* accountRecoveryHandler({
       case 404:
         yield put(
           openModal({
-            message: { key: "modal.recoveryAccount.message.error.notFound" },
+            message: { key: "modal.accountRecovery.message.error.notFound" },
             type: "error",
           })
         );
@@ -67,7 +67,7 @@ function* accountRecoveryHandler({
       default:
         yield put(
           openModal({
-            message: { key: "modal.recoveryAccount.message.error.default" },
+            message: { key: "modal.accountRecovery.message.error.default" },
             type: "error",
           })
         );
@@ -79,8 +79,8 @@ function* accountRecoveryHandler({
 function* deleteAccountHandler(): Generator {
   yield put(
     openModal({
-      title: { key: "modal.deleteAccount.title" },
-      message: { key: "modal.deleteAccount.message.confirm" },
+      title: { key: "modal.accountDelete.title" },
+      message: { key: "modal.accountDelete.message.confirm" },
       confirmButton: { key: "modal.buttons.deleteButton" },
       type: "confirm",
     })
@@ -103,7 +103,7 @@ function* deleteAccountHandler(): Generator {
 
       yield put(
         openModal({
-          message: { key: "modal.deleteAccount.message.loading" },
+          message: { key: "modal.accountDelete.message.loading" },
           type: "loading",
         })
       );
@@ -114,7 +114,7 @@ function* deleteAccountHandler(): Generator {
       if (response.statusCode !== 204) throw new Error();
       yield put(
         openModal({
-          message: { key: "modal.deleteAccount.message.success" },
+          message: { key: "modal.accountDelete.message.success" },
           type: "success",
         })
       );
@@ -149,7 +149,7 @@ function* deleteAccountHandler(): Generator {
     } catch (error: any) {
       yield put(
         openModal({
-          message: { key: "modal.deleteAccount.message.error.default" },
+          message: { key: "modal.accountDelete.message.error.default" },
           type: "error",
         })
       );
@@ -272,8 +272,8 @@ function* changePasswordHandler({
   try {
     yield put(
       openModal({
-        title: { key: "modal.changePassword.title" },
-        message: { key: "modal.changePassword.message.loading" },
+        title: { key: "modal.passwordChange.title" },
+        message: { key: "modal.passwordChange.message.loading" },
         type: "loading",
       })
     );
@@ -286,7 +286,7 @@ function* changePasswordHandler({
     yield user.update({ password });
     yield put(
       openModal({
-        message: { key: "modal.changePassword.message.success" },
+        message: { key: "modal.passwordChange.message.success" },
         type: "success",
       })
     );
@@ -294,7 +294,7 @@ function* changePasswordHandler({
   } catch (error: any) {
     yield put(
       openModal({
-        message: { key: "modal.changePassword.message.error.default" },
+        message: { key: "modal.passwordChange.message.error.default" },
         type: "error",
       })
     );
@@ -306,8 +306,8 @@ function* registerHandler({
 }: ReturnType<typeof registerRequest>): Generator {
   yield put(
     openModal({
-      title: { key: "modal.registerAccount.title" },
-      message: { key: "modal.registerAccount.message.loading" },
+      title: { key: "modal.accountRegister.title" },
+      message: { key: "modal.accountRegister.message.loading" },
       type: "loading",
     })
   );
@@ -317,7 +317,7 @@ function* registerHandler({
     yield put(setIsWaitingForConfirmation(true));
     yield put(
       openModal({
-        message: { key: "modal.registerAccount.message.info" },
+        message: { key: "modal.accountRegister.message.info" },
         type: "info",
       })
     );
@@ -327,7 +327,7 @@ function* registerHandler({
         yield put(
           openModal({
             message: {
-              key: "modal.registerAccount.message.error.noConnection",
+              key: "modal.accountRegister.message.error.noConnection",
             },
             type: "error",
           })
@@ -336,7 +336,7 @@ function* registerHandler({
       case "Unable to validate email address: invalid format":
         yield put(
           openModal({
-            message: { key: "modal.registerAccount.message.error.emailFormat" },
+            message: { key: "modal.accountRegister.message.error.emailFormat" },
             type: "error",
           })
         );
@@ -345,7 +345,7 @@ function* registerHandler({
         yield put(
           openModal({
             message: {
-              key: "modal.registerAccount.message.error.invalidEmail",
+              key: "modal.accountRegister.message.error.invalidEmail",
             },
             type: "error",
           })
@@ -354,7 +354,7 @@ function* registerHandler({
       case 400:
         yield put(
           openModal({
-            message: { key: "modal.registerAccount.message.error.userExists" },
+            message: { key: "modal.accountRegister.message.error.userExists" },
             type: "error",
           })
         );
@@ -362,7 +362,7 @@ function* registerHandler({
       default:
         yield put(
           openModal({
-            message: { key: "modal.registerAccount.message.error.default" },
+            message: { key: "modal.accountRegister.message.error.default" },
             type: "error",
           })
         );

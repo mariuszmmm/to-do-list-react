@@ -3,7 +3,7 @@ import UserData from "./models/UserData";
 import { Data } from "../../src/types";
 
 const handler: Handler = async (event, context) => {
-  if (event.httpMethod !== "PUT") {
+  if (event.httpMethod !== "DELETE") {
     console.error("Method Not Allowed");
 
     return {
@@ -46,23 +46,31 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    if (event.httpMethod === "PUT") {
-      if (!data.lists) {
-        console.error("No list provided");
+    if (!data.listId) {
+      console.error("No list ID provided");
 
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ message: "No list provided" }),
-        };
-      }
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "No list ID provided" }),
+      };
+    }
 
-      foundUser.lists.splice(0, foundUser.lists.length);
-      data.lists.forEach((list) => {
-        foundUser.lists.push(list);
-      });
+    const listIndex = foundUser.lists.findIndex(
+      (list) => list.id === data.listId
+    );
 
+    if (listIndex !== -1) {
+      foundUser.lists.splice(listIndex, 1);
       foundUser.version += 1;
+
       await foundUser.save();
+    } else {
+      console.error("List not found");
+
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "List not found" }),
+      };
     }
 
     return {

@@ -6,8 +6,11 @@ export interface ExampleTasks {
   listName: string;
   tasks: Task[];
 }
-export interface Data {
-  email: string;
-  lists: List[];
-  version: Version;
-}
+
+export type Data = {
+  email?: string;
+  version?: Version;
+  list?: List;
+  listId?: string;
+  lists?: List[];
+};

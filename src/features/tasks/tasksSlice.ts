@@ -19,6 +19,7 @@ interface TaskState {
   redoTasksStack: { tasks: Task[]; listName: string }[];
   listName: string;
   listNameToEdit: string | null;
+  isTasksSorting: boolean;
 }
 
 const initialState: TaskState = {
@@ -31,6 +32,7 @@ const initialState: TaskState = {
   redoTasksStack: [],
   listName: getListNameFromLocalStorage() || "",
   listNameToEdit: null,
+  isTasksSorting: false,
 };
 
 const tasksSlice = createSlice({
@@ -222,6 +224,43 @@ const tasksSlice = createSlice({
       state.listName = listName;
       state.redoTasksStack = [];
     },
+    taskMoveUp: (state, { payload: index }) => {
+      let tasks = [...state.tasks];
+      const selectedTask = tasks[index];
+      const prevTask = tasks[index - 1];
+
+      if (!selectedTask || !prevTask) return;
+
+      state.tasks = tasks.map((task, i) => {
+        if (i === index - 1) {
+          return selectedTask;
+        }
+        if (i === index) {
+          return prevTask;
+        }
+        return task;
+      });
+    },
+    taskMoveDown: (state, { payload: index }) => {
+      let tasks = [...state.tasks];
+      const selectedTask = tasks[index];
+      const nextTask = tasks[index + 1];
+
+      if (!selectedTask || !nextTask) return;
+
+      state.tasks = tasks.map((tasks, i) => {
+        if (i === index) {
+          return nextTask;
+        }
+        if (i === index + 1) {
+          return selectedTask;
+        }
+        return tasks;
+      });
+    },
+    switchTaskSort: (state) => {
+      state.isTasksSorting = !state.isTasksSorting;
+    },
     clearStorage: () => {
       clearLocalStorage();
       return initialState;
@@ -248,6 +287,9 @@ export const {
   redoTasks,
   setListNameToEdit,
   setListName,
+  taskMoveUp,
+  taskMoveDown,
+  switchTaskSort,
   clearStorage,
 } = tasksSlice.actions;
 
@@ -280,6 +322,8 @@ export const selectTaskById = (state: RootState, taskId: string) => {
   const task = selectTasks(state).find(({ id }) => id === taskId) || null;
   return task;
 };
+export const selectIsTasksSorting = (state: RootState) =>
+  selectTasksState(state).isTasksSorting;
 
 export const selectTasksByQuery = (state: RootState, query: string | null) => {
   const tasks = selectTasks(state);

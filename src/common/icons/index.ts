@@ -6,6 +6,7 @@ import { ReactComponent as CircleWarning } from "../../images/circle-warning.svg
 import { ReactComponent as CircleLoading } from "../../images/circle-loading.svg";
 import { ReactComponent as Eye } from "../../images/eye.svg";
 import { ReactComponent as EyeSlash } from "../../images/eye-slash.svg";
+import { ReactComponent as ArrowUp } from "../../images/arrow-up.svg";
 
 const eyeIconStyles = css`
   width: 1.2rem;
@@ -69,4 +70,18 @@ export const CircleLoadingIcon = styled(CircleLoading)`
       transform: rotate(360deg);
     }
   }
+`;
+
+const ArrowIconStyles = css`
+  width: 0.6rem;
+  scale: 1.5;
+`;
+
+export const ArrowUpIcon = styled(ArrowUp)`
+  ${ArrowIconStyles}
+`;
+
+export const ArrowDownIcon = styled(ArrowUp)`
+  ${ArrowIconStyles}
+  rotate: 180deg;
 `;

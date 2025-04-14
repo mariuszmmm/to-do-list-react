@@ -48,6 +48,8 @@ const langEn: typeof langPl = {
         show: "Show done",
         allDone: "Done all",
         allUndone: "Undone all",
+        sort: "Enable sorting",
+        notSort: "Disable sorting",
         undo: "Undo",
         redo: "Redo",
       },
@@ -73,6 +75,8 @@ const langEn: typeof langPl = {
     },
     buttons: {
       load: "Load selected list",
+      sort: "Enable sorting",
+      notSort: "Disable sorting",
     },
     subTitle: "Selected list",
   },
@@ -92,8 +96,8 @@ const langEn: typeof langPl = {
     buttons: {
       register: "Registration",
       login: "Login",
-      deleteAccount: "Delete account",
-      changePassword: "Change password",
+      accountDelete: "Delete account",
+      passwordChange: "Change password",
       resetPassword: "Reset password",
       cancel: "Cancel",
     },
@@ -165,7 +169,7 @@ const langEn: typeof langPl = {
         },
       },
     },
-    changePassword: {
+    passwordChange: {
       title: "Change password",
       message: {
         loading: "Changing password...",
@@ -175,7 +179,7 @@ const langEn: typeof langPl = {
         },
       },
     },
-    registerAccount: {
+    accountRegister: {
       title: "Account registration",
       message: {
         loading: "Registering...",
@@ -189,7 +193,7 @@ const langEn: typeof langPl = {
         },
       },
     },
-    recoveryAccount: {
+    accountRecovery: {
       title: "Account recovery",
       message: {
         loading: "Recovering account...",
@@ -203,7 +207,7 @@ const langEn: typeof langPl = {
         },
       },
     },
-    deleteAccount: {
+    accountDelete: {
       title: "Deleting account",
       message: {
         confirm: "Are you sure you want to delete your account?",
@@ -221,7 +225,7 @@ const langEn: typeof langPl = {
         info: "All data has been removed.",
       },
     },
-    downloadLists: {
+    listsDownload: {
       title: "Downloading lists",
       message: {
         loading: "Downloading lists...",
@@ -231,13 +235,13 @@ const langEn: typeof langPl = {
         },
       },
     },
-    refreshLists: {
+    listsRefresh: {
       message: {
         confirm:
           "The operation could not be completed correctly because the downloaded lists are outdated.<br/> Refresh and try again.",
       },
     },
-    saveList: {
+    listSave: {
       title: "Saving list",
       message: {
         confirm:
@@ -251,7 +255,7 @@ const langEn: typeof langPl = {
         },
       },
     },
-    removeList: {
+    listRemove: {
       title: "Deleting list",
       message: {
         confirm:
@@ -263,7 +267,17 @@ const langEn: typeof langPl = {
         },
       },
     },
-    loadList: {
+    listsUpdate: {
+      title: "Updating list",
+      message: {
+        loading: "Updating list...",
+        success: "The list has been updated in the database.",
+        error: {
+          default: "An error occurred while updating the list.",
+        },
+      },
+    },
+    listLoad: {
       title: "Loading list",
       message: {
         info: "The list <strong>{{listName}}</strong> has been loaded from the database.",

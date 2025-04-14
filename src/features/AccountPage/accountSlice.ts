@@ -21,8 +21,8 @@ const accountSlice = createSlice({
       }: PayloadAction<
         | "login"
         | "logged"
-        | "changePassword"
-        | "registerAccount"
+        | "passwordChange"
+        | "accountRegister"
         | "accountRecovery"
       >
     ) => {

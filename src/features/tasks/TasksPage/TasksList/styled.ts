@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface ItemProps {
   $edit?: boolean;
   hidden?: boolean;
+  $sort?: boolean;
 }
 
 interface TaskProps {

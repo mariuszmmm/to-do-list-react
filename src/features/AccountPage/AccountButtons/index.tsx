@@ -28,8 +28,8 @@ export const AccountButtons = () => {
             {t("buttons.login")}
           </Button>
           <Button
-            onClick={() => dispatch(setAccountMode("registerAccount"))}
-            $selected={accountMode === "registerAccount"}
+            onClick={() => dispatch(setAccountMode("accountRegister"))}
+            $selected={accountMode === "accountRegister"}
           >
             {t("buttons.register")}
           </Button>
@@ -42,13 +42,13 @@ export const AccountButtons = () => {
               dispatch(setAccountMode("logged"));
             }}
           >
-            {t("buttons.deleteAccount")}
+            {t("buttons.accountDelete")}
           </Button>
           <Button
-            onClick={() => dispatch(setAccountMode("changePassword"))}
-            $selected={accountMode === "changePassword"}
+            onClick={() => dispatch(setAccountMode("passwordChange"))}
+            $selected={accountMode === "passwordChange"}
           >
-            {t("buttons.changePassword")}
+            {t("buttons.passwordChange")}
           </Button>
         </>
       )}

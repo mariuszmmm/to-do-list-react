@@ -46,6 +46,8 @@ const langPl = {
         show: "Pokaż ukończone",
         allDone: "Ukończ wszystkie",
         allUndone: "Odznacz wszystkie",
+        sort: "Włącz sortowanie",
+        notSort: "Wyłącz sortowanie",
         undo: "Cofnij",
         redo: "Ponów",
       },
@@ -71,6 +73,8 @@ const langPl = {
     },
     buttons: {
       load: "Załaduj wybraną listę",
+      sort: "Włącz sortowanie",
+      notSort: "Wyłącz sortowanie",
     },
     subTitle: "Wybrana lista",
   },
@@ -90,8 +94,8 @@ const langPl = {
     buttons: {
       register: "Rejestracja",
       login: "Logowanie",
-      deleteAccount: "Usuń konto",
-      changePassword: "Zmień hasło",
+      accountDelete: "Usuń konto",
+      passwordChange: "Zmień hasło",
       resetPassword: "Zresetuj hasło",
       cancel: "Anuluj",
     },
@@ -164,7 +168,7 @@ const langPl = {
         },
       },
     },
-    changePassword: {
+    passwordChange: {
       title: "Zmiana hasła",
       message: {
         loading: "Trwa zmiana hasła...",
@@ -174,7 +178,7 @@ const langPl = {
         },
       },
     },
-    registerAccount: {
+    accountRegister: {
       title: "Rejestracja konta",
       message: {
         loading: "Trwa rejestracja...",
@@ -190,7 +194,7 @@ const langPl = {
         },
       },
     },
-    recoveryAccount: {
+    accountRecovery: {
       title: "Odzyskiwanie konta",
       message: {
         loading: "Trwa odzyskiwanie konta...",
@@ -204,7 +208,7 @@ const langPl = {
         },
       },
     },
-    deleteAccount: {
+    accountDelete: {
       title: "Usuwanie konta",
       message: {
         confirm: "Czy na pewno chcesz usunąć swoje konto?",
@@ -222,7 +226,7 @@ const langPl = {
         info: "Wszystkie dane zostały usunięte.",
       },
     },
-    downloadLists: {
+    listsDownload: {
       title: "Pobieranie list",
       message: {
         loading: "Trwa pobieranie list...",
@@ -232,13 +236,13 @@ const langPl = {
         },
       },
     },
-    refreshLists: {
+    listsRefresh: {
       message: {
         confirm:
           "Operacja nie mogła być wykonana poprawnie, ponieważ pobrane listy są nieaktualne.<br/> Odśwież i sprobuj ponownie.",
       },
     },
-    saveList: {
+    listSave: {
       title: "Zapisywanie listy",
       message: {
         confirm:
@@ -253,7 +257,7 @@ const langPl = {
         },
       },
     },
-    removeList: {
+    listRemove: {
       title: "Usuwanie listy",
       message: {
         confirm:
@@ -265,7 +269,17 @@ const langPl = {
         },
       },
     },
-    loadList: {
+    listsUpdate: {
+      title: "Aktualizacja list",
+      message: {
+        loading: "Trwa aktualizacja list...",
+        success: "Listy zostały zaktualizowane.",
+        error: {
+          default: "Wystąpił błąd podczas aktualizacji list.",
+        },
+      },
+    },
+    listLoad: {
       title: "Ładowanie listy",
       message: {
         info: "Lista <strong>{{listName}}</strong> została załadowana do bieżacej listy zadań.",

@@ -68,7 +68,7 @@ export const AccountForm = () => {
         dispatch(loginRequest({ email, password }));
         setPassword("");
         break;
-      case "registerAccount":
+      case "accountRegister":
         if (!emailValidation() || !passwordValidation()) break;
         dispatch(registerRequest({ email, password }));
         break;
@@ -76,7 +76,7 @@ export const AccountForm = () => {
         if (!emailValidation()) break;
         dispatch(accountRecoveryRequest({ email }));
         break;
-      case "changePassword":
+      case "passwordChange":
         if (!passwordValidation()) {
           break;
         }
@@ -91,7 +91,7 @@ export const AccountForm = () => {
   };
 
   useEffect(() => {
-    if (accountMode === "changePassword") {
+    if (accountMode === "passwordChange") {
       setPassword("");
     }
   }, [accountMode]);
@@ -101,9 +101,9 @@ export const AccountForm = () => {
       <Form
         onSubmit={onFormSubmit}
         $singleInput={
-          accountMode === "accountRecovery" || accountMode === "changePassword"
+          accountMode === "accountRecovery" || accountMode === "passwordChange"
         }
-        $noInputs={!!loggedUserEmail && accountMode !== "changePassword"}
+        $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
       >
         <Input
           autoFocus
@@ -118,7 +118,7 @@ export const AccountForm = () => {
         <InputContainer
           hidden={
             (!!loggedUserEmail || accountMode === "accountRecovery") &&
-            accountMode !== "changePassword"
+            accountMode !== "passwordChange"
           }
         >
           <Input
@@ -126,12 +126,12 @@ export const AccountForm = () => {
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder={
-              accountMode === "changePassword"
+              accountMode === "passwordChange"
                 ? t("form.inputPlaceholders.newPassword")
                 : t("form.inputPlaceholders.password")
             }
             autoComplete={
-              accountMode === "changePassword" ? "new-password" : ""
+              accountMode === "passwordChange" ? "new-password" : ""
             }
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -148,15 +148,15 @@ export const AccountForm = () => {
           type="submit"
           $singleInput={
             accountMode === "accountRecovery" ||
-            accountMode === "changePassword"
+            accountMode === "passwordChange"
           }
-          $noInputs={!!loggedUserEmail && accountMode !== "changePassword"}
+          $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
         >
-          {accountMode === "registerAccount"
+          {accountMode === "accountRegister"
             ? t("form.buttons.register")
             : accountMode === "accountRecovery"
             ? t("form.buttons.reset")
-            : accountMode === "changePassword"
+            : accountMode === "passwordChange"
             ? t("form.buttons.save")
             : loggedUserEmail
             ? t("form.buttons.logout")

@@ -10,7 +10,11 @@ import UserConfirmationPage from "./features/UserConfirmationPage";
 import AccountRecoveryPage from "./features/AccountRecoveryPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
-import { selectLists, setLists } from "./features/ListsPage/listsSlice";
+import {
+  selectIsListsSorting,
+  selectLists,
+  setLists,
+} from "./features/ListsPage/listsSlice";
 import { Modal } from "./Modal";
 import { useEffect } from "react";
 import { auth } from "./api/auth";
@@ -19,15 +23,16 @@ import { setVersion } from "./features/AccountPage/accountSlice";
 
 const App = () => {
   const lists = useAppSelector(selectLists);
+  const isListsSorting = useAppSelector(selectIsListsSorting);
   const dispatch = useAppDispatch();
   const user = auth.currentUser();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || isListsSorting) return;
 
     const interval = setInterval(async () => {
       const data = await refreshData();
-      if (!data) return;
+      if (!data || !data.lists || !data.version) return;
       dispatch(setLists(data.lists));
       dispatch(setVersion(data.version));
     }, 1000 * 60);
@@ -35,6 +40,8 @@ const App = () => {
     return () => {
       clearInterval(interval);
     };
+
+    // eslint-disable-next-line
   }, [user, dispatch]);
 
   return (

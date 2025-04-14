@@ -36,8 +36,8 @@ export const AccountRecoveryForm = ({
       try {
         dispatch(
           openModal({
-            title: { key: "modal.recoveryAccount.title" },
-            message: { key: "modal.recoveryAccount.message.loading" },
+            title: { key: "modal.accountRecovery.title" },
+            message: { key: "modal.accountRecovery.message.loading" },
             type: "loading",
           })
         );
@@ -46,7 +46,7 @@ export const AccountRecoveryForm = ({
         await auth.recover(token);
         dispatch(
           openModal({
-            message: { key: "modal.recoveryAccount.message.success" },
+            message: { key: "modal.accountRecovery.message.success" },
             confirmButton: { key: "modal.buttons.nextButton" },
             type: "success",
           })
@@ -54,7 +54,7 @@ export const AccountRecoveryForm = ({
       } catch (error) {
         dispatch(
           openModal({
-            message: { key: "modal.recoveryAccount.message.error.linkExpired" },
+            message: { key: "modal.accountRecovery.message.error.linkExpired" },
             type: "error",
           })
         );
@@ -81,8 +81,8 @@ export const AccountRecoveryForm = ({
     try {
       dispatch(
         openModal({
-          title: { key: "modal.changePassword.title" },
-          message: { key: "modal.changePassword.message.loading" },
+          title: { key: "modal.passwordChange.title" },
+          message: { key: "modal.passwordChange.message.loading" },
           type: "loading",
         })
       );
@@ -90,7 +90,7 @@ export const AccountRecoveryForm = ({
       await user.update({ password }).then((user) => user.logout());
       dispatch(
         openModal({
-          message: { key: "modal.changePassword.message.success" },
+          message: { key: "modal.passwordChange.message.success" },
           type: "success",
         })
       );
@@ -100,7 +100,7 @@ export const AccountRecoveryForm = ({
     } catch (error) {
       dispatch(
         openModal({
-          message: { key: "modal.changePassword.message.error.default" },
+          message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
         })
       );

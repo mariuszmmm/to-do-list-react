@@ -48,6 +48,8 @@ const langDe: typeof langPl = {
         show: "Abgeschlossene anzeigen",
         allDone: "Alle abschließen",
         allUndone: "Alle rückgängig machen",
+        sort: "Sortierung aktivieren",
+        notSort: "Sortierung deaktivieren",
         undo: "Rückgängig",
         redo: "Wiederholen",
       },
@@ -73,6 +75,8 @@ const langDe: typeof langPl = {
     },
     buttons: {
       load: "Ausgewählte Liste laden",
+      sort: "Sortierung aktivieren",
+      notSort: "Sortierung deaktivieren",
     },
     subTitle: "Ausgewählte Liste",
   },
@@ -92,8 +96,8 @@ const langDe: typeof langPl = {
     buttons: {
       register: "Registrieren",
       login: "Anmelden",
-      deleteAccount: "Konto löschen",
-      changePassword: "Passwort ändern",
+      accountDelete: "Konto löschen",
+      passwordChange: "Passwort ändern",
       resetPassword: "Passwort zurücksetzen",
       cancel: "Abbrechen",
     },
@@ -166,7 +170,7 @@ const langDe: typeof langPl = {
         },
       },
     },
-    changePassword: {
+    passwordChange: {
       title: "Passwort ändern",
       message: {
         loading: "Passwortänderung läuft...",
@@ -176,7 +180,7 @@ const langDe: typeof langPl = {
         },
       },
     },
-    registerAccount: {
+    accountRegister: {
       title: "Konto registrieren",
       message: {
         loading: "Registrierung läuft...",
@@ -192,7 +196,7 @@ const langDe: typeof langPl = {
         },
       },
     },
-    recoveryAccount: {
+    accountRecovery: {
       title: "Konto wiederherstellen",
       message: {
         loading: "Konto-Wiederherstellung läuft...",
@@ -207,7 +211,7 @@ const langDe: typeof langPl = {
         },
       },
     },
-    deleteAccount: {
+    accountDelete: {
       title: "Konto löschen",
       message: {
         confirm: "Möchtest du dein Konto wirklich löschen?",
@@ -225,7 +229,7 @@ const langDe: typeof langPl = {
         info: "Alle Daten wurden gelöscht.",
       },
     },
-    downloadLists: {
+    listsDownload: {
       title: "Listen herunterladen",
       message: {
         loading: "Listen werden heruntergeladen...",
@@ -235,13 +239,13 @@ const langDe: typeof langPl = {
         },
       },
     },
-    refreshLists: {
+    listsRefresh: {
       message: {
         confirm:
           "Die Operation konnte nicht korrekt ausgeführt werden, da die heruntergeladenen Listen veraltet sind.<br/> Aktualisiere und versuche es erneut.",
       },
     },
-    saveList: {
+    listSave: {
       title: "Liste speichern",
       message: {
         confirm:
@@ -256,7 +260,7 @@ const langDe: typeof langPl = {
         },
       },
     },
-    removeList: {
+    listRemove: {
       title: "Liste löschen",
       message: {
         confirm:
@@ -268,7 +272,17 @@ const langDe: typeof langPl = {
         },
       },
     },
-    loadList: {
+    listsUpdate: {
+      title: "Liste aktualisieren",
+      message: {
+        loading: "Liste wird aktualisiert...",
+        success: "Die Liste wurde aktualisiert.",
+        error: {
+          default: "Fehler beim Aktualisieren der Liste.",
+        },
+      },
+    },
+    listLoad: {
       title: "Liste laden",
       message: {
         info: "Die Liste <strong>{{listName}}</strong> wurde in die aktuelle Aufgabenliste geladen.",

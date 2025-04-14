@@ -1,4 +1,4 @@
-import { Data, List, Version } from "../types";
+import { List, Version } from "../types";
 
 export const getDataApi = async (token: string) => {
   return fetch("/getData", {
@@ -11,7 +11,7 @@ export const getDataApi = async (token: string) => {
       }
       return response.json();
     })
-    .then(({ data }: { data: Data }) => data)
+    .then(({ data }) => data)
     .catch((error) => {
       console.error("Error fetching data", error);
     });
@@ -22,7 +22,7 @@ export const addDataApi = async (
   version: Version,
   list: List
 ) => {
-  return fetch("/updateData", {
+  return fetch("/addData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ version, list }),
@@ -46,10 +46,34 @@ export const removeDataApi = async (
   version: Version,
   listId: string
 ) => {
-  return fetch("/updateData", {
+  return fetch("/removeData", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ version, listId }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        if (response.status === 409) {
+          return { data: null };
+        } else throw new Error(response.statusText);
+      }
+      return response.json();
+    })
+    .then((data) => data)
+    .catch((error) => {
+      console.error("Error updating data", error.message);
+    });
+};
+
+export const updateDataApi = async (
+  token: string,
+  version: Version,
+  lists: List[]
+) => {
+  return fetch("/updateData", {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ version, lists }),
   })
     .then((response) => {
       if (!response.ok) {

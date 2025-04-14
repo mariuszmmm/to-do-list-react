@@ -46,29 +46,34 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    if (event.httpMethod === "PUT") {
-      if (!data.lists) {
-        console.error("No list provided");
+    if (!data.list) {
+      console.error("No list provided");
 
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ message: "No list provided" }),
-        };
-      }
-
-      foundUser.lists.splice(0, foundUser.lists.length);
-      data.lists.forEach((list) => {
-        foundUser.lists.push(list);
-      });
-
-      foundUser.version += 1;
-      await foundUser.save();
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "No list provided" }),
+      };
     }
+
+    const listIndex = foundUser.lists.findIndex(
+      (list) => list.name === data.list?.name
+    );
+
+    if (listIndex !== -1) {
+      foundUser.lists[listIndex].id = data.list.id;
+      foundUser.lists[listIndex].name = data.list.name;
+      foundUser.lists[listIndex].taskList = data.list.taskList;
+    } else {
+      foundUser.lists.push(data.list);
+    }
+
+    foundUser.version += 1;
+    await foundUser.save();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Data updated",
+        message: "Data updated successfully",
         data: {
           email: foundUser.email,
           lists: foundUser.lists,

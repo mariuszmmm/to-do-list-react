@@ -3,14 +3,19 @@ import { StyledLink } from "../../../common/StyledLink";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
 import {
+  selectIsListsSorting,
+  selectLists,
   selectSelectedListById,
   selectSelectedListId,
   setListToLoad,
+  switchListSort,
 } from "../listsSlice";
 import { useTranslation } from "react-i18next";
 
 export const ListsButtons = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
+  const lists = useAppSelector(selectLists);
+  const isListsSorting = useAppSelector(selectIsListsSorting);
   const listToLoad = useAppSelector((state) =>
     selectedListId ? selectSelectedListById(state, selectedListId) : null
   );
@@ -21,10 +26,16 @@ export const ListsButtons = () => {
 
   return (
     <ButtonsContainer>
+      <Button
+        onClick={() => dispatch(switchListSort())}
+        disabled={!lists || lists.length < 2}
+      >
+        {isListsSorting ? t("buttons.notSort") : t("buttons.sort")}
+      </Button>
       <StyledLink to={`/tasks`}>
         <Button
           onClick={() => dispatch(setListToLoad(listToLoad))}
-          disabled={selectedListId === null}
+          disabled={selectedListId === null || isListsSorting}
         >
           {t("buttons.load")}
         </Button>

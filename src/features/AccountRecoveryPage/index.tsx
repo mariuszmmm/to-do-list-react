@@ -9,11 +9,11 @@ import { Trans, useTranslation } from "react-i18next";
 
 export type RecoveryStatus =
   | "accountRecovered"
-  | "changePassword"
+  | "passwordChange"
   | "linkExpired";
 
 const AccountRecoveryPage = () => {
-  const [status, setStatus] = useState<RecoveryStatus>("changePassword");
+  const [status, setStatus] = useState<RecoveryStatus>("passwordChange");
   const { t } = useTranslation("translation", {
     keyPrefix: "accountRecoveryPage",
   });
@@ -21,7 +21,7 @@ const AccountRecoveryPage = () => {
 
   return (
     <>
-      {status === "changePassword" ? (
+      {status === "passwordChange" ? (
         <>
           <Header title={t("title")} />
           <Section

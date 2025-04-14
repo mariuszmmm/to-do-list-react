@@ -9,12 +9,14 @@ import {
   selectAreListsEmpty,
   selectSelectedListId,
   selectSelectedListById,
+  selectIsListsSorting,
 } from "./listsSlice";
 import { useTranslation } from "react-i18next";
 
 const ListsPage = () => {
   const areListsEmpty = useAppSelector(selectAreListsEmpty);
   const selectedListId = useAppSelector(selectSelectedListId);
+  const isListsSorting = useAppSelector(selectIsListsSorting);
   const selectedListById = useAppSelector((state) =>
     selectedListId ? selectSelectedListById(state, selectedListId) : null
   );
@@ -34,7 +36,7 @@ const ListsPage = () => {
         body={<ListsList />}
         extraHeaderContent={<ListsButtons />}
       />
-      {selectedListById !== null && (
+      {selectedListById !== null && !isListsSorting && (
         <>
           <Header title={t("subTitle")} sub />
           <Section

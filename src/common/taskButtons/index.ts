@@ -26,8 +26,8 @@ const TaskButton = styled.button`
   }
 
   &:disabled {
-    cursor: default;
-    opacity: 0.5;
+    cursor: not-allowed;
+    opacity: 0.2;
   }
 `;
 
@@ -41,4 +41,8 @@ export const EditButton = styled(TaskButton)`
 
 export const RemoveButton = styled(TaskButton)`
   background: ${({ theme }) => theme.color.crimson};
+`;
+
+export const SortButton = styled(TaskButton)`
+  background: ${({ theme }) => theme.color.blue};
 `;

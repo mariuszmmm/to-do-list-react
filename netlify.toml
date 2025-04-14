@@ -4,6 +4,16 @@
   status = 200
 
 [[redirects]]
+  from = "/addData"
+  to = "/.netlify/functions/addData"
+  status = 200
+
+[[redirects]]
+  from = "/removeData"
+  to = "/.netlify/functions/removeData"
+  status = 200
+
+[[redirects]]
   from = "/updateData"
   to = "/.netlify/functions/updateData"
   status = 200

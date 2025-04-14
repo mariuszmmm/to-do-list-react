@@ -4,8 +4,8 @@ export interface AccountState {
   accountMode:
     | "login"
     | "logged"
-    | "changePassword"
-    | "registerAccount"
+    | "passwordChange"
+    | "accountRegister"
     | "accountRecovery";
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
@@ -19,4 +19,4 @@ export type RecoveryStatus =
   | "linkExpired"
   | "passwordUpdated"
   | "passwordNotUpdated"
-  | "changePassword";
+  | "passwordChange";

@@ -6,12 +6,14 @@ interface ListsState {
   lists: List[] | null;
   selectedListId: string | null;
   listToLoad: List | null;
+  isListsSorting: boolean;
 }
 
 const initialState: ListsState = {
   lists: null,
   selectedListId: null,
   listToLoad: null,
+  isListsSorting: false,
 };
 
 const listsSlice = createSlice({
@@ -43,6 +45,47 @@ const listsSlice = createSlice({
         payload: { listId, listName },
       }: PayloadAction<{ listId: string; listName: string }>
     ) => {},
+    listMoveUp: (state, { payload: index }) => {
+      if (state.lists === null) return;
+
+      let lists = [...state.lists];
+      const selectedList = lists[index];
+      const prevList = lists[index - 1];
+
+      if (!selectedList || !prevList) return;
+
+      state.lists = lists.map((list, i) => {
+        if (i === index - 1) {
+          return selectedList;
+        }
+        if (i === index) {
+          return prevList;
+        }
+        return list;
+      });
+    },
+    listMoveDown: (state, { payload: index }) => {
+      if (state.lists === null) return;
+
+      let lists = [...state.lists];
+      const selectedList = lists[index];
+      const nextList = lists[index + 1];
+
+      if (!selectedList || !nextList) return;
+
+      state.lists = lists.map((list, i) => {
+        if (i === index) {
+          return nextList;
+        }
+        if (i === index + 1) {
+          return selectedList;
+        }
+        return list;
+      });
+    },
+    switchListSort: (state) => {
+      state.isListsSorting = !state.isListsSorting;
+    },
   },
 });
 
@@ -52,6 +95,9 @@ export const {
   setListToLoad,
   addListRequest,
   removeListRequest,
+  listMoveUp,
+  listMoveDown,
+  switchListSort,
 } = listsSlice.actions;
 
 const selectListsState = (state: RootState) => state.lists;
@@ -63,6 +109,8 @@ export const selectListToLoad = (state: RootState) =>
   selectListsState(state).listToLoad;
 export const selectAreListsEmpty = (state: RootState) =>
   selectLists(state)?.length === 0;
+export const selectIsListsSorting = (state: RootState) =>
+  selectListsState(state).isListsSorting;
 export const selectListAlreadyExists = (state: RootState, listName: string) =>
   selectLists(state)?.some(({ name }) => name === listName) || false;
 export const selectSelectedListById = (state: RootState, listId: string) => {

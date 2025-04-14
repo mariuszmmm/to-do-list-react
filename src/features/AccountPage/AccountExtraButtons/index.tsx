@@ -38,7 +38,7 @@ export const AccountExtraButtons = () => {
                 : t("buttons.cancel")}
             </Button>
           )
-        : accountMode === "changePassword" && (
+        : accountMode === "passwordChange" && (
             <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
               {t("buttons.cancel")}
             </Button>

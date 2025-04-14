@@ -6,6 +6,7 @@ import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import {
   EditButton,
   RemoveButton,
+  SortButton,
   ToggleButton,
 } from "../../../../common/taskButtons";
 import {
@@ -17,7 +18,12 @@ import {
   selectEditedTask,
   selectTasks,
   selectListName,
+  taskMoveUp,
+  taskMoveDown,
+  selectIsTasksSorting,
 } from "../../tasksSlice";
+import { SortButtonsContainer } from "../../../../common/taskButtons/SortButtonsContainer";
+import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
@@ -25,6 +31,7 @@ export const TasksList = () => {
   const listName = useAppSelector(selectListName);
   const hideDone = useAppSelector(selectHideDone);
   const editedTask = useAppSelector(selectEditedTask);
+  const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksByQuery = useAppSelector((state) =>
     selectTasksByQuery(state, query)
   );
@@ -38,46 +45,68 @@ export const TasksList = () => {
           key={task.id}
           hidden={task.done && hideDone}
           $edit={editedTask?.id === task.id}
+          $sort={isTasksSorting}
         >
-          <ToggleButton
-            onClick={() =>
-              dispatch(
-                toggleTaskDone({
-                  taskId: task.id,
-                  doneDate: task.done ? null : date,
-                  stateForUndo: { tasks, listName },
-                })
-              )
-            }
-            disabled={editedTask !== null}
-          >
-            {task.done ? "✔" : ""}
-          </ToggleButton>
+          {isTasksSorting ? (
+            <SortButtonsContainer>
+              <SortButton
+                onClick={() => dispatch(taskMoveUp(index))}
+                disabled={index === 0}
+              >
+                <ArrowUpIcon />
+              </SortButton>
+              <SortButton
+                onClick={() => dispatch(() => dispatch(taskMoveDown(index)))}
+                disabled={index === tasksByQuery.length - 1}
+              >
+                <ArrowDownIcon />
+              </SortButton>
+            </SortButtonsContainer>
+          ) : (
+            <ToggleButton
+              onClick={() =>
+                dispatch(
+                  toggleTaskDone({
+                    taskId: task.id,
+                    doneDate: task.done ? null : date,
+                    stateForUndo: { tasks, listName },
+                  })
+                )
+              }
+              disabled={editedTask !== null}
+            >
+              {task.done ? "✔" : ""}
+            </ToggleButton>
+          )}
           <Content>
             {!query ? <span>{index + 1}. </span> : ""}
             <Task $done={task.done}>
               <StyledLink to={`/tasks/${task.id}`}>{task.content}</StyledLink>
             </Task>
           </Content>
-          <EditButton
-            onClick={() => dispatch(setTaskToEdit(task.id))}
-            disabled={editedTask !== null}
-          >
-            ✏️
-          </EditButton>
-          <RemoveButton
-            onClick={() =>
-              dispatch(
-                removeTask({
-                  taskId: task.id,
-                  stateForUndo: { tasks, listName },
-                })
-              )
-            }
-            disabled={editedTask !== null}
-          >
-            🗑️
-          </RemoveButton>
+          {!isTasksSorting && (
+            <>
+              <EditButton
+                onClick={() => dispatch(setTaskToEdit(task.id))}
+                disabled={editedTask !== null}
+              >
+                ✏️
+              </EditButton>
+              <RemoveButton
+                onClick={() =>
+                  dispatch(
+                    removeTask({
+                      taskId: task.id,
+                      stateForUndo: { tasks, listName },
+                    })
+                  )
+                }
+                disabled={editedTask !== null}
+              >
+                🗑️
+              </RemoveButton>
+            </>
+          )}
         </Item>
       ))}
     </List>

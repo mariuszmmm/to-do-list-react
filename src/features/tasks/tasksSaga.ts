@@ -102,9 +102,9 @@ function* setListToLoadHandler() {
   );
   yield put(
     openModal({
-      title: { key: "modal.loadList.title" },
+      title: { key: "modal.listLoad.title" },
       message: {
-        key: "modal.loadList.message.info",
+        key: "modal.listLoad.message.info",
         values: { listName: listToLoad.name },
       },
       type: "info",

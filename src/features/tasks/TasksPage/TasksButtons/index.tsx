@@ -19,6 +19,8 @@ import {
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
+  switchTaskSort,
+  selectIsTasksSorting,
 } from "../../tasksSlice";
 import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
@@ -35,6 +37,7 @@ export const TasksButtons = () => {
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const listName = useAppSelector(selectListName);
   const lists = useAppSelector(selectLists);
+  const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
@@ -78,6 +81,12 @@ export const TasksButtons = () => {
         width={i18n.language === "en" ? "92px" : "142px"}
       >
         {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
+      </Button>
+      <Button
+        onClick={() => dispatch(switchTaskSort())}
+        disabled={tasks.length < 2}
+      >
+        {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>
       <ButtonsContainer $sub>
         <Button

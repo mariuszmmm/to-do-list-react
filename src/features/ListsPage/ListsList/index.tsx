@@ -1,8 +1,17 @@
-import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
+import { ArrowDownIcon, ArrowUpIcon } from "../../../common/icons";
+import {
+  RemoveButton,
+  SortButton,
+  ToggleButton,
+} from "../../../common/taskButtons";
+import { SortButtonsContainer } from "../../../common/taskButtons/SortButtonsContainer";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { selectModalIsOpen } from "../../../Modal/modalSlice";
 import {
+  listMoveDown,
+  listMoveUp,
   removeListRequest,
+  selectIsListsSorting,
   selectList,
   selectLists,
   selectSelectedListId,
@@ -13,17 +22,35 @@ export const ListsList = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const lists = useAppSelector(selectLists);
   const modalIsOpen = useAppSelector(selectModalIsOpen);
+  const isListsSorting = useAppSelector(selectIsListsSorting);
   const dispatch = useAppDispatch();
 
   return (
     <List>
-      {lists?.map((list) => (
+      {lists?.map((list, index) => (
         <Item
           key={list.id}
-          selected={selectedListId === list.id}
+          selected={selectedListId === list.id && !isListsSorting}
           onClick={() => dispatch(selectList(list.id))}
         >
-          <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          {isListsSorting ? (
+            <SortButtonsContainer>
+              <SortButton
+                onClick={() => dispatch(listMoveUp(index))}
+                disabled={index === 0}
+              >
+                <ArrowUpIcon />
+              </SortButton>
+              <SortButton
+                onClick={() => dispatch(() => dispatch(listMoveDown(index)))}
+                disabled={index === lists.length - 1}
+              >
+                <ArrowDownIcon />
+              </SortButton>
+            </SortButtonsContainer>
+          ) : (
+            <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          )}
           <Content>
             <Task>{list.name}</Task>
           </Content>

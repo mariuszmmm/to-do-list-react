@@ -7,15 +7,22 @@ import {
   TakeEffect,
   takeEvery,
 } from "redux-saga/effects";
-import { addDataApi, getDataApi, removeDataApi } from "../../api/fetchDataApi";
+import {
+  addDataApi,
+  getDataApi,
+  removeDataApi,
+  updateDataApi,
+} from "../../api/fetchDataApi";
 import { Data, Version } from "../../types";
 import {
   addListRequest,
   removeListRequest,
+  selectIsListsSorting,
   selectList,
   selectListAlreadyExists,
   selectLists,
   setLists,
+  switchListSort,
 } from "./listsSlice";
 import {
   selectLoggedUserEmail,
@@ -41,8 +48,8 @@ function* setLoggedUserEmailHandler(): Generator {
   try {
     yield put(
       openModal({
-        title: { key: "modal.downloadLists.title" },
-        message: { key: "modal.downloadLists.message.loading" },
+        title: { key: "modal.listsDownload.title" },
+        message: { key: "modal.listsDownload.message.loading" },
         type: "loading",
       })
     );
@@ -62,14 +69,14 @@ function* setLoggedUserEmailHandler(): Generator {
     yield put(setVersion(data.version));
     yield put(
       openModal({
-        message: { key: "modal.downloadLists.message.success" },
+        message: { key: "modal.listsDownload.message.success" },
         type: "success",
       })
     );
   } catch (error) {
     yield put(
       openModal({
-        message: { key: "modal.downloadLists.message.error.default" },
+        message: { key: "modal.listsDownload.message.error.default" },
         type: "error",
       })
     );
@@ -85,7 +92,7 @@ function* setLoggedUserEmailHandler(): Generator {
 function* refreshListsHandler(): Generator {
   yield put(
     openModal({
-      message: { key: "modal.refreshLists.message.confirm" },
+      message: { key: "modal.listsRefresh.message.confirm" },
       confirmButton: { key: "modal.buttons.refreshButton" },
       type: "confirm",
     })
@@ -114,9 +121,9 @@ function* addListRequestHandler({
   if (listAlreadyExists) {
     yield put(
       openModal({
-        title: { key: "modal.saveList.title" },
+        title: { key: "modal.listSave.title" },
         message: {
-          key: "modal.saveList.message.confirm",
+          key: "modal.listSave.message.confirm",
           values: { listName: list.name },
         },
         type: "confirm",
@@ -131,9 +138,9 @@ function* addListRequestHandler({
     if (canceled) {
       yield put(
         openModal({
-          title: { key: "modal.saveList.title" },
+          title: { key: "modal.listSave.title" },
           message: {
-            key: "modal.saveList.message.cancel",
+            key: "modal.listSave.message.cancel",
           },
           type: "info",
         })
@@ -146,9 +153,9 @@ function* addListRequestHandler({
   try {
     yield put(
       openModal({
-        title: { key: "modal.saveList.title" },
+        title: { key: "modal.listSave.title" },
         message: {
-          key: "modal.saveList.message.loading",
+          key: "modal.listSave.message.loading",
           values: { listName: list.name },
         },
         type: "loading",
@@ -182,7 +189,7 @@ function* addListRequestHandler({
     yield put(
       openModal({
         message: {
-          key: "modal.saveList.message.success",
+          key: "modal.listSave.message.success",
           values: { listName: list.name },
         },
         type: "success",
@@ -191,7 +198,7 @@ function* addListRequestHandler({
   } catch (error: any) {
     yield put(
       openModal({
-        message: { key: "modal.saveList.message.error.default" },
+        message: { key: "modal.listSave.message.error.default" },
         type: "error",
       })
     );
@@ -203,9 +210,9 @@ function* removeListRequestHandler({
 }: ReturnType<typeof removeListRequest>): Generator {
   yield put(
     openModal({
-      title: { key: "modal.removeList.title" },
+      title: { key: "modal.listRemove.title" },
       message: {
-        key: "modal.removeList.message.confirm",
+        key: "modal.listRemove.message.confirm",
         values: { listName: listName },
       },
       type: "confirm",
@@ -222,7 +229,7 @@ function* removeListRequestHandler({
     try {
       yield put(
         openModal({
-          message: { key: "modal.removeList.message.loading" },
+          message: { key: "modal.listRemove.message.loading" },
           type: "loading",
         })
       );
@@ -253,14 +260,14 @@ function* removeListRequestHandler({
       yield put(setVersion(data.version));
       yield put(
         openModal({
-          message: { key: "modal.removeList.message.success" },
+          message: { key: "modal.listRemove.message.success" },
           type: "success",
         })
       );
     } catch (error) {
       yield put(
         openModal({
-          message: { key: "modal.removeList.message.error.default" },
+          message: { key: "modal.listRemove.message.error.default" },
           type: "error",
         })
       );
@@ -270,8 +277,67 @@ function* removeListRequestHandler({
   }
 }
 
+function* listUpdateHandler(): Generator {
+  const isListsSorting = yield select(selectIsListsSorting);
+  if (isListsSorting) return;
+
+  try {
+    yield put(
+      openModal({
+        title: { key: "modal.listsUpdate.title" },
+        message: { key: "modal.listsUpdate.message.loading" },
+        type: "loading",
+      })
+    );
+
+    const version = (yield select(selectVersion)) as Version;
+    const token = (yield call(getUserToken)) as string | null;
+    const lists = (yield select(selectLists)) as ReturnType<typeof selectLists>;
+
+    if (!token) {
+      yield put(setLists(null));
+      yield put(setVersion(null));
+      yield put(setLoggedUserEmail(null));
+      throw new Error("No token found");
+    }
+
+    if (!lists) throw new Error("No lists found");
+
+    const response = (yield call(updateDataApi, token, version, lists)) as {
+      data: Data;
+    };
+    const { data } = response;
+
+    if (!data) {
+      yield refreshListsHandler();
+      return;
+    }
+
+    if (!data.lists || !data.version) throw new Error("No lists or version");
+
+    yield put(setLists(data.lists));
+    yield put(setVersion(data.version));
+    yield put(
+      openModal({
+        message: {
+          key: "modal.listsUpdate.message.success",
+        },
+        type: "success",
+      })
+    );
+  } catch (error: any) {
+    yield put(
+      openModal({
+        message: { key: "modal.listsUpdate.message.error.default" },
+        type: "error",
+      })
+    );
+  }
+}
+
 export function* listsSaga() {
   yield takeEvery(setLoggedUserEmail.type, setLoggedUserEmailHandler);
   yield takeEvery(addListRequest.type, addListRequestHandler);
   yield takeEvery(removeListRequest.type, removeListRequestHandler);
+  yield takeEvery(switchListSort.type, listUpdateHandler);
 }
