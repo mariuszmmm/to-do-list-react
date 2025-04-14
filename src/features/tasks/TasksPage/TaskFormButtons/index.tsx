@@ -5,6 +5,7 @@ import {
   selectFetchStatus,
   fetchExampleTasks,
   selectAreTasksEmpty,
+  removeTasks,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 
@@ -30,6 +31,9 @@ export const TaskFormButtons = () => {
           : fetchStatus === "loading"
           ? t("form.buttons.loading")
           : t("form.buttons.error")}
+      </Button>
+      <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
+        {t("tasks.buttons.clear")}
       </Button>
     </ButtonsContainer>
   );

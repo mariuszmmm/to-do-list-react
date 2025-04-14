@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { ListsList } from "./ListsList";
 import { ListsButtons } from "./ListsButtons";
@@ -20,6 +21,10 @@ const ListsPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "listsPage",
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

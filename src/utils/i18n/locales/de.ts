@@ -43,7 +43,7 @@ const langDe: typeof langPl = {
           save: "Speichern",
         },
         save: "Liste speichern",
-        remove: "Liste löschen",
+        clear: "Liste löschen",
         hide: "Abgeschlossene ausblenden",
         show: "Abgeschlossene anzeigen",
         allDone: "Alle abschließen",

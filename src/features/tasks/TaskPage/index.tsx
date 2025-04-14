@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux";
 import { DateInfo, Name } from "./styled";
@@ -15,6 +16,10 @@ const TaskPage = () => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "taskPage",
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

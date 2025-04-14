@@ -19,7 +19,6 @@ import {
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
-  removeTasks,
 } from "../../tasksSlice";
 import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
@@ -61,9 +60,6 @@ export const TasksButtons = () => {
           {t("tasks.buttons.save")}
         </Button>
       )}
-      <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
-        {t("tasks.buttons.remove")}
-      </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, listName }))}
         disabled={isEveryTaskDone || areTasksEmpty}

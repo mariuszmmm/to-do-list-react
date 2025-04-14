@@ -49,6 +49,9 @@ const tasksSlice = createSlice({
       state.undoTasksStack.push(stateForUndo);
       state.tasks.push(task);
       state.redoTasksStack = [];
+      if (!state.listName) {
+        state.listName = t("tasksPage.tasks.defaultListName");
+      }
     },
     setTaskToEdit: (
       state,
@@ -121,7 +124,7 @@ const tasksSlice = createSlice({
         tasks: state.tasks,
         listName: state.listName,
       });
-      state.listName = t("tasksPage.tasks.defaultListName");
+      state.listName = "";
       state.tasks = [];
       state.redoTasksStack = [];
     },

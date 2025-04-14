@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
@@ -12,6 +13,10 @@ const AccountPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

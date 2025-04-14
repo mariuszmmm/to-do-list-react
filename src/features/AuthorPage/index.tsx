@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
@@ -7,6 +8,11 @@ const AuthorPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "authorPage",
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <Header title={t("title")} />

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { TaskFormButtons } from "./TaskFormButtons";
 import { Search } from "./Search";
@@ -17,6 +18,10 @@ const TasksPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
