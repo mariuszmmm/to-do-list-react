@@ -8,11 +8,12 @@ import {
   removeTasks,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
 
 export const TaskFormButtons = () => {
   const fetchStatus = useAppSelector(selectFetchStatus);
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ export const TaskFormButtons = () => {
           fetchStatus === "loading" || fetchStatus === "error" || !areTasksEmpty
         }
         $error={fetchStatus === "error"}
+        width={getWidthForFetchExampleTasksButton(i18n.language)}
       >
         {fetchStatus === "ready"
           ? t("form.buttons.fetchExampleTasks")

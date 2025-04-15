@@ -24,6 +24,10 @@ import {
 } from "../../tasksSlice";
 import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
+import {
+  getWidthForSwitchTaskSortButton,
+  getWidthForToggleHideDoneButton,
+} from "../../../../utils/getWidthForDynamicButtons";
 
 export const TasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
@@ -78,13 +82,14 @@ export const TasksButtons = () => {
       <Button
         onClick={() => dispatch(toggleHideDone())}
         disabled={areTasksEmpty}
-        width={i18n.language === "en" ? "92px" : "142px"}
+        width={getWidthForToggleHideDoneButton(i18n.language)}
       >
         {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
       </Button>
       <Button
         onClick={() => dispatch(switchTaskSort())}
         disabled={tasks.length < 2}
+        width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>

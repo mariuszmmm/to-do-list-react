@@ -4,7 +4,6 @@ interface ButtonProps {
   $special?: boolean;
   $selected?: boolean;
   $error?: boolean;
-  $noDisplay?: boolean;
   width?: string;
 }
 
@@ -13,7 +12,6 @@ export const Button = styled.button<ButtonProps>`
   flex-direction: column;
   align-items: flex-end;
   width: ${({ width }) => width || "auto"};
-  min-width: max-content;
   font-size: 16px;
   line-height: 16px;
   margin: 3px 0 0 20px;
@@ -23,11 +21,13 @@ export const Button = styled.button<ButtonProps>`
   border: none;
   transition: filter 0.3s;
   user-select: none;
+  white-space: nowrap;
 
   ${({ $special }) =>
     $special &&
     css`
       margin: 0;
+      min-width: auto;
     `};
 
   ${({ $selected }) =>

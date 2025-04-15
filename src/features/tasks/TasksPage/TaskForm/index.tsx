@@ -15,6 +15,7 @@ import {
   selectListName,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { getWidthForFormTasksButton } from "../../../../utils/getWidthForDynamicButtons";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -93,7 +94,7 @@ export const TaskForm = () => {
       />
       <FormButton
         $singleInput
-        width={i18n.language === "de" ? "210px" : "135px"}
+        width={getWidthForFormTasksButton(i18n.language)}
       >
         {editedTask !== null
           ? t("form.inputButton.saveChanges")

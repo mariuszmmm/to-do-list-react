@@ -40,9 +40,7 @@ const App = () => {
     return () => {
       clearInterval(interval);
     };
-
-    // eslint-disable-next-line
-  }, [user, dispatch]);
+  }, [user, isListsSorting, dispatch]);
 
   return (
     <HashRouter>

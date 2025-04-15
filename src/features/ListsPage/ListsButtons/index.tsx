@@ -11,6 +11,7 @@ import {
   switchListSort,
 } from "../listsSlice";
 import { useTranslation } from "react-i18next";
+import { getWidthForSwitchTaskSortButton } from "../../../utils/getWidthForDynamicButtons";
 
 export const ListsButtons = () => {
   const selectedListId = useAppSelector(selectSelectedListId);
@@ -19,7 +20,7 @@ export const ListsButtons = () => {
   const listToLoad = useAppSelector((state) =>
     selectedListId ? selectSelectedListById(state, selectedListId) : null
   );
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "listsPage",
   });
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ export const ListsButtons = () => {
       <Button
         onClick={() => dispatch(switchListSort())}
         disabled={!lists || lists.length < 2}
+        width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isListsSorting ? t("buttons.notSort") : t("buttons.sort")}
       </Button>

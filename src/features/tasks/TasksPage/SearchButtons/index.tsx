@@ -6,6 +6,7 @@ import { toggleShowSearch, selectShowSearch } from "../../tasksSlice";
 import { useQueryParameter } from "../../../../hooks/useQuery/useQueryParameter";
 import { useReplaceQueryParameter } from "../../../../hooks/useQuery/useReplaceQueryParameter";
 import { useTranslation } from "react-i18next";
+import { getWidthForToggleShowSearchButton } from "../../../../utils/getWidthForDynamicButtons";
 
 export const SearchButtons = () => {
   const dispatch = useAppDispatch();
@@ -19,17 +20,6 @@ export const SearchButtons = () => {
   return (
     <ButtonsContainer>
       <Button
-        onClick={() =>
-          replaceQueryParameter({
-            key: searchQueryParamName,
-          })
-        }
-        disabled={!query}
-        width={i18n.language === "de" ? "140px" : "100px"}
-      >
-        {t("search.buttons.clear")}
-      </Button>
-      <Button
         onClick={() => {
           if (showSearch) {
             replaceQueryParameter({
@@ -38,9 +28,19 @@ export const SearchButtons = () => {
           }
           dispatch(toggleShowSearch());
         }}
-        width={i18n.language === "de" ? "140px" : "100px"}
+        width={getWidthForToggleShowSearchButton(i18n.language)}
       >
         {showSearch ? t("search.buttons.hide") : t("search.buttons.show")}
+      </Button>
+      <Button
+        onClick={() =>
+          replaceQueryParameter({
+            key: searchQueryParamName,
+          })
+        }
+        disabled={!query}
+      >
+        {t("search.buttons.clear")}
       </Button>
     </ButtonsContainer>
   );

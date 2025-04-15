@@ -38,6 +38,11 @@ import {
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 import { openModal } from "../../Modal/modalSlice";
 import i18n from "../../utils/i18n";
+import {
+  defaultLanguage,
+  SupportedLanguages,
+  supportedLanguages,
+} from "../../utils/i18n/languageResources";
 
 function* fetchExampleTasksHandler() {
   try {
@@ -46,14 +51,24 @@ function* fetchExampleTasksHandler() {
     const listName: ReturnType<typeof selectListName> = yield select(
       selectListName
     );
-    const lang = i18n.language;
-    const exampleTasks: ExampleTasks = yield call(getExampleTasks, lang);
-    const date = new Date().toISOString();
 
+    const lang = i18n.language.split("-")[0];
+    const langForExample = supportedLanguages.includes(
+      lang as SupportedLanguages
+    )
+      ? lang
+      : defaultLanguage;
+    const exampleTasks: ExampleTasks = yield call(
+      getExampleTasks,
+      langForExample
+    );
+
+    const date = new Date().toISOString();
     const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
       ...task,
       date,
     }));
+
     yield put(
       setTasks({
         tasks: exampleTasksWithDate,
