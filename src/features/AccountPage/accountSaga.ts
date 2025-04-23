@@ -183,10 +183,9 @@ function* loginHandler({
         type: "success",
       })
     );
-
-    yield take(closeModal.type);
     yield put(setAccountMode("logged"));
     yield put(setLoggedUserEmail(response.email));
+    yield take(closeModal.type);
   } catch (error: any) {
     switch (error.status) {
       case undefined:

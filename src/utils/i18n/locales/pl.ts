@@ -143,6 +143,7 @@ const langPl = {
       logoutButton: "Wyloguj",
       nextButton: "Dalej",
       refreshButton: "Odśwież",
+      replaceButton: "Zastąp",
     },
     login: {
       title: "Logowanie",
@@ -274,6 +275,9 @@ const langPl = {
       message: {
         loading: "Trwa aktualizacja list...",
         success: "Listy zostały zaktualizowane.",
+        confirm:
+          "Twoje listy są nieaktualne z bazą danych.<br/> Czy napewno chcesz je zastąpić?",
+        info: "Listy zostały zaktualizowane do najnowszej wersji.",
         error: {
           default: "Wystąpił błąd podczas aktualizacji list.",
         },

@@ -13,4 +13,5 @@ export type Data = {
   list?: List;
   listId?: string;
   lists?: List[];
+  force?: boolean;
 };

@@ -259,6 +259,14 @@ const tasksSlice = createSlice({
       });
     },
     switchTaskSort: (state) => {
+      if (!state.isTasksSorting) {
+        state.undoTasksStack.push({
+          tasks: state.tasks,
+          listName: state.listName,
+        });
+      } else {
+        state.redoTasksStack = [];
+      }
       state.isTasksSorting = !state.isTasksSorting;
     },
     clearStorage: () => {

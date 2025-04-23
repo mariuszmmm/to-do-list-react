@@ -5,25 +5,18 @@ import langPl from "../utils/i18n/locales/pl";
 
 interface ModalPayload {
   title?: { key: ModalTranslationKeys<typeof langPl, "modal"> };
-  message: {
-    key: ModalTranslationKeys<typeof langPl, "modal">;
-    values?: Record<string, string>;
-  };
-  confirmButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
-  endButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
-  type: "info" | "confirm" | "loading" | "success" | "error";
-}
-
-interface ModalState {
-  isOpen: boolean;
-  title?: { key: ModalTranslationKeys<typeof langPl, "modal"> };
   message?: {
     key: ModalTranslationKeys<typeof langPl, "modal">;
     values?: Record<string, string>;
   };
   confirmButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
   endButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
-  type?: "info" | "confirm" | "loading" | "success" | "error";
+  type: "info" | "confirm" | "loading" | "success" | "error";
+  confirmed?: boolean;
+}
+
+interface ModalState extends ModalPayload {
+  isOpen: boolean;
 }
 
 const initialState: ModalState = {
@@ -32,7 +25,8 @@ const initialState: ModalState = {
   message: undefined,
   confirmButton: { key: "modal.buttons.confirmButton" },
   endButton: { key: "modal.buttons.closeButton" },
-  type: undefined,
+  type: "info",
+  confirmed: undefined,
 };
 
 export const modalSlice = createSlice({
@@ -53,8 +47,12 @@ export const modalSlice = createSlice({
       if (type) state.type = type;
     },
     closeModal: () => initialState,
-    confirm: () => {},
-    cancel: () => {},
+    confirm: (state) => {
+      state.confirmed = true;
+    },
+    cancel: (state) => {
+      state.confirmed = false;
+    },
   },
 });
 
@@ -62,5 +60,6 @@ export const { openModal, closeModal, confirm, cancel } = modalSlice.actions;
 
 export const selectModalState = (state: RootState) => state.modal;
 export const selectModalIsOpen = (state: RootState) => state.modal.isOpen;
+export const selectModalConfirmed = (state: RootState) => state.modal.confirmed;
 
 export default modalSlice.reducer;

@@ -7,22 +7,15 @@ import {
   TakeEffect,
   takeEvery,
 } from "redux-saga/effects";
-import {
-  addDataApi,
-  getDataApi,
-  removeDataApi,
-  updateDataApi,
-} from "../../api/fetchDataApi";
+import { addDataApi, getDataApi, removeDataApi } from "../../api/fetchDataApi";
 import { Data, Version } from "../../types";
 import {
   addListRequest,
   removeListRequest,
-  selectIsListsSorting,
   selectList,
   selectListAlreadyExists,
   selectLists,
   setLists,
-  switchListSort,
 } from "./listsSlice";
 import {
   selectLoggedUserEmail,
@@ -277,67 +270,8 @@ function* removeListRequestHandler({
   }
 }
 
-function* listUpdateHandler(): Generator {
-  const isListsSorting = yield select(selectIsListsSorting);
-  if (isListsSorting) return;
-
-  try {
-    yield put(
-      openModal({
-        title: { key: "modal.listsUpdate.title" },
-        message: { key: "modal.listsUpdate.message.loading" },
-        type: "loading",
-      })
-    );
-
-    const version = (yield select(selectVersion)) as Version;
-    const token = (yield call(getUserToken)) as string | null;
-    const lists = (yield select(selectLists)) as ReturnType<typeof selectLists>;
-
-    if (!token) {
-      yield put(setLists(null));
-      yield put(setVersion(null));
-      yield put(setLoggedUserEmail(null));
-      throw new Error("No token found");
-    }
-
-    if (!lists) throw new Error("No lists found");
-
-    const response = (yield call(updateDataApi, token, version, lists)) as {
-      data: Data;
-    };
-    const { data } = response;
-
-    if (!data) {
-      yield refreshListsHandler();
-      return;
-    }
-
-    if (!data.lists || !data.version) throw new Error("No lists or version");
-
-    yield put(setLists(data.lists));
-    yield put(setVersion(data.version));
-    yield put(
-      openModal({
-        message: {
-          key: "modal.listsUpdate.message.success",
-        },
-        type: "success",
-      })
-    );
-  } catch (error: any) {
-    yield put(
-      openModal({
-        message: { key: "modal.listsUpdate.message.error.default" },
-        type: "error",
-      })
-    );
-  }
-}
-
 export function* listsSaga() {
   yield takeEvery(setLoggedUserEmail.type, setLoggedUserEmailHandler);
   yield takeEvery(addListRequest.type, addListRequestHandler);
   yield takeEvery(removeListRequest.type, removeListRequestHandler);
-  yield takeEvery(switchListSort.type, listUpdateHandler);
 }

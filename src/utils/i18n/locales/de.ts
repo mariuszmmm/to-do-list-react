@@ -145,6 +145,7 @@ const langDe: typeof langPl = {
       logoutButton: "Abmelden",
       nextButton: "Weiter",
       refreshButton: "Aktualisieren",
+      replaceButton: "Ersetzen",
     },
     login: {
       title: "Anmeldung",
@@ -277,6 +278,9 @@ const langDe: typeof langPl = {
       message: {
         loading: "Liste wird aktualisiert...",
         success: "Die Liste wurde aktualisiert.",
+        confirm:
+          "Deine Listen sind veraltet.<br/> Möchtest du sie wirklich ersetzen?",
+        info: "Die Liste wurde aktualisiert.",
         error: {
           default: "Fehler beim Aktualisieren der Liste.",
         },

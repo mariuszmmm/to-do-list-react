@@ -36,13 +36,22 @@ const handler: Handler = async (event, context) => {
     }
 
     const data: Data = JSON.parse(event.body);
+    console.log("data.force", data.force);
 
-    if (foundUser.version !== data.version) {
+    if (foundUser.version !== data.version && !data.force) {
       console.error("Version mismatch");
 
       return {
-        statusCode: 409,
-        body: JSON.stringify({ message: "Version mismatch" }),
+        statusCode: 200,
+        body: JSON.stringify({
+          message: "Version mismatch",
+          data: {
+            email: foundUser.email,
+            lists: foundUser.lists,
+            version: foundUser.version,
+            conflict: true,
+          },
+        }),
       };
     }
 

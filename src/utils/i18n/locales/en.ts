@@ -145,6 +145,7 @@ const langEn: typeof langPl = {
       logoutButton: "Logout",
       nextButton: "Next",
       refreshButton: "Refresh",
+      replaceButton: "Replace",
     },
     login: {
       title: "Login",
@@ -272,6 +273,10 @@ const langEn: typeof langPl = {
       message: {
         loading: "Updating list...",
         success: "The list has been updated in the database.",
+
+        confirm:
+          "Your lists are outdated compared to the database.<br/> Do you want to replace them?",
+        info: "Lists have been updated to the latest version.",
         error: {
           default: "An error occurred while updating the list.",
         },

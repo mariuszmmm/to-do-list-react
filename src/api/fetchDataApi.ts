@@ -68,19 +68,17 @@ export const removeDataApi = async (
 export const updateDataApi = async (
   token: string,
   version: Version,
-  lists: List[]
+  lists: List[],
+  force?: boolean
 ) => {
   return fetch("/updateData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, lists }),
+    body: JSON.stringify({ version, lists, force }),
   })
     .then((response) => {
-      if (!response.ok) {
-        if (response.status === 409) {
-          return { data: null };
-        } else throw new Error(response.statusText);
-      }
+      if (!response.ok) throw new Error(response.statusText);
+
       return response.json();
     })
     .then((data) => data)

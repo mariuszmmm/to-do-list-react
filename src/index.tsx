@@ -9,18 +9,35 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./utils/i18n";
 import GlobalStyle from "./theme/GlobalStyle";
 import App from "./App";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const url = window.location.href;
 getTokenFromURL(url);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 3,
+      refetchOnWindowFocus: false,
+      refetchInterval: 1000 * 60 * 5,
+      refetchOnMount: false,
+    },
+  },
+});
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <I18nextProvider i18n={i18n}>
           <GlobalStyle />
-          <App />
+          <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools />
+            <App />
+          </QueryClientProvider>
         </I18nextProvider>
       </ThemeProvider>
     </Provider>

@@ -42,7 +42,15 @@ const handler: Handler = async (event, context) => {
 
       return {
         statusCode: 409,
-        body: JSON.stringify({ message: "Version mismatch" }),
+        body: JSON.stringify({
+          message: "Version mismatch",
+          data: {
+            email: foundUser.email,
+            lists: foundUser.lists,
+            version: foundUser.version,
+            conflict: true,
+          },
+        }),
       };
     }
 
