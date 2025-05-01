@@ -22,14 +22,20 @@ import {
   switchTaskSort,
   selectIsTasksSorting,
 } from "../../tasksSlice";
-import { addListRequest, selectLists } from "../../../ListsPage/listsSlice";
+import { selectListToAdd, setListToAdd } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
   getWidthForToggleHideDoneButton,
 } from "../../../../utils/getWidthForDynamicButtons";
+import { useAddListMutation } from "./useAddListMutation";
+import { useEffect } from "react";
+import { ListsData } from "../../../../types";
+import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
 
-export const TasksButtons = () => {
+type Props = { listsData?: ListsData };
+
+export const TasksButtons = ({ listsData }: Props) => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const hideDone = useAppSelector(selectHideDone);
   const isEveryTaskDone = useAppSelector(selectIsEveryTaskDone);
@@ -40,28 +46,74 @@ export const TasksButtons = () => {
   const editedTask = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const listName = useAppSelector(selectListName);
-  const lists = useAppSelector(selectLists);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
+  const listToAdd = useAppSelector(selectListToAdd);
+  const confirmed = useAppSelector(selectModalConfirmed);
+
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
 
-  const onSaveListHandler = () => {
-    dispatch(
-      addListRequest({
-        id: nanoid(),
-        name: listName,
-        taskList: tasks,
-      })
-    );
-  };
+  const addListMutation = useAddListMutation();
+
+  useEffect(() => {
+    if (!listToAdd || !listsData) return;
+    const listAlreadyExists =
+      listsData.lists.some(({ name }) => name === listToAdd.name) || false;
+
+    if (confirmed || !listAlreadyExists) {
+      addListMutation.mutate({
+        version: listsData.version,
+        list: listToAdd,
+      });
+      dispatch(setListToAdd(null));
+    } else {
+      if (confirmed === false) {
+        dispatch(setListToAdd(null));
+        dispatch(
+          openModal({
+            title: { key: "modal.listSave.title" },
+            message: {
+              key: "modal.listSave.message.cancel",
+            },
+            type: "info",
+          })
+        );
+
+        return;
+      }
+
+      if (listAlreadyExists) {
+        dispatch(
+          openModal({
+            title: { key: "modal.listSave.title" },
+            message: {
+              key: "modal.listSave.message.confirm",
+              values: { listName: listToAdd.name },
+            },
+            type: "confirm",
+          })
+        );
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listToAdd, confirmed]);
 
   return (
     <ButtonsContainer>
-      {lists && (
+      {listsData && (
         <Button
-          onClick={onSaveListHandler}
+          onClick={() =>
+            dispatch(
+              setListToAdd({
+                id: nanoid(),
+                name: listName,
+                taskList: tasks,
+              })
+            )
+          }
           disabled={!listName || areTasksEmpty || listNameToEdit !== null}
         >
           {t("tasks.buttons.save")}

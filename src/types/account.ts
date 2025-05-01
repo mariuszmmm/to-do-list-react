@@ -6,7 +6,9 @@ export interface AccountState {
     | "logged"
     | "passwordChange"
     | "accountRegister"
-    | "accountRecovery";
+    | "accountRecovery"
+    | "accountDelete"
+    | "dataRemoval";
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
   message: string;

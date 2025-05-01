@@ -5,10 +5,12 @@ import langPl from "../utils/i18n/locales/pl";
 
 interface ModalPayload {
   title?: { key: ModalTranslationKeys<typeof langPl, "modal"> };
-  message?: {
-    key: ModalTranslationKeys<typeof langPl, "modal">;
-    values?: Record<string, string>;
-  };
+  message?:
+    | {
+        key: ModalTranslationKeys<typeof langPl, "modal">;
+        values?: Record<string, string>;
+      }
+    | string;
   confirmButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
   endButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
   type: "info" | "confirm" | "loading" | "success" | "error";
@@ -19,7 +21,7 @@ interface ModalState extends ModalPayload {
   isOpen: boolean;
 }
 
-const initialState: ModalState = {
+const getInitialState = (): ModalState => ({
   isOpen: false,
   title: undefined,
   message: undefined,
@@ -27,11 +29,11 @@ const initialState: ModalState = {
   endButton: { key: "modal.buttons.closeButton" },
   type: "info",
   confirmed: undefined,
-};
+});
 
 export const modalSlice = createSlice({
   name: "modal",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     openModal: (
       state,
@@ -45,8 +47,9 @@ export const modalSlice = createSlice({
       if (confirmButton) state.confirmButton = confirmButton;
       if (endButton) state.endButton = endButton;
       if (type) state.type = type;
+      state.confirmed = undefined;
     },
-    closeModal: () => initialState,
+    closeModal: () => getInitialState(),
     confirm: (state) => {
       state.confirmed = true;
     },

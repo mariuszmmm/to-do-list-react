@@ -151,9 +151,6 @@ const langPl = {
         loading: "Trwa logowanie...",
         success: "Zalogowano jako: <strong>{{user}}</strong>",
         error: {
-          noConnection: "Brak połączenia z internetem.",
-          notFound:
-            "Nie znaleziono użytkownika z tym adresem e-mail lub hasło jest nieprawidłowe.",
           default: "Błąd logowania",
         },
       },
@@ -185,10 +182,6 @@ const langPl = {
         loading: "Trwa rejestracja...",
         info: "Na podany adres e-mail został wysłany link do rejestracji konta.",
         error: {
-          noConnection: "Brak połączenia z internetem.",
-          emailFormat: "Błędny format adresu e-mail.",
-          invalidEmail:
-            "Nie można zweryfikować adresu e-mail: nieprawidłowy format.",
           userExists:
             "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
           default: "Błąd rejestracji",
@@ -202,8 +195,6 @@ const langPl = {
         info: "Na podany adres e-mail został wysłany link do zresetowania hasła.<br/> Jeśli nie otrzymałeś wiadomości, spróbuj ponownie za 15 minut.",
         success: "Konto zostało odzyskane, ustaw nowe hasło.",
         error: {
-          noConnection: "Brak połączenia z internetem.",
-          notFound: "Nie znaleziono użytkownika z tym adresem e-mail.",
           default: "Błąd odzyskiwania hasła.",
           linkExpired: "Link wygasł lub został użyty.",
         },
@@ -237,12 +228,6 @@ const langPl = {
         },
       },
     },
-    listsRefresh: {
-      message: {
-        confirm:
-          "Operacja nie mogła być wykonana poprawnie, ponieważ pobrane listy są nieaktualne.<br/> Odśwież i sprobuj ponownie.",
-      },
-    },
     listSave: {
       title: "Zapisywanie listy",
       message: {
@@ -254,6 +239,8 @@ const langPl = {
         success:
           "Lista <strong>{{listName}}</strong> została zapisana w bazie danych.",
         error: {
+          conflict:
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
       },
@@ -266,6 +253,8 @@ const langPl = {
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
+          conflict:
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas usuwania listy.",
         },
       },
@@ -275,10 +264,9 @@ const langPl = {
       message: {
         loading: "Trwa aktualizacja list...",
         success: "Listy zostały zaktualizowane.",
-        confirm:
-          "Twoje listy są nieaktualne z bazą danych.<br/> Czy napewno chcesz je zastąpić?",
-        info: "Listy zostały zaktualizowane do najnowszej wersji.",
         error: {
+          conflict:
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas aktualizacji list.",
         },
       },

@@ -7,6 +7,11 @@ export const getExampleTasks = async (lang: string) => {
   }
 
   const exampleTasks = (await response.json()) as ExampleTasks;
+  const date = new Date().toISOString();
+  const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
+    ...task,
+    date,
+  }));
 
-  return exampleTasks;
+  return { ...exampleTasks, tasks: exampleTasksWithDate };
 };

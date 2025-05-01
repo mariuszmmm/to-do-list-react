@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { List } from "../../types";
+import { List, Version } from "../../types";
 import { RootState } from "../../store";
 
 interface ListsState {
@@ -7,29 +7,32 @@ interface ListsState {
   selectedListId: string | null;
   listToLoad: List | null;
   isListsSorting: boolean;
+  listsToSort: { lists: List[]; version: Version } | null;
+  listToRemove: List | null;
+  listToAdd: List | null;
 }
 
-const initialState: ListsState = {
+const getInitialState = (): ListsState => ({
   lists: null,
   selectedListId: null,
   listToLoad: null,
   isListsSorting: false,
-};
+  listsToSort: null,
+  listToRemove: null,
+  listToAdd: null,
+});
 
 const listsSlice = createSlice({
   name: "lists",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
-    setLists: (state, { payload: lists }: PayloadAction<List[] | null>) => {
-      state.lists = lists;
-      if (lists === null) state.selectedListId = null;
-    },
     selectList: (state, { payload: listId }: PayloadAction<string | null>) => {
       if (state.selectedListId === listId || listId === null) {
         state.selectedListId = null;
       } else {
         state.selectedListId = listId;
       }
+      state.listToLoad = null;
     },
     setListToLoad: (
       state,
@@ -38,50 +41,25 @@ const listsSlice = createSlice({
       state.listToLoad = taskList;
       if (taskList === null) state.selectedListId = null;
     },
-    addListRequest: (state, action: PayloadAction<List>) => {},
-    removeListRequest: (
+    setListToSort: (
       state,
       {
-        payload: { listId, listName },
-      }: PayloadAction<{ listId: string; listName: string }>
-    ) => {},
-    listMoveUp: (state, { payload: index }) => {
-      if (state.lists === null) return;
-
-      let lists = [...state.lists];
-      const selectedList = lists[index];
-      const prevList = lists[index - 1];
-
-      if (!selectedList || !prevList) return;
-
-      state.lists = lists.map((list, i) => {
-        if (i === index - 1) {
-          return selectedList;
-        }
-        if (i === index) {
-          return prevList;
-        }
-        return list;
-      });
+        payload: listsToSort,
+      }: PayloadAction<{ lists: List[]; version: Version } | null>
+    ) => {
+      state.listsToSort = listsToSort;
     },
-    listMoveDown: (state, { payload: index }) => {
-      if (state.lists === null) return;
-
-      let lists = [...state.lists];
-      const selectedList = lists[index];
-      const nextList = lists[index + 1];
-
-      if (!selectedList || !nextList) return;
-
-      state.lists = lists.map((list, i) => {
-        if (i === index) {
-          return nextList;
-        }
-        if (i === index + 1) {
-          return selectedList;
-        }
-        return list;
-      });
+    setListToRemove: (
+      state,
+      { payload: listToRemove }: PayloadAction<List | null>
+    ) => {
+      state.listToRemove = listToRemove;
+    },
+    setListToAdd: (
+      state,
+      { payload: listToAdd }: PayloadAction<List | null>
+    ) => {
+      state.listToAdd = listToAdd;
     },
     switchListSort: (state) => {
       state.isListsSorting = !state.isListsSorting;
@@ -90,32 +68,27 @@ const listsSlice = createSlice({
 });
 
 export const {
-  setLists,
   selectList,
   setListToLoad,
-  addListRequest,
-  removeListRequest,
-  listMoveUp,
-  listMoveDown,
+  setListToSort,
+  setListToRemove,
+  setListToAdd,
   switchListSort,
 } = listsSlice.actions;
 
 const selectListsState = (state: RootState) => state.lists;
 
-export const selectLists = (state: RootState) => selectListsState(state).lists;
 export const selectSelectedListId = (state: RootState) =>
   selectListsState(state).selectedListId;
 export const selectListToLoad = (state: RootState) =>
   selectListsState(state).listToLoad;
-export const selectAreListsEmpty = (state: RootState) =>
-  selectLists(state)?.length === 0;
 export const selectIsListsSorting = (state: RootState) =>
   selectListsState(state).isListsSorting;
-export const selectListAlreadyExists = (state: RootState, listName: string) =>
-  selectLists(state)?.some(({ name }) => name === listName) || false;
-export const selectSelectedListById = (state: RootState, listId: string) => {
-  const list = selectLists(state)?.find(({ id }) => id === listId) || null;
-  return list;
-};
+export const selectListToSort = (state: RootState) =>
+  selectListsState(state).listsToSort;
+export const selectListToRemove = (state: RootState) =>
+  selectListsState(state).listToRemove;
+export const selectListToAdd = (state: RootState) =>
+  selectListsState(state).listToAdd;
 
 export default listsSlice.reducer;

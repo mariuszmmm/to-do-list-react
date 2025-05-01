@@ -26,7 +26,7 @@ const TaskButton = styled.button`
   }
 
   &:disabled {
-    cursor: not-allowed;
+    cursor: auto;
     opacity: 0.2;
   }
 `;

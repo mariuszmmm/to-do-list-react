@@ -1,34 +1,45 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { ButtonsContainer } from "../../../common/ButtonsContainer";
-import { Button } from "../../../common/Button";
+import { useTranslation } from "react-i18next";
+import { openModal } from "../../../Modal/modalSlice";
 import {
   selectAccountMode,
   setAccountMode,
   selectLoggedUserEmail,
-  deleteAccountRequest,
 } from "../accountSlice";
-import { useTranslation } from "react-i18next";
-
+import { ButtonsContainer } from "../../../common/ButtonsContainer";
+import { Button } from "../../../common/Button";
 export const AccountButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const dispatch = useAppDispatch();
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
-  const dispatch = useAppDispatch();
+
+  const handleLogin = () => dispatch(setAccountMode("login"));
+  const handleRegister = () => dispatch(setAccountMode("accountRegister"));
+  const handleAccountDelete = () => {
+    dispatch(setAccountMode("accountDelete"));
+    dispatch(
+      openModal({
+        title: { key: "modal.accountDelete.title" },
+        message: { key: "modal.accountDelete.message.confirm" },
+        confirmButton: { key: "modal.buttons.deleteButton" },
+        type: "confirm",
+      })
+    );
+  };
+  const handlePasswordChange = () => dispatch(setAccountMode("passwordChange"));
 
   return (
     <ButtonsContainer>
       {!loggedUserEmail ? (
         <>
-          <Button
-            onClick={() => dispatch(setAccountMode("login"))}
-            $selected={accountMode === "login"}
-          >
+          <Button onClick={handleLogin} $selected={accountMode === "login"}>
             {t("buttons.login")}
           </Button>
           <Button
-            onClick={() => dispatch(setAccountMode("accountRegister"))}
+            onClick={handleRegister}
             $selected={accountMode === "accountRegister"}
           >
             {t("buttons.register")}
@@ -36,16 +47,11 @@ export const AccountButtons = () => {
         </>
       ) : (
         <>
-          <Button
-            onClick={() => {
-              dispatch(deleteAccountRequest());
-              dispatch(setAccountMode("logged"));
-            }}
-          >
+          <Button onClick={handleAccountDelete}>
             {t("buttons.accountDelete")}
           </Button>
           <Button
-            onClick={() => dispatch(setAccountMode("passwordChange"))}
+            onClick={handlePasswordChange}
             $selected={accountMode === "passwordChange"}
           >
             {t("buttons.passwordChange")}

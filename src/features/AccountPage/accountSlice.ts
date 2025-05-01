@@ -2,17 +2,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { AccountState } from "../../types";
 
-const initialState: AccountState = {
+const getInitialState = (): AccountState => ({
   accountMode: "login",
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
   message: "",
   version: null,
-};
+});
 
 const accountSlice = createSlice({
   name: "account",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     setAccountMode: (
       state,
@@ -24,6 +24,8 @@ const accountSlice = createSlice({
         | "passwordChange"
         | "accountRegister"
         | "accountRecovery"
+        | "accountDelete"
+        | "dataRemoval"
       >
     ) => {
       state.accountMode = mode;
@@ -51,24 +53,6 @@ const accountSlice = createSlice({
     setVersion: (state, { payload: version }: PayloadAction<number | null>) => {
       state.version = version;
     },
-    loginRequest: (
-      state,
-      payload: PayloadAction<{ email: string; password: string }>
-    ) => {},
-    logoutRequest: () => {},
-    changePasswordRequest: (
-      state,
-      payload: PayloadAction<{ password: string }>
-    ) => {},
-    accountRecoveryRequest: (
-      state,
-      payload: PayloadAction<{ email: string }>
-    ) => {},
-    registerRequest: (
-      state,
-      payload: PayloadAction<{ email: string; password: string }>
-    ) => {},
-    deleteAccountRequest: (state) => {},
   },
 });
 
@@ -78,12 +62,6 @@ export const {
   setLoggedUserEmail,
   setMessage,
   setVersion,
-  accountRecoveryRequest,
-  deleteAccountRequest,
-  loginRequest,
-  logoutRequest,
-  changePasswordRequest,
-  registerRequest,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -96,7 +74,5 @@ export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
-export const selectVersion = (state: RootState) =>
-  selectAccountState(state).version;
 
 export default accountSlice.reducer;

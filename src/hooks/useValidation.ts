@@ -26,7 +26,7 @@ export const useValidation = ({
   useEffect(() => {
     if (message) setMessage("");
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, password]);
 
   const emailValidation = () => {

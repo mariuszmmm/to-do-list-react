@@ -30,7 +30,7 @@ export const addDataApi = async (
     .then((response) => {
       if (!response.ok) {
         if (response.status === 409) {
-          return { data: null };
+          return response.json();
         } else throw new Error(response.statusText);
       }
       return response.json();
@@ -54,7 +54,7 @@ export const removeDataApi = async (
     .then((response) => {
       if (!response.ok) {
         if (response.status === 409) {
-          return { data: null };
+          return response.json();
         } else throw new Error(response.statusText);
       }
       return response.json();
@@ -68,17 +68,19 @@ export const removeDataApi = async (
 export const updateDataApi = async (
   token: string,
   version: Version,
-  lists: List[],
-  force?: boolean
+  lists: List[]
 ) => {
   return fetch("/updateData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, lists, force }),
+    body: JSON.stringify({ version, lists }),
   })
     .then((response) => {
-      if (!response.ok) throw new Error(response.statusText);
-
+      if (!response.ok) {
+        if (response.status === 409) {
+          return response.json();
+        } else throw new Error(response.statusText);
+      }
       return response.json();
     })
     .then((data) => data)

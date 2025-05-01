@@ -13,5 +13,10 @@ export type Data = {
   list?: List;
   listId?: string;
   lists?: List[];
-  force?: boolean;
+};
+
+export type ListsData = {
+  email: string;
+  lists: List[];
+  version: Version;
 };

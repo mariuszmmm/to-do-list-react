@@ -42,9 +42,13 @@ export const Modal = () => {
               </HeaderContent>
             )}
           </ModalHeader>
-          {message && (
+          {!!message && (
             <ModalDescription>
-              <Trans i18nKey={message.key} values={message.values} />
+              {typeof message === "string" ? (
+                message
+              ) : (
+                <Trans i18nKey={message.key} values={message.values} />
+              )}
             </ModalDescription>
           )}
           {

@@ -153,8 +153,6 @@ const langEn: typeof langPl = {
         loading: "Logging in...",
         success: "Logged in as: <strong>{{user}}</strong>",
         error: {
-          noConnection: "No internet connection.",
-          notFound: "User not found or invalid password.",
           default: "Login error",
         },
       },
@@ -186,9 +184,6 @@ const langEn: typeof langPl = {
         loading: "Registering...",
         info: "An email has been sent to the provided email address to register an account.",
         error: {
-          noConnection: "No internet connection.",
-          emailFormat: "Invalid email format.",
-          invalidEmail: "Cannot verify email address: invalid format.",
           userExists: "User with this email address is already registered.",
           default: "Registration error.",
         },
@@ -201,8 +196,6 @@ const langEn: typeof langPl = {
         info: "A password reset link has been sent to your email address.<br/> If you don't receive it, please try again in 15 minutes.",
         success: "Account has been recovered, set a new password.",
         error: {
-          noConnection: "No internet connection.",
-          notFound: "User not found with this email address.",
           default: "Password recovery error.",
           linkExpired: "The link has expired or has been used.",
         },
@@ -236,22 +229,18 @@ const langEn: typeof langPl = {
         },
       },
     },
-    listsRefresh: {
-      message: {
-        confirm:
-          "The operation could not be completed correctly because the downloaded lists are outdated.<br/> Refresh and try again.",
-      },
-    },
     listSave: {
       title: "Saving list",
       message: {
         confirm:
-          "List with the name <strong>{{listName}}</strong> already exists in the database.<br/> Do you want to replace it?",
+          "The list <strong>{{listName}}</strong> already exists.<br/> Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{listName}}</strong> to the database...",
         success:
           "List <strong>{{listName}}</strong> has been saved to the database.",
         error: {
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while adding the list to the database.",
         },
       },
@@ -264,6 +253,8 @@ const langEn: typeof langPl = {
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while deleting the list.",
         },
       },
@@ -273,11 +264,9 @@ const langEn: typeof langPl = {
       message: {
         loading: "Updating list...",
         success: "The list has been updated in the database.",
-
-        confirm:
-          "Your lists are outdated compared to the database.<br/> Do you want to replace them?",
-        info: "Lists have been updated to the latest version.",
         error: {
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while updating the list.",
         },
       },

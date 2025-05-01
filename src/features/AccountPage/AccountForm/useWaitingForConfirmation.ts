@@ -5,9 +5,9 @@ import {
   setAccountMode,
   setVersion,
   setIsWaitingForConfirmation,
-  loginRequest,
   setMessage,
 } from "../accountSlice";
+import { useLogin } from "./useLogin";
 
 interface WaitingForConfirmationProps {
   email?: string;
@@ -20,6 +20,7 @@ export const useWaitingForConfirmation = ({
   password,
   message,
 }: WaitingForConfirmationProps) => {
+  const login = useLogin();
   const dispatch = useAppDispatch();
 
   const waitingForConfirmation = () => {
@@ -37,7 +38,7 @@ export const useWaitingForConfirmation = ({
           clearInterval(interval);
           if (message) dispatch(setMessage(""));
           dispatch(setIsWaitingForConfirmation(false));
-          dispatch(loginRequest({ email, password }));
+          login.mutate({ email, password });
         }
       } catch (error) {
         clearInterval(interval);

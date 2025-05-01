@@ -2,18 +2,15 @@ import { List, Version } from "../../../types";
 
 export const moveListUp = (
   index: number,
-  listToSort: { lists: List[]; version: Version },
-  setList: React.Dispatch<
-    React.SetStateAction<{ lists: List[]; version: Version } | null>
-  >
+  listsToSort: { lists: List[]; version: Version }
 ) => {
-  if (index === 0) return;
-  if (index < 0 || index >= listToSort.lists.length) return;
-  const prevList = listToSort.lists[index - 1];
-  const selectedList = listToSort.lists[index];
+  if (index === 0) return null;
+  if (index < 0 || index >= listsToSort.lists.length) return null;
+  const prevList = listsToSort.lists[index - 1];
+  const selectedList = listsToSort.lists[index];
 
-  if (!selectedList || !prevList) return;
-  const newList = listToSort.lists.map((list, i) => {
+  if (!selectedList || !prevList) return null;
+  const newList = listsToSort.lists.map((list, i) => {
     if (i === index - 1) {
       return selectedList;
     }
@@ -23,22 +20,19 @@ export const moveListUp = (
     return list;
   });
 
-  setList({ ...listToSort, lists: newList });
+  return { ...listsToSort, lists: newList };
 };
 
 export const moveListDown = (
   index: number,
-  listToSort: { lists: List[]; version: Version },
-  setList: React.Dispatch<
-    React.SetStateAction<{ lists: List[]; version: Version } | null>
-  >
+  listsToSort: { lists: List[]; version: Version }
 ) => {
-  if (index < 0 || index >= listToSort.lists.length - 1) return;
-  const selectedList = listToSort.lists[index];
-  const nextList = listToSort.lists[index + 1];
+  if (index < 0 || index >= listsToSort.lists.length - 1) return null;
+  const selectedList = listsToSort.lists[index];
+  const nextList = listsToSort.lists[index + 1];
 
-  if (!selectedList || !nextList) return;
-  const newList = listToSort.lists.map((list, i) => {
+  if (!selectedList || !nextList) return null;
+  const newList = listsToSort.lists.map((list, i) => {
     if (i === index) {
       return nextList;
     }
@@ -48,5 +42,5 @@ export const moveListDown = (
     return list;
   });
 
-  setList({ ...listToSort, lists: newList });
+  return { ...listsToSort, lists: newList };
 };

@@ -11,8 +11,11 @@ import { Section } from "../../../common/Section";
 import { TaskForm } from "./TaskForm";
 import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { ListsData } from "../../../types";
 
-const TasksPage = () => {
+type Props = { listsData?: ListsData };
+
+const TasksPage = ({ listsData }: Props) => {
   const showSearch = useAppSelector(selectShowSearch);
   const editedTask = useAppSelector(selectEditedTask);
   const { t } = useTranslation("translation", {
@@ -44,7 +47,7 @@ const TasksPage = () => {
       <Section
         title={<EditableListName />}
         body={<TasksList />}
-        extraHeaderContent={<TasksButtons />}
+        extraHeaderContent={<TasksButtons listsData={listsData} />}
       />
     </>
   );

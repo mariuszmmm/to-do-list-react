@@ -1,28 +1,26 @@
 import { useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
+import { useTranslation } from "react-i18next";
+import { ListsData } from "../../types";
 import { ListsList } from "./ListsList";
 import { ListsButtons } from "./ListsButtons";
 import { TasksList } from "./TasksList";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import {
-  selectAreListsEmpty,
-  selectSelectedListId,
-  selectSelectedListById,
-  selectIsListsSorting,
-} from "./listsSlice";
-import { useTranslation } from "react-i18next";
+import { selectSelectedListId, selectIsListsSorting } from "./listsSlice";
 
-const ListsPage = () => {
-  const areListsEmpty = useAppSelector(selectAreListsEmpty);
-  const selectedListId = useAppSelector(selectSelectedListId);
-  const isListsSorting = useAppSelector(selectIsListsSorting);
-  const selectedListById = useAppSelector((state) =>
-    selectedListId ? selectSelectedListById(state, selectedListId) : null
-  );
+type Props = { listsData: ListsData };
+
+const ListsPage = ({ listsData }: Props) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "listsPage",
   });
+
+  const selectedListId = useAppSelector(selectSelectedListId);
+  const isListsSorting = useAppSelector(selectIsListsSorting);
+  const areListsEmpty = !listsData || listsData.lists.length === 0;
+  const selectedListById =
+    listsData?.lists.find(({ id }) => id === selectedListId) || null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,10 +31,15 @@ const ListsPage = () => {
       <Header title={t("title")} />
       <Section
         title={areListsEmpty ? t("lists.empty") : t("lists.select")}
-        body={<ListsList />}
-        extraHeaderContent={<ListsButtons />}
+        body={<ListsList listsData={listsData} />}
+        extraHeaderContent={
+          <ListsButtons
+            listsData={listsData}
+            selectedListById={selectedListById}
+          />
+        }
       />
-      {selectedListById !== null && !isListsSorting && (
+      {selectedListById && !isListsSorting && (
         <>
           <Header title={t("subTitle")} sub />
           <Section

@@ -153,9 +153,6 @@ const langDe: typeof langPl = {
         loading: "Anmeldung läuft...",
         success: "Angemeldet als: <strong>{{user}}</strong>",
         error: {
-          noConnection: "Keine Internetverbindung.",
-          notFound:
-            "Kein Benutzer mit dieser E-Mail-Adresse gefunden oder das Passwort ist falsch.",
           default: "Anmeldefehler",
         },
       },
@@ -187,10 +184,6 @@ const langDe: typeof langPl = {
         loading: "Registrierung läuft...",
         info: "Ein Link zur Konto-Registrierung wurde an die angegebene E-Mail-Adresse gesendet.",
         error: {
-          noConnection: "Keine Internetverbindung.",
-          emailFormat: "Ungültiges E-Mail-Format.",
-          invalidEmail:
-            "Die E-Mail-Adresse konnte nicht überprüft werden: ungültiges Format.",
           userExists:
             "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.",
           default: "Registrierungsfehler",
@@ -205,8 +198,6 @@ const langDe: typeof langPl = {
         success:
           "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
         error: {
-          noConnection: "Keine Internetverbindung.",
-          notFound: "Kein Benutzer mit dieser E-Mail-Adresse gefunden.",
           default: "Fehler bei der Wiederherstellung des Kontos.",
           linkExpired: "Der Link ist abgelaufen oder wurde bereits verwendet.",
         },
@@ -240,23 +231,19 @@ const langDe: typeof langPl = {
         },
       },
     },
-    listsRefresh: {
-      message: {
-        confirm:
-          "Die Operation konnte nicht korrekt ausgeführt werden, da die heruntergeladenen Listen veraltet sind.<br/> Aktualisiere und versuche es erneut.",
-      },
-    },
     listSave: {
       title: "Liste speichern",
       message: {
         confirm:
-          "Die Liste <strong>{{listName}}</strong> existiert bereits in der Datenbank.<br/> Möchtest du sie ersetzen?",
+          "Die Liste <strong>{{listName}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
         loading:
           "Liste <strong>{{listName}}</strong> wird in der Datenbank gespeichert...",
         success:
           "Liste <strong>{{listName}}</strong> wurde in der Datenbank gespeichert.",
         error: {
+          conflict:
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
           default: "Fehler beim Hinzufügen der Liste zur Datenbank.",
         },
       },
@@ -269,6 +256,8 @@ const langDe: typeof langPl = {
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
+          conflict:
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
           default: "Fehler beim Löschen der Liste.",
         },
       },
@@ -278,10 +267,9 @@ const langDe: typeof langPl = {
       message: {
         loading: "Liste wird aktualisiert...",
         success: "Die Liste wurde aktualisiert.",
-        confirm:
-          "Deine Listen sind veraltet.<br/> Möchtest du sie wirklich ersetzen?",
-        info: "Die Liste wurde aktualisiert.",
         error: {
+          conflict:
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
           default: "Fehler beim Aktualisieren der Liste.",
         },
       },

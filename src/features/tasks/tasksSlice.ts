@@ -14,7 +14,6 @@ interface TaskState {
   editedTask: Task | null;
   hideDone: boolean;
   showSearch: boolean;
-  fetchStatus: "ready" | "loading" | "error";
   undoTasksStack: { tasks: Task[]; listName: string }[];
   redoTasksStack: { tasks: Task[]; listName: string }[];
   listName: string;
@@ -22,22 +21,21 @@ interface TaskState {
   isTasksSorting: boolean;
 }
 
-const initialState: TaskState = {
+const getInitialState = (): TaskState => ({
   tasks: getTasksFromLocalStorage() || [],
   editedTask: null,
   hideDone: getSettingsFromLocalStorage()?.hideDone || false,
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
-  fetchStatus: "ready",
   undoTasksStack: [],
   redoTasksStack: [],
   listName: getListNameFromLocalStorage() || "",
   listNameToEdit: null,
   isTasksSorting: false,
-};
+});
 
 const tasksSlice = createSlice({
   name: "tasks",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     addTask: (
       state,
@@ -169,15 +167,6 @@ const tasksSlice = createSlice({
       state.listName = listName;
       state.redoTasksStack = [];
     },
-    fetchExampleTasks: (state) => {
-      state.fetchStatus = "loading";
-    },
-    resetFetchStatus: (state) => {
-      state.fetchStatus = "ready";
-    },
-    fetchError: (state) => {
-      state.fetchStatus = "error";
-    },
     toggleShowSearch: (state) => {
       state.showSearch = !state.showSearch;
     },
@@ -271,7 +260,7 @@ const tasksSlice = createSlice({
     },
     clearStorage: () => {
       clearLocalStorage();
-      return initialState;
+      return getInitialState();
     },
   },
 });
@@ -286,9 +275,6 @@ export const {
   removeTasks,
   setAllDone,
   setAllUndone,
-  fetchExampleTasks,
-  resetFetchStatus,
-  fetchError,
   setTasks,
   toggleShowSearch,
   undoTasks,
@@ -308,8 +294,6 @@ export const selectEditedTask = (state: RootState) =>
   selectTasksState(state).editedTask;
 export const selectHideDone = (state: RootState) =>
   selectTasksState(state).hideDone;
-export const selectFetchStatus = (state: RootState) =>
-  selectTasksState(state).fetchStatus;
 export const selectShowSearch = (state: RootState) =>
   selectTasksState(state).showSearch;
 export const selectUndoTasksStack = (state: RootState) =>
@@ -332,7 +316,6 @@ export const selectTaskById = (state: RootState, taskId: string) => {
 };
 export const selectIsTasksSorting = (state: RootState) =>
   selectTasksState(state).isTasksSorting;
-
 export const selectTasksByQuery = (state: RootState, query: string | null) => {
   const tasks = selectTasks(state);
 

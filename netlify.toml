@@ -27,3 +27,8 @@
   from = "/deleteUser"
   to = "/.netlify/functions/deleteUser"
   status = 200
+
+[[redirects]]
+  from = "/translateMessage"
+  to = "/.netlify/functions/translateMessage"
+  status = 200

@@ -1,26 +1,14 @@
-import {
-  call,
-  delay,
-  put,
-  select,
-  takeEvery,
-  takeLatest,
-} from "redux-saga/effects";
-import { getExampleTasks } from "../../api/getExampleTasks";
+import { call, put, select, takeEvery } from "redux-saga/effects";
 import {
   saveListNameInLocalStorage,
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
-import { ExampleTasks } from "../../types";
 import {
   addTask,
-  fetchError,
-  fetchExampleTasks,
   redoTasks,
   removeTask,
   removeTasks,
-  resetFetchStatus,
   saveEditedTask,
   selectHideDone,
   selectListName,
@@ -30,6 +18,7 @@ import {
   setAllUndone,
   setListName,
   setTasks,
+  switchTaskSort,
   toggleHideDone,
   toggleShowSearch,
   toggleTaskDone,
@@ -37,55 +26,6 @@ import {
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
 import { openModal } from "../../Modal/modalSlice";
-import i18n from "../../utils/i18n";
-import {
-  defaultLanguage,
-  SupportedLanguages,
-  supportedLanguages,
-} from "../../utils/i18n/languageResources";
-
-function* fetchExampleTasksHandler() {
-  try {
-    yield delay(1000);
-    const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-    const listName: ReturnType<typeof selectListName> = yield select(
-      selectListName
-    );
-
-    const lang = i18n.language.split("-")[0];
-    const langForExample = supportedLanguages.includes(
-      lang as SupportedLanguages
-    )
-      ? lang
-      : defaultLanguage;
-    const exampleTasks: ExampleTasks = yield call(
-      getExampleTasks,
-      langForExample
-    );
-
-    const date = new Date().toISOString();
-    const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
-      ...task,
-      date,
-    }));
-
-    yield put(
-      setTasks({
-        tasks: exampleTasksWithDate,
-        listName: exampleTasks.listName,
-        stateForUndo: {
-          tasks,
-          listName,
-        },
-      })
-    );
-  } catch (error) {
-    yield put(fetchError());
-    yield delay(3000);
-  } finally {
-    yield put(resetFetchStatus());
-  }
-}
 
 function* saveSettingsInLocalStorageHandler() {
   const showSearch: ReturnType<typeof selectShowSearch> = yield select(
@@ -137,7 +77,6 @@ function* saveDataInLocalStorageHandler() {
 }
 
 export function* tasksSaga() {
-  yield takeLatest(fetchExampleTasks.type, fetchExampleTasksHandler);
   yield takeEvery(
     [toggleShowSearch.type, toggleHideDone.type],
     saveSettingsInLocalStorageHandler
@@ -152,9 +91,10 @@ export function* tasksSaga() {
       setAllDone.type,
       setAllUndone.type,
       setTasks.type,
-      setListName.type,
       undoTasks.type,
       redoTasks.type,
+      setListName.type,
+      switchTaskSort.type,
     ],
     saveDataInLocalStorageHandler
   );

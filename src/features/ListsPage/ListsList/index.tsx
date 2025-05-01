@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useUpdateListsMutation } from "./useUpdateListsMutation";
+import { useRemoveListMutation } from "./useRemoveListMutation";
+import { moveListDown, moveListUp } from "./moveList";
+import { ListsData } from "../../../types";
+import { StyledList, Item, Content, Task } from "./styled";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../common/icons";
 import {
   RemoveButton,
@@ -6,64 +12,80 @@ import {
   ToggleButton,
 } from "../../../common/taskButtons";
 import { SortButtonsContainer } from "../../../common/taskButtons/SortButtonsContainer";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import {
+  closeModal,
+  openModal,
   selectModalConfirmed,
   selectModalIsOpen,
 } from "../../../Modal/modalSlice";
 import {
-  removeListRequest,
   selectIsListsSorting,
   selectList,
+  selectListToRemove,
+  selectListToSort,
   selectSelectedListId,
+  setListToRemove,
+  setListToSort,
 } from "../listsSlice";
-import { StyledList, Item, Content, Task } from "./styled";
-import { List, Version } from "../../../types";
-import { useQuery } from "@tanstack/react-query";
-import { selectLoggedUserEmail } from "../../AccountPage/accountSlice";
-import { refreshData } from "../../../utils/refreshData";
-import { moveListDown, moveListUp } from "./moveList";
-import { useUpdateListsMutation } from "./useUpdateListsMutation";
 
-export const ListsList = () => {
+type Props = {
+  listsData: ListsData;
+};
+
+export const ListsList = ({ listsData }: Props) => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const modalIsOpen = useAppSelector(selectModalIsOpen);
   const confirmed = useAppSelector(selectModalConfirmed);
   const isListsSorting = useAppSelector(selectIsListsSorting);
+  const listsToSort = useAppSelector(selectListToSort);
+  const listToRemove = useAppSelector(selectListToRemove);
+  const updateListsMutation = useUpdateListsMutation();
+  const removeListMutation = useRemoveListMutation();
   const dispatch = useAppDispatch();
-  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const [listToSort, setListToSort] = useState<{
-    lists: List[];
-    version: Version;
-  } | null>(null);
-
-  const { data } = useQuery<{
-    lists: List[];
-    version: Version;
-  }>({
-    queryKey: ["lists"],
-    queryFn: refreshData,
-    enabled: !!loggedUserEmail,
-  });
-
-  const updateListsMutation = useUpdateListsMutation({
-    confirmed,
-    setListToSort,
-  });
+  const lists = listsToSort?.lists || listsData?.lists || [];
 
   useEffect(() => {
-    if (!data) return;
+    if (!listsData) return;
     if (isListsSorting) {
-      setListToSort(data);
+      dispatch(setListToSort(listsData));
     } else {
-      if (!listToSort) return;
-      updateListsMutation.mutate({ listToSort, force: confirmed });
+      if (!listsToSort) return;
+      updateListsMutation.mutate({ listsToSort });
+      dispatch(setListToSort(null));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isListsSorting, confirmed]);
+  }, [isListsSorting]);
 
-  const lists = listToSort?.lists || data?.lists || [];
+  useEffect(() => {
+    if (!listToRemove) return;
+    if (confirmed) {
+      removeListMutation.mutate({
+        version: listsData.version,
+        listId: listToRemove.id,
+      });
+      dispatch(setListToRemove(null));
+    } else {
+      if (confirmed === false) {
+        dispatch(setListToRemove(null));
+        dispatch(closeModal());
+        return;
+      }
+      dispatch(
+        openModal({
+          title: { key: "modal.listRemove.title" },
+          message: {
+            key: "modal.listRemove.message.confirm",
+            values: { listName: listToRemove.name },
+          },
+          type: "confirm",
+          confirmButton: { key: "modal.buttons.deleteButton" },
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listToRemove, confirmed]);
 
   return (
     <StyledList>
@@ -73,16 +95,20 @@ export const ListsList = () => {
           selected={selectedListId === list.id && !isListsSorting}
           onClick={() => dispatch(selectList(isListsSorting ? null : list.id))}
         >
-          {isListsSorting && listToSort ? (
+          {isListsSorting && listsToSort ? (
             <SortButtonsContainer>
               <SortButton
-                onClick={() => moveListUp(index, listToSort, setListToSort)}
+                onClick={() =>
+                  dispatch(setListToSort(moveListUp(index, listsToSort)))
+                }
                 disabled={index === 0}
               >
                 <ArrowUpIcon />
               </SortButton>
               <SortButton
-                onClick={() => moveListDown(index, listToSort, setListToSort)}
+                onClick={() =>
+                  dispatch(setListToSort(moveListDown(index, listsToSort)))
+                }
                 disabled={index === lists.length - 1}
               >
                 <ArrowDownIcon />
@@ -94,16 +120,14 @@ export const ListsList = () => {
           <Content>
             <Task>{list.name}</Task>
           </Content>
-          <RemoveButton
-            onClick={() =>
-              dispatch(
-                removeListRequest({ listId: list.id, listName: list.name })
-              )
-            }
-            disabled={modalIsOpen}
-          >
-            🗑️
-          </RemoveButton>
+          {!isListsSorting && !listsToSort && (
+            <RemoveButton
+              onClick={() => dispatch(setListToRemove(list))}
+              disabled={modalIsOpen}
+            >
+              🗑️
+            </RemoveButton>
+          )}
         </Item>
       ))}
     </StyledList>
