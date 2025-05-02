@@ -4,22 +4,49 @@
 
 # Lista rzeczy do zrobienia
 [**Wypróbuj teraz**](https://to-do-list-typescript-react.netlify.app/) i odkryj wszystkie możliwości aplikacji!  
-<span style="color: grey;">(Uwaga: Stara wersja aplikacji znajduje się na branchu gh-pages, natomiast nowa wersja z dodatkowymi funkcjonalnościami została wdrożona na Netlify.)</span>
 
 </br>
 
 * [Prezentacja](#-prezentacja)
-* [Opis](#-opis)
+* [Deployment](#-deployment)
 * [Technologie](#-technologie)
+* [Opis](#-opis)
 * [Konfiguracja](#-konfiguracja)
 * [Widok aplikacji](#-widok-aplikacji)
-* [Deployment](#-deployment)
 * [Instrukcje użytkowania](#-instrukcje-użytkowania)
 
 </br>
 
 ## 🎬 Prezentacja
 ![to-do list](images/presentation.gif)
+
+<br>
+
+## 🚀 Deployment
+* [**Nowa wersja :**](https://to-do-list-typescript-react.netlify.app/)</br>
+Funkcjonalności wymagające komunikacji z bazą danych i obsługą użytkownika zostały wdrożone za pomocą <b>Netlify</b> – platformy oferującej obsługę funkcji <b>serverless</b> i <b>uwierzytelnianie</b>. Dzięki <b>Netlify GoTrue</b> aplikacja umożliwia zarządzanie kontem użytkownika, w tym rejestrację, logowanie, resetowanie i zmianę hasła oraz usuwanie konta. Dodatkowo, aplikacja umożliwia przechowywanie list zadań w bazie danych <b>MongoDB</b>, co pozwala na ich późniejsze pobieranie, edytowanie oraz zapisywanie.
+Aplikacja wspiera tłumaczenie całej strony na trzy języki: <b>polski (pl)</b>, <b>angielski (en)</b> i <b>niemiecki (de)</b> dzięki zastosowaniu <b>react-i18next</b>. Zostały również wdrożone nowe funkcje, takie jak dynamiczne tłumaczenie komunikatów błędów za pomocą <b>Cloud Translation API</b>, które zapewniają, że komunikaty serwera będą tłumaczone na bieżąco w zależności od wybranego języka użytkownika.
+Nowością jest także przejście na <b>TanStack Query</b> (dawniej <b>React Query</b>) do obsługi zapytań i mutacji w aplikacji, co znacząco upraszcza zarządzanie stanem i operacjami asynchronicznymi. Cała aplikacja została również dostosowana do pracy z <b>TypeScript</b>, co poprawia stabilność kodu i ułatwia jego utrzymanie.<br/>https://to-do-list-typescript-react.netlify.app
+
+* [**Stara wersja :**](https://mariuszmmm.github.io/to-do-list-react)</br>
+Aktualnie starsza wersja aplikacji znajduje się na branchu <b>gh-pages</b> i jest dostępna pod adresem:</br>https://mariuszmmm.github.io/to-do-list-react
+
+</br>
+
+## 🛠 Technologie
+
+<ul>
+<li>TypeScript, JavaScript (ES6+)</li>
+<li>React & JSX, React Router</li>
+<li>Redux, Redux Toolkit, Redux Saga</li>
+<li>TanStack Query (react-query)</li>
+<li>react-i18next, Cloud Translation API</li>
+<li>Netlify GoTrue.js</li>
+<li>MongoDB</li>
+<li>Normalize.css, Styled Components</li>
+<li>CSS Grid & Flexbox, Media Queries</li>
+<li>Controlled Components</li>
+</ul>
 
 <br>
 
@@ -34,19 +61,25 @@
    * Usuwanie zadań,
    * Ukrywanie ukończonych zadań,
    * Oznaczanie wszystkich zadań jako ukończone oraz funkcja "Odznacz wszystkie".
+   * Sortowanie zadań.
 * <b>Nowe funkcjonalności:</b>
-   * <b>Obsługa TypeScript:</b> Aplikacja została przepisana na TypeScript dla lepszej kontroli typów i łatwiejszej konserwacji kodu.
+   * <b>Obsługa TypeScript:</b> Aplikacja została przepisana na TypeScript dla lepszej kontroli typów i utrzymania kodu.
+   * <b>TanStack Query:</b> Zastąpienie ręcznego fetching’u (Redux Saga) hookami useQuery do pobierania przykładowych zadań i list oraz useMutation do obsługi mutacji list i operacji związanych z użytkownikiem.
+   * <b>react-i18next:</b> Tłumaczenie całej aplikacji na języki pl, en, de.
+   * <b>Dynamiczne tłumaczenie błędów:</b> Komunikaty błędów zwracane z serwera są tłumaczone w locie przy pomocy Cloud Translation API.
+   * <b>Uproszczone zarządzanie stanem:</b> Redux i Saga pozostawione wyłącznie do stanów globalnych aplikacji; logika pobierania i mutacji przeniesiona do TanStack Query.
    * <b>Zarządzanie kontem użytkownika:</b>
+   <i>(Implementacja oparta o bibliotekę [Netlify GoTrue](https://github.com/netlify/gotrue-js) z własnymi komponentami UI.)</i>
       * Rejestracja,
       * Logowanie,
       * Resetowanie i zmiana hasła,
       * Usuwanie konta.<br>
       
-      <i>(Implementacja oparta o bibliotekę [netlify gotrue.js](https://github.com/netlify/gotrue-js) – mimo dostępności widżetu logowania Netlify Identity, zastosowano własne komponenty.)</i>
 * <b>Strona List:</b></br>
 Po zalogowaniu użytkownik ma dostęp do strony "Listy", gdzie wyświetlane są wszystkie zapisane listy pobierane z bazy danych MongoDB. Na tej stronie możliwe jest:
    * Podgląd zawartości wybranej listy,
    * Załadowanie zawartości listy do bieżącej listy zadań,
+   * Sortowanie listy,
    * Usunięcie listy.
 * <b>Zapisywanie listy do bazy danych:</b></br>
 Po zalogowaniu użytkownik ma możliwość zapisania aktualnej listy zadań do bazy.
@@ -56,22 +89,6 @@ Umożliwiono edycję treści zadania (poprzez ikonę ołówka) oraz wprowadzono 
 Aplikacja zapewnia przyjazny i intuicyjny interfejs, który wspiera zarządzanie zadaniami.
 
 </br>
-
-## 🛠 Technologie
-
-<ul>
-<li>TypeScript</li>
-<li>JavaScript ES6+ Features</li>
-<li>React & JSX</li>
-<li>CSS Grid & CSS Flex</li>
-<li>Normalize.css</li>
-<li>Styled Components</li>
-<li>Media Queries</li>
-<li>Controlled Components</li>
-<li>Redux, Redux Toolkit, Redux Saga, Redux Router</li>
-</ul>
-
-<br>
 
 ## ⚙ Konfiguracja
 Aby uruchomić aplikację to-do-list-react lokalnie, wykonaj poniższe kroki:
@@ -95,6 +112,8 @@ Utwórz plik .env w katalogu głównym projektu i zdefiniuj zmienne środowiskow
    WEBHOOK_SECRET=twoj_webhook_secret
    REACT_APP_CONFIRMATION_URL="http://localhost:8888/#/user-confirmation"
    REACT_APP_RECOVERY_URL="http://localhost:8888/#/account-recovery"
+   TRANSLATION_API_KEY="twoj_translation_api_key"
+   TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
 ```
 4. <b>Uruchomienie aplikacji:</b><br>
 Po zainstalowaniu zależności uruchom aplikację w trybie deweloperskim:
@@ -114,16 +133,6 @@ Przykładowe widoki:
 
 - <b>600x960</b> <i>(Widok na tablecie)</i>  
 ![to-do list](images/size_2.gif)
-
-</br>
-
-## 🚀 Deployment
-* <b>Stara wersja:</b></br>
-Aktualnie starsza wersja aplikacji znajduje się na branchu <b>gh-pages</b> i jest dostępna pod adresem:</br>
-https://mariuszmmm.github.io/to-do-list-react
-
-* <b>Nowa wersja:</b></br>
-Funkcjonalności wymagające komunikacji z bazą danych i zaawansowaną obsługą użytkownika zostały wdrożone przy użyciu <b>Netlify</b> – platforma oferująca obsługę funkcji serverless i uwierzytelnianie.
 
 </br>
 
@@ -151,19 +160,33 @@ Funkcjonalności wymagające komunikacji z bazą danych i zaawansowaną obsług�
 
 <b>Wyszukiwanie zadań</b>
 * Wpisz słowo lub frazę w pole wyszukiwania.
-* Użyj funkcji <b>pokaż/ukryj</b> filtr lub <b>wyczyść filtr</b> dla lepszej kontroli wyników.
+* Użyj funkcji <b>Pokaż/Ukryj</b> filtr lub <b>Wyczyść filtr</b> dla lepszej kontroli wyników.
 
 </br>
 
 <b>Zarządzanie zadaniami</b>
-* <b>Wyświetlanie szczegółów:</b> Kliknij zadanie, aby zobaczyć więcej informacji.
-* <b>Usuwanie zadania:</b> Kliknij ikonę kosza przy zadaniu.
-* <b>Ukończ wszystkie / Odznacz wszystkie:</b> Użyj opcji umożliwiających oznaczenie wszystkich zadań jako ukończone lub ich odznaczenie.
+* <b>Wyświetlanie szczegółów:</b> Kliknij zadanie, aby wyświetlić jego szczegółowe informacje.
+* <b>Usuwanie zadania:</b> Kliknij ikonę kosza przy zadaniu, aby je usunąć.
+* <b>Ukończ wszystkie / Odznacz wszystkie:</b> Pozwala na oznaczenie wszystkich zadań jako ukończone lub ich odznaczenie.
+* <b>Włącz/Wyłącz sortowanie:</b> Przełącza tryb sortowania. W widoku listy pojawią się przyciski umożliwiające przesuwanie zadań w górę i w dół.
+
+</br>
+
+<b>Cofanie i ponawianie zmian</b>
+* Kliknij przycisk <b>"↺"</b> – ostatnia operacja na liście zadań zostanie wycofana.
+* Kliknij przycisk <b>"↻"</b> – cofnięta operacja zostanie przywrócona.
+</br>
+Przyciski są aktywne tylko wtedy, gdy możliwe jest cofnięcie lub ponowienie ostatniej operacji.
+  
+</br>
+
+<b>Zapisywanie listy zadań</b> (dostępne dla zalogowanych użytkowników)
+* Wybierz opcję <b>"Zapisz listę"</b> – lista zadań zostanie zapisana w bazie danych. Jeśli nazwa zapisywanej listy już istnieje, możesz ją zmienić lub nadpisać istniejącą.
 
 </br>
 
 <b>Zarządzanie kontem użytkownika</b>
-* Po zalogowaniu użytkownika uzyskasz dostęp do:
-   * <b>Rejestracji, logowania, resetowania/zmiany hasła oraz usuwania konta.</b>
+* Po zalogowaniu użytkownik uzyskuje dostęp do:
+   * <b>Zmiany hasła, usuwania konta oraz innych funkcji konta.</b>
    * <b>Strony "Listy":</b> Przegląd zapisanych list, podgląd zawartości, ładowanie listy do bieżącej listy zadań lub jej usunięcie.
-   * Możliwości zapisywania bieżącej listy do bazy danych.
+   * <b>Możliwości zapisywania bieżącej listy do bazy danych.</b>

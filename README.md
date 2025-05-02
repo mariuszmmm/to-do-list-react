@@ -4,16 +4,15 @@
 
 # To-Do List Application
 [**Try it now**](https://to-do-list-typescript-react.netlify.app/) and discover all the possibilities of the application!  
-<span style="color: grey;">Note: The older version is deployed on the gh-pages branch, while the new version with additional functionalities is deployed on Netlify.</span>
 
 </br>
 
 * [Presentation](#-presentation)
-* [Description](#-description)
-* [Technologies](#-technologies)
-* [Setup](#-setup)
-* [Application views](#-application-views)
 * [Deployment](#-deployment)
+* [Technologies](#-technologies)
+* [Description](#-description)
+* [Configuration](#-configuration)
+* [Application views](#-application-views)
 * [User Instructions](#-user-instructions)
 
 </br>
@@ -23,33 +22,66 @@
 
 <br>
 
+## 🚀 Deployment
+* [**New version :**](https://to-do-list-typescript-react.netlify.app/)</br>
+Features requiring communication with the database and user management have been implemented using <b>Netlify</b> – a platform offering serverless functions and authentication support. With <b>Netlify GoTrue</b>, the application allows users to manage their accounts, including registration, login, password reset and change, as well as account deletion. Additionally, the application enables storing task lists in the <b>MongoDB</b> database, which allows for later retrieval, editing, and saving.
+The application supports translating the entire site into three languages: <b>Polish (pl)</b>, <b>English (en)</b>, and <b>German (de)</b>, using <b>react-i18next</b>. New features have also been implemented, such as dynamic translation of error messages using <b>Cloud Translation API</b>, which ensures that server messages are translated in real-time based on the user’s selected language.
+Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list-typescript-react.netlify.app
+
+* [**Older version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
+The older version is hosted on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
+
+</br>
+
+## 🛠 Technologies
+
+<ul>
+<li>TypeScript, JavaScript (ES6+)</li>
+<li>React & JSX, React Router</li>
+<li>Redux, Redux Toolkit, Redux Saga</li>
+<li>TanStack Query (react-query)</li>
+<li>react-i18next, Cloud Translation API</li>
+<li>Netlify GoTrue.js</li>
+<li>MongoDB</li>
+<li>Normalize.css, Styled Components</li>
+<li>CSS Grid & Flexbox, Media Queries</li>
+<li>Controlled Components</li>
+</ul>
+
+<br>
+
 ## 📝 Description
-<b>To-Do List</b> is a React-based application now enhanced with TypeScript for improved type safety and maintainability. In addition to the classic to-do list features, this version includes several new functionalities:
+<b>To-Do List</b> is an application built with React and TypeScript. This version has been significantly expanded – in addition to the classic to-do list features, a number of new improvements and capabilities have been introduced:
 * <b>Core Features:</b>
    * Fetch sample tasks <i>(when the list is empty)</i>,
    * Add new tasks,
    * Mark tasks as completed,
-   * Search tasks with options to show/hide and clear filters,
-   * View task details,
+   * Search tasks with the ability to show/hide filters and clear them,
+   * Display task details,
    * Delete tasks,
    * Hide completed tasks,
    * Mark all tasks as completed and now also unmark all tasks.
-* <b>New Functionalities:</b>
-   * <b>TypeScript Integration: </b> The application now uses TypeScript for better type checking and easier maintenance.
+* <b>New features:</b>
+   * <b>TypeScript support:</b> The app has been rewritten in TypeScript for better type safety and maintainability.
+   * <b>TanStack Query:</b> Replaced manual fetching (Redux Saga) with useQuery hooks to fetch sample tasks and lists, and useMutation hooks for list mutations and user-related operations.
+   * <b>react-i18next:</b> App translation into pl, en, de.
+   * <b>Dynamic error translation:</b> Server error messages are translated on the fly using the Cloud Translation API.
+   * <b>Streamlined state management:</b> Redux and Saga remain only for global app state; fetching and mutation logic moved to TanStack Query.
    * <b>User Account Management:</b>
+      <i>(Implementation based on the [Netlify GoTrue](https://github.com/netlify/gotrue-js) library with custom UI components.)</i>
       * Registration,
       * Login,
       * Password reset and change,
       * Account deletion.<br>
       
-      <i>(While Netlify Identity offers a built-in login widget, custom components built on [netlify gotrue.js](https://github.com/netlify/gotrue-js) are used.)</i>
 * <b>Lists Page:</b></br>
-After logging in, users can access a "Lists" page that displays all saved lists retrieved from a MongoDB database. From this page, you can:
-   * View the contents of a selected list,
-   * Load the selected list into your current tasks,
+After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
+   * Preview the contents of a selected list,
+   * Load the selected list into current to-do list,
+   * Sort the list,
    * Delete the list.
-* <b>Saving Tasks:</b></br>
-Once logged in, you can also save the current to-do list to the database.
+* <b>Saving a list to the database:</b></br>
+After logging in, users can save the current to-do list to the database.
 * <b>Task Editing:</b></br>
 Tasks can be edited (using the pencil icon) with options to undo and redo changes.
 
@@ -57,23 +89,7 @@ The application offers a user-friendly interface that supports effective task ma
 
 </br>
 
-## 🛠 Technologies
-
-<ul>
-<li>TypeScript</li>
-<li>JavaScript ES6+ Features</li>
-<li>React & JSX</li>
-<li>CSS Grid & CSS Flex</li>
-<li>Normalize.css</li>
-<li>Styled Components</li>
-<li>Media Queries</li>
-<li>Controlled Components</li>
-<li>Redux, Redux Toolkit, Redux Saga, Redux Router</li>
-</ul>
-
-<br>
-
-## ⚙ Setup
+## ⚙ Configuration
 To run the to-do-list-react application locally, follow these steps:
 
 1. <b>Clone the Repository:</b><br>
@@ -95,6 +111,8 @@ Create a .env file in the root directory and define the following variables:
    WEBHOOK_SECRET=your_webhook_secret
    REACT_APP_CONFIRMATION_URL="http://localhost:8888/#/user-confirmation"
    REACT_APP_RECOVERY_URL="http://localhost:8888/#/account-recovery"
+   TRANSLATION_API_KEY="your_translation_api_key"
+   TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
 ```
 4. <b>Start the Application:</b><br>
 Run the application in development mode:
@@ -117,24 +135,14 @@ Example views:
 
 </br>
 
-## 🚀 Deployment
-* <b>Older Version:</b></br>
-The older version is hosted on the <b>gh-pages</b> branch and can be accessed at:</br>
-https://mariuszmmm.github.io/to-do-list-react
-
-* <b>New Version:</b></br>
-Features that require database communication and advanced user authentication have been deployed on <b>Netlify</b>.  This platform offers serverless functions and robust user authentication.
-
-</br>
-
 ## 📄 User Instructions
 <b>Fetching Sample Tasks</b>
-* Click the <b>"Pobierz przykładowe zadania"</b> option – tasks will be loaded only if your current task list is empty.
+* Select the <b>"Fetch Sample Tasks"</b> option – tasks will be fetched only if the current to-do list is empty.
 
 </br>
 
 <b>Adding a Task</b>
-* Enter a task name in the text field and click <b>"Dodaj zadanie"</b> or press <b>Enter</b>.
+* Enter the task name in the text field and click <b>"Add Task"</b> or press <b>Enter</b>.
 
 </br>
 
@@ -151,19 +159,33 @@ Features that require database communication and advanced user authentication ha
 
 <b>Searching for Tasks</b>
 * Enter a keyword or phrase in the search field.
-* Use the <b>pokaż/ukryj filtr</b> or <b>wyczyść filtr</b> functions for better control of the results.
+* Use the <b>Show/Hide filter</b> or <b>Clear filter</b> options for better control of results.
 
 </br>
 
 <b>Task Management</b>
-* <b>View Details:</b> Click on a task to see its details.
-* <b>Delete Task:</b> Click the trash icon next to a task to remove it.
-* <b>Mark/Unmark All:</b> Use the options to mark all tasks as completed or unmark all.
+* <b>Display details:</b> Click a task to view its detailed information.
+* <b>Delete task:</b> Click the trash icon next to a task to delete it.
+* <b>Done all / Undone all:</b> Allows you to mark all tasks as completed or unmark them.
+* <b>Enable/disable sorting:</b> Toggles sorting mode. In list view, buttons will appear to move tasks up and down.
+
+</br>
+
+<b>Undo and redo changes</b>
+* Click the <b>"↺"</b> button – the last action on the to-do list will be reverted.
+* Click the <b>"↻"</b> button – the reverted action will be restored.
+</br>
+Buttons are active only when undoing or redoing is possible.
+
+</br>
+
+<b>Save list</b> (available for logged-in users)
+* Select the <b>"Save List"</b> option – the to-do list will be saved to the database. If the list name already exists, you can rename it or overwrite the existing one.
 
 </br>
 
 <b>User Account Management</b>
-* After logging in, users can access:
-   * <b>Account Functions:</b> Registration, login, password reset/change, and account deletion.
-   * <b>Lists Page:</b> View saved lists, inspect list contents, load a list into the current tasks, or delete a list.
-   * <b>Saving Tasks:</b>Save the current to-do list to the database.
+* After logging in, the user gains access to:
+   * <b>Password change, account deletion, and other account features.</b>
+   * <b>Lists Page:</b> View saved lists, preview contents, load a list into the current to-do-list, or delete a list.
+   * <b>Save the current to-do list to the database.</b>

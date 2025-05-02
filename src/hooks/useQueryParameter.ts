@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import searchQueryParamName from "../../utils/searchQueryParamName";
+import searchQueryParamName from "../utils/searchQueryParamName";
 
 export const useQueryParameter = (key: typeof searchQueryParamName) => {
   const { search } = useLocation();

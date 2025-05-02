@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEventHandler } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { useReplaceQueryParameter } from "../../../../hooks/useQuery/useReplaceQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
 import { nanoid } from "@reduxjs/toolkit";
 import { Input } from "../../../../common/Input";
 import { Form } from "../../../../common/Form";

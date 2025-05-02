@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { useQueryParameter } from "../../../../hooks/useQuery/useQueryParameter";
+import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import { List, Item, Content, Task } from "./styled";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";

@@ -1,8 +1,8 @@
 import { ChangeEventHandler } from "react";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import { Input } from "../../../../common/Input";
-import { useQueryParameter } from "../../../../hooks/useQuery/useQueryParameter";
-import { useReplaceQueryParameter } from "../../../../hooks/useQuery/useReplaceQueryParameter";
+import { useQueryParameter } from "../../../../hooks/useQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
 import { useTranslation } from "react-i18next";
 
 export const Search = () => {
