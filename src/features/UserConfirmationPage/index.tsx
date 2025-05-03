@@ -5,12 +5,16 @@ import { useAppDispatch } from "../../hooks/redux";
 import { openModal } from "../../Modal/modalSlice";
 import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import { StyledLink } from "../../common/StyledLink";
 
 type Status = "waiting" | "success" | "error";
 
 const UserConfirmationPage = () => {
   const [status, setStatus] = useState<Status>("waiting");
+  const { t } = useTranslation("translation", {
+    keyPrefix: "confirmationPage",
+  });
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -62,6 +66,10 @@ const UserConfirmationPage = () => {
               />
             </b>
           </Text>
+          <StyledLink to="/tasks">
+            <b>{"⇨ "}</b>
+            {t("home")}
+          </StyledLink>
         </Container>
       ) : null}
     </>

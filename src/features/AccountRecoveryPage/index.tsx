@@ -6,11 +6,8 @@ import { Container } from "../../common/Container";
 import { Text } from "../../common/Text";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-
-export type RecoveryStatus =
-  | "accountRecovered"
-  | "passwordChange"
-  | "linkExpired";
+import { StyledLink } from "../../common/StyledLink";
+import { RecoveryStatus } from "../../types";
 
 const AccountRecoveryPage = () => {
   const [status, setStatus] = useState<RecoveryStatus>("passwordChange");
@@ -42,6 +39,10 @@ const AccountRecoveryPage = () => {
               />
             </b>
           </Text>
+          <StyledLink to="/tasks">
+            <b>{"⇨ "}</b>
+            {t("home")}
+          </StyledLink>
         </Container>
       )}
     </>

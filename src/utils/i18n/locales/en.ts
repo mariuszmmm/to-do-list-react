@@ -124,17 +124,21 @@ const langEn: typeof langPl = {
   },
   confirmationPage: {
     message: {
-      success: "Registration successful.",
+      success:
+        "Registration successful.<br/> You can return to the previously opened tab.",
       error: "Registration failed.",
     },
+    home: "Home",
   },
   accountRecoveryPage: {
     title: "Change password",
     subTitle: "Enter new password",
     message: {
-      success: "Account has been recovered.",
+      success:
+        "Account has been recovered.<br/> You can return to the previously opened tab.",
       error: "Link has expired or has been used.",
     },
+    home: "Home",
   },
   modal: {
     buttons: {

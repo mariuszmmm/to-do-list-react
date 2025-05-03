@@ -16,9 +16,6 @@ export interface AccountState {
 }
 
 export type RecoveryStatus =
-  | "recovering"
-  | "resetPassword"
   | "linkExpired"
-  | "passwordUpdated"
-  | "passwordNotUpdated"
+  | "accountRecovered"
   | "passwordChange";

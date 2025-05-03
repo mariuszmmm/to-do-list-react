@@ -124,17 +124,21 @@ const langDe: typeof langPl = {
   },
   confirmationPage: {
     message: {
-      success: "Registrierung erfolgreich.",
+      success:
+        "Die Registrierung war erfolgreich, du kannst die Seite schließen.",
       error: "Registrierung fehlgeschlagen.",
     },
+    home: "Startseite",
   },
   accountRecoveryPage: {
     title: "Passwort ändern",
     subTitle: "Neues Passwort eingeben",
     message: {
-      success: "Das Konto wurde wiederhergestellt.",
+      success:
+        "Konto wurde wiederhergestellt.<br/> Du kannst zum vorher geöffneten Tab zurückkehren.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
+    home: "Startseite",
   },
   modal: {
     buttons: {

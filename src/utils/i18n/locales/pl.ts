@@ -122,17 +122,21 @@ const langPl = {
   },
   confirmationPage: {
     message: {
-      success: "Rejestracja udana.",
+      success:
+        "Rejestracja udana.<br/> Możesz wrócić do wcześniej otwartej karty.",
       error: "Rejestracja nieudana.",
     },
+    home: "Strona główna",
   },
   accountRecoveryPage: {
     title: "Zmiana hasła",
     subTitle: "Wpisz nowe hasło",
     message: {
-      success: "Konto zostało odzyskane.",
+      success:
+        "Konto zostało odzyskane.<br/> Możesz wrócić do wcześniej otwartej karty.",
       error: "Link wygasł lub został użyty.",
     },
+    home: "Strona główna",
   },
   modal: {
     buttons: {

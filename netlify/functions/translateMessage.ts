@@ -33,7 +33,12 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   const response = await fetch(`${API_URL}?key=${KEY}`, {
     method: "POST",
-    body: JSON.stringify({ q: text, target: targetLanguage }),
+    body: JSON.stringify({
+      q: text,
+      source: "en",
+      target: targetLanguage,
+      format: "text",
+    }),
   })
     .then((res) => {
       if (!res.ok) {

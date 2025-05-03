@@ -14,14 +14,14 @@ import {
   getRecoveryTokenFromSessionStorage,
 } from "../../../utils/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
-import { RecoveryStatus } from "..";
 import { useTranslation } from "react-i18next";
+import { RecoveryStatus } from "../../../types";
 
-export const AccountRecoveryForm = ({
-  setStatus,
-}: {
+interface Props {
   setStatus: (status: RecoveryStatus) => void;
-}) => {
+}
+
+export const AccountRecoveryForm = ({ setStatus }: Props) => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<string>("");
