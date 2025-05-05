@@ -5,8 +5,8 @@ import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";
 import { FormButton } from "../../../common/FormButton";
-import { InputContainer } from "../../../common/InputContainer";
-import { EyeIconContainer } from "../../../common/EyeIconContainer";
+import { InputWrapper } from "../../../common/InputWrapper";
+import { InputButton } from "../../../common/InputButton";
 import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import { auth } from "../../../api/auth";
 import {
@@ -110,7 +110,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
   return (
     <>
       <Form $singleInput onSubmit={onFormSubmit}>
-        <InputContainer>
+        <InputWrapper>
           <Input
             value={password}
             name="password"
@@ -119,15 +119,15 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
           />
-          <EyeIconContainer
+          <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
             onTouchStart={() => setShowPassword(true)}
             onTouchEnd={() => setShowPassword(false)}
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-          </EyeIconContainer>
-        </InputContainer>
+          </InputButton>
+        </InputWrapper>
         <FormButton type="submit" $singleInput>
           {t("form.buttons.save")}
         </FormButton>

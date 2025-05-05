@@ -14,6 +14,7 @@
 * [Configuration](#-configuration)
 * [Application views](#-application-views)
 * [User Instructions](#-user-instructions)
+* [Adding Tasks by Voice](#-adding-tasks-by-voice)
 
 </br>
 
@@ -73,7 +74,8 @@ The older version is hosted on the <b>gh-pages</b> branch and can be accessed at
       * Login,
       * Password reset and change,
       * Account deletion.<br>
-      
+   * <b>Adding tasks by voice:</b> Ability to enter task content using speech recognition (Web Speech API).
+
 * <b>Lists Page:</b></br>
 After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
    * Preview the contents of a selected list,
@@ -189,3 +191,21 @@ Buttons are active only when undoing or redoing is possible.
    * <b>Password change, account deletion, and other account features.</b>
    * <b>Lists Page:</b> View saved lists, preview contents, load a list into the current to-do-list, or delete a list.
    * <b>Save the current to-do list to the database.</b>
+
+</br>
+
+## 🎤 Adding Tasks by Voice
+
+The application allows you to add and edit tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
+
+**How does it work?**
+- Next to the text field, there is a button with a microphone icon.
+- Click the microphone to start listening – you can dictate the task content.
+- The recognized text appears automatically in the text field.
+- Clicking the microphone again stops listening.
+- If your browser does not support speech recognition, the microphone button will be inactive.
+
+**Additional information:**
+- Various languages are supported – the app automatically adjusts the recognition language to the selected interface language.
+- In task edit mode, speech recognition continues the existing content.
+- Interim results are supported, so the text appears live as you speak (if the browser allows it).

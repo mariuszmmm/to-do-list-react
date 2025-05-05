@@ -7,20 +7,45 @@ import { ReactComponent as CircleLoading } from "../../images/circle-loading.svg
 import { ReactComponent as Eye } from "../../images/eye.svg";
 import { ReactComponent as EyeSlash } from "../../images/eye-slash.svg";
 import { ReactComponent as ArrowUp } from "../../images/arrow-up.svg";
+import { ReactComponent as Microphone } from "../../images/microphone.svg";
 
-const eyeIconStyles = css`
+interface MicrophoneIconProps {
+  $isActive?: boolean;
+}
+
+export const MicrophoneIcon = styled(Microphone)<MicrophoneIconProps>`
+  width: 1rem;
+  color: ${({ theme, $isActive }) => $isActive && theme.color.forestGreen};
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      animation: pulse 1s linear infinite;
+    `}
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+`;
+
+const inputButtonStyles = css`
   width: 1.2rem;
-  color: ${({ theme }) => theme.color.empress};
-  cursor: pointer;
 `;
 
 export const EyeIcon = styled(Eye)`
-  ${eyeIconStyles}
-  width: 1.1rem;
+  ${inputButtonStyles}
 `;
 
 export const EyeSlashIcon = styled(EyeSlash)`
-  ${eyeIconStyles}
+  ${inputButtonStyles}
+  scale: 1.1;
 `;
 
 const rotateIconStyles = css`
@@ -64,10 +89,10 @@ export const CircleLoadingIcon = styled(CircleLoading)`
 
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+      transform: Rotate(0deg);
     }
     100% {
-      transform: rotate(360deg);
+      transform: Rotate(360deg);
     }
   }
 `;

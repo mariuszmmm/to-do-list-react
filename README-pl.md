@@ -14,6 +14,7 @@
 * [Konfiguracja](#-konfiguracja)
 * [Widok aplikacji](#-widok-aplikacji)
 * [Instrukcje użytkowania](#-instrukcje-użytkowania)
+* [Dodawanie zadań głosem](#-dodawanie-zadań-głosem)
 
 </br>
 
@@ -74,6 +75,8 @@ Aktualnie starsza wersja aplikacji znajduje się na branchu <b>gh-pages</b> i je
       * Logowanie,
       * Resetowanie i zmiana hasła,
       * Usuwanie konta.<br>
+   * <b>Dodawanie zadań głosem:</b> Możliwość wprowadzania treści zadania za pomocą rozpoznawania mowy (Web Speech API).
+
       
 * <b>Strona List:</b></br>
 Po zalogowaniu użytkownik ma dostęp do strony "Listy", gdzie wyświetlane są wszystkie zapisane listy pobierane z bazy danych MongoDB. Na tej stronie możliwe jest:
@@ -190,3 +193,21 @@ Przyciski są aktywne tylko wtedy, gdy możliwe jest cofnięcie lub ponowienie o
    * <b>Zmiany hasła, usuwania konta oraz innych funkcji konta.</b>
    * <b>Strony "Listy":</b> Przegląd zapisanych list, podgląd zawartości, ładowanie listy do bieżącej listy zadań lub jej usunięcie.
    * <b>Możliwości zapisywania bieżącej listy do bazy danych.</b>
+
+</br>
+
+## 🎤 Dodawanie zadań głosem
+
+Aplikacja umożliwia dodawanie oraz edytowanie zadań za pomocą rozpoznawania mowy. Funkcjonalność ta wykorzystuje Web Speech API i jest dostępna w formularzu dodawania/edycji zadania.
+
+**Jak to działa?**
+- Obok pola tekstowego znajduje się przycisk z ikoną mikrofonu.
+- Kliknij mikrofon, aby rozpocząć nasłuchiwanie – możesz podyktować treść zadania.
+- Rozpoznany tekst pojawia się automatycznie w polu tekstowym.
+- Ponowne kliknięcie mikrofonu kończy nasłuchiwanie.
+- Jeśli Twoja przeglądarka nie obsługuje rozpoznawania mowy, przycisk mikrofonu będzie nieaktywny.
+
+**Dodatkowe informacje:**
+- Obsługiwane są różne języki – aplikacja automatycznie dostosowuje język rozpoznawania do wybranego języka interfejsu.
+- W trybie edycji zadania, rozpoznawanie mowy kontynuuje istniejącą treść.
+- Wspierane są wyniki pośrednie (interim results), dzięki czemu tekst pojawia się na bieżąco podczas mówienia (jeśli przeglądarka to umożliwia).

@@ -292,6 +292,10 @@ const langPl = {
       },
     },
   },
+  prepareText: {
+    period: "kropka",
+    comma: "przecinek",
+  },
 };
 
 export default langPl;

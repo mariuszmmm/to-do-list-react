@@ -55,7 +55,7 @@ const tasksSlice = createSlice({
     },
     setTaskToEdit: (
       state,
-      { payload: taskId }: PayloadAction<string | undefined>
+      { payload: taskId }: PayloadAction<string | null>
     ) => {
       if (!taskId) {
         state.editedTask = null;

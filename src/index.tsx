@@ -29,17 +29,17 @@ const queryClient = new QueryClient({
 });
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <I18nextProvider i18n={i18n}>
-          <GlobalStyle />
-          <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
-            <App />
-          </QueryClientProvider>
-        </I18nextProvider>
-      </ThemeProvider>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <I18nextProvider i18n={i18n}>
+        <GlobalStyle />
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools />
+          <App />
+        </QueryClientProvider>
+      </I18nextProvider>
+    </ThemeProvider>
+  </Provider>
+  // </React.StrictMode>
 );

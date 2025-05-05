@@ -16,6 +16,10 @@ import {
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { getWidthForFormTasksButton } from "../../../../utils/getWidthForDynamicButtons";
+import { InputWrapper } from "../../../../common/InputWrapper";
+import { MicrophoneIcon } from "../../../../common/icons";
+import { InputButton } from "../../../../common/InputButton";
+import { useSpeechToText } from "../../../../hooks";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -29,37 +33,48 @@ export const TaskForm = () => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+
+  const {
+    text,
+    isListening,
+    isActive,
+    isInterimSupported,
+    supportSpeech,
+    start,
+    stop,
+  } = useSpeechToText({
+    prevText: !!editedTask?.content
+      ? `${editedTask.content} `
+      : `${taskContent} `,
+  });
+
   const formatedDate = new Date().toISOString();
 
-  const onFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
+  const addTaskContent = () => {
     editedTask === null &&
       replaceQueryParameter({
         key: searchQueryParamName,
       });
-
-    const trimmedTaskContent = taskContent.trim();
-
-    if (trimmedTaskContent) {
+    const content = taskContent.trim();
+    if (content) {
       editedTask === null
         ? dispatch(
             addTask({
               task: {
                 id: nanoid(),
-                content: trimmedTaskContent,
+                content,
                 done: false,
                 date: formatedDate,
               },
               stateForUndo: { tasks, listName },
             })
           )
-        : trimmedTaskContent !== previousContent
+        : content !== previousContent
         ? dispatch(
             saveEditedTask({
               task: {
                 id: editedTask.id,
-                content: trimmedTaskContent,
+                content,
                 done: editedTask.done,
                 date: editedTask.date,
                 editedDate: formatedDate,
@@ -67,34 +82,79 @@ export const TaskForm = () => {
               stateForUndo: { tasks, listName },
             })
           )
-        : dispatch(setTaskToEdit());
+        : dispatch(setTaskToEdit(null));
     }
-
     setTaskContent("");
-    editedTask === null && inputRef.current!.focus();
-    inputRef.current!.scrollLeft = inputRef.current!.scrollWidth;
+  };
+
+  const onFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    if (isListening) stop();
+    addTaskContent();
   };
 
   useEffect(() => {
-    if (editedTask !== null) {
-      setTaskContent(editedTask.content);
-      setPreviousContent(editedTask.content);
-      inputRef.current!.focus();
-    }
+    if (editedTask === null) return;
+    if (isListening) stop();
+    setTaskContent(editedTask.content);
+    setPreviousContent(editedTask.content);
+    setTimeout(() => {
+      const input = inputRef.current;
+      if (input) {
+        input.focus();
+        input.scrollLeft = input.scrollWidth;
+      }
+    }, 0);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedTask]);
+
+  useEffect(() => {
+    if (!!editedTask || isListening || !isInterimSupported) return;
+    addTaskContent();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isListening, isInterimSupported]);
+
+  useEffect(() => setTaskContent(text), [text]);
+
+  useEffect(() => {
+    const input = inputRef.current;
+    if (input) input.scrollLeft = input.scrollWidth;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskContent]);
 
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
-      <Input
-        value={taskContent}
-        name="taskName"
-        placeholder={t("form.inputPlaceholder")}
-        onChange={({ target }) => setTaskContent(target.value)}
-        ref={inputRef}
-      />
+      <InputWrapper>
+        <Input
+          value={taskContent}
+          name="taskName"
+          placeholder={t("form.inputPlaceholder")}
+          onChange={({ target }) => setTaskContent(target.value)}
+          ref={inputRef}
+        />
+        <InputButton
+          type="button"
+          onClick={() => {
+            if (!isListening && inputRef.current) {
+              inputRef.current.focus();
+              start();
+            } else {
+              stop();
+            }
+          }}
+          disabled={!supportSpeech}
+        >
+          <MicrophoneIcon $isActive={isListening} />
+        </InputButton>
+      </InputWrapper>
       <FormButton
+        type="submit"
         $singleInput
         width={getWidthForFormTasksButton(i18n.language)}
+        disabled={isActive}
       >
         {editedTask !== null
           ? t("form.inputButton.saveChanges")

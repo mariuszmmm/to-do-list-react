@@ -8,6 +8,12 @@ export const resources = {
   de: { translation: langDe },
 };
 
+export const langCodes: Record<SupportedLanguages, string> = {
+  pl: "pl-Pl",
+  en: "en-US",
+  de: "de-DE",
+};
+
 export type SupportedLanguages = keyof typeof resources;
 export const supportedLanguages = Object.keys(
   resources

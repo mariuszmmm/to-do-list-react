@@ -5,8 +5,7 @@ import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
-import { InputContainer } from "../../../common/InputContainer";
-import { EyeIconContainer } from "../../../common/EyeIconContainer";
+import { InputButton } from "../../../common/InputButton";
 import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import {
   selectAccountMode,
@@ -29,6 +28,7 @@ import { useAccountRecovery } from "./useAccountRecovery";
 import { useAccountDelete } from "./useAccountDelete";
 import { clearStorage } from "../../tasks/tasksSlice";
 import { useAccountRegister } from "./useAccountRegister";
+import { InputWrapper } from "../../../common/InputWrapper";
 
 export const AccountForm = () => {
   const [email, setEmail] = useState("");
@@ -162,7 +162,7 @@ export const AccountForm = () => {
           ref={emailInputRef}
           hidden={!!loggedUserEmail}
         />
-        <InputContainer
+        <InputWrapper
           hidden={
             (!!loggedUserEmail || accountMode === "accountRecovery") &&
             accountMode !== "passwordChange"
@@ -183,14 +183,14 @@ export const AccountForm = () => {
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
           />
-          <EyeIconContainer
+          <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
             onTouchStart={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-          </EyeIconContainer>
-        </InputContainer>
+          </InputButton>
+        </InputWrapper>
         <FormButton
           type="submit"
           $singleInput={

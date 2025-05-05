@@ -295,6 +295,10 @@ const langDe: typeof langPl = {
       },
     },
   },
+  prepareText: {
+    period: "Punkt",
+    comma: "Komma",
+  },
 };
 
 export default langDe;

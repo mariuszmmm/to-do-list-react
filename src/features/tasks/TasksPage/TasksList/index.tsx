@@ -87,10 +87,12 @@ export const TasksList = () => {
           {!isTasksSorting && (
             <>
               <EditButton
-                onClick={() => dispatch(setTaskToEdit(task.id))}
-                disabled={editedTask !== null}
+                onClick={() =>
+                  dispatch(setTaskToEdit(!!editedTask ? null : task.id))
+                }
+                disabled={!!editedTask && editedTask.id !== task.id}
               >
-                ✏️
+                {!!editedTask && editedTask.id === task.id ? "↩︎" : "✏️"}
               </EditButton>
               <RemoveButton
                 onClick={() =>

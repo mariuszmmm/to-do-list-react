@@ -6,6 +6,7 @@ export const Input = styled.input`
   width: 100%;
   border-radius: 5px;
   height: 42px;
+  padding-right: 2.5rem;
 
   &:disabled {
     color: ${({ theme }) => theme && theme.color.alto};
