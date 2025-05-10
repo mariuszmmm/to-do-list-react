@@ -22,7 +22,8 @@ const langEn: typeof langPl = {
       inputPlaceholder: "What to do ?",
       inputButton: {
         addTask: "Add task",
-        saveChanges: "Save changes",
+        saveChanges: "Save",
+        cancel: "Cancel",
       },
     },
     search: {

@@ -127,6 +127,7 @@ const tasksSlice = createSlice({
       state.listName = "";
       state.tasks = [];
       state.redoTasksStack = [];
+      state.editedTask = null;
     },
     setAllDone: (
       state,

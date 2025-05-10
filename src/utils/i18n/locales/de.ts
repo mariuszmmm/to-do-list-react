@@ -22,7 +22,8 @@ const langDe: typeof langPl = {
       inputPlaceholder: "Was ist zu tun?",
       inputButton: {
         addTask: "Aufgabe hinzufügen",
-        saveChanges: "Änderungen speichern",
+        saveChanges: "Speichern",
+        cancel: "Abbrechen",
       },
     },
     search: {

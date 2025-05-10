@@ -20,7 +20,8 @@ const langPl = {
       inputPlaceholder: "Co jest do zrobienia ?",
       inputButton: {
         addTask: "Dodaj zadanie",
-        saveChanges: "Zapisz zmiany",
+        saveChanges: "Zapisz",
+        cancel: "Anuluj",
       },
     },
     search: {

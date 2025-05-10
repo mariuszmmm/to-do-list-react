@@ -4,11 +4,13 @@ interface ButtonProps {
   $singleInput?: boolean;
   $noInputs?: boolean;
   width?: string;
+  $cancel?: boolean;
 }
 
 export const FormButton = styled.button<ButtonProps>`
   padding: 10px;
-  background: ${({ theme }) => theme.color.teal};
+  background: ${({ $cancel, theme }) =>
+    $cancel ? theme.color.empress : theme.color.teal};
   color: ${({ theme }) => theme.color.white};
   border: none;
   min-width: 110px;

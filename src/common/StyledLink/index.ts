@@ -1,9 +1,20 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 
-export const StyledLink = styled(Link)`
+interface StyledLinkProps {
+  disabled?: boolean;
+}
+
+export const StyledLink = styled(Link)<StyledLinkProps>`
   color: ${({ theme }) => theme.color.teal};
   text-decoration: none;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      color: ${({ theme }) => theme.color.empress};
+      pointer-events: none;
+    `}
 
   &:hover {
     cursor: pointer;

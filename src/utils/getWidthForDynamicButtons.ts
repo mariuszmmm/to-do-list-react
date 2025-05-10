@@ -1,10 +1,3 @@
-export const getWidthForFormTasksButton = (lang: string) => {
-  if (lang === "pl") return "136px";
-  if (lang === "en") return "130px";
-  if (lang === "de") return "206px";
-  return "auto";
-};
-
 export const getWidthForFetchExampleTasksButton = (lang: string) => {
   if (lang === "pl") return "234px";
   if (lang === "en") return "164px";

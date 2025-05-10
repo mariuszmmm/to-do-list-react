@@ -24,6 +24,7 @@ import {
 } from "../../tasksSlice";
 import { SortButtonsContainer } from "../../../../common/taskButtons/SortButtonsContainer";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
+import { useEffect } from "react";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
@@ -37,6 +38,11 @@ export const TasksList = () => {
   );
   const dispatch = useAppDispatch();
   const date = new Date().toISOString();
+
+  useEffect(() => {
+    if (!editedTask) return;
+    window.scrollTo(0, 0);
+  }, [editedTask]);
 
   return (
     <List>
@@ -81,18 +87,21 @@ export const TasksList = () => {
           <Content>
             {!query ? <span>{index + 1}. </span> : ""}
             <Task $done={task.done}>
-              <StyledLink to={`/tasks/${task.id}`}>{task.content}</StyledLink>
+              <StyledLink
+                to={`/tasks/${task.id}`}
+                disabled={editedTask !== null}
+              >
+                {task.content}
+              </StyledLink>
             </Task>
           </Content>
           {!isTasksSorting && (
             <>
               <EditButton
-                onClick={() =>
-                  dispatch(setTaskToEdit(!!editedTask ? null : task.id))
-                }
-                disabled={!!editedTask && editedTask.id !== task.id}
+                onClick={() => dispatch(setTaskToEdit(task.id))}
+                disabled={!!editedTask}
               >
-                {!!editedTask && editedTask.id === task.id ? "↩︎" : "✏️"}
+                ✏️
               </EditButton>
               <RemoveButton
                 onClick={() =>

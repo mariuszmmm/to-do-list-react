@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { store } from "./store";
 import { theme } from "./theme/theme";
+import { Normalize } from "styled-normalize";
 import GlobalStyle from "./theme/GlobalStyle";
 import i18n from "./utils/i18n";
 import App from "./App";
@@ -29,17 +30,18 @@ const queryClient = new QueryClient({
 });
 
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <I18nextProvider i18n={i18n}>
-        <GlobalStyle />
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools />
-          <App />
-        </QueryClientProvider>
-      </I18nextProvider>
-    </ThemeProvider>
-  </Provider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <I18nextProvider i18n={i18n}>
+          <Normalize />
+          <GlobalStyle />
+          <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools />
+            <App />
+          </QueryClientProvider>
+        </I18nextProvider>
+      </ThemeProvider>
+    </Provider>
+  </React.StrictMode>
 );
