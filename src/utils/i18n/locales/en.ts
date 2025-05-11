@@ -4,7 +4,7 @@ const langEn: typeof langPl = {
   navigation: {
     tasksPage: "Tasks",
     lists: "Lists",
-    author: "About author",
+    info: "Info",
   },
   currentDate: { desc: "Today is " },
   tasksPage: {
@@ -81,14 +81,59 @@ const langEn: typeof langPl = {
     },
     subTitle: "Selected list",
   },
-  authorPage: {
-    title: "About author",
-    name: "Mariusz Matusiewicz",
-    description: {
-      part1:
-        "Creating front-end applications is my passion, especially with <strong>React</strong>.<br/> I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
-      part2:
-        "Beyond programming, I love the mountains. Hiking is my way to relax and recharge. The <strong>Bieszczady</strong> Mountains are especially close to my heart—their tranquility and natural beauty inspire me every time I return. I combine my passion for technology with my curiosity about the world. Thanks to this, I eagerly take on new challenges that help me grow and create projects I can be proud of. 😊🚀",
+  infoPage: {
+    aboutApp: {
+      title: "About the App",
+      topics: {
+        features: {
+          subTitle: "Key Features:",
+          description: {
+            part1:
+              "<strong>Task Management</strong>: <br/>adding, editing, deleting, marking as completed, undoing and redoing changes.",
+            part2:
+              "<strong>Search and Filtering</strong>: <br/>ability to search tasks with options to show/hide filters and clear them.",
+            part3:
+              "<strong>List Management</strong>: <br/>creating, saving, and loading task lists from the MongoDB database.",
+            part4:
+              "<strong>Multilingual Support</strong>: <br/>interface available in Polish, English, and German thanks to react-i18next.",
+            part5:
+              "<strong>User Account Management</strong>: <br/>registration, login, password reset and change, account deletion via Netlify GoTrue.",
+            part6:
+              "<strong>Voice Task Input</strong>: <br/>ability to enter task content using speech recognition (Web Speech API).",
+          },
+        },
+        technologies: {
+          subTitle: "Technologies:",
+        },
+        links: {
+          subTitle: "Available versions:",
+          description: {
+            newApp: "New version:",
+            oldApp: "Older version:",
+          },
+        },
+      },
+    },
+    aboutAuthor: {
+      title: "About author",
+      name: "Mariusz Matusiewicz",
+      description: {
+        part1:
+          "Creating front-end applications is my passion, especially with <strong>React</strong>. I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
+        part2:
+          "Beyond programming, I love the mountains. Hiking is my way to relax and recharge. The <strong>Bieszczady</strong> Mountains are especially close to my heart—their tranquility and natural beauty inspire me every time I return. I combine my passion for technology with my curiosity about the world. Thanks to this, I eagerly take on new challenges that help me grow and create projects I can be proud of. 😊🚀",
+      },
+      links: {
+        subTitle: "Links",
+        description: {
+          personalHomepage: "Personal website:",
+          github: "GitHub:",
+        },
+      },
+    },
+    contactForm: {
+      title: "Contact",
+      subTitle: "Got a question or suggestion? ✉️ Drop me a message!",
     },
   },
   accountPage: {
@@ -291,6 +336,25 @@ const langEn: typeof langPl = {
           default: "The link has expired or has been used.",
         },
       },
+    },
+    sendMessage: {
+      title: "Send message",
+      labels: {
+        email: "Email:",
+        message: "Message:",
+      },
+      placeholders: {
+        email: "Enter your email address",
+        message: "Enter your message",
+      },
+      message: {
+        loading: "Sending message...",
+        success: "Message has been sent.",
+        error: {
+          default: "Error sending message.",
+        },
+      },
+      button: "Send",
     },
   },
   prepareText: {

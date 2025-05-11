@@ -4,7 +4,7 @@ const langDe: typeof langPl = {
   navigation: {
     tasksPage: "Aufgaben",
     lists: "Listen",
-    author: "Über den Autor",
+    info: "Info",
   },
   currentDate: { desc: "Heute ist " },
   tasksPage: {
@@ -81,14 +81,59 @@ const langDe: typeof langPl = {
     },
     subTitle: "Ausgewählte Liste",
   },
-  authorPage: {
-    title: "Über den Autor",
-    name: "Mariusz Matusiewicz",
-    description: {
-      part1:
-        "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>.<br/> Ich liebe es, neue Technologien zu erforschen und meine Fähigkeiten ständig weiterzuentwickeln. Die größte Zufriedenheit bereitet mir das Entwerfen intuitiver und ästhetischer Benutzeroberflächen, die das Leben der Nutzer erleichtern.",
-      part2:
-        "Abseits des Programmierens liebe ich die Berge. Wanderungen sind für mich eine Möglichkeit, mich zu entspannen und neue Energie zu tanken. Besonders am Herzen liegen mir die <strong>Bieszczady</strong> – ihre Ruhe und natürliche Schönheit inspirieren mich jedes Mal, wenn ich dorthin zurückkehre. Ich verbinde meine Leidenschaft für Technologie mit meiner Neugier auf die Welt. Dadurch nehme ich mit Begeisterung neue Herausforderungen an, die es mir ermöglichen, mich weiterzuentwickeln und Projekte zu schaffen, auf die ich stolz sein kann. 😊🚀",
+  infoPage: {
+    aboutApp: {
+      title: "Über die App",
+      topics: {
+        features: {
+          subTitle: "Hauptfunktionen:",
+          description: {
+            part1:
+              "<strong>Aufgabenverwaltung</strong>: <br/>hinzufügen, bearbeiten, löschen, als erledigt markieren, Änderungen rückgängig machen und wiederherstellen.",
+            part2:
+              "<strong>Suchen und Filtern</strong>: <br/>Möglichkeit, Aufgaben zu durchsuchen, Filter ein- oder auszublenden und zurückzusetzen.",
+            part3:
+              "<strong>Listenverwaltung</strong>: <br/>Erstellen, Speichern und Laden von Aufgabenlisten aus einer MongoDB-Datenbank.",
+            part4:
+              "<strong>Mehrsprachige Unterstützung</strong>: <br/>Oberfläche verfügbar auf Polnisch, Englisch und Deutsch dank react-i18next.",
+            part5:
+              "<strong>Benutzerkontoverwaltung</strong>: <br/>Registrierung, Anmeldung, Passwort zurücksetzen und ändern, Kontolöschung mit Netlify GoTrue.",
+            part6:
+              "<strong>Sprachgesteuertes Hinzufügen von Aufgaben</strong>: <br/>Möglichkeit, Aufgabeninhalte per Spracherkennung (Web Speech API) einzugeben.",
+          },
+        },
+        technologies: {
+          subTitle: "Technologien:",
+        },
+        links: {
+          subTitle: " Verfügbare Versionen:",
+          description: {
+            newApp: "Neue Version:",
+            oldApp: "Alte Version:",
+          },
+        },
+      },
+    },
+    aboutAuthor: {
+      title: "Über den Autor",
+      name: "Mariusz Matusiewicz",
+      description: {
+        part1:
+          "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>. Ich liebe es, neue Technologien zu erforschen und meine Fähigkeiten ständig weiterzuentwickeln. Die größte Zufriedenheit bereitet mir das Entwerfen intuitiver und ästhetischer Benutzeroberflächen, die das Leben der Nutzer erleichtern.",
+        part2:
+          "Abseits des Programmierens liebe ich die Berge. Wanderungen sind für mich eine Möglichkeit, mich zu entspannen und neue Energie zu tanken. Besonders am Herzen liegen mir die <strong>Bieszczady</strong> – ihre Ruhe und natürliche Schönheit inspirieren mich jedes Mal, wenn ich dorthin zurückkehre. Ich verbinde meine Leidenschaft für Technologie mit meiner Neugier auf die Welt. Dadurch nehme ich mit Begeisterung neue Herausforderungen an, die es mir ermöglichen, mich weiterzuentwickeln und Projekte zu schaffen, auf die ich stolz sein kann. 😊🚀",
+      },
+      links: {
+        subTitle: "Links",
+        description: {
+          personalHomepage: "Persönliche Homepage:",
+          github: "GitHub:",
+        },
+      },
+    },
+    contactForm: {
+      title: "Kontakt",
+      subTitle: "Frage oder Vorschlag? ✉️ Schreib mir einfach!",
     },
   },
   accountPage: {
@@ -294,6 +339,25 @@ const langDe: typeof langPl = {
           default: "Der Link ist abgelaufen oder wurde bereits verwendet.",
         },
       },
+    },
+    sendMessage: {
+      title: "Nachricht senden",
+      labels: {
+        email: "E-Mail:",
+        message: "Nachricht:",
+      },
+      placeholders: {
+        email: "Geben Sie Ihre E-Mail-Adresse ein",
+        message: "Geben Sie Ihre Nachricht ein",
+      },
+      message: {
+        loading: "Nachricht wird gesendet...",
+        success: "Nachricht gesendet.",
+        error: {
+          default: "Fehler beim Senden der Nachricht.",
+        },
+      },
+      button: "Absenden",
     },
   },
   prepareText: {

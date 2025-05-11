@@ -44,6 +44,7 @@ Aktualnie starsza wersja aplikacji znajduje się na branchu <b>gh-pages</b> i je
 <li>react-i18next, Cloud Translation API</li>
 <li>Netlify GoTrue.js</li>
 <li>MongoDB</li>
+<li>EmailJS</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
 <li>Controlled Components</li>
@@ -197,8 +198,9 @@ Przyciski są aktywne tylko wtedy, gdy możliwe jest cofnięcie lub ponowienie o
 </br>
 
 ## 🎤 Dodawanie zadań głosem
-
 Aplikacja umożliwia dodawanie oraz edytowanie zadań za pomocą rozpoznawania mowy. Funkcjonalność ta wykorzystuje Web Speech API i jest dostępna w formularzu dodawania/edycji zadania.
+
+</br>
 
 **Jak to działa?**
 - Obok pola tekstowego znajduje się przycisk z ikoną mikrofonu.
@@ -207,7 +209,14 @@ Aplikacja umożliwia dodawanie oraz edytowanie zadań za pomocą rozpoznawania m
 - Ponowne kliknięcie mikrofonu kończy nasłuchiwanie.
 - Jeśli Twoja przeglądarka nie obsługuje rozpoznawania mowy, przycisk mikrofonu będzie nieaktywny.
 
+</br>
+
 **Dodatkowe informacje:**
 - Obsługiwane są różne języki – aplikacja automatycznie dostosowuje język rozpoznawania do wybranego języka interfejsu.
 - W trybie edycji zadania, rozpoznawanie mowy kontynuuje istniejącą treść.
 - Wspierane są wyniki pośrednie (interim results), dzięki czemu tekst pojawia się na bieżąco podczas mówienia (jeśli przeglądarka to umożliwia).
+
+</br>
+
+## 📬 Contact Form
+Aplikacja zawiera formularz kontaktowy, który umożliwia użytkownikom wysyłanie wiadomości bezpośrednio do autora. Formularz jest zintegrowany z [EmailJS](https://www.emailjs.com/docs/examples/reactjs/), co pozwala na wysyłanie e-maili bez potrzeby posiadania backendowego serwera.

@@ -19,3 +19,5 @@ export const supportedLanguages = Object.keys(
   resources
 ) as SupportedLanguages[];
 export const defaultLanguage = "pl" as SupportedLanguages;
+
+export type TranslationSchema = typeof langPl;

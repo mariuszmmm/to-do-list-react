@@ -69,7 +69,7 @@ const Navigation = ({ listsData, authRoutes }: Props) => {
             </li>
           )}
           <li>
-            <StyledNavLink to="/author">{t("author")} </StyledNavLink>
+            <StyledNavLink to="/info">{t("info")} </StyledNavLink>
           </li>
           <li>
             <StyledNavLink to="/account">

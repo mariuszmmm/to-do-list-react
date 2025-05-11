@@ -89,7 +89,6 @@ export const TaskForm = () => {
   useEffect(() => {
     if (!editedTask) return;
     if (isListening) stop();
-    console.log("TEST");
     setTaskContent(editedTask.content);
     setPreviousContent(editedTask.content);
     setTimeout(() => {

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
-import AuthorPage from "./features/AuthorPage";
+import InfoPage from "./features/InfoPage";
 import ListsPage from "./features/ListsPage";
 import AccountPage from "./features/AccountPage";
 import UserConfirmationPage from "./features/UserConfirmationPage";
@@ -81,7 +81,7 @@ const App = () => {
           {!!safeData && (
             <Route path="/lists" element={<ListsPage listsData={safeData} />} />
           )}
-          <Route path="/author" element={<AuthorPage />} />
+          <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="*" element={<Navigate to="/tasks" />} />
         </Routes>

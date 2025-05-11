@@ -44,6 +44,7 @@ The older version is hosted on the <b>gh-pages</b> branch and can be accessed at
 <li>react-i18next, Cloud Translation API</li>
 <li>Netlify GoTrue.js</li>
 <li>MongoDB</li>
+<li>EmailJS</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
 <li>Controlled Components</li>
@@ -195,8 +196,9 @@ Buttons are active only when undoing or redoing is possible.
 </br>
 
 ## 🎤 Adding Tasks by Voice
-
 The application allows you to add and edit tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
+
+</br>
 
 **How does it work?**
 - Next to the text field, there is a button with a microphone icon.
@@ -205,7 +207,14 @@ The application allows you to add and edit tasks using speech recognition. This 
 - Clicking the microphone again stops listening.
 - If your browser does not support speech recognition, the microphone button will be inactive.
 
+</br>
+
 **Additional information:**
 - Various languages are supported – the app automatically adjusts the recognition language to the selected interface language.
 - In task edit mode, speech recognition continues the existing content.
 - Interim results are supported, so the text appears live as you speak (if the browser allows it).
+
+</br>
+
+## 📬 Contact Form
+The application includes a contact form that allows users to send messages directly to the author. This form is integrated using [EmailJS](https://www.emailjs.com/docs/examples/reactjs/), enabling email sending without the need for a backend server.

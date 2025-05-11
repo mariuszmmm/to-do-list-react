@@ -2,7 +2,7 @@ const langPl = {
   navigation: {
     tasksPage: "Zadania",
     lists: "Listy",
-    author: "O autorze",
+    info: "Informacje",
   },
   currentDate: { desc: "Dziś jest " },
   tasksPage: {
@@ -79,14 +79,59 @@ const langPl = {
     },
     subTitle: "Wybrana lista",
   },
-  authorPage: {
-    title: "O autorze",
-    name: "Mariusz Matusiewicz",
-    description: {
-      part1:
-        "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>.<br/> Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. Największą satysfakcję daje mi projektowanie intuicyjnych i estetycznych interfejsów, które ułatwiają życie użytkownikom.",
-      part2:
-        "Poza programowaniem kocham góry. Wędrówki to dla mnie sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łączę zamiłowanie do technologii z ciekawością świata. Dzięki temu z entuzjazmem podejmuję nowe wyzwania, które pozwalają mi rozwijać się i tworzyć projekty, z których mogę być dumny. 😊🚀",
+  infoPage: {
+    aboutApp: {
+      title: "O aplikacji",
+      topics: {
+        features: {
+          subTitle: "Kluczowe funkcje:",
+          description: {
+            part1:
+              "<strong>Zarządzanie zadaniami</strong>: <br/>dodawanie, edycja, usuwanie, oznaczanie jako ukończone, cofanie i ponawianie zmian.",
+            part2:
+              "<strong>Wyszukiwanie i filtrowanie</strong>: <br/>możliwość przeszukiwania zadań z opcją ukrywania/pokazywania filtrów oraz ich czyszczenia.",
+            part3:
+              "<strong>Zarządzanie listami</strong>: <br/>tworzenie, zapisywanie i ładowanie list zadań z bazy danych MongoDB.",
+            part4:
+              "<strong>Obsługa wielu języków</strong>: <br/>interfejs dostępny w językach polskim, angielskim i niemieckim dzięki react-i18next.",
+            part5:
+              "<strong>Zarządzanie kontem użytkownika</strong>: <br/>rejestracja, logowanie, resetowanie i zmiana hasła, usuwanie konta za pomocą Netlify GoTrue.",
+            part6:
+              "<strong>Dodawanie zadań głosowo</strong>: <br/>możliwość wprowadzania treści zadań za pomocą rozpoznawania mowy (Web Speech API).",
+          },
+        },
+        technologies: {
+          subTitle: "Technologie:",
+        },
+        links: {
+          subTitle: "Dostępne wersje:",
+          description: {
+            newApp: "Nowa wersja:",
+            oldApp: "Starsza wersja:",
+          },
+        },
+      },
+    },
+    aboutAuthor: {
+      title: "O autorze",
+      name: "Mariusz Matusiewicz",
+      description: {
+        part1:
+          "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. Największą satysfakcję daje mi projektowanie intuicyjnych i estetycznych interfejsów, które ułatwiają życie użytkownikom.",
+        part2:
+          "Poza programowaniem kocham góry. Wędrówki to dla mnie sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łączę zamiłowanie do technologii z ciekawością świata. Dzięki temu z entuzjazmem podejmuję nowe wyzwania, które pozwalają mi rozwijać się i tworzyć projekty, z których mogę być dumny. 😊🚀",
+      },
+      links: {
+        subTitle: "Linki",
+        description: {
+          personalHomepage: "Strona osobista:",
+          github: "GitHub:",
+        },
+      },
+    },
+    contactForm: {
+      title: "Kontakt",
+      subTitle: "Masz pytanie lub sugestię? ✉️ Napisz do mnie!",
     },
   },
   accountPage: {
@@ -291,6 +336,25 @@ const langPl = {
           default: "Link wygasł lub został użyty.",
         },
       },
+    },
+    sendMessage: {
+      title: "Wysłanie wiadomości",
+      labels: {
+        email: "Adres e-mail:",
+        message: "Wiadomość:",
+      },
+      placeholders: {
+        email: "Wpisz adres e-mail",
+        message: "Wpisz wiadomość",
+      },
+      message: {
+        loading: "Trwa wysyłanie wiadomości...",
+        success: "Wiadomość została wysłana.",
+        error: {
+          default: "Błąd podczas wysyłania wiadomości.",
+        },
+      },
+      button: "Wyślij",
     },
   },
   prepareText: {

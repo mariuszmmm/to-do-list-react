@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from "react";
 import { StyledSection, SectionHeader, SectionBody } from "./styled";
 
 interface SectionProps {
-  title: string | ReactElement;
+  title?: string | ReactElement;
   body: ReactNode;
   extraHeaderContent?: ReactElement;
   extraContent?: ReactElement;
@@ -17,10 +17,12 @@ export const Section = ({
   bodyHidden,
 }: SectionProps) => (
   <StyledSection>
-    <SectionHeader $bodyHidden={bodyHidden}>
-      {title}
-      {extraHeaderContent}
-    </SectionHeader>
+    {title && (
+      <SectionHeader $bodyHidden={bodyHidden}>
+        {title}
+        {extraHeaderContent}
+      </SectionHeader>
+    )}
     <SectionBody hidden={bodyHidden}>
       {body}
       {extraContent}

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "",
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@netlify/functions": "^3.0.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@tanstack/react-query": "^5.74.3",
