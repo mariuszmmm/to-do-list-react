@@ -5,7 +5,8 @@ import { Input } from "../../../common/Input";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
 import { useTranslation } from "react-i18next";
-import { Form, Textarea } from "./styled";
+import { Form } from "./styled";
+import { TextArea } from "../../../common/TextArea";
 
 const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
@@ -79,7 +80,7 @@ export const ContactForm = () => {
       </div>
       <div>
         <label>{t("sendMessage.labels.message")}</label>
-        <Textarea
+        <TextArea
           name="message"
           value={message}
           placeholder={t("sendMessage.placeholders.message")}

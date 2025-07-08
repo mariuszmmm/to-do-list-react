@@ -18,6 +18,7 @@ import { MicrophoneIcon } from "../../../../common/icons";
 import { InputButton } from "../../../../common/InputButton";
 import { useSpeechToText } from "../../../../hooks";
 import { FormButtonWrapper } from "../../../../common/FormButtonWrapper";
+import { TextArea } from "../../../../common/TextArea";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -26,6 +27,7 @@ export const TaskForm = () => {
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
@@ -52,18 +54,18 @@ export const TaskForm = () => {
     if (content) {
       editedTask === null
         ? dispatch(
-            addTask({
-              task: {
-                id: nanoid(),
-                content,
-                done: false,
-                date: formatedDate,
-              },
-              stateForUndo: { tasks, listName },
-            })
-          )
+          addTask({
+            task: {
+              id: nanoid(),
+              content,
+              done: false,
+              date: formatedDate,
+            },
+            stateForUndo: { tasks, listName },
+          })
+        )
         : content !== previousContent
-        ? dispatch(
+          ? dispatch(
             saveEditedTask({
               task: {
                 id: editedTask.id,
@@ -75,7 +77,7 @@ export const TaskForm = () => {
               stateForUndo: { tasks, listName },
             })
           )
-        : dispatch(setTaskToEdit(null));
+          : dispatch(setTaskToEdit(null));
     }
     setTaskContent("");
   };
@@ -92,10 +94,9 @@ export const TaskForm = () => {
     setTaskContent(editedTask.content);
     setPreviousContent(editedTask.content);
     setTimeout(() => {
-      const input = inputRef.current;
-      if (input) {
-        input.focus();
-        input.scrollLeft = input.scrollWidth;
+      const textArea = textAreaRef.current;
+      if (textArea) {
+        textArea.focus();
       }
     }, 0);
 
@@ -124,14 +125,24 @@ export const TaskForm = () => {
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
       <InputWrapper>
-        <Input
-          value={taskContent}
-          name="taskName"
-          placeholder={t("form.inputPlaceholder")}
-          onChange={({ target }) => setTaskContent(target.value)}
-          ref={inputRef}
-        />
-        <InputButton
+        {editedTask ?
+          <TextArea
+            value={taskContent}
+            name="taskName"
+            placeholder={t("form.inputPlaceholder")}
+            onChange={({ target }) => setTaskContent(target.value)}
+            ref={textAreaRef}
+          />
+          :
+          <Input
+            value={taskContent}
+            name="taskName"
+            placeholder={t("form.inputPlaceholder")}
+            onChange={({ target }) => setTaskContent(target.value)}
+            ref={inputRef}
+          />
+        }
+        {!editedTask && <InputButton
           type="button"
           onClick={() => {
             if (!isListening && inputRef.current) {
@@ -144,9 +155,14 @@ export const TaskForm = () => {
           disabled={!supportSpeech}
         >
           <MicrophoneIcon $isActive={isListening} />
-        </InputButton>
+        </InputButton>}
       </InputWrapper>
       <FormButtonWrapper>
+        <FormButton type="submit" $singleInput disabled={isActive}>
+          {editedTask !== null
+            ? t("form.inputButton.saveChanges")
+            : t("form.inputButton.addTask")}
+        </FormButton>
         {editedTask !== null && (
           <FormButton
             type="button"
@@ -161,11 +177,6 @@ export const TaskForm = () => {
             {t("form.inputButton.cancel")}
           </FormButton>
         )}
-        <FormButton type="submit" $singleInput disabled={isActive}>
-          {editedTask !== null
-            ? t("form.inputButton.saveChanges")
-            : t("form.inputButton.addTask")}
-        </FormButton>
       </FormButtonWrapper>
     </Form>
   );

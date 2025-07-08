@@ -8,6 +8,7 @@ interface StyledLinkProps {
 export const StyledLink = styled(Link)<StyledLinkProps>`
   color: ${({ theme }) => theme.color.teal};
   text-decoration: none;
+  white-space: pre-line;
 
   ${({ disabled }) =>
     disabled &&

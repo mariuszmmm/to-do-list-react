@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Input } from "../../../common/Input";
 
 export const Form = styled.form`
   display: flex;
@@ -13,11 +12,4 @@ export const Form = styled.form`
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     margin: 0 0 30px;
   }
-`;
-
-export const Textarea = styled(Input).attrs({ as: "textarea" })`
-  resize: none;
-  min-width: 100%;
-  min-height: 200px;
-  padding: 10px;
 `;
