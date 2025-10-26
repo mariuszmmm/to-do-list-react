@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
-import { List, Item, Content, Task } from "./styled";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import {
   EditButton,
   RemoveButton,
   SortButton,
+  SortButtonsContainer,
   ToggleButton,
 } from "../../../../common/taskButtons";
 import {
@@ -22,9 +22,14 @@ import {
   taskMoveDown,
   selectIsTasksSorting,
 } from "../../tasksSlice";
-import { SortButtonsContainer } from "../../../../common/taskButtons/SortButtonsContainer";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
 import { useEffect } from "react";
+import {
+  StyledList,
+  StyledListContent,
+  StyledListItem,
+  StyledTask,
+} from "../../../../common/styledList";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
@@ -45,13 +50,13 @@ export const TasksList = () => {
   }, [editedTask]);
 
   return (
-    <List>
+    <StyledList>
       {tasksByQuery.map((task, index) => (
-        <Item
+        <StyledListItem
           key={task.id}
           hidden={task.done && hideDone}
           $edit={editedTask?.id === task.id}
-          $sort={isTasksSorting}
+          $type={"tasks"}
         >
           {isTasksSorting ? (
             <SortButtonsContainer>
@@ -84,17 +89,23 @@ export const TasksList = () => {
               {task.done ? "✔" : ""}
             </ToggleButton>
           )}
-          <Content>
-            {!query ? <span>{index + 1}. </span> : ""}
-            <Task $done={task.done}>
+          <StyledListContent $type={"tasks"}>
+            {!query ? (
+              <span>
+                <b>{index + 1}. </b>
+              </span>
+            ) : (
+              ""
+            )}
+            <StyledTask $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}
                 disabled={editedTask !== null}
               >
                 {task.content}
               </StyledLink>
-            </Task>
-          </Content>
+            </StyledTask>
+          </StyledListContent>
           {!isTasksSorting && (
             <>
               <EditButton
@@ -118,8 +129,8 @@ export const TasksList = () => {
               </RemoveButton>
             </>
           )}
-        </Item>
+        </StyledListItem>
       ))}
-    </List>
+    </StyledList>
   );
 };

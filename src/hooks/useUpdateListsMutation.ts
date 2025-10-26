@@ -1,34 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removeDataApi } from "../../../api/fetchDataApi";
-import { useAppDispatch } from "../../../hooks";
-import { openModal } from "../../../Modal/modalSlice";
-import { List, Version } from "../../../types";
-import { getUserToken } from "../../../utils/getUserToken";
+import { updateDataApi } from "../api/fetchDataApi";
+import { useAppDispatch } from "./redux";
+import { openModal } from "../Modal/modalSlice";
+import { List, Version } from "../types";
+import { getUserToken } from "../utils/getUserToken";
 
-export const useRemoveListMutation = () => {
+export const useUpdateListsMutation = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
+
   return useMutation({
-    mutationFn: async ({
-      version,
-      listId,
-    }: {
-      version: Version;
-      listId: List["id"];
-    }) => {
+    mutationFn: async ({ listsToSort }: { listsToSort: { lists: List[]; version: Version } }) => {
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");
         throw new Error("User token is null");
       }
-
-      return removeDataApi(token, version, listId);
+      return updateDataApi(token, listsToSort.version, listsToSort.lists);
     },
     onMutate: () => {
       dispatch(
         openModal({
-          message: { key: "modal.listRemove.message.loading" },
+          title: { key: "modal.listsUpdate.title" },
+          message: { key: "modal.listsUpdate.message.loading" },
           type: "loading",
         })
       );
@@ -38,16 +33,14 @@ export const useRemoveListMutation = () => {
       if (response.data.conflict) {
         dispatch(
           openModal({
-            message: { key: "modal.listRemove.message.error.conflict" },
+            message: { key: "modal.listsUpdate.message.error.conflict" },
             type: "error",
           })
         );
       } else {
         dispatch(
           openModal({
-            message: {
-              key: "modal.listRemove.message.success",
-            },
+            message: { key: "modal.listsUpdate.message.success" },
             type: "success",
           })
         );
@@ -56,7 +49,7 @@ export const useRemoveListMutation = () => {
     onError: () => {
       dispatch(
         openModal({
-          message: { key: "modal.listRemove.message.error.default" },
+          message: { key: "modal.listsUpdate.message.error.default" },
           type: "error",
         })
       );

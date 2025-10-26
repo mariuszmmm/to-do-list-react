@@ -16,6 +16,7 @@ const langEn: typeof langPl = {
       },
       buttons: {
         fetchExampleTasks: "Fetch example tasks",
+        loadFromArchive: "Load from archive",
         loading: "Loading...",
         error: "Error loading data",
       },
@@ -68,7 +69,18 @@ const langEn: typeof langPl = {
     dateEdited: "Date of modification",
     dateDone: "Date of completion",
   },
-  listsPage: {
+  archivedListsPage: {
+    title: "Archived task lists",
+    lists: {
+      select: "Select a task list",
+      empty: "You have no archived lists 😯",
+    },
+    buttons: {
+      load: "Load selected list",
+    },
+    subTitle: "Selected list",
+  },
+  remoteListsPage: {
     title: "Saved lists",
     lists: {
       select: "Select a list",
@@ -196,6 +208,8 @@ const langEn: typeof langPl = {
       nextButton: "Next",
       refreshButton: "Refresh",
       replaceButton: "Replace",
+      yes: "Yes",
+      no: "No",
     },
     login: {
       title: "Login",
@@ -293,6 +307,12 @@ const langEn: typeof langPl = {
             "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while adding the list to the database.",
         },
+      },
+    },
+    archiveTasks: {
+      title: "Archiving tasks",
+      message: {
+        confirm: "Do you want to move the current tasks to the archive?",
       },
     },
     listRemove: {

@@ -18,6 +18,8 @@ import {
   HeaderContent,
   ModalCloseButton,
   ModalCancelButton,
+  ModalYesButton,
+  ModalNoButton,
 } from "./styled";
 
 export const Modal = () => {
@@ -31,8 +33,9 @@ export const Modal = () => {
     <ModalBackground>
       <ModalContainer>
         <ModalBody>
+
           <ModalHeader>
-            {type === "info" && <CircleInfoIcon />}
+            {(type === "info" || type === "yes/no") && <CircleInfoIcon />}
             {type === "success" && <CircleCheckIcon />}
             {type === "loading" && <CircleLoadingIcon />}
             {(type === "confirm" || type === "error") && <CircleWarningIcon />}
@@ -42,6 +45,7 @@ export const Modal = () => {
               </HeaderContent>
             )}
           </ModalHeader>
+
           {!!message && (
             <ModalDescription>
               {typeof message === "string" ? (
@@ -51,37 +55,51 @@ export const Modal = () => {
               )}
             </ModalDescription>
           )}
-          {
-            <ModalButtonContainer>
-              {type === "confirm" ? (
-                <>
-                  <ModalCancelButton onClick={() => dispatch(cancel())}>
-                    <Trans i18nKey="modal.buttons.cancelButton" />
-                  </ModalCancelButton>
-                  <ModalConfirmButton onClick={() => dispatch(confirm())}>
-                    <Trans
-                      i18nKey={
-                        confirmButton
-                          ? confirmButton.key
-                          : "modal.buttons.confirmButton"
-                      }
-                    />
-                  </ModalConfirmButton>
-                </>
-              ) : (
-                <ModalCloseButton
-                  onClick={() => dispatch(closeModal())}
-                  disabled={type === "loading"}
-                >
+
+          {<ModalButtonContainer>
+
+            {type === "confirm" &&
+              <>
+                <ModalCancelButton onClick={() => dispatch(cancel())}>
+                  <Trans i18nKey="modal.buttons.cancelButton" />
+                </ModalCancelButton>
+                <ModalConfirmButton onClick={() => dispatch(confirm())}>
                   <Trans
                     i18nKey={
-                      endButton ? endButton.key : "modal.buttons.closeButton"
+                      confirmButton
+                        ? confirmButton.key
+                        : "modal.buttons.confirmButton"
                     }
                   />
-                </ModalCloseButton>
-              )}
-            </ModalButtonContainer>
-          }
+                </ModalConfirmButton>
+              </>
+            }
+
+            {type === "yes/no" &&
+              <>
+                <ModalYesButton onClick={() => dispatch(confirm())}>
+                  <Trans i18nKey="modal.buttons.yes" />
+                </ModalYesButton>
+                <ModalNoButton onClick={() => dispatch(cancel())}>
+                  <Trans i18nKey="modal.buttons.no" />
+                </ModalNoButton>
+              </>
+            }
+
+            {type !== "yes/no" && type !== "confirm" &&
+              <ModalCloseButton
+                onClick={() => dispatch(closeModal())}
+                disabled={type === "loading"}
+              >
+                <Trans
+                  i18nKey={
+                    endButton ? endButton.key : "modal.buttons.closeButton"
+                  }
+                />
+              </ModalCloseButton>
+            }
+
+          </ModalButtonContainer>}
         </ModalBody>
       </ModalContainer>
     </ModalBackground>

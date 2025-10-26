@@ -14,6 +14,7 @@ const langPl = {
       },
       buttons: {
         fetchExampleTasks: "Pobierz przykładowe zadania",
+        loadFromArchive: "Wczytaj z archiwum",
         loading: "Ładowanie...",
         error: "Błąd ładowania danych",
       },
@@ -66,7 +67,18 @@ const langPl = {
     dateEdited: "Data modyfikacji",
     dateDone: "Data ukończenia",
   },
-  listsPage: {
+  archivedListsPage: {
+    title: "Archiwalne listy zadań",
+    lists: {
+      select: "Wybierz listę zadań",
+      empty: "Nie masz zarchiwizowanych list 😯",
+    },
+    buttons: {
+      load: "Załaduj wybraną listę",
+    },
+    subTitle: "Wybrana lista",
+  },
+  remoteListsPage: {
     title: "Zapisane listy",
     lists: {
       select: "Wybierz listę",
@@ -194,6 +206,8 @@ const langPl = {
       nextButton: "Dalej",
       refreshButton: "Odśwież",
       replaceButton: "Zastąp",
+      yes: "Tak",
+      no: "Nie",
     },
     login: {
       title: "Logowanie",
@@ -293,6 +307,12 @@ const langPl = {
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
+      },
+    },
+    archiveTasks: {
+      title: "Archiwizowanie zadań",
+      message: {
+        confirm: "Czy przenieść bieżące zadania do archiwum?",
       },
     },
     listRemove: {

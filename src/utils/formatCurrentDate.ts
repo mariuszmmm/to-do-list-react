@@ -20,3 +20,5 @@ export const formatCurrentDate = (currentDate: Date, locale: string) =>
     hour: "2-digit",
     minute: "2-digit",
   });
+
+export const formatCurrentDateISO = () => new Date().toISOString();

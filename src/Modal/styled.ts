@@ -96,3 +96,9 @@ export const ModalCancelButton = styled(ModalButton)`
 export const ModalCloseButton = styled(ModalButton)`
   background-color: ${({ theme }) => theme.color.teal};
 `;
+
+export const ModalYesButton = styled(ModalButton)`
+  background-color: ${({ theme }) => theme.color.forestGreen};
+`;
+
+export const ModalNoButton = ModalConfirmButton;

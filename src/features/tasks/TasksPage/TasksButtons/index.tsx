@@ -21,17 +21,19 @@ import {
   selectRedoTasksStack,
   switchTaskSort,
   selectIsTasksSorting,
+  setTaskListToArchive,
 } from "../../tasksSlice";
-import { selectListToAdd, setListToAdd } from "../../../ListsPage/listsSlice";
+import { selectListToAdd, setListToAdd } from "../../../RemoteListsPage/remoteListsSlice";
 import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
   getWidthForToggleHideDoneButton,
 } from "../../../../utils/getWidthForDynamicButtons";
-import { useAddListMutation } from "./useAddListMutation";
 import { useEffect } from "react";
 import { ListsData } from "../../../../types";
 import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
+import { useAddListMutation } from "../../../../hooks";
+import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
 
 type Props = { listsData?: ListsData };
 
@@ -108,7 +110,8 @@ export const TasksButtons = ({ listsData }: Props) => {
           onClick={() =>
             dispatch(
               setListToAdd({
-                id: nanoid(),
+                id: nanoid(8),
+                date: formatCurrentDateISO(),
                 name: listName,
                 taskList: tasks,
               })
@@ -119,6 +122,9 @@ export const TasksButtons = ({ listsData }: Props) => {
           {t("tasks.buttons.save")}
         </Button>
       )}
+      <Button onClick={() => dispatch(setTaskListToArchive(tasks))} disabled={areTasksEmpty}>
+        {t("tasks.buttons.clear")}
+      </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, listName }))}
         disabled={isEveryTaskDone || areTasksEmpty}

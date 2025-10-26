@@ -1,13 +1,9 @@
-import { Task } from "../types";
+import { List, Settings, Task, } from "../types";
 
 const settingsKey = "settings" as const;
 const listNameKey = "listName" as const;
 const tasksKey = "tasks" as const;
-
-interface Settings {
-  showSearch: boolean;
-  hideDone: boolean;
-}
+const listsKey = "archivedLists" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
@@ -16,7 +12,8 @@ export const saveSettingsInLocalStorage = (settings: Settings) =>
 
 export const getSettingsFromLocalStorage = (): Settings | null => {
   const data = localStorage.getItem(settingsKey);
-  return data ? JSON.parse(data) : null;
+  if (!data || data === "undefined") return null;
+  return JSON.parse(data);
 };
 
 export const saveListNameInLocalStorage = (listName: string) =>
@@ -24,7 +21,8 @@ export const saveListNameInLocalStorage = (listName: string) =>
 
 export const getListNameFromLocalStorage = (): string => {
   const data = localStorage.getItem(listNameKey);
-  return data ? JSON.parse(data) : "";
+  if (!data || data === "undefined") return "";
+  return JSON.parse(data);
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
@@ -32,5 +30,16 @@ export const saveTasksInLocalStorage = (tasks: Task[]) =>
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const data = localStorage.getItem(tasksKey);
-  return data ? JSON.parse(data) : [];
+  if (!data || data === "undefined") return [];
+  return JSON.parse(data);
+};
+
+export const saveArchivedListsInStorage = (lists: List[]) => {
+  localStorage.setItem(listsKey, JSON.stringify(lists));
+};
+
+export const getArchivedListFromLocalStorage = (): List[] => {
+  const data = localStorage.getItem(listsKey);
+  if (!data || data === "undefined") return [];
+  return JSON.parse(data);
 };

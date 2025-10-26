@@ -1,30 +1,35 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useTranslation } from "react-i18next";
-import { StyledLink } from "../../../common/StyledLink";
-import { List, ListsData } from "../../../types";
-import { ButtonsContainer } from "../../../common/ButtonsContainer";
-import { Button } from "../../../common/Button";
-import {
-  selectIsListsSorting,
-  selectSelectedListId,
-  setListToLoad,
-  switchListSort,
-} from "../listsSlice";
-import { getWidthForSwitchTaskSortButton } from "../../../utils/getWidthForDynamicButtons";
+import { StyledLink } from "../../common/StyledLink";
+import { List, ListsData } from "../../types";
+import { ButtonsContainer } from "../../common/ButtonsContainer";
+import { Button } from "../../common/Button";
+import { getWidthForSwitchTaskSortButton } from "../../utils/getWidthForDynamicButtons";
 
 type Props = {
   listsData: ListsData;
   selectedListById: List | null;
+  selectIsListsSorting: (state: any) => boolean;
+  selectSelectedListId: (state: any) => string | null;
+  setListToLoad: (list: List | null) => any;
+  switchListSort: () => any;
+  keyPrefix: 'remoteListsPage' | 'archivedListsPage';
 };
 
-export const ListsButtons = ({ listsData, selectedListById }: Props) => {
+export const ListsButtons = ({
+  listsData,
+  selectedListById,
+  selectIsListsSorting,
+  selectSelectedListId,
+  setListToLoad,
+  switchListSort,
+  keyPrefix
+}: Props) => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const isListsSorting = useAppSelector(selectIsListsSorting);
   const dispatch = useAppDispatch();
 
-  const { t, i18n } = useTranslation("translation", {
-    keyPrefix: "listsPage",
-  });
+  const { t, i18n } = useTranslation("translation", { keyPrefix });
 
   return (
     <ButtonsContainer>

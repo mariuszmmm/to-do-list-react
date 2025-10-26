@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAppDispatch } from "../../../../hooks";
-import { List, Version } from "../../../../types";
-import { getUserToken } from "../../../../utils/getUserToken";
-import { addDataApi } from "../../../../api/fetchDataApi";
-import { openModal } from "../../../../Modal/modalSlice";
+import { useAppDispatch } from ".";
+import { List, Version } from "../types";
+import { getUserToken } from "../utils/getUserToken";
+import { addDataApi } from "../api/fetchDataApi";
+import { openModal } from "../Modal/modalSlice";
 
 export const useAddListMutation = () => {
   const dispatch = useAppDispatch();

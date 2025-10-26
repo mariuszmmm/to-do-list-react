@@ -46,3 +46,10 @@ export const RemoveButton = styled(TaskButton)`
 export const SortButton = styled(TaskButton)`
   background: ${({ theme }) => theme.color.blue};
 `;
+
+export const SortButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+

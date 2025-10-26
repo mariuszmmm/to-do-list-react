@@ -1,13 +1,20 @@
 import styled, { css } from "styled-components";
 
-interface ItemProps {
+interface StyledListItemProps {
   $edit?: boolean;
   selected?: boolean;
   hidden?: boolean;
+  $sort?: boolean;
+  $type?: "lists" | "tasks" | "tasksView";
 }
 
-interface TaskProps {
+interface StyledListContentProps {
+  $type?: "lists" | "tasks" | "tasksView";
+}
+
+interface StyledTaskProps {
   $done?: boolean;
+  $ListName?: boolean;
 }
 
 export const StyledList = styled.ul`
@@ -16,14 +23,22 @@ export const StyledList = styled.ul`
   padding: 0;
 `;
 
-export const Item = styled.li<ItemProps>`
+export const StyledListItem = styled.li<StyledListItemProps>`
   display: grid;
-  grid-template-columns: auto 1fr auto;
   grid-gap: 10px;
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.color.alto};
   transition: background-color 0.25s;
+
+  grid-template-columns: ${({ $type }) =>
+    $type === "tasks"
+      ? "auto 1fr auto auto"
+      : $type === "lists"
+      ? "auto 1fr auto"
+      : $type === "tasksView"
+      ? "auto 1fr"
+      : "auto"};
 
   ${({ $edit, selected }) =>
     ($edit || selected) &&
@@ -38,11 +53,18 @@ export const Item = styled.li<ItemProps>`
     `}
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: ${({ $type }) =>
+      $type === "lists"
+        ? "1fr auto auto"
+        : $type === "tasks"
+        ? "1fr auto"
+        : $type === "tasksView"
+        ? "1fr"
+        : "auto"};
   }
 `;
 
-export const Content = styled.p`
+export const StyledListContent = styled.p<StyledListContentProps>`
   word-break: break-word;
   margin: 0;
   color: ${({ theme }) => theme.color.teal};
@@ -51,8 +73,13 @@ export const Content = styled.p`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;
-    grid-column: span 2;
     margin: 0;
+    ${({ $type }) =>
+      $type === "lists"
+        ? "grid-column: span 2;"
+        : $type === "tasks"
+        ? "grid-column: span 3;"
+        : ""}
   }
 
   span {
@@ -60,12 +87,19 @@ export const Content = styled.p`
   }
 `;
 
-export const Task = styled.span<TaskProps>`
+export const StyledTask = styled.span<StyledTaskProps>`
   padding-left: 2px;
+  white-space: pre-line;
 
   ${({ $done }) =>
     $done &&
     css`
       text-decoration: 1px line-through black;
+    `};
+
+  ${({ $ListName }) =>
+    $ListName &&
+    css`
+      font-weight: bold;
     `}
 `;

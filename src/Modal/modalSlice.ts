@@ -6,14 +6,14 @@ import langPl from "../utils/i18n/locales/pl";
 interface ModalPayload {
   title?: { key: ModalTranslationKeys<typeof langPl, "modal"> };
   message?:
-    | {
-        key: ModalTranslationKeys<typeof langPl, "modal">;
-        values?: Record<string, string>;
-      }
-    | string;
+  | {
+    key: ModalTranslationKeys<typeof langPl, "modal">;
+    values?: Record<string, string>;
+  }
+  | string;
   confirmButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
   endButton?: { key: ModalTranslationKeys<typeof langPl, "modal.buttons"> };
-  type: "info" | "confirm" | "loading" | "success" | "error";
+  type: "info" | "confirm" | "loading" | "success" | "error" | "yes/no";
   confirmed?: boolean;
 }
 

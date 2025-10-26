@@ -19,6 +19,7 @@ interface TaskState {
   listName: string;
   listNameToEdit: string | null;
   isTasksSorting: boolean;
+  tasksToArchive: Task[];
 }
 
 const getInitialState = (): TaskState => ({
@@ -31,6 +32,7 @@ const getInitialState = (): TaskState => ({
   listName: getListNameFromLocalStorage() || "",
   listNameToEdit: null,
   isTasksSorting: false,
+  tasksToArchive: [],
 });
 
 const tasksSlice = createSlice({
@@ -99,8 +101,10 @@ const tasksSlice = createSlice({
     ) => {
       state.undoTasksStack.push(stateForUndo);
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      state.tasks[index].done = !state.tasks[index].done;
-      state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      if (index !== -1) {
+        state.tasks[index].done = !state.tasks[index].done;
+        state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      }
       state.redoTasksStack = [];
     },
     removeTask: (
@@ -128,6 +132,9 @@ const tasksSlice = createSlice({
       state.tasks = [];
       state.redoTasksStack = [];
       state.editedTask = null;
+    },
+    setTaskListToArchive: (state, { payload: tasksToArchive }: PayloadAction<Task[]>) => {
+      state.tasksToArchive = tasksToArchive;
     },
     setAllDone: (
       state,
@@ -274,6 +281,7 @@ export const {
   toggleTaskDone,
   removeTask,
   removeTasks,
+  setTaskListToArchive,
   setAllDone,
   setAllUndone,
   setTasks,
@@ -326,5 +334,7 @@ export const selectTasksByQuery = (state: RootState, query: string | null) => {
     content.toUpperCase().includes(query.toUpperCase().trim())
   );
 };
+export const selectTasksToArchive = (state: RootState) =>
+  selectTasksState(state).tasksToArchive;
 
 export default tasksSlice.reducer;

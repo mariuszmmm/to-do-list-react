@@ -4,7 +4,6 @@ import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
 import InfoPage from "./features/InfoPage";
-import ListsPage from "./features/ListsPage";
 import AccountPage from "./features/AccountPage";
 import UserConfirmationPage from "./features/UserConfirmationPage";
 import AccountRecoveryPage from "./features/AccountRecoveryPage";
@@ -22,6 +21,8 @@ import { ListsData } from "./types";
 import { openModal } from "./Modal/modalSlice";
 import { useEffect } from "react";
 import { clearLocalStorage } from "./utils/localStorage";
+import RemoteListsPage from "./features/RemoteListsPage";
+import ArchivedListsPage from "./features/ArchivedListPage";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -36,24 +37,6 @@ const App = () => {
 
   useEffect(() => {
     if (!loggedUserEmail) return;
-    if (isLoading) {
-      dispatch(
-        openModal({
-          title: { key: "modal.listsDownload.title" },
-          message: { key: "modal.listsDownload.message.loading" },
-          type: "loading",
-        })
-      );
-    }
-    if (isSuccess) {
-      dispatch(
-        openModal({
-          title: { key: "modal.listsDownload.title" },
-          message: { key: "modal.listsDownload.message.success" },
-          type: "success",
-        })
-      );
-    }
     if (isError) {
       clearLocalStorage();
       dispatch(setLoggedUserEmail(null));
@@ -70,7 +53,11 @@ const App = () => {
 
   return (
     <HashRouter>
-      <Navigation listsData={safeData} authRoutes={authRoutes} />
+      <Navigation
+        listsData={safeData}
+        isLoading={isLoading}
+        authRoutes={authRoutes}
+      />
       <Container>
         <CurrentDate authRoutes={authRoutes} />
         <Routes>
@@ -78,8 +65,12 @@ const App = () => {
           <Route path="/user-confirmation" element={<UserConfirmationPage />} />
           <Route path="/tasks/:id" element={<TaskPage />} />
           <Route path="/tasks" element={<TasksPage listsData={safeData} />} />
+          <Route path="/archived-lists" element={<ArchivedListsPage />} />
           {!!safeData && (
-            <Route path="/lists" element={<ListsPage listsData={safeData} />} />
+            <Route
+              path="/lists"
+              element={<RemoteListsPage listsData={safeData} />}
+            />
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />

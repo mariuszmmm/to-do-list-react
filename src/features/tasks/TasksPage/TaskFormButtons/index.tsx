@@ -1,27 +1,29 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
-import {
-  selectAreTasksEmpty,
-  removeTasks,
-  setTasks,
-  selectListName,
-  selectTasks,
-} from "../../tasksSlice";
-import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
+import { ButtonsContainer } from "../../../../common/ButtonsContainer";
+import { StyledLink } from "../../../../common/StyledLink";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { getExampleTasks } from "../../../../api/getExampleTasks";
+import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
 import {
   defaultLanguage,
   SupportedLanguages,
   supportedLanguages,
 } from "../../../../utils/i18n/languageResources";
+import {
+  selectAreTasksEmpty,
+  selectListName,
+  selectTasks,
+  setTasks,
+} from "../../tasksSlice";
+import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
 
 export const TaskFormButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const tasks = useAppSelector(selectTasks);
   const listName = useAppSelector(selectListName);
+  const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
@@ -69,9 +71,9 @@ export const TaskFormButtons = () => {
           ? t("form.buttons.loading")
           : t("form.buttons.error")}
       </Button>
-      <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
-        {t("tasks.buttons.clear")}
-      </Button>
+      <StyledLink to={`/archived-lists`}>
+        <Button disabled={isArchivedTaskListEmpty}>Pobierz z archiwum</Button>
+      </StyledLink>
     </ButtonsContainer>
   );
 };
