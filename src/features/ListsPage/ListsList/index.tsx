@@ -4,7 +4,7 @@ import { useUpdateListsMutation } from "./useUpdateListsMutation";
 import { useRemoveListMutation } from "./useRemoveListMutation";
 import { moveListDown, moveListUp } from "./moveList";
 import { ListsData } from "../../../types";
-import { StyledList, Item, Content, Task } from "./styled";
+import { Item, Content } from "./styled";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../common/icons";
 import {
   RemoveButton,
@@ -27,6 +27,8 @@ import {
   setListToRemove,
   setListToSort,
 } from "../listsSlice";
+import { Task } from "../../../common/Task";
+import { StyledList } from "../../../common/StyledList";
 
 type Props = {
   listsData: ListsData;
@@ -118,7 +120,7 @@ export const ListsList = ({ listsData }: Props) => {
             <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           )}
           <Content>
-            <Task>{list.name}</Task>
+            <Task $ListName>{list.name}</Task>
           </Content>
           {!isListsSorting && !listsToSort && (
             <RemoveButton

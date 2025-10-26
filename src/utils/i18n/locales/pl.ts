@@ -42,6 +42,7 @@ const langPl = {
           save: "Zapisz",
         },
         save: "Zapisz listę",
+        saveAndNew: "Zapisz i zacznij nową",
         clear: "Wyczyść listę",
         hide: "Ukryj ukończone",
         show: "Pokaż ukończone",

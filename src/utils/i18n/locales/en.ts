@@ -44,6 +44,7 @@ const langEn: typeof langPl = {
           save: "Save",
         },
         save: "Save list",
+        saveAndNew: "Save and start new",
         clear: "Clear list",
         hide: "Hide done",
         show: "Show done",

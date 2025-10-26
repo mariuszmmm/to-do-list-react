@@ -6,10 +6,6 @@ interface ItemProps {
   $sort?: boolean;
 }
 
-interface TaskProps {
-  $done?: boolean;
-}
-
 export const List = styled.ul`
   list-style: none;
   margin: 0;
@@ -56,14 +52,4 @@ export const Content = styled.p`
   span {
     color: ${({ theme }) => theme.color.black};
   }
-`;
-
-export const Task = styled.span<TaskProps>`
-  padding-left: 2px;
-
-  ${({ $done }) =>
-    $done &&
-    css`
-      text-decoration: 1px line-through black;
-    `}
 `;

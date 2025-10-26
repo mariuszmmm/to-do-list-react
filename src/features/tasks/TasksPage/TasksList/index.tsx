@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
-import { List, Item, Content, Task } from "./styled";
+import { List, Item, Content } from "./styled";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import {
   EditButton,
@@ -25,6 +25,7 @@ import {
 import { SortButtonsContainer } from "../../../../common/taskButtons/SortButtonsContainer";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
 import { useEffect } from "react";
+import { Task } from "../../../../common/Task";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
@@ -85,7 +86,7 @@ export const TasksList = () => {
             </ToggleButton>
           )}
           <Content>
-            {!query ? <span>{index + 1}. </span> : ""}
+            {!query ? <span><b>{index + 1}. </b></span> : ""}
             <Task $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}

@@ -44,6 +44,7 @@ const langDe: typeof langPl = {
           save: "Speichern",
         },
         save: "Liste speichern",
+        saveAndNew: "Speichern und neu starten",
         clear: "Liste löschen",
         hide: "Abgeschlossene ausblenden",
         show: "Abgeschlossene anzeigen",

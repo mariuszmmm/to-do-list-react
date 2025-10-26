@@ -9,6 +9,7 @@ import {
   setTasks,
   selectListName,
   selectTasks,
+  archiveTasks,
 } from "../../tasksSlice";
 import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
 import { getExampleTasks } from "../../../../api/getExampleTasks";
@@ -66,11 +67,14 @@ export const TaskFormButtons = () => {
         {!isFetching && !isError
           ? t("form.buttons.fetchExampleTasks")
           : isFetching
-          ? t("form.buttons.loading")
-          : t("form.buttons.error")}
+            ? t("form.buttons.loading")
+            : t("form.buttons.error")}
       </Button>
       <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
         {t("tasks.buttons.clear")}
+      </Button>
+      <Button onClick={() => dispatch(archiveTasks())} disabled={areTasksEmpty}>
+        {t("tasks.buttons.saveAndNew")}
       </Button>
     </ButtonsContainer>
   );

@@ -6,16 +6,6 @@ interface ItemProps {
   hidden?: boolean;
 }
 
-interface TaskProps {
-  $done?: boolean;
-}
-
-export const StyledList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
 export const Item = styled.li<ItemProps>`
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -58,14 +48,4 @@ export const Content = styled.p`
   span {
     color: ${({ theme }) => theme.color.black};
   }
-`;
-
-export const Task = styled.span<TaskProps>`
-  padding-left: 2px;
-
-  ${({ $done }) =>
-    $done &&
-    css`
-      text-decoration: 1px line-through black;
-    `}
 `;

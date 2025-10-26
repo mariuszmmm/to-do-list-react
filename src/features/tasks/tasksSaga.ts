@@ -1,11 +1,14 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import {
+  archiveTasksInLocalStorage,
   saveListNameInLocalStorage,
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
 import {
   addTask,
+  archiveTasks,
   redoTasks,
   removeTask,
   removeTasks,
@@ -76,6 +79,20 @@ function* saveDataInLocalStorageHandler() {
   yield call(saveListNameInLocalStorage, listName);
 }
 
+function* archiveTasksInLocalStorageHandler() {
+  const date = new Date();
+  const id = nanoid(8);
+  const title = `Lista z dnia ${new Date().toLocaleString()}`;
+  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  const listName: ReturnType<typeof selectListName> = yield select(
+    selectListName
+  );
+  const tasksToArchive = { id, date, title, listName, tasks };
+
+  yield call(archiveTasksInLocalStorage, tasksToArchive);
+  yield put(removeTasks());
+}
+
 export function* tasksSaga() {
   yield takeEvery(
     [toggleShowSearch.type, toggleHideDone.type],
@@ -98,5 +115,6 @@ export function* tasksSaga() {
     ],
     saveDataInLocalStorageHandler
   );
+  yield takeEvery(archiveTasks.type, archiveTasksInLocalStorageHandler);
   yield takeEvery(setListToLoad.type, setListToLoadHandler);
 }

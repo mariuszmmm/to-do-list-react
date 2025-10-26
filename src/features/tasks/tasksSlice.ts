@@ -129,6 +129,7 @@ const tasksSlice = createSlice({
       state.redoTasksStack = [];
       state.editedTask = null;
     },
+    archiveTasks: () => {},
     setAllDone: (
       state,
       {
@@ -274,6 +275,7 @@ export const {
   toggleTaskDone,
   removeTask,
   removeTasks,
+  archiveTasks,
   setAllDone,
   setAllUndone,
   setTasks,
