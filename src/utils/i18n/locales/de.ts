@@ -44,7 +44,6 @@ const langDe: typeof langPl = {
           save: "Speichern",
         },
         save: "Liste speichern",
-        saveAndNew: "Speichern und neu starten",
         clear: "Liste löschen",
         hide: "Abgeschlossene ausblenden",
         show: "Abgeschlossene anzeigen",
@@ -197,6 +196,8 @@ const langDe: typeof langPl = {
       nextButton: "Weiter",
       refreshButton: "Aktualisieren",
       replaceButton: "Ersetzen",
+      yes: "Ja",
+      no: "Nein",
     },
     login: {
       title: "Anmeldung",
@@ -297,6 +298,12 @@ const langDe: typeof langPl = {
             "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
           default: "Fehler beim Hinzufügen der Liste zur Datenbank.",
         },
+      },
+    },
+    archiveTasks: {
+      title: "Aufgaben archivieren",
+      message: {
+        confirm: "Möchtest du die aktuellen Aufgaben ins Archiv verschieben?",
       },
     },
     listRemove: {

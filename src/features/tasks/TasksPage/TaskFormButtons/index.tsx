@@ -5,11 +5,10 @@ import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
 import {
   selectAreTasksEmpty,
-  removeTasks,
   setTasks,
   selectListName,
   selectTasks,
-  archiveTasks,
+  setTasksToArchive,
 } from "../../tasksSlice";
 import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
 import { getExampleTasks } from "../../../../api/getExampleTasks";
@@ -70,11 +69,8 @@ export const TaskFormButtons = () => {
             ? t("form.buttons.loading")
             : t("form.buttons.error")}
       </Button>
-      <Button onClick={() => dispatch(removeTasks())} disabled={areTasksEmpty}>
+      <Button onClick={() => dispatch(setTasksToArchive(tasks))} disabled={areTasksEmpty}>
         {t("tasks.buttons.clear")}
-      </Button>
-      <Button onClick={() => dispatch(archiveTasks())} disabled={areTasksEmpty}>
-        {t("tasks.buttons.saveAndNew")}
       </Button>
     </ButtonsContainer>
   );

@@ -19,6 +19,7 @@ interface TaskState {
   listName: string;
   listNameToEdit: string | null;
   isTasksSorting: boolean;
+  tasksToArchive?: Task[];
 }
 
 const getInitialState = (): TaskState => ({
@@ -129,7 +130,9 @@ const tasksSlice = createSlice({
       state.redoTasksStack = [];
       state.editedTask = null;
     },
-    archiveTasks: () => {},
+    setTasksToArchive: (state, { payload: tasksToArchive }: PayloadAction<Task[]>) => {
+      state.tasksToArchive = tasksToArchive;
+    },
     setAllDone: (
       state,
       {
@@ -275,7 +278,7 @@ export const {
   toggleTaskDone,
   removeTask,
   removeTasks,
-  archiveTasks,
+  setTasksToArchive,
   setAllDone,
   setAllUndone,
   setTasks,
@@ -328,5 +331,7 @@ export const selectTasksByQuery = (state: RootState, query: string | null) => {
     content.toUpperCase().includes(query.toUpperCase().trim())
   );
 };
+export const selectTasksToArchive = (state: RootState) =>
+  selectTasksState(state).tasksToArchive;
 
 export default tasksSlice.reducer;

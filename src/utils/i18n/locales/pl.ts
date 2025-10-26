@@ -42,7 +42,6 @@ const langPl = {
           save: "Zapisz",
         },
         save: "Zapisz listę",
-        saveAndNew: "Zapisz i zacznij nową",
         clear: "Wyczyść listę",
         hide: "Ukryj ukończone",
         show: "Pokaż ukończone",
@@ -195,6 +194,8 @@ const langPl = {
       nextButton: "Dalej",
       refreshButton: "Odśwież",
       replaceButton: "Zastąp",
+      yes: "Tak",
+      no: "Nie",
     },
     login: {
       title: "Logowanie",
@@ -294,6 +295,12 @@ const langPl = {
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
+      },
+    },
+    archiveTasks: {
+      title: "Archiwizowanie zadań",
+      message: {
+        confirm: "Czy przenieść bieżące zadania do archiwum?",
       },
     },
     listRemove: {

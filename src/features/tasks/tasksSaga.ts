@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { call, put, select, takeEvery } from "redux-saga/effects";
+import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
   archiveTasksInLocalStorage,
   saveListNameInLocalStorage,
@@ -8,7 +8,6 @@ import {
 } from "../../utils/localStorage";
 import {
   addTask,
-  archiveTasks,
   redoTasks,
   removeTask,
   removeTasks,
@@ -19,6 +18,7 @@ import {
   selectTasks,
   setAllDone,
   setAllUndone,
+  setTasksToArchive,
   setListName,
   setTasks,
   switchTaskSort,
@@ -26,9 +26,10 @@ import {
   toggleShowSearch,
   toggleTaskDone,
   undoTasks,
+  selectTasksToArchive,
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../ListsPage/listsSlice";
-import { openModal } from "../../Modal/modalSlice";
+import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 
 function* saveSettingsInLocalStorageHandler() {
   const showSearch: ReturnType<typeof selectShowSearch> = yield select(
@@ -80,17 +81,40 @@ function* saveDataInLocalStorageHandler() {
 }
 
 function* archiveTasksInLocalStorageHandler() {
-  const date = new Date();
-  const id = nanoid(8);
-  const title = `Lista z dnia ${new Date().toLocaleString()}`;
-  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  const tasks: ReturnType<typeof selectTasksToArchive> = yield select(
+    selectTasksToArchive
+  );
   const listName: ReturnType<typeof selectListName> = yield select(
     selectListName
   );
-  const tasksToArchive = { id, date, title, listName, tasks };
 
-  yield call(archiveTasksInLocalStorage, tasksToArchive);
+  if (!tasks) return;
+
+  yield put(
+    openModal({
+      title: { key: "modal.archiveTasks.title" },
+      message: { key: "modal.archiveTasks.message.confirm" },
+      type: "yes/no",
+    })
+  );
+
+  const { cancelled } = yield race({
+    confirmed: take(confirm),
+    cancelled: take(cancel),
+  });
+
+  if (cancelled) {
+    yield put(closeModal());
+    return;
+  }
+
+  const id = nanoid(8);
+  const title = `Lista z dnia ${new Date().toLocaleString()}`;
+  const tasksWithMeta = { id, title, listName, tasks };
+
+  yield call(archiveTasksInLocalStorage, tasksWithMeta);
   yield put(removeTasks());
+  yield put(closeModal());
 }
 
 export function* tasksSaga() {
@@ -115,6 +139,6 @@ export function* tasksSaga() {
     ],
     saveDataInLocalStorageHandler
   );
-  yield takeEvery(archiveTasks.type, archiveTasksInLocalStorageHandler);
+  yield takeEvery(setTasksToArchive.type, archiveTasksInLocalStorageHandler);
   yield takeEvery(setListToLoad.type, setListToLoadHandler);
 }

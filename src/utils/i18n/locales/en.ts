@@ -44,7 +44,6 @@ const langEn: typeof langPl = {
           save: "Save",
         },
         save: "Save list",
-        saveAndNew: "Save and start new",
         clear: "Clear list",
         hide: "Hide done",
         show: "Show done",
@@ -197,6 +196,8 @@ const langEn: typeof langPl = {
       nextButton: "Next",
       refreshButton: "Refresh",
       replaceButton: "Replace",
+      yes: "Yes",
+      no: "No",
     },
     login: {
       title: "Login",
@@ -294,6 +295,12 @@ const langEn: typeof langPl = {
             "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while adding the list to the database.",
         },
+      },
+    },
+    archiveTasks: {
+      title: "Archiving tasks",
+      message: {
+        confirm: "Do you want to move the current tasks to the archive?",
       },
     },
     listRemove: {
