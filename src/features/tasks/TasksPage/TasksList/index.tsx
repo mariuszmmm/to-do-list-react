@@ -29,7 +29,7 @@ import {
   StyledListContent,
   StyledListItem,
   StyledTask,
-} from "../../../../common/styledList";
+} from "../../../../common/StyledList";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);

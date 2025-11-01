@@ -18,17 +18,23 @@ import {
   StyledListContent,
   StyledListItem,
   StyledTask,
-} from "../../../common/styledList";
+} from "../../../common/StyledList";
 
 type Props = {
   lists: List[];
   selectedListId: string | null;
   modalIsOpen: boolean;
   isListsSorting: boolean;
-  listsToSort: { lists: List[]; version: Version; } | null;
+  listsToSort: { lists: List[]; version: Version } | null;
 };
 
-export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, listsToSort }: Props) => {
+export const TaskLists = ({
+  lists,
+  selectedListId,
+  modalIsOpen,
+  isListsSorting,
+  listsToSort,
+}: Props) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -44,10 +50,12 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, 
             <SortButtonsContainer>
               <SortButton
                 onClick={() =>
-                  dispatch(setListToSort({
-                    lists: moveListUp(index, listsToSort.lists),
-                    version: listsToSort.version
-                  }))
+                  dispatch(
+                    setListToSort({
+                      lists: moveListUp(index, listsToSort.lists),
+                      version: listsToSort.version,
+                    })
+                  )
                 }
                 disabled={index === 0}
               >
@@ -55,10 +63,12 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, 
               </SortButton>
               <SortButton
                 onClick={() =>
-                  dispatch(setListToSort({
-                    lists: moveListDown(index, listsToSort.lists),
-                    version: listsToSort.version
-                  }))
+                  dispatch(
+                    setListToSort({
+                      lists: moveListDown(index, listsToSort.lists),
+                      version: listsToSort.version,
+                    })
+                  )
                 }
                 disabled={index === lists.length - 1}
               >

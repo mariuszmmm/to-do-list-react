@@ -1,8 +1,16 @@
 import { List } from "../../../types";
 import { useAppDispatch } from "../../../hooks/redux";
-import { StyledList, StyledListContent, StyledListItem, StyledTask } from "../../../common/styledList";
+import {
+  StyledList,
+  StyledListContent,
+  StyledListItem,
+  StyledTask,
+} from "../../../common/StyledList";
 import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
-import { selectArchivedList, setArchivedListToRemove } from "../archivedListsSlice";
+import {
+  selectArchivedList,
+  setArchivedListToRemove,
+} from "../archivedListsSlice";
 
 type Props = {
   lists: List[];
@@ -11,8 +19,12 @@ type Props = {
   isListsSorting: boolean;
 };
 
-export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting }: Props) => {
-
+export const TaskLists = ({
+  lists,
+  selectedListId,
+  modalIsOpen,
+  isListsSorting,
+}: Props) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -21,7 +33,9 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting }
         <StyledListItem
           key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
-          onClick={() => dispatch(selectArchivedList(isListsSorting ? null : list.id))}
+          onClick={() =>
+            dispatch(selectArchivedList(isListsSorting ? null : list.id))
+          }
           $type={"tasks"}
         >
           <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
