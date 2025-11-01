@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { List, Version } from "../../types";
 import { RootState } from "../../store";
+import { Version } from "../../types";
+import { List } from "../../types/list";
 
 interface ListsState {
-  lists: List[] | null;
   selectedListId: string | null;
   listToLoad: List | null;
   isListsSorting: boolean;
@@ -13,7 +13,6 @@ interface ListsState {
 }
 
 const getInitialState = (): ListsState => ({
-  lists: null,
   selectedListId: null,
   listToLoad: null,
   isListsSorting: false,
@@ -22,8 +21,8 @@ const getInitialState = (): ListsState => ({
   listToAdd: null,
 });
 
-const listsSlice = createSlice({
-  name: "lists",
+const remoteListsSlice = createSlice({
+  name: "remoteLists",
   initialState: getInitialState(),
   reducers: {
     selectList: (state, { payload: listId }: PayloadAction<string | null>) => {
@@ -34,6 +33,12 @@ const listsSlice = createSlice({
       }
       state.listToLoad = null;
     },
+    setListToAdd: (
+      state,
+      { payload: listToAdd }: PayloadAction<List | null>
+    ) => {
+      state.listToAdd = listToAdd;
+    },
     setListToLoad: (
       state,
       { payload: taskList }: PayloadAction<List | null>
@@ -41,25 +46,19 @@ const listsSlice = createSlice({
       state.listToLoad = taskList;
       if (taskList === null) state.selectedListId = null;
     },
-    setListToSort: (
-      state,
-      {
-        payload: listsToSort,
-      }: PayloadAction<{ lists: List[]; version: Version } | null>
-    ) => {
-      state.listsToSort = listsToSort;
-    },
     setListToRemove: (
       state,
       { payload: listToRemove }: PayloadAction<List | null>
     ) => {
       state.listToRemove = listToRemove;
     },
-    setListToAdd: (
+    setListToSort: (
       state,
-      { payload: listToAdd }: PayloadAction<List | null>
+      {
+        payload: sortedList,
+      }: PayloadAction<{ lists: List[]; version: Version } | null>
     ) => {
-      state.listToAdd = listToAdd;
+      state.listsToSort = sortedList;
     },
     switchListSort: (state) => {
       state.isListsSorting = !state.isListsSorting;
@@ -69,26 +68,26 @@ const listsSlice = createSlice({
 
 export const {
   selectList,
-  setListToLoad,
-  setListToSort,
-  setListToRemove,
   setListToAdd,
+  setListToLoad,
+  setListToRemove,
+  setListToSort,
   switchListSort,
-} = listsSlice.actions;
+} = remoteListsSlice.actions;
 
-const selectListsState = (state: RootState) => state.lists;
+const selectRemoteListsState = (state: RootState) => state.remoteLists;
 
-export const selectSelectedListId = (state: RootState) =>
-  selectListsState(state).selectedListId;
-export const selectListToLoad = (state: RootState) =>
-  selectListsState(state).listToLoad;
 export const selectIsListsSorting = (state: RootState) =>
-  selectListsState(state).isListsSorting;
-export const selectListToSort = (state: RootState) =>
-  selectListsState(state).listsToSort;
-export const selectListToRemove = (state: RootState) =>
-  selectListsState(state).listToRemove;
+  selectRemoteListsState(state).isListsSorting;
 export const selectListToAdd = (state: RootState) =>
-  selectListsState(state).listToAdd;
+  selectRemoteListsState(state).listToAdd;
+export const selectListToLoad = (state: RootState) =>
+  selectRemoteListsState(state).listToLoad;
+export const selectListToRemove = (state: RootState) =>
+  selectRemoteListsState(state).listToRemove;
+export const selectListToSort = (state: RootState) =>
+  selectRemoteListsState(state).listsToSort;
+export const selectSelectedListId = (state: RootState) =>
+  selectRemoteListsState(state).selectedListId;
 
-export default listsSlice.reducer;
+export default remoteListsSlice.reducer;

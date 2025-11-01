@@ -10,10 +10,15 @@ import {
 } from "../features/AccountPage/accountSlice";
 import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
+import { Loader } from "../common/Loader";
 
-type Props = { listsData?: ListsData; authRoutes: string[] };
+type Props = {
+  listsData?: ListsData;
+  isLoading?: boolean;
+  authRoutes: string[];
+};
 
-const Navigation = ({ listsData, authRoutes }: Props) => {
+const Navigation = ({ listsData, isLoading, authRoutes }: Props) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
@@ -37,16 +42,14 @@ const Navigation = ({ listsData, authRoutes }: Props) => {
     };
 
     if (!authRoutes) window.addEventListener("storage", handleStorageEvent);
-
     return () => window.removeEventListener("storage", handleStorageEvent);
-
     // eslint-disable-next-line
   }, []);
 
   return (
     <Nav>
       {!authRoute && (
-        <NavList $isLists={!!listsData}>
+        <NavList $isLists={!!user}>
           <li>
             {supportedLanguages.map((lang) => (
               <NavButton
@@ -63,9 +66,13 @@ const Navigation = ({ listsData, authRoutes }: Props) => {
               {t("tasksPage")}
             </StyledNavLink>
           </li>
-          {!!listsData && (
+          {!!user && (
             <li>
-              <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
+              {!!isLoading ? (
+                <Loader />
+              ) : !!listsData ? (
+                <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
+              ) : null}
             </li>
           )}
           <li>

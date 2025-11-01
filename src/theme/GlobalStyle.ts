@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
     background: ${({ theme }) => theme.color.gallery};
     min-width: 300px;
     overflow-y: scroll;
+    font-size: 1rem;
   }
 `;
 

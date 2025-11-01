@@ -19,6 +19,7 @@ import { InputButton } from "../../../../common/InputButton";
 import { useSpeechToText } from "../../../../hooks";
 import { FormButtonWrapper } from "../../../../common/FormButtonWrapper";
 import { TextArea } from "../../../../common/TextArea";
+import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -47,8 +48,6 @@ export const TaskForm = () => {
       : `${taskContent} `,
   });
 
-  const formatedDate = new Date().toISOString();
-
   const addTaskContent = () => {
     const content = taskContent.trim();
     if (content) {
@@ -56,10 +55,10 @@ export const TaskForm = () => {
         ? dispatch(
           addTask({
             task: {
-              id: nanoid(),
+              id: nanoid(8),
               content,
               done: false,
-              date: formatedDate,
+              date: formatCurrentDateISO(),
             },
             stateForUndo: { tasks, listName },
           })
@@ -72,7 +71,7 @@ export const TaskForm = () => {
                 content,
                 done: editedTask.done,
                 date: editedTask.date,
-                editedDate: formatedDate,
+                editedDate: formatCurrentDateISO(),
               },
               stateForUndo: { tasks, listName },
             })

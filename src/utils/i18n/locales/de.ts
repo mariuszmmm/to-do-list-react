@@ -16,6 +16,7 @@ const langDe: typeof langPl = {
       },
       buttons: {
         fetchExampleTasks: "Beispielaufgaben abrufen",
+        loadFromArchive: "Aus dem Archiv laden",
         loading: "Laden...",
         error: "Fehler beim Laden der Daten",
       },
@@ -68,7 +69,18 @@ const langDe: typeof langPl = {
     dateEdited: "Änderungsdatum",
     dateDone: "Abschlussdatum",
   },
-  listsPage: {
+  archivedListsPage: {
+    title: "Archivierte Aufgabenlisten",
+    lists: {
+      select: "Wählen Sie eine Aufgabenliste aus",
+      empty: "Du hast keine archivierten Listen 😯",
+    },
+    buttons: {
+      load: "Ausgewählte Liste laden",
+    },
+    subTitle: "Ausgewählte Liste",
+  },
+  remoteListsPage: {
     title: "Gespeicherte Listen",
     lists: {
       select: "Liste auswählen",

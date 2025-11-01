@@ -19,7 +19,7 @@ interface TaskState {
   listName: string;
   listNameToEdit: string | null;
   isTasksSorting: boolean;
-  tasksToArchive?: Task[];
+  tasksToArchive: Task[];
 }
 
 const getInitialState = (): TaskState => ({
@@ -32,6 +32,7 @@ const getInitialState = (): TaskState => ({
   listName: getListNameFromLocalStorage() || "",
   listNameToEdit: null,
   isTasksSorting: false,
+  tasksToArchive: [],
 });
 
 const tasksSlice = createSlice({
@@ -100,8 +101,10 @@ const tasksSlice = createSlice({
     ) => {
       state.undoTasksStack.push(stateForUndo);
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      state.tasks[index].done = !state.tasks[index].done;
-      state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      if (index !== -1) {
+        state.tasks[index].done = !state.tasks[index].done;
+        state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      }
       state.redoTasksStack = [];
     },
     removeTask: (
@@ -130,7 +133,7 @@ const tasksSlice = createSlice({
       state.redoTasksStack = [];
       state.editedTask = null;
     },
-    setTasksToArchive: (state, { payload: tasksToArchive }: PayloadAction<Task[]>) => {
+    setTaskListToArchive: (state, { payload: tasksToArchive }: PayloadAction<Task[]>) => {
       state.tasksToArchive = tasksToArchive;
     },
     setAllDone: (
@@ -278,7 +281,7 @@ export const {
   toggleTaskDone,
   removeTask,
   removeTasks,
-  setTasksToArchive,
+  setTaskListToArchive,
   setAllDone,
   setAllUndone,
   setTasks,

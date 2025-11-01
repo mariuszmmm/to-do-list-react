@@ -1,7 +1,8 @@
 import { Task } from "./task";
 
-export interface List {
+export type List = {
   id: string;
+  date: string;
   name: string;
   taskList: Task[];
 }

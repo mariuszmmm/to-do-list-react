@@ -14,6 +14,7 @@ const langPl = {
       },
       buttons: {
         fetchExampleTasks: "Pobierz przykładowe zadania",
+        loadFromArchive: "Wczytaj z archiwum",
         loading: "Ładowanie...",
         error: "Błąd ładowania danych",
       },
@@ -66,7 +67,18 @@ const langPl = {
     dateEdited: "Data modyfikacji",
     dateDone: "Data ukończenia",
   },
-  listsPage: {
+  archivedListsPage: {
+    title: "Archiwalne listy zadań",
+    lists: {
+      select: "Wybierz listę zadań",
+      empty: "Nie masz zarchiwizowanych list 😯",
+    },
+    buttons: {
+      load: "Załaduj wybraną listę",
+    },
+    subTitle: "Wybrana lista",
+  },
+  remoteListsPage: {
     title: "Zapisane listy",
     lists: {
       select: "Wybierz listę",

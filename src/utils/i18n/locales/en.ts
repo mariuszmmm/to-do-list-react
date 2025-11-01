@@ -16,6 +16,7 @@ const langEn: typeof langPl = {
       },
       buttons: {
         fetchExampleTasks: "Fetch example tasks",
+        loadFromArchive: "Load from archive",
         loading: "Loading...",
         error: "Error loading data",
       },
@@ -68,7 +69,18 @@ const langEn: typeof langPl = {
     dateEdited: "Date of modification",
     dateDone: "Date of completion",
   },
-  listsPage: {
+  archivedListsPage: {
+    title: "Archived task lists",
+    lists: {
+      select: "Select a task list",
+      empty: "You have no archived lists 😯",
+    },
+    buttons: {
+      load: "Load selected list",
+    },
+    subTitle: "Selected list",
+  },
+  remoteListsPage: {
     title: "Saved lists",
     lists: {
       select: "Select a list",

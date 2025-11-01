@@ -2,7 +2,7 @@ import { Version } from "./account";
 import { List } from "./list";
 import { Task } from "./task";
 
-export interface ExampleTasks {
+export type ExampleTasks = {
   listName: string;
   tasks: Task[];
 }
