@@ -14,11 +14,12 @@ import { Loader } from "../common/Loader";
 
 type Props = {
   listsData?: ListsData;
-  isLoading?: boolean;
+  isLoading: boolean;
+  isError: boolean;
   authRoutes: string[];
 };
 
-const Navigation = ({ listsData, isLoading, authRoutes }: Props) => {
+const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
@@ -49,7 +50,7 @@ const Navigation = ({ listsData, isLoading, authRoutes }: Props) => {
   return (
     <Nav>
       {!authRoute && (
-        <NavList $isLists={!!user}>
+        <NavList $isLists={!!user && !isError}>
           <li>
             {supportedLanguages.map((lang) => (
               <NavButton
@@ -66,9 +67,9 @@ const Navigation = ({ listsData, isLoading, authRoutes }: Props) => {
               {t("tasksPage")}
             </StyledNavLink>
           </li>
-          {!!user && (
+          {!!user && !isError && (
             <li>
-              {!!isLoading ? (
+              {isLoading ? (
                 <Loader />
               ) : !!listsData ? (
                 <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>

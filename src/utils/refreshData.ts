@@ -5,13 +5,13 @@ export const refreshData = async () => {
   const token = await getUserToken();
   if (!token) {
     console.error("No token found");
-    return;
+    throw new Error("refreshData:noToken");
   }
 
   const data = await getDataApi(token);
   if (!data || !data.lists || !data.version) {
     console.error("No data");
-    return;
+    throw new Error("refreshData:noData");
   }
 
   return data;
