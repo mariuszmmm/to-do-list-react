@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const ListSchema = new Schema({
   id: { type: String, required: true },
+  date: { type: String, required: false },
   name: { type: String, required: true },
   taskList: { type: Array, default: [] },
 });

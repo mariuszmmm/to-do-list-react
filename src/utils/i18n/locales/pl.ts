@@ -68,9 +68,9 @@ const langPl = {
     dateDone: "Data ukończenia",
   },
   archivedListsPage: {
-    title: "Archiwalne listy zadań",
+    title: "Listy zarchiwizowane",
     lists: {
-      select: "Wybierz listę zadań",
+      select: "Wybierz listę",
       empty: "Nie masz zarchiwizowanych list 😯",
     },
     buttons: {
@@ -79,10 +79,10 @@ const langPl = {
     subTitle: "Wybrana lista",
   },
   remoteListsPage: {
-    title: "Zapisane listy",
+    title: "Listy zdalne",
     lists: {
       select: "Wybierz listę",
-      empty: "Nie masz zapisanych list 😯",
+      empty: "Nie masz zdalnych list 😯",
     },
     buttons: {
       load: "Załaduj wybraną listę",
@@ -296,12 +296,12 @@ const langPl = {
       title: "Zapisywanie listy",
       message: {
         confirm:
-          "Lista o nazwie <strong>{{listName}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
+          "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
         cancel: "Zmień nazwę listy i zapisz ponownie.",
         loading:
-          "Zapisywanie listy <strong>{{listName}}</strong> w bazie danych...",
+          "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
         success:
-          "Lista <strong>{{listName}}</strong> została zapisana w bazie danych.",
+          "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
         error: {
           conflict:
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
@@ -319,7 +319,7 @@ const langPl = {
       title: "Usuwanie listy",
       message: {
         confirm:
-          "Czy na pewno chcesz usunąć listę: <strong>{{listName}}</strong> ?",
+          "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
@@ -344,7 +344,7 @@ const langPl = {
     listLoad: {
       title: "Ładowanie listy",
       message: {
-        info: "Lista <strong>{{listName}}</strong> została załadowana do bieżacej listy zadań.",
+        info: "Lista <strong>{{name}}</strong> została załadowana do bieżacej listy zadań.",
       },
     },
     confirmation: {

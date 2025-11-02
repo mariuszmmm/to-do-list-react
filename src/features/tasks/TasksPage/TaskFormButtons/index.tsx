@@ -13,16 +13,17 @@ import {
 } from "../../../../utils/i18n/languageResources";
 import {
   selectAreTasksEmpty,
-  selectListName,
+  selectListMetadata,
   selectTasks,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
+import { TasksData } from "../../../../types";
 
 export const TaskFormButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const tasks = useAppSelector(selectTasks);
-  const listName = useAppSelector(selectListName);
+  const listMetadata = useAppSelector(selectListMetadata);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
@@ -34,7 +35,7 @@ export const TaskFormButtons = () => {
     ? lang
     : defaultLanguage;
 
-  const { isError, isFetching, refetch } = useQuery({
+  const { isError, isFetching, refetch } = useQuery<TasksData>({
     queryKey: ["exampleTasks", langForExample],
     queryFn: () => getExampleTasks(langForExample),
     enabled: false,
@@ -46,11 +47,15 @@ export const TaskFormButtons = () => {
     if (data && isSuccess) {
       dispatch(
         setTasks({
+          listMetadata: {
+            id: data.id,
+            date: data.date,
+            name: data.name,
+          },
           tasks: data.tasks,
-          listName: data.listName,
           stateForUndo: {
             tasks,
-            listName,
+            listMetadata,
           },
         })
       );

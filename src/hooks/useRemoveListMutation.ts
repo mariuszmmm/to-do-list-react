@@ -1,4 +1,3 @@
-// przeniesiony z ListsList/useRemoveListMutation.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeDataApi } from "../api/fetchDataApi";
 import { useAppDispatch } from ".";

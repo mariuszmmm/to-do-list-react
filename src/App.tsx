@@ -35,6 +35,8 @@ const App = () => {
   const safeData = !!loggedUserEmail ? data : undefined;
   const authRoutes = ["/user-confirmation", "/account-recovery"];
 
+  console.log("data :", data);
+
   useEffect(() => {
     if (!loggedUserEmail) return;
     if (isError) {

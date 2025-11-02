@@ -5,4 +5,4 @@ export type Task = {
   date: string;
   doneDate?: string | null;
   editedDate?: string | null;
-}
+};

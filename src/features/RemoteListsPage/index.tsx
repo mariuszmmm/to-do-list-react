@@ -80,7 +80,7 @@ const RemoteListsPage = ({ listsData }: Props) => {
           title: { key: "modal.listRemove.title" },
           message: {
             key: "modal.listRemove.message.confirm",
-            values: { listName: listToRemove.name },
+            values: { name: listToRemove.name },
           },
           type: "confirm",
           confirmButton: { key: "modal.buttons.deleteButton" },

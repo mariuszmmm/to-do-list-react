@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { nanoid } from "@reduxjs/toolkit";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
-import { RedoIcon, UndoIcon } from "../../../../common/icons";
+import { CircleIcon, RedoIcon, UndoIcon } from "../../../../common/icons";
 import {
   selectAreTasksEmpty,
   selectHideDone,
@@ -15,7 +15,7 @@ import {
   selectEditedTask,
   setAllUndone,
   selectIsEveryTaskUndone,
-  selectListName,
+  selectListMetadata,
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
@@ -23,7 +23,10 @@ import {
   selectIsTasksSorting,
   setTaskListToArchive,
 } from "../../tasksSlice";
-import { selectListToAdd, setListToAdd } from "../../../RemoteListsPage/remoteListsSlice";
+import {
+  selectListToAdd,
+  setListToAdd,
+} from "../../../RemoteListsPage/remoteListsSlice";
 import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
@@ -34,6 +37,7 @@ import { ListsData } from "../../../../types";
 import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
 import { useAddListMutation } from "../../../../hooks";
 import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
+// import { useQuery } from "@tanstack/react-query";
 
 type Props = { listsData?: ListsData };
 
@@ -47,10 +51,22 @@ export const TasksButtons = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const editedTask = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
-  const listName = useAppSelector(selectListName);
+  const listMetadata = useAppSelector(selectListMetadata);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const listToAdd = useAppSelector(selectListToAdd);
   const confirmed = useAppSelector(selectModalConfirmed);
+
+  // const { data, isLoading, isSuccess, isError } = useQuery<ListsData>({
+  //   queryKey: ["lists"],
+  //   // queryFn: refreshData,
+  //   // enabled: !!loggedUserEmail,
+  // });
+
+  // console.log("listsData in TasksButtons:", listsData);
+  // console.log("data in TasksButtons:", data);
+  // console.log("isLoading in TasksButtons:", isLoading);
+  // console.log("isSuccess in TasksButtons:", isSuccess);
+  // console.log("isError in TasksButtons:", isError);
 
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
@@ -58,6 +74,13 @@ export const TasksButtons = ({ listsData }: Props) => {
   });
 
   const addListMutation = useAddListMutation();
+
+  // chę dostac stasus mutate
+  const { isPending, isSuccess, isError } = addListMutation;
+
+  console.log("addListMutation isPending:", isPending);
+  console.log("addListMutation isSuccess:", isSuccess);
+  console.log("addListMutation isError:", isError);
 
   useEffect(() => {
     if (!listToAdd || !listsData) return;
@@ -92,7 +115,7 @@ export const TasksButtons = ({ listsData }: Props) => {
             title: { key: "modal.listSave.title" },
             message: {
               key: "modal.listSave.message.confirm",
-              values: { listName: listToAdd.name },
+              values: { name: listToAdd.name },
             },
             type: "confirm",
           })
@@ -112,27 +135,39 @@ export const TasksButtons = ({ listsData }: Props) => {
               setListToAdd({
                 id: nanoid(8),
                 date: formatCurrentDateISO(),
-                name: listName,
+                name: listMetadata.name,
                 taskList: tasks,
               })
             )
           }
-          disabled={!listName || areTasksEmpty || listNameToEdit !== null}
+          disabled={
+            !listMetadata.name || areTasksEmpty || listNameToEdit !== null
+          }
         >
-          {t("tasks.buttons.save")}
+          <span>
+            <CircleIcon
+              $isPending={isPending}
+              $isUpdated={isSuccess}
+              $isError={isError}
+            />
+            {t("tasks.buttons.save")}
+          </span>
         </Button>
       )}
-      <Button onClick={() => dispatch(setTaskListToArchive(tasks))} disabled={areTasksEmpty}>
+      <Button
+        onClick={() => dispatch(setTaskListToArchive(tasks))}
+        disabled={areTasksEmpty}
+      >
         {t("tasks.buttons.clear")}
       </Button>
       <Button
-        onClick={() => dispatch(setAllDone({ tasks, listName }))}
+        onClick={() => dispatch(setAllDone({ tasks, listMetadata }))}
         disabled={isEveryTaskDone || areTasksEmpty}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
-        onClick={() => dispatch(setAllUndone({ tasks, listName }))}
+        onClick={() => dispatch(setAllUndone({ tasks, listMetadata }))}
         disabled={isEveryTaskUndone || areTasksEmpty}
       >
         {t("tasks.buttons.allUndone")}

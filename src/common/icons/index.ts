@@ -4,6 +4,7 @@ import { ReactComponent as CircleCheck } from "../../images/circle-check.svg";
 import { ReactComponent as CircleInfo } from "../../images/circle-info.svg";
 import { ReactComponent as CircleWarning } from "../../images/circle-warning.svg";
 import { ReactComponent as CircleLoading } from "../../images/circle-loading.svg";
+import { ReactComponent as Circle } from "../../images/circle.svg";
 import { ReactComponent as Eye } from "../../images/eye.svg";
 import { ReactComponent as EyeSlash } from "../../images/eye-slash.svg";
 import { ReactComponent as ArrowUp } from "../../images/arrow-up.svg";
@@ -11,6 +12,13 @@ import { ReactComponent as Microphone } from "../../images/microphone.svg";
 
 interface MicrophoneIconProps {
   $isActive?: boolean;
+}
+
+interface CircleIconProps {
+  $isPending?: boolean;
+  $isError?: boolean;
+  $isUpdated?: boolean;
+  $isChanged?: boolean;
 }
 
 export const MicrophoneIcon = styled(Microphone)<MicrophoneIconProps>`
@@ -95,6 +103,18 @@ export const CircleLoadingIcon = styled(CircleLoading)`
       transform: Rotate(360deg);
     }
   }
+`;
+
+export const CircleIcon = styled(Circle)<CircleIconProps>`
+  margin-right: 10px;
+  filter: brightness(140%);
+  color: ${({ theme, $isPending, $isUpdated, $isChanged, $isError }) => {
+    if ($isPending) return theme.color.blue;
+    if ($isError) return theme.color.red;
+    if ($isUpdated) return theme.color.forestGreen;
+    if ($isChanged) return theme.color.yellow;
+    return theme.color.black;
+  }};
 `;
 
 const ArrowIconStyles = css`

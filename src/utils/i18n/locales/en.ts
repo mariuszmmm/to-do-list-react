@@ -70,9 +70,9 @@ const langEn: typeof langPl = {
     dateDone: "Date of completion",
   },
   archivedListsPage: {
-    title: "Archived task lists",
+    title: "Archived lists",
     lists: {
-      select: "Select a task list",
+      select: "Select a list",
       empty: "You have no archived lists 😯",
     },
     buttons: {
@@ -81,10 +81,10 @@ const langEn: typeof langPl = {
     subTitle: "Selected list",
   },
   remoteListsPage: {
-    title: "Saved lists",
+    title: "Remote lists",
     lists: {
       select: "Select a list",
-      empty: "You have no saved lists 😯",
+      empty: "You have no remote lists 😯",
     },
     buttons: {
       load: "Load selected list",
@@ -297,11 +297,11 @@ const langEn: typeof langPl = {
       title: "Saving list",
       message: {
         confirm:
-          "The list <strong>{{listName}}</strong> already exists.<br/> Do you want to replace it?",
+          "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
-        loading: "Saving list <strong>{{listName}}</strong> to the database...",
+        loading: "Saving list <strong>{{name}}</strong> to the database...",
         success:
-          "List <strong>{{listName}}</strong> has been saved to the database.",
+          "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
           conflict:
             "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
@@ -319,7 +319,7 @@ const langEn: typeof langPl = {
       title: "Deleting list",
       message: {
         confirm:
-          "Are you sure you want to delete the list: <strong>{{listName}}</strong> ?",
+          "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
@@ -344,7 +344,7 @@ const langEn: typeof langPl = {
     listLoad: {
       title: "Loading list",
       message: {
-        info: "The list <strong>{{listName}}</strong> has been loaded from the database.",
+        info: "The list <strong>{{name}}</strong> has been loaded from the database.",
       },
     },
     confirmation: {

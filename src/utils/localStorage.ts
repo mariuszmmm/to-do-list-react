@@ -1,7 +1,7 @@
-import { List, Settings, Task, } from "../types";
+import { List, ListMetadata, Settings, Task } from "../types";
 
 const settingsKey = "settings" as const;
-const listNameKey = "listName" as const;
+const listMetadataKey = "listMetadata" as const;
 const tasksKey = "tasks" as const;
 const listsKey = "archivedLists" as const;
 
@@ -16,12 +16,12 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
   return JSON.parse(data);
 };
 
-export const saveListNameInLocalStorage = (listName: string) =>
-  localStorage.setItem(listNameKey, JSON.stringify(listName));
+export const saveListMetadataInLocalStorage = (listMetadata: ListMetadata) =>
+  localStorage.setItem(listMetadataKey, JSON.stringify(listMetadata));
 
-export const getListNameFromLocalStorage = (): string => {
-  const data = localStorage.getItem(listNameKey);
-  if (!data || data === "undefined") return "";
+export const getListMetadataFromLocalStorage = (): ListMetadata => {
+  const data = localStorage.getItem(listMetadataKey);
+  if (!data || data === "undefined") return { id: "", date: "", name: "" };
   return JSON.parse(data);
 };
 

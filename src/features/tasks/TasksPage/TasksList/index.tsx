@@ -17,7 +17,7 @@ import {
   selectTasksByQuery,
   selectEditedTask,
   selectTasks,
-  selectListName,
+  selectListMetadata,
   taskMoveUp,
   taskMoveDown,
   selectIsTasksSorting,
@@ -34,7 +34,7 @@ import {
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
-  const listName = useAppSelector(selectListName);
+  const listMetadata = useAppSelector(selectListMetadata);
   const hideDone = useAppSelector(selectHideDone);
   const editedTask = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
@@ -43,6 +43,9 @@ export const TasksList = () => {
   );
   const dispatch = useAppDispatch();
   const date = new Date().toISOString();
+
+  console.log("tasks :", tasks);
+  console.log("name :", listMetadata);
 
   useEffect(() => {
     if (!editedTask) return;
@@ -80,7 +83,7 @@ export const TasksList = () => {
                   toggleTaskDone({
                     taskId: task.id,
                     doneDate: task.done ? null : date,
-                    stateForUndo: { tasks, listName },
+                    stateForUndo: { tasks, listMetadata },
                   })
                 )
               }
@@ -119,7 +122,7 @@ export const TasksList = () => {
                   dispatch(
                     removeTask({
                       taskId: task.id,
-                      stateForUndo: { tasks, listName },
+                      stateForUndo: { tasks, listMetadata },
                     })
                   )
                 }

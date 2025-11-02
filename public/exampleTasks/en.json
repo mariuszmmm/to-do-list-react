@@ -1,5 +1,5 @@
 {
-  "listName": "Example tasks",
+  "name": "Example tasks",
   "tasks": [
     {
       "content": "Mark task as done",
