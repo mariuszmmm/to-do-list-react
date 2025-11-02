@@ -56,6 +56,7 @@ const App = () => {
       <Navigation
         listsData={safeData}
         isLoading={isLoading}
+        isError={isError}
         authRoutes={authRoutes}
       />
       <Container>
