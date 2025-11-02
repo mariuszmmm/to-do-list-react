@@ -1,3 +1,4 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { ExampleTasks } from "../types";
 
 export const getExampleTasks = async (lang: string) => {
@@ -7,11 +8,13 @@ export const getExampleTasks = async (lang: string) => {
   }
 
   const exampleTasks = (await response.json()) as ExampleTasks;
+  const id = nanoid(8);
   const date = new Date().toISOString();
-  const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
-    ...task,
+  const name = exampleTasks.name;
+  const tasks = exampleTasks.tasks.map((exampleTask) => ({
+    ...exampleTask,
     date,
   }));
 
-  return { ...exampleTasks, tasks: exampleTasksWithDate };
+  return { id, date, name, tasks };
 };

@@ -37,12 +37,14 @@ const ArchivedListsPage = () => {
       <Header title={t("title")} />
       <Section
         title={isArchivedTaskListEmpty ? t("lists.empty") : t("lists.select")}
-        body={<TaskLists
-          lists={archivedLists}
-          selectedListId={selectedListId}
-          modalIsOpen={modalIsOpen}
-          isListsSorting={isListsSorting}
-        />}
+        body={
+          <TaskLists
+            lists={archivedLists}
+            selectedListId={selectedListId}
+            modalIsOpen={modalIsOpen}
+            isListsSorting={isListsSorting}
+          />
+        }
         extraHeaderContent={
           <ListsButtons
             lists={archivedLists}

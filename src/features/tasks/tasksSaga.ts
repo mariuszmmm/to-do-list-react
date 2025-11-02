@@ -1,7 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
-  saveListNameInLocalStorage,
+  saveListMetadataInLocalStorage,
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
@@ -12,13 +12,13 @@ import {
   removeTasks,
   saveEditedTask,
   selectHideDone,
-  selectListName,
+  selectListMetadata,
   selectShowSearch,
   selectTasks,
   selectTasksToArchive,
   setAllDone,
   setAllUndone,
-  setListName,
+  setListMetadata,
   setTaskListToArchive,
   setTasks,
   switchTaskSort,
@@ -27,8 +27,14 @@ import {
   toggleTaskDone,
   undoTasks,
 } from "./tasksSlice";
-import { selectListToLoad, setListToLoad } from "../RemoteListsPage/remoteListsSlice";
-import { addArchivedList, setArchivedListToLoad } from "../ArchivedListPage/archivedListsSlice";
+import {
+  selectListToLoad,
+  setListToLoad,
+} from "../RemoteListsPage/remoteListsSlice";
+import {
+  addArchivedList,
+  setArchivedListToLoad,
+} from "../ArchivedListPage/archivedListsSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { Task } from "../../types";
 
@@ -43,12 +49,20 @@ function* saveSettingsInLocalStorageHandler() {
   yield call(saveSettingsInLocalStorage, { showSearch, hideDone });
 }
 
-function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof setArchivedListToLoad>) {
-
-  let listToLoadData: { taskList: Task[]; name: string } | null = null;
+function* setListToLoadHandler(
+  action: ReturnType<typeof setListToLoad | typeof setArchivedListToLoad>
+) {
+  let listToLoadData: {
+    id: string;
+    date: string;
+    taskList: Task[];
+    name: string;
+  } | null = null;
 
   if (action.type === setListToLoad.type) {
-    const listToLoad: ReturnType<typeof selectListToLoad> = yield select(selectListToLoad);
+    const listToLoad: ReturnType<typeof selectListToLoad> = yield select(
+      selectListToLoad
+    );
     if (!listToLoad) return;
     listToLoadData = listToLoad;
   } else if (action.type === setArchivedListToLoad.type) {
@@ -60,13 +74,15 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
   }
 
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-  const listName: ReturnType<typeof selectListName> = yield select(selectListName);
+  const listMetadata: ReturnType<typeof selectListMetadata> = yield select(
+    selectListMetadata
+  );
 
   yield put(
     setTasks({
+      listMetadata,
       tasks: listToLoadData.taskList,
-      listName: listToLoadData.name,
-      stateForUndo: { tasks, listName },
+      stateForUndo: { tasks, listMetadata },
     })
   );
   yield put(
@@ -74,7 +90,7 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
       title: { key: "modal.listLoad.title" },
       message: {
         key: "modal.listLoad.message.info",
-        values: { listName: listToLoadData.name },
+        values: { name: listToLoadData.name },
       },
       type: "info",
     })
@@ -83,9 +99,11 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
 
 function* saveDataInLocalStorageHandler() {
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-  const listName: ReturnType<typeof selectListName> = yield select(selectListName);
+  const listMetadata: ReturnType<typeof selectListMetadata> = yield select(
+    selectListMetadata
+  );
   yield call(saveTasksInLocalStorage, tasks);
-  yield call(saveListNameInLocalStorage, listName);
+  yield call(saveListMetadataInLocalStorage, listMetadata);
 }
 
 function* archiveTaskListInLocalStorageHandler() {
@@ -115,7 +133,9 @@ function* archiveTaskListInLocalStorageHandler() {
     return;
   }
 
-  const name: ReturnType<typeof selectListName> = yield select(selectListName);
+  const { name }: ReturnType<typeof selectListMetadata> = yield select(
+    selectListMetadata
+  );
   const id = nanoid(8);
   const date = new Date().toISOString();
   const list = { id, date, name, taskList };
@@ -143,11 +163,17 @@ export function* tasksSaga() {
       setTasks.type,
       undoTasks.type,
       redoTasks.type,
-      setListName.type,
+      setListMetadata.type,
       switchTaskSort.type,
     ],
     saveDataInLocalStorageHandler
   );
-  yield takeEvery(setTaskListToArchive.type, archiveTaskListInLocalStorageHandler);
-  yield takeEvery([setListToLoad.type, setArchivedListToLoad.type], setListToLoadHandler);
+  yield takeEvery(
+    setTaskListToArchive.type,
+    archiveTaskListInLocalStorageHandler
+  );
+  yield takeEvery(
+    [setListToLoad.type, setArchivedListToLoad.type],
+    setListToLoadHandler
+  );
 }

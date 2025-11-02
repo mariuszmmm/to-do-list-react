@@ -10,7 +10,7 @@ import {
   saveEditedTask,
   selectEditedTask,
   selectTasks,
-  selectListName,
+  selectListMetadata,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { InputWrapper } from "../../../../common/InputWrapper";
@@ -23,7 +23,7 @@ import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
-  const listName = useAppSelector(selectListName);
+  const listMetadata = useAppSelector(selectListMetadata);
   const editedTask = useAppSelector(selectEditedTask);
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
@@ -53,18 +53,18 @@ export const TaskForm = () => {
     if (content) {
       editedTask === null
         ? dispatch(
-          addTask({
-            task: {
-              id: nanoid(8),
-              content,
-              done: false,
-              date: formatCurrentDateISO(),
-            },
-            stateForUndo: { tasks, listName },
-          })
-        )
+            addTask({
+              task: {
+                id: nanoid(8),
+                content,
+                done: false,
+                date: formatCurrentDateISO(),
+              },
+              stateForUndo: { tasks, listMetadata },
+            })
+          )
         : content !== previousContent
-          ? dispatch(
+        ? dispatch(
             saveEditedTask({
               task: {
                 id: editedTask.id,
@@ -73,10 +73,10 @@ export const TaskForm = () => {
                 date: editedTask.date,
                 editedDate: formatCurrentDateISO(),
               },
-              stateForUndo: { tasks, listName },
+              stateForUndo: { tasks, listMetadata },
             })
           )
-          : dispatch(setTaskToEdit(null));
+        : dispatch(setTaskToEdit(null));
     }
     setTaskContent("");
   };
@@ -124,7 +124,7 @@ export const TaskForm = () => {
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
       <InputWrapper>
-        {editedTask ?
+        {editedTask ? (
           <TextArea
             value={taskContent}
             name="taskName"
@@ -132,7 +132,7 @@ export const TaskForm = () => {
             onChange={({ target }) => setTaskContent(target.value)}
             ref={textAreaRef}
           />
-          :
+        ) : (
           <Input
             value={taskContent}
             name="taskName"
@@ -140,21 +140,23 @@ export const TaskForm = () => {
             onChange={({ target }) => setTaskContent(target.value)}
             ref={inputRef}
           />
-        }
-        {!editedTask && <InputButton
-          type="button"
-          onClick={() => {
-            if (!isListening && inputRef.current) {
-              inputRef.current.focus();
-              start();
-            } else {
-              stop();
-            }
-          }}
-          disabled={!supportSpeech}
-        >
-          <MicrophoneIcon $isActive={isListening} />
-        </InputButton>}
+        )}
+        {!editedTask && (
+          <InputButton
+            type="button"
+            onClick={() => {
+              if (!isListening && inputRef.current) {
+                inputRef.current.focus();
+                start();
+              } else {
+                stop();
+              }
+            }}
+            disabled={!supportSpeech}
+          >
+            <MicrophoneIcon $isActive={isListening} />
+          </InputButton>
+        )}
       </InputWrapper>
       <FormButtonWrapper>
         <FormButton type="submit" $singleInput disabled={isActive}>

@@ -25,7 +25,7 @@ export const useAddListMutation = () => {
           title: { key: "modal.listSave.title" },
           message: {
             key: "modal.listSave.message.loading",
-            values: { listName: list.name },
+            values: { name: list.name },
           },
           type: "loading",
         })
@@ -45,7 +45,7 @@ export const useAddListMutation = () => {
           openModal({
             message: {
               key: "modal.listSave.message.success",
-              values: { listName: list.name },
+              values: { name: list.name },
             },
             type: "success",
           })

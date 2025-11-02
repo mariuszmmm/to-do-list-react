@@ -11,6 +11,8 @@ export const theme = {
     forestGreen: "#228c22",
     red: "#ff0000",
     blue: "#008fff",
+    yellow: "#ffdd00",
+    transparent: "transparent",
   },
   breakpoint: {
     mobileMax: "767px",

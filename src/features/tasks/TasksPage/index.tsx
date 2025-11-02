@@ -22,6 +22,8 @@ const TasksPage = ({ listsData }: Props) => {
     keyPrefix: "tasksPage",
   });
 
+  console.log("listsData :", listsData);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

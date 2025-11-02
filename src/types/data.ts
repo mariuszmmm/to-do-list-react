@@ -1,11 +1,19 @@
+import { D } from "@tanstack/react-query-devtools/build/legacy/ReactQueryDevtools-Cn7cKi7o";
 import { Version } from "./account";
 import { List } from "./list";
 import { Task } from "./task";
 
 export type ExampleTasks = {
-  listName: string;
+  name: string;
   tasks: Task[];
-}
+};
+
+export type TasksData = {
+  id: string;
+  date: string;
+  name: string;
+  tasks: Task[];
+};
 
 export type Data = {
   email?: string;

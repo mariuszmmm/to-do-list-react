@@ -70,9 +70,9 @@ const langDe: typeof langPl = {
     dateDone: "Abschlussdatum",
   },
   archivedListsPage: {
-    title: "Archivierte Aufgabenlisten",
+    title: "Archivierte Listen",
     lists: {
-      select: "Wählen Sie eine Aufgabenliste aus",
+      select: "Liste auswählen",
       empty: "Du hast keine archivierten Listen 😯",
     },
     buttons: {
@@ -81,10 +81,10 @@ const langDe: typeof langPl = {
     subTitle: "Ausgewählte Liste",
   },
   remoteListsPage: {
-    title: "Gespeicherte Listen",
+    title: "Remote Listen",
     lists: {
       select: "Liste auswählen",
-      empty: "Du hast keine gespeicherten Listen 😯",
+      empty: "Du hast keine Remote Listen 😯",
     },
     buttons: {
       load: "Ausgewählte Liste laden",
@@ -299,12 +299,12 @@ const langDe: typeof langPl = {
       title: "Liste speichern",
       message: {
         confirm:
-          "Die Liste <strong>{{listName}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
+          "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
         loading:
-          "Liste <strong>{{listName}}</strong> wird in der Datenbank gespeichert...",
+          "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
         success:
-          "Liste <strong>{{listName}}</strong> wurde in der Datenbank gespeichert.",
+          "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
         error: {
           conflict:
             "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
@@ -322,7 +322,7 @@ const langDe: typeof langPl = {
       title: "Liste löschen",
       message: {
         confirm:
-          "Möchtest du die Liste <strong>{{listName}}</strong> wirklich löschen?",
+          "Möchtest du die Liste <strong>{{name}}</strong> wirklich löschen?",
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
@@ -347,7 +347,7 @@ const langDe: typeof langPl = {
     listLoad: {
       title: "Liste laden",
       message: {
-        info: "Die Liste <strong>{{listName}}</strong> wurde in die aktuelle Aufgabenliste geladen.",
+        info: "Die Liste <strong>{{name}}</strong> wurde in die aktuelle Aufgabenliste geladen.",
       },
     },
     confirmation: {
