@@ -37,7 +37,7 @@ import { ListsData } from "../../../../types";
 import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
 import { useAddListMutation } from "../../../../hooks";
 import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 type Props = { listsData?: ListsData };
 
