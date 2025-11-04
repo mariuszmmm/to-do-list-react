@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from ".";
 import { ListsData, List, Version, Task } from "../types";
 import {
@@ -10,6 +10,27 @@ import {
   selectListStatus,
 } from "../features/tasks/tasksSlice";
 import { UseMutationResult } from "@tanstack/react-query";
+
+const areTasksEqual = (remoteTasks: Task[], localTasks: Task[]): boolean => {
+  if (remoteTasks === localTasks) {
+    return true;
+  }
+  if (remoteTasks.length !== localTasks.length) {
+    return false;
+  }
+
+  return remoteTasks.every((remoteTask, index) => {
+    const localTask = localTasks[index];
+    return (
+      remoteTask.id === localTask.id &&
+      remoteTask.content === localTask.content &&
+      remoteTask.done === localTask.done &&
+      remoteTask.date === localTask.date &&
+      remoteTask.doneDate === localTask.doneDate &&
+      remoteTask.editedDate === localTask.editedDate
+    );
+  });
+};
 
 interface UseListSyncManagerParams {
   listsData?: ListsData;
@@ -32,118 +53,115 @@ export const useListSyncManager = ({
   const dispatch = useAppDispatch();
   const autoSaveCounterRef = useRef(0);
 
-  useEffect(() => {
-    const areTasksEqual = (
-      remoteTasks: Task[],
-      localTasks: Task[]
-    ): boolean => {
-      if (remoteTasks.length !== localTasks.length) {
-        return false;
-      }
-
-      return remoteTasks.every((remoteTask, index) => {
-        const localTask = localTasks[index];
-        return (
-          remoteTask.id === localTask.id &&
-          remoteTask.content === localTask.content &&
-          remoteTask.done === localTask.done &&
-          remoteTask.date === localTask.date &&
-          remoteTask.doneDate === localTask.doneDate &&
-          remoteTask.editedDate === localTask.editedDate
-        );
-      });
-    };
-
-    const checkRemoteListStatus = () => {
-      if (!listsData || !taskListMetaData?.id) {
-        console.log(
-          "[ListSync] No lists data or task list metadata available."
-        );
-        dispatch(
-          setListStatus({
-            existsInRemote: false,
-            isIdenticalToRemote: false,
-            isRemoteSaveable: false,
-          })
-        );
+  const checkRemoteListStatus = useCallback(() => {
+    if (!listsData || !taskListMetaData?.id || !listStatus.isRemoteSaveable) {
+      console.log("TESTTTTT");
+      if (
+        !listStatus.existsInRemote &&
+        !listStatus.isIdenticalToRemote &&
+        !listStatus.isRemoteSaveable
+      ) {
         return;
       }
-
-      const remoteList = listsData.lists.find(
-        (list) => list.id === taskListMetaData.id
+      dispatch(
+        setListStatus({
+          existsInRemote: false,
+          isIdenticalToRemote: false,
+          isRemoteSaveable: false,
+        })
       );
+      return;
+    }
 
-      if (!remoteList) {
-        console.log("[ListSync] Remote list does not exist.");
-        dispatch(
-          setListStatus({
-            ...listStatus,
-            existsInRemote: true, // zaznaczamy, że lista nie istnieje
-          })
-        );
+    const remoteList = listsData.lists.find(
+      (list) => list.id === taskListMetaData.id
+    );
+
+    if (!remoteList) {
+      if (listStatus.existsInRemote) {
         return;
       }
-
-      // Lista istnieje, sprawdź czy zadania są identyczne
-      const tasksMatch = areTasksEqual(remoteList.taskList, tasks);
-      console.log("[ListSync] Remote list exists. Tasks match:", tasksMatch);
       dispatch(
         setListStatus({
           ...listStatus,
-          isIdenticalToRemote: tasksMatch,
+          existsInRemote: false,
         })
       );
-    };
+      return;
+    }
 
-    const handleAutoSave = () => {
-      // Sprawdź warunki do auto-save
-      if (
-        !toUpdate ||
-        !taskListMetaData ||
-        !listsData ||
-        !listsData.version ||
-        tasks.length === 0 ||
-        !listStatus.isRemoteSaveable
-      ) {
-        autoSaveCounterRef.current = 0;
-        return;
-      }
+    const tasksMatch = areTasksEqual(remoteList.taskList, tasks);
+    if (
+      listStatus.existsInRemote &&
+      listStatus.isIdenticalToRemote === tasksMatch
+    ) {
+      return;
+    }
 
-      // Zwiększ licznik
-      autoSaveCounterRef.current += 1;
-      console.log(`[AutoSave] Counter: ${autoSaveCounterRef.current}/1`);
+    dispatch(
+      setListStatus({
+        ...listStatus,
+        existsInRemote: true,
+        isIdenticalToRemote: tasksMatch,
+      })
+    );
+  }, [listsData, taskListMetaData, tasks, listStatus, dispatch]);
 
-      // Zapisz po 5 sekundach (1 interwał)
-      if (autoSaveCounterRef.current >= 1) {
-        console.log("[AutoSave] Performing auto-save now.");
-        saveListMutation.mutate({
-          version: listsData.version,
-          list: {
-            id: taskListMetaData.id,
-            date: taskListMetaData.date,
-            name: taskListMetaData.name,
-            taskList: tasks,
-          },
-        });
+  const handleAutoSave = useCallback(() => {
+    if (
+      !toUpdate ||
+      !taskListMetaData ||
+      !listsData ||
+      !listsData.version ||
+      tasks.length === 0 ||
+      !listStatus.isRemoteSaveable
+    ) {
+      autoSaveCounterRef.current = 0;
+      return;
+    }
 
-        dispatch(setToUpdate(null));
-        autoSaveCounterRef.current = 0;
-      }
-    };
+    autoSaveCounterRef.current += 1;
+    console.log(`[AutoSave] Counter: ${autoSaveCounterRef.current}/1`);
 
+    if (autoSaveCounterRef.current >= 1) {
+      console.log("[AutoSave] Performing auto-save now.");
+      saveListMutation.mutate({
+        version: listsData.version,
+        list: {
+          id: taskListMetaData.id,
+          date: taskListMetaData.date,
+          name: taskListMetaData.name,
+          taskList: tasks,
+        },
+      });
+
+      dispatch(setToUpdate(null));
+      autoSaveCounterRef.current = 0;
+    }
+  }, [
+    toUpdate,
+    taskListMetaData,
+    listsData,
+    tasks,
+    listStatus.isRemoteSaveable,
+    saveListMutation,
+    dispatch,
+  ]);
+
+  useEffect(() => {
     const intervalCallback = () => {
-      console.log("[ListSync] Interval tick");
+      // console.log("[ListSync] Interval tick");
 
-      console.log(
-        "listsData: ",
-        listsData,
-        "taskListMetaData: ",
-        taskListMetaData,
-        "tasks: ",
-        tasks,
-        "toUpdate: ",
-        toUpdate
-      );
+      // console.log(
+      //   "listsData: ",
+      //   listsData,
+      //   "taskListMetaData: ",
+      //   taskListMetaData,
+      //   "tasks: ",
+      //   tasks,
+      //   "toUpdate: ",
+      //   toUpdate
+      // );
       if (!listsData) {
         clearInterval(intervalId);
         return;
@@ -152,27 +170,23 @@ export const useListSyncManager = ({
       handleAutoSave();
     };
 
-    // Sprawdź natychmiast przy montowaniu
     checkRemoteListStatus();
 
-    // Uruchom interval co 5 sekund
     const intervalId = setInterval(intervalCallback, 5000);
 
     return () => {
       console.log("[ListSync] Cleanup - clearing interval");
       clearInterval(intervalId);
     };
-    // eslint-disable-next-line
   }, [
     listsData,
     taskListMetaData,
     tasks,
     toUpdate,
-    // dispatch,
-    // saveListMutation,
+    // checkRemoteListStatus,
+    // handleAutoSave,
   ]);
 
-  // Reset licznika gdy zmieni się toUpdate
   useEffect(() => {
     if (toUpdate) {
       console.log("[AutoSave] Reset counter - new changes detected");

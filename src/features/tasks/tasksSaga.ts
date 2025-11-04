@@ -29,6 +29,8 @@ import {
   toggleTaskDone,
   undoTasks,
   clearTaskList,
+  setListStatus,
+  selectListStatus,
 } from "./tasksSlice";
 import {
   selectListToLoad,
@@ -40,6 +42,7 @@ import {
 } from "../ArchivedListPage/archivedListsSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { Task } from "../../types";
+import { useAppSelector } from "../../hooks";
 
 function* saveSettingsInLocalStorageHandler() {
   const showSearch: ReturnType<typeof selectShowSearch> = yield select(
@@ -91,6 +94,14 @@ function* setListToLoadHandler(
       stateForUndo: { tasks, taskListMetaData },
     })
   );
+
+  const listStatus: ReturnType<typeof selectListStatus> = yield select(
+    selectListStatus
+  );
+
+  yield put(setListStatus({ ...listStatus, isRemoteSaveable: true }));
+  yield put(setToUpdate(null));
+
   yield put(
     openModal({
       title: { key: "modal.listLoad.title" },

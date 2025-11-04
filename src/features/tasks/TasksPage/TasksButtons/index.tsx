@@ -37,7 +37,12 @@ import { UseMutationResult } from "@tanstack/react-query";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<any, Error, { version: Version; list: List }, unknown>;
+  saveListMutation: UseMutationResult<
+    any,
+    Error,
+    { version: Version; list: List },
+    unknown
+  >;
 };
 
 export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
@@ -61,7 +66,6 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const { isPending, isSuccess, isError } = saveListMutation;
 
   // console.log("taskListMetaData", taskListMetaData);
-
 
   // useEffect(() => {
   //   if (!listToAdd || !listsData) return;
@@ -110,29 +114,29 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   return (
     <ButtonsContainer>
       {listsData && (
-        <Button
-          onClick={
-            () => {
-              saveListMutation.mutate({
-                version: listsData.version,
-                list: {
-                  id: taskListMetaData.id,
-                  date: taskListMetaData.date,
-                  name: taskListMetaData.name,
-                  taskList: tasks,
-                }
-              })
-              dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }))
-              dispatch(setToUpdate(null));
-            }}
-
+        <Button // robi się w consol.log: "[ListSync] Cleanup - clearing interval" po wciśnieciu buttona i prywa interwał
+          onClick={() => {
+            saveListMutation.mutate({
+              version: listsData.version,
+              list: {
+                id: taskListMetaData.id,
+                date: taskListMetaData.date,
+                name: taskListMetaData.name,
+                taskList: tasks,
+              },
+            });
+            dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
+            dispatch(setToUpdate(null));
+          }}
           disabled={
             !taskListMetaData.name || areTasksEmpty || listNameToEdit !== null
           }
         >
           <span>
             <CircleIcon
-              $isChanged={!!toUpdate && tasks.length > 0 && listStatus.isRemoteSaveable}
+              $isChanged={
+                !!toUpdate && tasks.length > 0 && listStatus.isRemoteSaveable
+              }
               $isError={isError}
               $isPending={isPending}
               $isUpdated={listStatus.isIdenticalToRemote}
@@ -140,13 +144,12 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
             {t("tasks.buttons.save")}
           </span>
         </Button>
-      )
-      }
+      )}
       <Button
         onClick={() => {
-          dispatch(setTaskListToArchive(tasks))
+          dispatch(setTaskListToArchive(tasks));
           // dispatch(setListStatus({ existsInRemote: false, isIdenticalToRemote: false, isRemoteSaveable: false }))
-          dispatch(clearTaskList())
+          dispatch(clearTaskList());
         }}
         disabled={areTasksEmpty}
       >
@@ -202,6 +205,6 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
           <RedoIcon />
         </Button>
       </ButtonsContainer>
-    </ButtonsContainer >
+    </ButtonsContainer>
   );
 };

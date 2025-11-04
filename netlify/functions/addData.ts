@@ -64,11 +64,12 @@ const handler: Handler = async (event, context) => {
     }
 
     const listIndex = foundUser.lists.findIndex(
-      (list) => list.name === data.list?.name
+      (list) => list.id === data.list?.id
     );
 
     if (listIndex !== -1) {
       foundUser.lists[listIndex].id = data.list.id;
+      foundUser.lists[listIndex].date = data.list.date;
       foundUser.lists[listIndex].name = data.list.name;
       foundUser.lists[listIndex].taskList = data.list.taskList;
     } else {
