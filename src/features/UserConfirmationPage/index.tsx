@@ -25,7 +25,7 @@ const UserConfirmationPage = () => {
             title: { key: "modal.confirmation.title" },
             message: { key: "modal.confirmation.message.loading" },
             type: "loading",
-          })
+          }),
         );
         const token = getConfimationTokenFromSessionStorage();
         if (!token) throw new Error("No token");
@@ -34,7 +34,7 @@ const UserConfirmationPage = () => {
           openModal({
             message: { key: "modal.confirmation.message.success" },
             type: "success",
-          })
+          }),
         );
         setStatus("success");
       } catch (error) {
@@ -42,7 +42,7 @@ const UserConfirmationPage = () => {
           openModal({
             message: { key: "modal.confirmation.message.error.default" },
             type: "error",
-          })
+          }),
         );
         setStatus("error");
       }

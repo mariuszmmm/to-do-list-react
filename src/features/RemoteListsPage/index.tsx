@@ -23,6 +23,7 @@ import {
   selectModalConfirmed,
   selectModalIsOpen,
 } from "../../Modal/modalSlice";
+import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 
 type Props = { listsData: ListsData };
 
@@ -35,11 +36,12 @@ const RemoteListsPage = ({ listsData }: Props) => {
   const listToRemove = useAppSelector(selectListToRemove);
   const updateListsMutation = useUpdateListsMutation();
   const removeListMutation = useRemoveListMutation();
-  const lists = listsToSort?.lists || listsData?.lists || [];
+  const lists = listsToSort || listsData?.lists;
   const areListsEmpty = !listsData || listsData.lists.length === 0;
   const selectedListById =
     lists.find(({ id }) => id === selectedListId) || null;
   const dispatch = useAppDispatch();
+  const { id: taskListId } = useAppSelector(selectTaskListMetaData);
 
   const { t } = useTranslation("translation", {
     keyPrefix: "remoteListsPage",
@@ -52,10 +54,10 @@ const RemoteListsPage = ({ listsData }: Props) => {
   useEffect(() => {
     if (!listsData) return;
     if (isListsSorting) {
-      dispatch(setListToSort(listsData));
+      dispatch(setListToSort(listsData.lists));
     } else {
       if (!listsToSort) return;
-      updateListsMutation.mutate({ listsToSort });
+      updateListsMutation.mutate(listsToSort);
       dispatch(setListToSort(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,9 +67,12 @@ const RemoteListsPage = ({ listsData }: Props) => {
     if (!listToRemove) return;
     if (confirmed) {
       removeListMutation.mutate({
-        version: listsData.version,
+        version: listToRemove.version,
         listId: listToRemove.id,
       });
+
+      if (taskListId === listToRemove.id) dispatch(setListStatus({}));
+
       dispatch(setListToRemove(null));
     } else {
       if (confirmed === false) {
@@ -84,7 +89,7 @@ const RemoteListsPage = ({ listsData }: Props) => {
           },
           type: "confirm",
           confirmButton: { key: "modal.buttons.deleteButton" },
-        })
+        }),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

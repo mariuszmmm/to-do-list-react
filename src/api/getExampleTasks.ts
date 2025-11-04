@@ -6,15 +6,17 @@ export const getExampleTasks = async (lang: string) => {
   if (!response.ok) {
     new Error(response.statusText);
   }
-
-  const exampleTasks = (await response.json()) as ExampleTasks;
-  const id = nanoid(8);
   const date = new Date().toISOString();
-  const name = exampleTasks.name;
+  const exampleTasks = (await response.json()) as ExampleTasks;
+  const taskListMetaData = {
+    id: nanoid(8),
+    date,
+    name: exampleTasks.name,
+  };
   const tasks = exampleTasks.tasks.map((exampleTask) => ({
     ...exampleTask,
     date,
   }));
 
-  return { id, date, name, tasks };
+  return { tasks, taskListMetaData };
 };

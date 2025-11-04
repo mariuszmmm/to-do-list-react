@@ -17,7 +17,7 @@ export const useAccountRecovery = () => {
           title: { key: "modal.accountRecovery.title" },
           message: { key: "modal.accountRecovery.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -25,7 +25,7 @@ export const useAccountRecovery = () => {
         openModal({
           message: { key: "modal.accountRecovery.message.info" },
           type: "info",
-        })
+        }),
       );
 
       dispatch(setAccountMode("login"));
@@ -40,7 +40,7 @@ export const useAccountRecovery = () => {
             key: "modal.accountRecovery.message.error.default",
           },
           type: "error",
-        })
+        }),
       );
     },
   });

@@ -18,7 +18,7 @@ export const useLogout = () => {
         openModal({
           message: { key: "modal.logout.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -27,7 +27,7 @@ export const useLogout = () => {
         openModal({
           message: { key: "modal.logout.message.success" },
           type: "success",
-        })
+        }),
       );
     },
     onError: async () => {
@@ -35,7 +35,7 @@ export const useLogout = () => {
         openModal({
           message: { key: "modal.logout.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });

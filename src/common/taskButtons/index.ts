@@ -27,7 +27,7 @@ const TaskButton = styled.button`
 
   &:disabled {
     cursor: auto;
-    opacity: 0.2;
+    opacity: 0.4;
   }
 `;
 
@@ -52,4 +52,3 @@ export const SortButtonsContainer = styled.div`
   flex-direction: column;
   gap: 5px;
 `;
-

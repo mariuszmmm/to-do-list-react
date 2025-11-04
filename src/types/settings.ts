@@ -1,4 +1,4 @@
 export type Settings = {
-    showSearch: boolean;
-    hideDone: boolean;
-}
+  showSearch: boolean;
+  hideDone: boolean;
+};

@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import tasksReducer from "./features/tasks/tasksSlice";
-import remoteListsReducer from "./features/RemoteListsPage/remoteListsSlice";
-import archivedListsReducer from "./features/ArchivedListPage/archivedListsSlice";
-import accountReducer from "./features/AccountPage/accountSlice";
-import modalReducer from "./Modal/modalSlice";
 import createSagaMiddleware from "redux-saga";
+
+import accountReducer from "./features/AccountPage/accountSlice";
+import archivedListsReducer from "./features/ArchivedListPage/archivedListsSlice";
+import remoteListsReducer from "./features/RemoteListsPage/remoteListsSlice";
+import tasksReducer from "./features/tasks/tasksSlice";
+import modalReducer from "./Modal/modalSlice";
 import rootSaga from "./rootSaga";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -18,7 +19,9 @@ export const store = configureStore({
     modal: modalReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(sagaMiddleware),
 });
 
 sagaMiddleware.run(rootSaga);

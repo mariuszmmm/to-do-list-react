@@ -11,18 +11,20 @@ import { Section } from "../../../common/Section";
 import { TaskForm } from "./TaskForm";
 import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
-import { ListsData } from "../../../types";
+import { ListsData, List } from "../../../types";
+import { UseMutationResult } from "@tanstack/react-query";
 
-type Props = { listsData?: ListsData };
+type Props = {
+  listsData?: ListsData;
+  saveListMutation: UseMutationResult<any, Error, { list: List }, unknown>;
+};
 
-const TasksPage = ({ listsData }: Props) => {
+const TasksPage = ({ listsData, saveListMutation }: Props) => {
   const showSearch = useAppSelector(selectShowSearch);
   const editedTask = useAppSelector(selectEditedTask);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-
-  console.log("listsData :", listsData);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -49,7 +51,12 @@ const TasksPage = ({ listsData }: Props) => {
       <Section
         title={<EditableListName />}
         body={<TasksList />}
-        extraHeaderContent={<TasksButtons listsData={listsData} />}
+        extraHeaderContent={
+          <TasksButtons
+            listsData={listsData}
+            saveListMutation={saveListMutation}
+          />
+        }
       />
     </>
   );

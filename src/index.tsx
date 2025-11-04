@@ -1,32 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { I18nextProvider } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { store } from "./store";
-import { theme } from "./theme/theme";
+import { I18nextProvider } from "react-i18next";
+import { Provider } from "react-redux";
+import { ThemeProvider } from "styled-components";
 import { Normalize } from "styled-normalize";
-import GlobalStyle from "./theme/GlobalStyle";
-import i18n from "./utils/i18n";
-import App from "./App";
-import { getTokenFromURL } from "./utils/getTokenFromURL";
 
-const url = window.location.href;
-getTokenFromURL(url);
+import App from "./App";
+import { store } from "./store";
+import GlobalStyle from "./theme/GlobalStyle";
+import { theme } from "./theme/theme";
+import { getTokenFromURL } from "./utils/getTokenFromURL";
+import i18n from "./utils/i18n";
+
+const currentUrl = window.location.href;
+getTokenFromURL(currentUrl);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 3,
-      refetchOnWindowFocus: false,
-      refetchInterval: 1000 * 60 * 1,
-      refetchOnMount: false,
-    },
-  },
+  defaultOptions: { queries: { refetchInterval: 1000 * 60 } },
 });
 
 root.render(
@@ -37,11 +31,11 @@ root.render(
           <Normalize />
           <GlobalStyle />
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
+            {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
             <App />
           </QueryClientProvider>
         </I18nextProvider>
       </ThemeProvider>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -3,7 +3,6 @@ import { AccountState } from "../../../types";
 import { confirmUserApi } from "../../../api/fetchUserApi";
 import {
   setAccountMode,
-  setVersion,
   setIsWaitingForConfirmation,
   setMessage,
 } from "../accountSlice";
@@ -31,9 +30,6 @@ export const useWaitingForConfirmation = ({
         const confirmedEmail = confirmationResponse?.email;
 
         if (confirmedEmail) {
-          const version = confirmationResponse?.version;
-          if (!version) throw new Error("No version");
-          dispatch(setVersion(version));
           clearTimeout(timeout);
           clearInterval(interval);
           if (message) dispatch(setMessage(""));

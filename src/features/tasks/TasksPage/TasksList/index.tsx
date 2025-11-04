@@ -17,7 +17,7 @@ import {
   selectTasksByQuery,
   selectEditedTask,
   selectTasks,
-  selectListMetadata,
+  selectTaskListMetaData,
   taskMoveUp,
   taskMoveDown,
   selectIsTasksSorting,
@@ -29,23 +29,21 @@ import {
   StyledListContent,
   StyledListItem,
   StyledTask,
+  TaskNumber,
 } from "../../../../common/StyledList";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
-  const listMetadata = useAppSelector(selectListMetadata);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const hideDone = useAppSelector(selectHideDone);
   const editedTask = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksByQuery = useAppSelector((state) =>
-    selectTasksByQuery(state, query)
+    selectTasksByQuery(state, query),
   );
   const dispatch = useAppDispatch();
   const date = new Date().toISOString();
-
-  console.log("tasks :", tasks);
-  console.log("name :", listMetadata);
 
   useEffect(() => {
     if (!editedTask) return;
@@ -83,8 +81,8 @@ export const TasksList = () => {
                   toggleTaskDone({
                     taskId: task.id,
                     doneDate: task.done ? null : date,
-                    stateForUndo: { tasks, listMetadata },
-                  })
+                    stateForUndo: { tasks, taskListMetaData },
+                  }),
                 )
               }
               disabled={editedTask !== null}
@@ -93,13 +91,7 @@ export const TasksList = () => {
             </ToggleButton>
           )}
           <StyledListContent $type={"tasks"}>
-            {!query ? (
-              <span>
-                <b>{index + 1}. </b>
-              </span>
-            ) : (
-              ""
-            )}
+            {!query ? <TaskNumber>{`${index + 1}. `}</TaskNumber> : ""}
             <StyledTask $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}
@@ -122,8 +114,8 @@ export const TasksList = () => {
                   dispatch(
                     removeTask({
                       taskId: task.id,
-                      stateForUndo: { tasks, listMetadata },
-                    })
+                      stateForUndo: { tasks, taskListMetaData },
+                    }),
                   )
                 }
                 disabled={editedTask !== null}

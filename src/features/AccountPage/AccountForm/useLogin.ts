@@ -17,7 +17,7 @@ export const useLogin = () => {
           title: { key: "modal.login.title" },
           message: { key: "modal.login.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: (response) => {
@@ -28,7 +28,7 @@ export const useLogin = () => {
             values: { user: response.email },
           },
           type: "success",
-        })
+        }),
       );
 
       dispatch(setAccountMode("logged"));
@@ -38,7 +38,7 @@ export const useLogin = () => {
       const error_description = error.json.error_description;
       const translatedText = await translateText(
         error_description,
-        i18n.language
+        i18n.language,
       );
 
       dispatch(
@@ -47,7 +47,7 @@ export const useLogin = () => {
             key: "modal.login.message.error.default",
           },
           type: "error",
-        })
+        }),
       );
     },
   });

@@ -30,17 +30,18 @@ export const useRemoveListMutation = () => {
         openModal({
           message: { key: "modal.listRemove.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: async (response) => {
-      await queryClient.invalidateQueries({ queryKey: ["lists"] });
+      // await queryClient.invalidateQueries({ queryKey: ["lists"] });
+      queryClient.setQueryData(["lists"], response.data);
       if (response.data.conflict) {
         dispatch(
           openModal({
             message: { key: "modal.listRemove.message.error.conflict" },
             type: "error",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -49,7 +50,7 @@ export const useRemoveListMutation = () => {
               key: "modal.listRemove.message.success",
             },
             type: "success",
-          })
+          }),
         );
       }
     },
@@ -58,7 +59,7 @@ export const useRemoveListMutation = () => {
         openModal({
           message: { key: "modal.listRemove.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });

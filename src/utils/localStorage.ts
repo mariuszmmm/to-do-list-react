@@ -1,9 +1,10 @@
-import { List, ListMetadata, Settings, Task } from "../types";
+import { nanoid } from "@reduxjs/toolkit";
+import { List, Settings, Task, TaskListMetaData } from "../types";
 
 const settingsKey = "settings" as const;
-const listMetadataKey = "listMetadata" as const;
+const listMetadataKey = "taskListMetaData" as const;
 const tasksKey = "tasks" as const;
-const listsKey = "archivedLists" as const;
+const archivedListsKey = "archivedLists" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
@@ -16,13 +17,34 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
   return JSON.parse(data);
 };
 
-export const saveListMetadataInLocalStorage = (listMetadata: ListMetadata) =>
-  localStorage.setItem(listMetadataKey, JSON.stringify(listMetadata));
+export const saveListMetadataInLocalStorage = (
+  taskListMetaData: TaskListMetaData
+) => localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
 
-export const getListMetadataFromLocalStorage = (): ListMetadata => {
+export const getListMetadataFromLocalStorage = (): TaskListMetaData => {
   const data = localStorage.getItem(listMetadataKey);
-  if (!data || data === "undefined") return { id: "", date: "", name: "" };
-  return JSON.parse(data);
+  if (!data || data === "undefined")
+    return {
+      id: nanoid(8),
+      date: new Date().toISOString(),
+      name: "",
+    };
+
+  const parsed = JSON.parse(data);
+  const id =
+    typeof parsed.id === "string" && parsed.id.trim() !== ""
+      ? parsed.id
+      : nanoid(8);
+  const date =
+    typeof parsed.date === "string" && parsed.date.trim() !== ""
+      ? parsed.date
+      : new Date().toISOString();
+
+  return {
+    id,
+    date,
+    name: parsed.name || "",
+  };
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
@@ -35,11 +57,11 @@ export const getTasksFromLocalStorage = (): Task[] => {
 };
 
 export const saveArchivedListsInStorage = (lists: List[]) => {
-  localStorage.setItem(listsKey, JSON.stringify(lists));
+  localStorage.setItem(archivedListsKey, JSON.stringify(lists));
 };
 
 export const getArchivedListFromLocalStorage = (): List[] => {
-  const data = localStorage.getItem(listsKey);
+  const data = localStorage.getItem(archivedListsKey);
   if (!data || data === "undefined") return [];
   return JSON.parse(data);
 };

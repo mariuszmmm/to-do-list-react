@@ -1,6 +1,8 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
 
 const handler: Handler = async (event: HandlerEvent) => {
+  console.log("Translation function invoked");
+
   if (event.httpMethod !== "POST") {
     console.error("Method Not Allowed");
 
@@ -30,6 +32,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   }
 
   const { text, targetLanguage } = JSON.parse(event.body);
+  console.log(`Translating text to ${targetLanguage}:`, text);
 
   const response = await fetch(`${API_URL}?key=${KEY}`, {
     method: "POST",
@@ -42,6 +45,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   })
     .then((res) => {
       if (!res.ok) {
+        console.error("Translation API error:", res.status, res.statusText);
         throw new Error(res.statusText);
       }
 
@@ -51,6 +55,11 @@ const handler: Handler = async (event: HandlerEvent) => {
       console.error("Error fetching translation", err);
       throw new Error("Error fetching translation");
     });
+
+  console.log(
+    "Translation successful:",
+    response.data.translations[0].translatedText
+  );
 
   return {
     statusCode: 200,

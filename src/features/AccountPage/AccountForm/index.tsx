@@ -42,7 +42,7 @@ export const AccountForm = () => {
   const confirmed = useAppSelector(selectModalConfirmed);
 
   const isWaitingForConfirmation = useAppSelector(
-    selectIsWaitingForConfirmation
+    selectIsWaitingForConfirmation,
   );
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
@@ -88,7 +88,7 @@ export const AccountForm = () => {
             title: { key: "modal.dataRemoval.title" },
             message: { key: "modal.dataRemoval.message.info" },
             type: "info",
-          })
+          }),
         );
       }
     } else {
@@ -130,7 +130,7 @@ export const AccountForm = () => {
             message: { key: "modal.logout.message.confirm" },
             confirmButton: { key: "modal.buttons.logoutButton" },
             type: "confirm",
-          })
+          }),
         );
         setPassword("");
         break;
@@ -202,12 +202,12 @@ export const AccountForm = () => {
           {accountMode === "accountRegister"
             ? t("form.buttons.register")
             : accountMode === "accountRecovery"
-            ? t("form.buttons.reset")
-            : accountMode === "passwordChange"
-            ? t("form.buttons.save")
-            : loggedUserEmail
-            ? t("form.buttons.logout")
-            : t("form.buttons.login")}
+              ? t("form.buttons.reset")
+              : accountMode === "passwordChange"
+                ? t("form.buttons.save")
+                : loggedUserEmail
+                  ? t("form.buttons.logout")
+                  : t("form.buttons.login")}
         </FormButton>
       </Form>
     </>

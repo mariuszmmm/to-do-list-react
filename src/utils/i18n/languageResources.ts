@@ -1,6 +1,6 @@
-import langDe from "./locales/de";
-import langEn from "./locales/en";
 import langPl from "./locales/pl";
+import langEn from "./locales/en";
+import langDe from "./locales/de";
 
 export const resources = {
   pl: { translation: langPl },

@@ -39,7 +39,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
             title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.loading" },
             type: "loading",
-          })
+          }),
         );
         const token = getRecoveryTokenFromSessionStorage();
         if (!token) throw new Error();
@@ -49,14 +49,14 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
             message: { key: "modal.accountRecovery.message.success" },
             confirmButton: { key: "modal.buttons.nextButton" },
             type: "success",
-          })
+          }),
         );
       } catch (error) {
         dispatch(
           openModal({
             message: { key: "modal.accountRecovery.message.error.linkExpired" },
             type: "error",
-          })
+          }),
         );
         setStatus("linkExpired");
         clearSessionStorage();
@@ -84,7 +84,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.loading" },
           type: "loading",
-        })
+        }),
       );
       if (!user) throw new Error();
       await user.update({ password }).then((user) => user.logout());
@@ -92,7 +92,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         openModal({
           message: { key: "modal.passwordChange.message.success" },
           type: "success",
-        })
+        }),
       );
       setPassword("");
       setStatus("accountRecovered");
@@ -102,7 +102,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         openModal({
           message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
-        })
+        }),
       );
     }
   };

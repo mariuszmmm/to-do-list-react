@@ -25,7 +25,7 @@ export const usePasswordChange = () => {
           title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -33,7 +33,7 @@ export const usePasswordChange = () => {
         openModal({
           message: { key: "modal.passwordChange.message.success" },
           type: "success",
-        })
+        }),
       );
 
       dispatch(setAccountMode("logged"));
@@ -43,7 +43,7 @@ export const usePasswordChange = () => {
         openModal({
           message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });

@@ -28,7 +28,7 @@ export const useAccountDelete = () => {
         openModal({
           message: { key: "modal.accountDelete.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: async () => {
@@ -38,7 +38,7 @@ export const useAccountDelete = () => {
         openModal({
           message: { key: "modal.accountDelete.message.success" },
           type: "loading",
-        })
+        }),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -50,7 +50,7 @@ export const useAccountDelete = () => {
           message: { key: "modal.dataRemoval.message.confirm" },
           confirmButton: { key: "modal.buttons.deleteButton" },
           type: "confirm",
-        })
+        }),
       );
     },
     onError: async () => {
@@ -59,7 +59,7 @@ export const useAccountDelete = () => {
         openModal({
           message: { key: "modal.accountDelete.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });
