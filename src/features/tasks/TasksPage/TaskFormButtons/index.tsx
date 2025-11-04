@@ -13,17 +13,17 @@ import {
 } from "../../../../utils/i18n/languageResources";
 import {
   selectAreTasksEmpty,
-  selectListMetadata,
+  selectTaskListMetaData,
   selectTasks,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
-import { TasksData } from "../../../../types";
+import { TaskListData } from "../../../../types";
 
 export const TaskFormButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const tasks = useAppSelector(selectTasks);
-  const listMetadata = useAppSelector(selectListMetadata);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
@@ -35,7 +35,7 @@ export const TaskFormButtons = () => {
     ? lang
     : defaultLanguage;
 
-  const { isError, isFetching, refetch } = useQuery<TasksData>({
+  const { isError, isFetching, refetch } = useQuery<TaskListData>({
     queryKey: ["exampleTasks", langForExample],
     queryFn: () => getExampleTasks(langForExample),
     enabled: false,
@@ -47,17 +47,18 @@ export const TaskFormButtons = () => {
     if (data && isSuccess) {
       dispatch(
         setTasks({
-          listMetadata: {
-            id: data.id,
-            date: data.date,
-            name: data.name,
+          taskListMetaData: {
+            id: data.taskListMetaData.id,
+            date: new Date().toISOString(),
+            name: data.taskListMetaData.name,
+            // version: data.taskListMetaData.version,
           },
           tasks: data.tasks,
           stateForUndo: {
             tasks,
-            listMetadata,
+            taskListMetaData,
           },
-        })
+        }),
       );
     }
   };
@@ -73,8 +74,8 @@ export const TaskFormButtons = () => {
         {!isFetching && !isError
           ? t("form.buttons.fetchExampleTasks")
           : isFetching
-          ? t("form.buttons.loading")
-          : t("form.buttons.error")}
+            ? t("form.buttons.loading")
+            : t("form.buttons.error")}
       </Button>
       <StyledLink to={`/archived-lists`}>
         <Button disabled={isArchivedTaskListEmpty}>Pobierz z archiwum</Button>

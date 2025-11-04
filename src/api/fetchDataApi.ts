@@ -17,15 +17,11 @@ export const getDataApi = async (token: string) => {
     });
 };
 
-export const addDataApi = async (
-  token: string,
-  version: Version,
-  list: List
-) => {
+export const addDataApi = async (token: string, list: List) => {
   return fetch("/addData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, list }),
+    body: JSON.stringify({ list }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -44,7 +40,7 @@ export const addDataApi = async (
 export const removeDataApi = async (
   token: string,
   version: Version,
-  listId: string
+  listId: string,
 ) => {
   return fetch("/removeData", {
     method: "DELETE",
@@ -65,15 +61,11 @@ export const removeDataApi = async (
     });
 };
 
-export const updateDataApi = async (
-  token: string,
-  version: Version,
-  lists: List[]
-) => {
+export const updateDataApi = async (token: string, lists: List[]) => {
   return fetch("/updateData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, lists }),
+    body: JSON.stringify({ lists }),
   })
     .then((response) => {
       if (!response.ok) {

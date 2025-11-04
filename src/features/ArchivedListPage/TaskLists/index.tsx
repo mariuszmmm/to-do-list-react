@@ -11,6 +11,8 @@ import {
   selectArchivedList,
   setArchivedListToRemove,
 } from "../archivedListsSlice";
+import { formatCurrentDate } from "../../../utils/formatCurrentDate";
+import i18n from "../../../utils/i18n";
 
 type Props = {
   lists: List[];
@@ -41,6 +43,10 @@ export const TaskLists = ({
           <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           <StyledListContent $type={"tasks"}>
             <StyledTask $ListName>{list.name}</StyledTask>
+            <br />
+            <StyledTask
+              $comment
+            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledTask>
           </StyledListContent>
           <RemoveButton
             onClick={() => dispatch(setArchivedListToRemove(list))}

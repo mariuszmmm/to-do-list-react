@@ -6,7 +6,7 @@ import { ListName } from "./ListName";
 import { Button } from "../../../../common/Button";
 import {
   selectListNameToEdit,
-  selectListMetadata,
+  selectTaskListMetaData,
   setListNameToEdit,
   setListMetadata,
   selectTasks,
@@ -15,12 +15,12 @@ import { useTranslation } from "react-i18next";
 
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
-  const listMetadata = useAppSelector(selectListMetadata);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
   const [name, setName] = useState(
-    listMetadata?.name || t("tasks.defaultListName")
+    taskListMetaData?.name || t("tasks.defaultListName"),
   );
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const inpurRef = useRef<HTMLInputElement>(null);
@@ -34,21 +34,23 @@ export const EditableListName = () => {
       if (listNameToEdit !== null) {
         dispatch(
           setListMetadata({
-            listMetadata: {
-              ...listMetadata,
+            taskListMetaData: {
+              ...taskListMetaData,
               name: trimedContent,
             },
-            stateForUndo: { tasks, listMetadata },
-          })
+            stateForUndo: { tasks, taskListMetaData },
+          }),
         );
         dispatch(setListNameToEdit(null));
 
         setName(trimedContent);
       } else {
         dispatch(
-          setListNameToEdit(listMetadata?.name || t("tasks.defaultListName"))
+          setListNameToEdit(
+            taskListMetaData?.name || t("tasks.defaultListName"),
+          ),
         );
-        setName(listMetadata?.name || t("tasks.defaultListName"));
+        setName(taskListMetaData?.name || t("tasks.defaultListName"));
       }
     } else {
       inpurRef.current!.focus();
@@ -58,7 +60,9 @@ export const EditableListName = () => {
   return (
     <NameContainer onSubmit={onNameSubmit}>
       {listNameToEdit === null ? (
-        <ListName>{listMetadata?.name || t("tasks.defaultListName")}</ListName>
+        <ListName>
+          {taskListMetaData?.name || t("tasks.defaultListName")}
+        </ListName>
       ) : (
         <Input
           type="text"

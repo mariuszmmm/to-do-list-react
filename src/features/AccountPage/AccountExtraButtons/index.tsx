@@ -28,8 +28,8 @@ export const AccountExtraButtons = () => {
               onClick={() =>
                 dispatch(
                   setAccountMode(
-                    accountMode === "login" ? "accountRecovery" : "login"
-                  )
+                    accountMode === "login" ? "accountRecovery" : "login",
+                  ),
                 )
               }
             >

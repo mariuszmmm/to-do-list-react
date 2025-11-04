@@ -17,7 +17,7 @@ export const useAccountRegister = () => {
           title: { key: "modal.accountRegister.title" },
           message: { key: "modal.accountRegister.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     onSuccess: () => {
@@ -26,7 +26,7 @@ export const useAccountRegister = () => {
         openModal({
           message: { key: "modal.accountRegister.message.info" },
           type: "info",
-        })
+        }),
       );
     },
     onError: async (error: any) => {
@@ -39,7 +39,7 @@ export const useAccountRegister = () => {
             key: "modal.accountRegister.message.error.default",
           },
           type: "error",
-        })
+        }),
       );
     },
   });

@@ -15,6 +15,8 @@ interface StyledListContentProps {
 interface StyledTaskProps {
   $done?: boolean;
   $ListName?: boolean;
+  $comment?: boolean;
+  $noLink?: boolean;
 }
 
 export const StyledList = styled.ul`
@@ -35,10 +37,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
     $type === "tasks"
       ? "auto 1fr auto auto"
       : $type === "lists"
-      ? "auto 1fr auto"
-      : $type === "tasksView"
-      ? "auto 1fr"
-      : "auto"};
+        ? "auto 1fr auto"
+        : $type === "tasksView"
+          ? "auto 1fr"
+          : "auto"};
 
   ${({ $edit, selected }) =>
     ($edit || selected) &&
@@ -57,10 +59,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
       $type === "lists"
         ? "1fr auto auto"
         : $type === "tasks"
-        ? "1fr auto"
-        : $type === "tasksView"
-        ? "1fr"
-        : "auto"};
+          ? "1fr auto"
+          : $type === "tasksView"
+            ? "1fr"
+            : "auto"};
   }
 `;
 
@@ -78,18 +80,20 @@ export const StyledListContent = styled.p<StyledListContentProps>`
       $type === "lists"
         ? "grid-column: span 2;"
         : $type === "tasks"
-        ? "grid-column: span 3;"
-        : ""}
+          ? "grid-column: span 3;"
+          : ""}
   }
+`;
 
-  span {
-    color: ${({ theme }) => theme.color.black};
-  }
+export const TaskNumber = styled.span`
+  font-weight: bold;
+  color: ${({ theme }) => theme.color.black};
 `;
 
 export const StyledTask = styled.span<StyledTaskProps>`
   padding-left: 2px;
   white-space: pre-line;
+  font-style: red;
 
   ${({ $done }) =>
     $done &&
@@ -101,5 +105,20 @@ export const StyledTask = styled.span<StyledTaskProps>`
     $ListName &&
     css`
       font-weight: bold;
+      color: ${({ theme }) => theme.color.black};
+    `}
+
+  ${({ $noLink }) =>
+    $noLink &&
+    css`
+      color: ${({ theme }) => theme.color.black};
+    `}
+
+  ${({ $comment }) =>
+    $comment &&
+    css`
+      color: ${({ theme }) => theme.color.empress};
+      font-style: italic;
+      font-size: 0.85em;
     `}
 `;

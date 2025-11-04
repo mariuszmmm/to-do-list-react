@@ -26,7 +26,7 @@ export const AccountButtons = () => {
         message: { key: "modal.accountDelete.message.confirm" },
         confirmButton: { key: "modal.buttons.deleteButton" },
         type: "confirm",
-      })
+      }),
     );
   };
   const handlePasswordChange = () => dispatch(setAccountMode("passwordChange"));

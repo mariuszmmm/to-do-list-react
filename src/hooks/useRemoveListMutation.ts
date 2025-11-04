@@ -34,7 +34,8 @@ export const useRemoveListMutation = () => {
       );
     },
     onSuccess: async (response) => {
-      await queryClient.invalidateQueries({ queryKey: ["lists"] });
+      // await queryClient.invalidateQueries({ queryKey: ["lists"] });
+      queryClient.setQueryData(["lists"], response.data);
       if (response.data.conflict) {
         dispatch(
           openModal({

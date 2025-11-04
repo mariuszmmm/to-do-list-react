@@ -1,5 +1,5 @@
 import { useAppDispatch } from "../../../hooks/redux";
-import { List, Version } from "../../../types";
+import { List } from "../../../types";
 import { moveListDown, moveListUp } from "../../../utils/moveList";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../common/icons";
 import {
@@ -19,13 +19,15 @@ import {
   StyledListItem,
   StyledTask,
 } from "../../../common/StyledList";
+import { formatCurrentDate } from "../../../utils/formatCurrentDate";
+import i18n from "../../../utils/i18n";
 
 type Props = {
   lists: List[];
   selectedListId: string | null;
   modalIsOpen: boolean;
   isListsSorting: boolean;
-  listsToSort: { lists: List[]; version: Version } | null;
+  listsToSort: List[] | null;
 };
 
 export const TaskLists = ({
@@ -50,12 +52,7 @@ export const TaskLists = ({
             <SortButtonsContainer>
               <SortButton
                 onClick={() =>
-                  dispatch(
-                    setListToSort({
-                      lists: moveListUp(index, listsToSort.lists),
-                      version: listsToSort.version,
-                    })
-                  )
+                  dispatch(setListToSort(moveListUp(index, listsToSort)))
                 }
                 disabled={index === 0}
               >
@@ -63,12 +60,7 @@ export const TaskLists = ({
               </SortButton>
               <SortButton
                 onClick={() =>
-                  dispatch(
-                    setListToSort({
-                      lists: moveListDown(index, listsToSort.lists),
-                      version: listsToSort.version,
-                    })
-                  )
+                  dispatch(setListToSort(moveListDown(index, listsToSort)))
                 }
                 disabled={index === lists.length - 1}
               >
@@ -76,10 +68,16 @@ export const TaskLists = ({
               </SortButton>
             </SortButtonsContainer>
           ) : (
-            <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+            <ToggleButton>
+              {selectedListId === list.id ? "✔" : ""}
+            </ToggleButton>
           )}
           <StyledListContent $type={"tasks"}>
-            <StyledTask>{list.name}</StyledTask>
+            <StyledTask $ListName>{list.name}</StyledTask>
+            <br />
+            <StyledTask
+              $comment
+            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledTask>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
             <RemoveButton

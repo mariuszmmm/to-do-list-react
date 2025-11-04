@@ -10,7 +10,7 @@ import {
   saveEditedTask,
   selectEditedTask,
   selectTasks,
-  selectListMetadata,
+  selectTaskListMetaData,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { InputWrapper } from "../../../../common/InputWrapper";
@@ -19,11 +19,10 @@ import { InputButton } from "../../../../common/InputButton";
 import { useSpeechToText } from "../../../../hooks";
 import { FormButtonWrapper } from "../../../../common/FormButtonWrapper";
 import { TextArea } from "../../../../common/TextArea";
-import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
-  const listMetadata = useAppSelector(selectListMetadata);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const editedTask = useAppSelector(selectEditedTask);
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
@@ -53,30 +52,30 @@ export const TaskForm = () => {
     if (content) {
       editedTask === null
         ? dispatch(
-            addTask({
-              task: {
-                id: nanoid(8),
-                content,
-                done: false,
-                date: formatCurrentDateISO(),
-              },
-              stateForUndo: { tasks, listMetadata },
-            })
-          )
+          addTask({
+            task: {
+              id: nanoid(8),
+              content,
+              done: false,
+              date: new Date().toISOString(),
+            },
+            stateForUndo: { tasks, taskListMetaData },
+          }),
+        )
         : content !== previousContent
-        ? dispatch(
+          ? dispatch(
             saveEditedTask({
               task: {
                 id: editedTask.id,
                 content,
                 done: editedTask.done,
                 date: editedTask.date,
-                editedDate: formatCurrentDateISO(),
+                editedDate: new Date().toISOString(),
               },
-              stateForUndo: { tasks, listMetadata },
-            })
+              stateForUndo: { tasks, taskListMetaData },
+            }),
           )
-        : dispatch(setTaskToEdit(null));
+          : dispatch(setTaskToEdit(null));
     }
     setTaskContent("");
   };

@@ -109,10 +109,10 @@ export const CircleIcon = styled(Circle)<CircleIconProps>`
   margin-right: 10px;
   filter: brightness(140%);
   color: ${({ theme, $isPending, $isUpdated, $isChanged, $isError }) => {
-    if ($isPending) return theme.color.blue;
     if ($isError) return theme.color.red;
-    if ($isUpdated) return theme.color.forestGreen;
     if ($isChanged) return theme.color.yellow;
+    if ($isPending) return theme.color.blue;
+    if ($isUpdated) return theme.color.forestGreen;
     return theme.color.black;
   }};
 `;

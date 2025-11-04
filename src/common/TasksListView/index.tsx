@@ -5,6 +5,7 @@ import {
   StyledList,
   StyledListItem,
   StyledTask,
+  TaskNumber,
 } from "../StyledList";
 
 interface TasksListViewProps {
@@ -17,12 +18,10 @@ export const TasksListView = ({ tasks }: TasksListViewProps) => (
       <StyledListItem key={task.id} $type={"tasks"}>
         <ToggleButton disabled>{task.done ? "✔" : ""}</ToggleButton>
         <StyledListContent $type={"tasks"}>
-          {
-            <span>
-              <b>{index + 1}. </b>
-            </span>
-          }
-          <StyledTask $done={task.done}>{task.content}</StyledTask>
+          <TaskNumber>{`${index + 1}. `}</TaskNumber>
+          <StyledTask $done={task.done} $noLink>
+            {task.content}
+          </StyledTask>
         </StyledListContent>
       </StyledListItem>
     ))}

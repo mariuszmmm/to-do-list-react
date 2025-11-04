@@ -25,7 +25,10 @@ const archivedListsSlice = createSlice({
   name: "archivedLists",
   initialState: getInitialState(),
   reducers: {
-    selectArchivedList: (state, { payload: listId }: PayloadAction<string | null>) => {
+    selectArchivedList: (
+      state,
+      { payload: listId }: PayloadAction<string | null>,
+    ) => {
       if (state.selectedArchivedListId === listId || listId === null) {
         state.selectedArchivedListId = null;
       } else {
@@ -35,21 +38,23 @@ const archivedListsSlice = createSlice({
     },
     setArchivedListToLoad: (
       state,
-      { payload: archivedTaskList }: PayloadAction<List | null>
+      { payload: archivedTaskList }: PayloadAction<List | null>,
     ) => {
       state.archivedListToLoad = archivedTaskList;
       if (archivedTaskList === null) state.selectedArchivedListId = null;
     },
     setArchivedListToRemove: (
       state,
-      { payload: listToRemove }: PayloadAction<List | null>
+      { payload: listToRemove }: PayloadAction<List | null>,
     ) => {
       state.archivedListToRemove = listToRemove;
     },
     removeArchivedList: (state, { payload: listId }: PayloadAction<string>) => {
       state.archivedLists = state.archivedLists.filter(
-        (list) => list.id !== listId
+        (list) => list.id !== listId,
       );
+      if (state.selectedArchivedListId === listId)
+        state.selectedArchivedListId = null;
     },
     addArchivedList: (state, { payload: list }: PayloadAction<List>) => {
       if (!list) return;

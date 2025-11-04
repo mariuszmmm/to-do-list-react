@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const TaskPage = () => {
   const { id } = useParams();
   const task = useAppSelector((state) =>
-    id ? selectTaskById(state, id) : null
+    id ? selectTaskById(state, id) : null,
   );
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "taskPage",

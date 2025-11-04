@@ -35,7 +35,7 @@ export const ContactForm = () => {
         title: { key: "modal.sendMessage.title" },
         type: "loading",
         message: t("sendMessage.message.loading"),
-      })
+      }),
     );
 
     emailjs
@@ -46,7 +46,7 @@ export const ContactForm = () => {
             openModal({
               type: "success",
               message: t("sendMessage.message.success"),
-            })
+            }),
           );
           setEmail("");
           setMessage("");
@@ -59,7 +59,7 @@ export const ContactForm = () => {
           openModal({
             type: "error",
             message: t("sendMessage.message.error.default"),
-          })
+          }),
         );
         console.error("Email sending error:", error);
       });

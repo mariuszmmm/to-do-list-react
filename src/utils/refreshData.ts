@@ -1,5 +1,5 @@
-import { getDataApi } from "../api/fetchDataApi";
 import { getUserToken } from "./getUserToken";
+import { getDataApi } from "../api/fetchDataApi";
 
 export const refreshData = async () => {
   const token = await getUserToken();
@@ -9,7 +9,7 @@ export const refreshData = async () => {
   }
 
   const data = await getDataApi(token);
-  if (!data || !data.lists || !data.version) {
+  if (!data || !data.lists) {
     console.error("No data");
     throw new Error("refreshData:noData");
   }

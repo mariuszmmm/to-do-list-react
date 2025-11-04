@@ -7,7 +7,6 @@ const getInitialState = (): AccountState => ({
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
   message: "",
-  version: null,
 });
 
 const accountSlice = createSlice({
@@ -26,32 +25,28 @@ const accountSlice = createSlice({
         | "accountRecovery"
         | "accountDelete"
         | "dataRemoval"
-      >
+      >,
     ) => {
       state.accountMode = mode;
       state.message = "";
     },
     setIsWaitingForConfirmation: (
       state,
-      { payload }: PayloadAction<boolean>
+      { payload }: PayloadAction<boolean>,
     ) => {
       state.isWaitingForConfirmation = payload;
     },
     setLoggedUserEmail: (
       state,
-      { payload: email }: PayloadAction<string | null>
+      { payload: email }: PayloadAction<string | null>,
     ) => {
       state.loggedUserEmail = email;
       if (email === null) {
         state.accountMode = "login";
-        state.version = null;
       }
     },
     setMessage: (state, { payload: message }: PayloadAction<string>) => {
       state.message = message;
-    },
-    setVersion: (state, { payload: version }: PayloadAction<number | null>) => {
-      state.version = version;
     },
   },
 });
@@ -61,7 +56,6 @@ export const {
   setIsWaitingForConfirmation,
   setLoggedUserEmail,
   setMessage,
-  setVersion,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;

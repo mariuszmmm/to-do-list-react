@@ -1,9 +1,6 @@
 import { List } from "../types";
 
-export const moveListUp = (
-  index: number,
-  listsToSort: List[]
-) => {
+export const moveListUp = (index: number, listsToSort: List[]) => {
   if (index === 0) return listsToSort;
   if (index < 0 || index >= listsToSort.length) return listsToSort;
   const prevList = listsToSort[index - 1];
@@ -23,10 +20,7 @@ export const moveListUp = (
   return newList;
 };
 
-export const moveListDown = (
-  index: number,
-  listsToSort: List[]
-) => {
+export const moveListDown = (index: number, listsToSort: List[]) => {
   if (index < 0 || index >= listsToSort.length - 1) return listsToSort;
   const selectedList = listsToSort[index];
   const nextList = listsToSort[index + 1];
