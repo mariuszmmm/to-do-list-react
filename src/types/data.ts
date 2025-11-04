@@ -1,4 +1,3 @@
-import { D } from "@tanstack/react-query-devtools/build/legacy/ReactQueryDevtools-Cn7cKi7o";
 import { Version } from "./account";
 import { List } from "./list";
 import { Task } from "./task";
@@ -8,11 +7,22 @@ export type ExampleTasks = {
   tasks: Task[];
 };
 
-export type TasksData = {
+// export type TaskListData = {
+//   id: string;
+//   date: string;
+//   name: string;
+//   tasks: Task[];
+// };
+
+export type TaskListMetaData = {
   id: string;
   date: string;
   name: string;
+};
+
+export type TaskListData = {
   tasks: Task[];
+  taskListMetaData: TaskListMetaData;
 };
 
 export type Data = {

@@ -19,6 +19,8 @@ import {
   StyledListItem,
   StyledTask,
 } from "../../../common/StyledList";
+import { formatCurrentDate } from "../../../utils/formatCurrentDate";
+import i18n from "../../../utils/i18n";
 
 type Props = {
   lists: List[];
@@ -79,7 +81,8 @@ export const TaskLists = ({
             <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           )}
           <StyledListContent $type={"tasks"}>
-            <StyledTask>{list.name}</StyledTask>
+            <StyledTask>{list.name}</StyledTask><br />
+            <StyledTask>{formatCurrentDate(new Date(list.date), i18n.language)}</StyledTask>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
             <RemoveButton

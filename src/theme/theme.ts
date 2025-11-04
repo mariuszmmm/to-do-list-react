@@ -10,8 +10,8 @@ export const theme = {
     crimson: "#db143c",
     forestGreen: "#228c22",
     red: "#ff0000",
-    blue: "#008fff",
-    yellow: "#ffdd00",
+    blue: "#0083e7ff",
+    yellow: "#b19900ff",
     transparent: "transparent",
   },
   breakpoint: {

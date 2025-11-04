@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { nanoid } from "@reduxjs/toolkit";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
 import { CircleIcon, RedoIcon, UndoIcon } from "../../../../common/icons";
@@ -15,33 +14,33 @@ import {
   selectEditedTask,
   setAllUndone,
   selectIsEveryTaskUndone,
-  selectListMetadata,
+  selectTaskListMetaData,
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
   switchTaskSort,
   selectIsTasksSorting,
   setTaskListToArchive,
+  selectToUpdate,
+  selectListStatus,
+  setListStatus,
+  setToUpdate,
+  clearTaskList,
 } from "../../tasksSlice";
-import {
-  selectListToAdd,
-  setListToAdd,
-} from "../../../RemoteListsPage/remoteListsSlice";
 import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
   getWidthForToggleHideDoneButton,
 } from "../../../../utils/getWidthForDynamicButtons";
-import { useEffect } from "react";
-import { ListsData } from "../../../../types";
-import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
-import { useAddListMutation } from "../../../../hooks";
-import { formatCurrentDateISO } from "../../../../utils/formatCurrentDate";
-// import { useQuery } from "@tanstack/react-query";
+import { ListsData, List, Version } from "../../../../types";
+import { UseMutationResult } from "@tanstack/react-query";
 
-type Props = { listsData?: ListsData };
+type Props = {
+  listsData?: ListsData;
+  saveListMutation: UseMutationResult<any, Error, { version: Version; list: List }, unknown>;
+};
 
-export const TasksButtons = ({ listsData }: Props) => {
+export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const hideDone = useAppSelector(selectHideDone);
   const isEveryTaskDone = useAppSelector(selectIsEveryTaskDone);
@@ -51,123 +50,116 @@ export const TasksButtons = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const editedTask = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
-  const listMetadata = useAppSelector(selectListMetadata);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
-  const listToAdd = useAppSelector(selectListToAdd);
-  const confirmed = useAppSelector(selectModalConfirmed);
-
-  // const { data, isLoading, isSuccess, isError } = useQuery<ListsData>({
-  //   queryKey: ["lists"],
-  //   // queryFn: refreshData,
-  //   // enabled: !!loggedUserEmail,
-  // });
-
-  // console.log("listsData in TasksButtons:", listsData);
-  // console.log("data in TasksButtons:", data);
-  // console.log("isLoading in TasksButtons:", isLoading);
-  // console.log("isSuccess in TasksButtons:", isSuccess);
-  // console.log("isError in TasksButtons:", isError);
-
+  const listStatus = useAppSelector(selectListStatus);
+  const toUpdate = useAppSelector(selectToUpdate);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+  const { isPending, isSuccess, isError } = saveListMutation;
 
-  const addListMutation = useAddListMutation();
+  // console.log("taskListMetaData", taskListMetaData);
 
-  // chę dostac stasus mutate
-  const { isPending, isSuccess, isError } = addListMutation;
 
-  console.log("addListMutation isPending:", isPending);
-  console.log("addListMutation isSuccess:", isSuccess);
-  console.log("addListMutation isError:", isError);
+  // useEffect(() => {
+  //   if (!listToAdd || !listsData) return;
+  //   const listAlreadyExists =
+  //     listsData.lists.some(({ name }) => name === listToAdd.name) || false;
 
-  useEffect(() => {
-    if (!listToAdd || !listsData) return;
-    const listAlreadyExists =
-      listsData.lists.some(({ name }) => name === listToAdd.name) || false;
+  //   if (confirmed || !listAlreadyExists) {
+  //     addListMutation.mutate({
+  //       version: listsData.version,
+  //       list: listToAdd,
+  //     });
+  //     dispatch(setListToAdd(null));
+  //   } else {
+  //     if (confirmed === false) {
+  //       dispatch(setListToAdd(null));
+  //       dispatch(
+  //         openModal({
+  //           title: { key: "modal.listSave.title" },
+  //           message: {
+  //             key: "modal.listSave.message.cancel",
+  //           },
+  //           type: "info",
+  //         })
+  //       );
 
-    if (confirmed || !listAlreadyExists) {
-      addListMutation.mutate({
-        version: listsData.version,
-        list: listToAdd,
-      });
-      dispatch(setListToAdd(null));
-    } else {
-      if (confirmed === false) {
-        dispatch(setListToAdd(null));
-        dispatch(
-          openModal({
-            title: { key: "modal.listSave.title" },
-            message: {
-              key: "modal.listSave.message.cancel",
-            },
-            type: "info",
-          })
-        );
+  //       return;
+  //     }
 
-        return;
-      }
+  //     if (listAlreadyExists) {
+  //       dispatch(
+  //         openModal({
+  //           title: { key: "modal.listSave.title" },
+  //           message: {
+  //             key: "modal.listSave.message.confirm",
+  //             values: { name: listToAdd.name },
+  //           },
+  //           type: "confirm",
+  //         })
+  //       );
+  //     }
+  //   }
 
-      if (listAlreadyExists) {
-        dispatch(
-          openModal({
-            title: { key: "modal.listSave.title" },
-            message: {
-              key: "modal.listSave.message.confirm",
-              values: { name: listToAdd.name },
-            },
-            type: "confirm",
-          })
-        );
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listToAdd, confirmed]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [listToAdd, confirmed]);
 
   return (
     <ButtonsContainer>
       {listsData && (
         <Button
-          onClick={() =>
-            dispatch(
-              setListToAdd({
-                id: nanoid(8),
-                date: formatCurrentDateISO(),
-                name: listMetadata.name,
-                taskList: tasks,
+          onClick={
+            () => {
+              saveListMutation.mutate({
+                version: listsData.version,
+                list: {
+                  id: taskListMetaData.id,
+                  date: taskListMetaData.date,
+                  name: taskListMetaData.name,
+                  taskList: tasks,
+                }
               })
-            )
-          }
+              dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }))
+              dispatch(setToUpdate(null));
+            }}
+
           disabled={
-            !listMetadata.name || areTasksEmpty || listNameToEdit !== null
+            !taskListMetaData.name || areTasksEmpty || listNameToEdit !== null
           }
         >
           <span>
             <CircleIcon
-              $isPending={isPending}
-              $isUpdated={isSuccess}
+              $isChanged={!!toUpdate && tasks.length > 0 && listStatus.isRemoteSaveable}
               $isError={isError}
+              $isPending={isPending}
+              $isUpdated={listStatus.isIdenticalToRemote}
             />
             {t("tasks.buttons.save")}
           </span>
         </Button>
-      )}
+      )
+      }
       <Button
-        onClick={() => dispatch(setTaskListToArchive(tasks))}
+        onClick={() => {
+          dispatch(setTaskListToArchive(tasks))
+          // dispatch(setListStatus({ existsInRemote: false, isIdenticalToRemote: false, isRemoteSaveable: false }))
+          dispatch(clearTaskList())
+        }}
         disabled={areTasksEmpty}
       >
         {t("tasks.buttons.clear")}
       </Button>
       <Button
-        onClick={() => dispatch(setAllDone({ tasks, listMetadata }))}
+        onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
         disabled={isEveryTaskDone || areTasksEmpty}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
-        onClick={() => dispatch(setAllUndone({ tasks, listMetadata }))}
+        onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
         disabled={isEveryTaskUndone || areTasksEmpty}
       >
         {t("tasks.buttons.allUndone")}
@@ -210,6 +202,6 @@ export const TasksButtons = ({ listsData }: Props) => {
           <RedoIcon />
         </Button>
       </ButtonsContainer>
-    </ButtonsContainer>
+    </ButtonsContainer >
   );
 };

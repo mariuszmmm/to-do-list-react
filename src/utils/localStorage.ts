@@ -1,7 +1,8 @@
-import { List, ListMetadata, Settings, Task } from "../types";
+import { nanoid } from "@reduxjs/toolkit";
+import { List, TaskListMetaData, Settings, Task } from "../types";
 
 const settingsKey = "settings" as const;
-const listMetadataKey = "listMetadata" as const;
+const listMetadataKey = "taskListMetaData" as const;
 const tasksKey = "tasks" as const;
 const listsKey = "archivedLists" as const;
 
@@ -16,13 +17,34 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
   return JSON.parse(data);
 };
 
-export const saveListMetadataInLocalStorage = (listMetadata: ListMetadata) =>
-  localStorage.setItem(listMetadataKey, JSON.stringify(listMetadata));
+export const saveListMetadataInLocalStorage = (
+  taskListMetaData: TaskListMetaData
+) => localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
 
-export const getListMetadataFromLocalStorage = (): ListMetadata => {
+export const getListMetadataFromLocalStorage = (): TaskListMetaData => {
   const data = localStorage.getItem(listMetadataKey);
-  if (!data || data === "undefined") return { id: "", date: "", name: "" };
-  return JSON.parse(data);
+  if (!data || data === "undefined")
+    return {
+      id: nanoid(8),
+      date: new Date().toISOString(),
+      name: "",
+    };
+
+  const parsed = JSON.parse(data);
+  const id =
+    typeof parsed.id === "string" && parsed.id.trim() !== ""
+      ? parsed.id
+      : nanoid(8);
+  const date =
+    typeof parsed.date === "string" && parsed.date.trim() !== ""
+      ? parsed.date
+      : new Date().toISOString();
+
+  return {
+    id,
+    date,
+    name: parsed.name || "",
+  };
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>

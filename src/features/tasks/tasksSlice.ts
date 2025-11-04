@@ -1,11 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import {
   getSettingsFromLocalStorage,
   getTasksFromLocalStorage,
   getListMetadataFromLocalStorage,
   clearLocalStorage,
 } from "../../utils/localStorage";
-import { ListMetadata, Task } from "../../types";
+import { TaskListMetaData, Task, TaskListData } from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
 
@@ -14,12 +14,18 @@ interface TaskState {
   editedTask: Task | null;
   hideDone: boolean;
   showSearch: boolean;
-  undoTasksStack: { tasks: Task[]; listMetadata: ListMetadata }[];
-  redoTasksStack: { tasks: Task[]; listMetadata: ListMetadata }[];
-  listMetadata: ListMetadata;
+  undoTasksStack: TaskListData[];
+  redoTasksStack: TaskListData[];
+  taskListMetaData: TaskListMetaData;
   listNameToEdit: string | null;
   isTasksSorting: boolean;
   tasksToArchive: Task[];
+  toUpdate: TaskListData | null;
+  listStatus: {
+    existsInRemote: boolean;
+    isIdenticalToRemote: boolean;
+    isRemoteSaveable: boolean;
+  };
 }
 
 const getInitialState = (): TaskState => ({
@@ -29,16 +35,16 @@ const getInitialState = (): TaskState => ({
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
   undoTasksStack: [],
   redoTasksStack: [],
-  listMetadata: getListMetadataFromLocalStorage() || {
-    id: "",
-    date: "",
-    name: "",
-  },
-
-  // name: getListNameFromLocalStorage() || "",
+  taskListMetaData: getListMetadataFromLocalStorage(),
   listNameToEdit: null,
   isTasksSorting: false,
   tasksToArchive: [],
+  toUpdate: null,
+  listStatus: {
+    existsInRemote: false,
+    isIdenticalToRemote: false,
+    isRemoteSaveable: false,
+  },
 });
 
 const tasksSlice = createSlice({
@@ -51,14 +57,14 @@ const tasksSlice = createSlice({
         payload: { task, stateForUndo },
       }: PayloadAction<{
         task: Task;
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        stateForUndo: TaskListData;
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       state.tasks.push(task);
       state.redoTasksStack = [];
-      if (!state.listMetadata.name) {
-        state.listMetadata.name = t("tasksPage.tasks.defaultListName");
+      if (!state.taskListMetaData.name) {
+        state.taskListMetaData.name = t("tasksPage.tasks.defaultListName");
       }
     },
     setTaskToEdit: (
@@ -81,7 +87,7 @@ const tasksSlice = createSlice({
         },
       }: PayloadAction<{
         task: Task;
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        stateForUndo: TaskListData;
       }>
     ) => {
       const index = state.tasks.findIndex((task) => task.id === id);
@@ -102,7 +108,7 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskId: string;
         doneDate: string | null;
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        stateForUndo: TaskListData;
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
@@ -119,7 +125,7 @@ const tasksSlice = createSlice({
         payload: { taskId, stateForUndo },
       }: PayloadAction<{
         taskId: string;
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        stateForUndo: TaskListData;
       }>
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
@@ -132,16 +138,13 @@ const tasksSlice = createSlice({
     removeTasks: (state) => {
       state.undoTasksStack.push({
         tasks: state.tasks,
-        listMetadata: state.listMetadata,
+        taskListMetaData: state.taskListMetaData,
       });
-      state.listMetadata = {
-        id: "",
-        date: "",
-        name: "",
-      };
       state.tasks = [];
-      state.redoTasksStack = [];
       state.editedTask = null;
+      state.listNameToEdit = null;
+      state.isTasksSorting = false;
+      state.redoTasksStack = [];
     },
     setTaskListToArchive: (
       state,
@@ -149,11 +152,29 @@ const tasksSlice = createSlice({
     ) => {
       state.tasksToArchive = tasksToArchive;
     },
+    clearTaskList: (state) => {
+      state.undoTasksStack.push({
+        tasks: state.tasks,
+        taskListMetaData: state.taskListMetaData,
+      });
+      state.tasks = [];
+      state.editedTask = null;
+      state.taskListMetaData.id = nanoid(8);
+      state.taskListMetaData.date = new Date().toISOString();
+      state.taskListMetaData.name = t("tasksPage.tasks.defaultListName");
+      state.listNameToEdit = null;
+      state.isTasksSorting = false;
+      state.toUpdate = null;
+      state.listStatus = {
+        existsInRemote: false,
+        isIdenticalToRemote: false,
+        isRemoteSaveable: false,
+      };
+      state.redoTasksStack = [];
+    },
     setAllDone: (
       state,
-      {
-        payload: stateForUndo,
-      }: PayloadAction<{ tasks: Task[]; listMetadata: ListMetadata }>
+      { payload: stateForUndo }: PayloadAction<TaskListData>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       for (const task of state.tasks) {
@@ -163,9 +184,7 @@ const tasksSlice = createSlice({
     },
     setAllUndone: (
       state,
-      {
-        payload: stateForUndo,
-      }: PayloadAction<{ tasks: Task[]; listMetadata: ListMetadata }>
+      { payload: stateForUndo }: PayloadAction<TaskListData>
     ) => {
       state.undoTasksStack.push(stateForUndo);
       for (const task of state.tasks) {
@@ -176,15 +195,15 @@ const tasksSlice = createSlice({
     setTasks: (
       state,
       {
-        payload: { listMetadata, tasks, stateForUndo },
+        payload: { taskListMetaData, tasks, stateForUndo },
       }: PayloadAction<{
-        listMetadata: ListMetadata;
+        taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        stateForUndo: TaskListData;
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
-      state.listMetadata = listMetadata;
+      state.taskListMetaData = taskListMetaData;
       state.tasks = tasks;
       state.redoTasksStack = [];
     },
@@ -194,22 +213,22 @@ const tasksSlice = createSlice({
     undoTasks: (state) => {
       state.redoTasksStack.push({
         tasks: state.tasks,
-        listMetadata: state.listMetadata,
+        taskListMetaData: state.taskListMetaData,
       });
       const undoTasksStack = state.undoTasksStack.pop();
       if (undoTasksStack === undefined) return;
       state.tasks = undoTasksStack.tasks;
-      state.listMetadata = undoTasksStack.listMetadata;
+      state.taskListMetaData = undoTasksStack.taskListMetaData;
     },
     redoTasks: (state) => {
       state.undoTasksStack.push({
         tasks: state.tasks,
-        listMetadata: state.listMetadata,
+        taskListMetaData: state.taskListMetaData,
       });
       const redoTasksStack = state.redoTasksStack.pop();
       if (redoTasksStack === undefined) return;
       state.tasks = redoTasksStack.tasks;
-      state.listMetadata = redoTasksStack.listMetadata;
+      state.taskListMetaData = redoTasksStack.taskListMetaData;
     },
     setListNameToEdit: (
       state,
@@ -224,15 +243,34 @@ const tasksSlice = createSlice({
     setListMetadata: (
       state,
       {
-        payload: { listMetadata, stateForUndo },
+        payload: { taskListMetaData, stateForUndo },
       }: PayloadAction<{
-        listMetadata: ListMetadata;
-        stateForUndo: { tasks: Task[]; listMetadata: ListMetadata };
+        taskListMetaData: TaskListMetaData;
+        stateForUndo: TaskListData;
       }>
     ) => {
       state.undoTasksStack.push(stateForUndo);
-      state.listMetadata = listMetadata;
+      state.taskListMetaData = taskListMetaData;
       state.redoTasksStack = [];
+    },
+    setToUpdate: (state, { payload }: PayloadAction<TaskListData | null>) => {
+      state.toUpdate = payload;
+    },
+    setListStatus: (
+      state,
+      {
+        payload: { existsInRemote, isIdenticalToRemote, isRemoteSaveable },
+      }: PayloadAction<{
+        existsInRemote: boolean;
+        isIdenticalToRemote: boolean;
+        isRemoteSaveable: boolean;
+      }>
+    ) => {
+      state.listStatus = {
+        existsInRemote,
+        isIdenticalToRemote,
+        isRemoteSaveable,
+      };
     },
     taskMoveUp: (state, { payload: index }) => {
       let tasks = [...state.tasks];
@@ -272,7 +310,7 @@ const tasksSlice = createSlice({
       if (!state.isTasksSorting) {
         state.undoTasksStack.push({
           tasks: state.tasks,
-          listMetadata: state.listMetadata,
+          taskListMetaData: state.taskListMetaData,
         });
       } else {
         state.redoTasksStack = [];
@@ -295,6 +333,7 @@ export const {
   removeTask,
   removeTasks,
   setTaskListToArchive,
+  clearTaskList,
   setAllDone,
   setAllUndone,
   setTasks,
@@ -303,6 +342,8 @@ export const {
   redoTasks,
   setListNameToEdit,
   setListMetadata,
+  setToUpdate,
+  setListStatus,
   taskMoveUp,
   taskMoveDown,
   switchTaskSort,
@@ -322,8 +363,8 @@ export const selectUndoTasksStack = (state: RootState) =>
   selectTasksState(state).undoTasksStack;
 export const selectRedoTasksStack = (state: RootState) =>
   selectTasksState(state).redoTasksStack;
-export const selectListMetadata = (state: RootState) =>
-  selectTasksState(state).listMetadata;
+export const selectTaskListMetaData = (state: RootState) =>
+  selectTasksState(state).taskListMetaData;
 export const selectListNameToEdit = (state: RootState) =>
   selectTasksState(state).listNameToEdit;
 export const selectAreTasksEmpty = (state: RootState) =>
@@ -332,22 +373,22 @@ export const selectIsEveryTaskDone = (state: RootState) =>
   selectTasks(state).every(({ done }) => done);
 export const selectIsEveryTaskUndone = (state: RootState) =>
   selectTasks(state).every(({ done }) => !done);
-export const selectTaskById = (state: RootState, taskId: string) => {
-  const task = selectTasks(state).find(({ id }) => id === taskId) || null;
-  return task;
-};
+export const selectTaskById = (state: RootState, taskId: string) =>
+  selectTasks(state).find(({ id }) => id === taskId) || null;
+export const selectTasksToArchive = (state: RootState) =>
+  selectTasksState(state).tasksToArchive;
+export const selectToUpdate = (state: RootState) =>
+  selectTasksState(state).toUpdate;
+export const selectListStatus = (state: RootState) =>
+  selectTasksState(state).listStatus;
 export const selectIsTasksSorting = (state: RootState) =>
   selectTasksState(state).isTasksSorting;
 export const selectTasksByQuery = (state: RootState, query: string | null) => {
   const tasks = selectTasks(state);
-
   if (!query || query === "") return tasks;
-
   return tasks.filter(({ content }) =>
     content.toUpperCase().includes(query.toUpperCase().trim())
   );
 };
-export const selectTasksToArchive = (state: RootState) =>
-  selectTasksState(state).tasksToArchive;
 
 export default tasksSlice.reducer;
