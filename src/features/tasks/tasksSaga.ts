@@ -141,7 +141,7 @@ function* setListStatusHandler() {
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
 
-  if (isRemoteSaveable && !isIdenticalToRemote)
+//  if (isRemoteSaveable && !isIdenticalToRemote)
     yield put(setToUpdate({ tasks, taskListMetaData }));
 }
 
@@ -215,5 +215,5 @@ export function* tasksSaga() {
     setListToLoadHandler
   );
 
-  // yield takeEvery(setListStatus.type, setListStatusHandler);
+  yield takeEvery(setListStatus.type, setListStatusHandler);
 }
