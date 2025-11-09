@@ -237,7 +237,7 @@ export const useListSyncManager = ({
       console.log("[handleAutoSave] Clearing toUpdate flag");
       // dispatch(setToUpdate(null));
       saveTimeoutRef.current = null;
-    }, 5000);
+    }, 10000);
 
     // Cleanup function - clear timeout when component unmounts or dependencies change
     return () => {
