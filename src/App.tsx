@@ -20,7 +20,9 @@ import { useDataFetchingError } from "./hooks/useDataFetchingError";
 import { useSaveListMutation } from "./hooks/useSaveListMutation";
 import { useListSyncManager } from "./hooks/useListSyncManager";
 import { useEffect } from "react";
-import { selectVersion, setVersion } from "./features/RemoteListsPage/remoteListsSlice";
+import {
+// selectVersion, 
+setVersion } from "./features/RemoteListsPage/remoteListsSlice";
 import { useDispatch } from "react-redux";
 //  import { selectListStatus, setTasks } from "./features/tasks/tasksSlice";
 
