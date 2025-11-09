@@ -22,9 +22,9 @@ interface TaskState {
   tasksToArchive: Task[];
   toUpdate: TaskListData | null;
   listStatus: {
-    existsInRemote: boolean;
-    isIdenticalToRemote: boolean;
-    isRemoteSaveable: boolean;
+    isRemoteSaveable?: boolean;
+    existsInRemote?: boolean;
+    isIdenticalToRemote?: boolean;
   };
 }
 
@@ -41,9 +41,9 @@ const getInitialState = (): TaskState => ({
   tasksToArchive: [],
   toUpdate: null,
   listStatus: {
+    isRemoteSaveable: false,
     existsInRemote: false,
     isIdenticalToRemote: false,
-    isRemoteSaveable: false,
   },
 });
 
@@ -166,9 +166,9 @@ const tasksSlice = createSlice({
       state.isTasksSorting = false;
       state.toUpdate = null;
       state.listStatus = {
+        isRemoteSaveable: false,
         existsInRemote: false,
         isIdenticalToRemote: false,
-        isRemoteSaveable: false,
       };
       state.redoTasksStack = [];
     },
@@ -259,17 +259,17 @@ const tasksSlice = createSlice({
     setListStatus: (
       state,
       {
-        payload: { existsInRemote, isIdenticalToRemote, isRemoteSaveable },
+        payload: { isRemoteSaveable, existsInRemote, isIdenticalToRemote },
       }: PayloadAction<{
-        existsInRemote: boolean;
-        isIdenticalToRemote: boolean;
-        isRemoteSaveable: boolean;
+        isRemoteSaveable?: boolean;
+        existsInRemote?: boolean;
+        isIdenticalToRemote?: boolean;
       }>
     ) => {
       state.listStatus = {
-        existsInRemote,
-        isIdenticalToRemote,
-        isRemoteSaveable,
+        isRemoteSaveable: isRemoteSaveable || false,
+        existsInRemote: existsInRemote || false,
+        isIdenticalToRemote: isIdenticalToRemote || false,
       };
     },
     taskMoveUp: (state, { payload: index }) => {

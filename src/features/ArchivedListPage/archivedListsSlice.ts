@@ -25,7 +25,10 @@ const archivedListsSlice = createSlice({
   name: "archivedLists",
   initialState: getInitialState(),
   reducers: {
-    selectArchivedList: (state, { payload: listId }: PayloadAction<string | null>) => {
+    selectArchivedList: (
+      state,
+      { payload: listId }: PayloadAction<string | null>
+    ) => {
       if (state.selectedArchivedListId === listId || listId === null) {
         state.selectedArchivedListId = null;
       } else {
@@ -50,6 +53,8 @@ const archivedListsSlice = createSlice({
       state.archivedLists = state.archivedLists.filter(
         (list) => list.id !== listId
       );
+      if (state.selectedArchivedListId === listId)
+        state.selectedArchivedListId = null;
     },
     addArchivedList: (state, { payload: list }: PayloadAction<List>) => {
       if (!list) return;

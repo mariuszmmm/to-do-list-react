@@ -22,7 +22,7 @@ export const addDataApi = async (
   version: Version,
   list: List
 ) => {
-  console.log("!!!! Adding data via API:", { token, version, list });
+  // console.log("!!!! Adding data via API:", { token, version, list });
   return fetch("/addData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },

@@ -21,10 +21,10 @@ const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 3,
-      refetchOnWindowFocus: false,
-      refetchInterval: 1000 * 60 * 1,
-      refetchOnMount: false,
+      // staleTime: 1000 * 1,  //to znaczy ze dane sa swieze przez 3 sekundy
+      refetchOnWindowFocus: false,  // nie refetchuj przy focusie okna
+      //  refetchInterval: 1000 * 60 * 1,  //refetch co minute
+      refetchOnMount: false, // nie refetchuj przy remoncie komponentu
     },
   },
 });

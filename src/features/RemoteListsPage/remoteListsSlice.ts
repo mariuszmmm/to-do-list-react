@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { Version } from "../../types";
 import { List } from "../../types/list";
+import { Version } from "../../types";
 
 interface ListsState {
+  version: Version | null;
   selectedListId: string | null;
   listToLoad: List | null;
   isListsSorting: boolean;
@@ -13,6 +14,7 @@ interface ListsState {
 }
 
 const getInitialState = (): ListsState => ({
+  version: null,
   selectedListId: null,
   listToLoad: null,
   isListsSorting: false,
@@ -25,6 +27,12 @@ const remoteListsSlice = createSlice({
   name: "remoteLists",
   initialState: getInitialState(),
   reducers: {
+    setVersion: (
+      state,
+      { payload: version }: PayloadAction<Version | null>
+    ) => {
+      state.version = version;
+    },
     selectList: (state, { payload: listId }: PayloadAction<string | null>) => {
       if (state.selectedListId === listId || listId === null) {
         state.selectedListId = null;
@@ -67,6 +75,7 @@ const remoteListsSlice = createSlice({
 });
 
 export const {
+  setVersion,
   selectList,
   setListToAdd,
   setListToLoad,
@@ -77,6 +86,10 @@ export const {
 
 const selectRemoteListsState = (state: RootState) => state.remoteLists;
 
+export const selectVersion = (state: RootState) =>
+  selectRemoteListsState(state).version;
+export const selectSelectedListId = (state: RootState) =>
+  selectRemoteListsState(state).selectedListId;
 export const selectIsListsSorting = (state: RootState) =>
   selectRemoteListsState(state).isListsSorting;
 export const selectListToAdd = (state: RootState) =>
@@ -87,7 +100,5 @@ export const selectListToRemove = (state: RootState) =>
   selectRemoteListsState(state).listToRemove;
 export const selectListToSort = (state: RootState) =>
   selectRemoteListsState(state).listsToSort;
-export const selectSelectedListId = (state: RootState) =>
-  selectRemoteListsState(state).selectedListId;
 
 export default remoteListsSlice.reducer;

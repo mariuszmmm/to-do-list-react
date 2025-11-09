@@ -11,6 +11,12 @@ export const useSaveListMutation = () => {
 
   return useMutation({
     mutationFn: async ({ version, list }: { version: Version; list: List }) => {
+      console.log(
+        "useSaveListMutation - mutationFn called with version:",
+        version,
+        "and list:",
+        list
+      );
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");
@@ -19,11 +25,13 @@ export const useSaveListMutation = () => {
 
       return addDataApi(token, version, list);
     },
+
     onSuccess: async (response) => {
       await queryClient.invalidateQueries({ queryKey: ["lists"] });
       if (response.data.conflict) {
         dispatch(
           openModal({
+            title: { key: "modal.listSave.title" },
             message: { key: "modal.listSave.message.error.conflict" },
             type: "error",
           })
@@ -33,6 +41,7 @@ export const useSaveListMutation = () => {
     onError: () => {
       dispatch(
         openModal({
+          title: { key: "modal.listSave.title" },
           message: { key: "modal.listSave.message.error.default" },
           type: "error",
         })

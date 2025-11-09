@@ -17,6 +17,12 @@ export const useRemoveListMutation = () => {
       version: Version;
       listId: List["id"];
     }) => {
+      console.log(
+        "useRemoveListMutation - mutationFn called with version:",
+        version,
+        "and listId:",
+        listId
+      );
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");

@@ -42,7 +42,6 @@ import {
 } from "../ArchivedListPage/archivedListsSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { Task } from "../../types";
-import { useAppSelector } from "../../hooks";
 
 function* saveSettingsInLocalStorageHandler() {
   const showSearch: ReturnType<typeof selectShowSearch> = yield select(
@@ -71,6 +70,13 @@ function* setListToLoadHandler(
     );
     if (!listToLoad) return;
     listToLoadData = listToLoad;
+    yield put(
+      setListStatus({
+        isRemoteSaveable: true,
+        existsInRemote: true,
+        isIdenticalToRemote: true,
+      })
+    );
   } else if (action.type === setArchivedListToLoad.type) {
     const archivedListToLoad = action.payload;
     if (!archivedListToLoad) return;
@@ -82,6 +88,10 @@ function* setListToLoadHandler(
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
+  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
+    yield select(selectListStatus);
+
+  // if (isRemoteSaveable) yield put(setListStatus({}));
 
   yield put(
     setTasks({
@@ -94,13 +104,6 @@ function* setListToLoadHandler(
       stateForUndo: { tasks, taskListMetaData },
     })
   );
-
-  const listStatus: ReturnType<typeof selectListStatus> = yield select(
-    selectListStatus
-  );
-
-  yield put(setListStatus({ ...listStatus, isRemoteSaveable: true }));
-  yield put(setToUpdate(null));
 
   yield put(
     openModal({
@@ -119,14 +122,30 @@ function* saveTasksInLocalStorageHandler() {
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
 
-  console.log("SAGA - taskListMetaData i tasks:", taskListMetaData, tasks);
+  console.log(
+    "SAGA - setToUpdate({ tasks, taskListMetaData }):",
+    taskListMetaData,
+    tasks
+  );
 
-  yield put(setToUpdate({ tasks, taskListMetaData }));
   yield call(saveTasksInLocalStorage, tasks);
   yield call(saveListMetadataInLocalStorage, taskListMetaData);
 }
 
-function* archiveTaskListInLocalStorageHandler() {
+function* setListStatusHandler() {
+  const {
+    isRemoteSaveable,
+    isIdenticalToRemote,
+  }: ReturnType<typeof selectListStatus> = yield select(selectListStatus);
+  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+    yield select(selectTaskListMetaData);
+
+  if (isRemoteSaveable && !isIdenticalToRemote)
+    yield put(setToUpdate({ tasks, taskListMetaData }));
+}
+
+function* archiveTasksHandler() {
   const taskList: ReturnType<typeof selectTasksToArchive> = yield select(
     selectTasksToArchive
   );
@@ -188,9 +207,13 @@ export function* tasksSaga() {
     ],
     saveTasksInLocalStorageHandler
   );
-  yield takeEvery(clearTaskList.type, archiveTaskListInLocalStorageHandler);
+
+  yield takeEvery(clearTaskList.type, archiveTasksHandler);
+
   yield takeEvery(
     [setListToLoad.type, setArchivedListToLoad.type],
     setListToLoadHandler
   );
+
+  // yield takeEvery(setListStatus.type, setListStatusHandler);
 }

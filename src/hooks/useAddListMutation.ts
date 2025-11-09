@@ -36,6 +36,7 @@ export const useAddListMutation = () => {
       if (response.data.conflict) {
         dispatch(
           openModal({
+            title: { key: "modal.listSave.title" },
             message: { key: "modal.listSave.message.error.conflict" },
             type: "error",
           })

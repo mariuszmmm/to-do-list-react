@@ -116,6 +116,9 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       {listsData && (
         <Button // robi się w consol.log: "[ListSync] Cleanup - clearing interval" po wciśnieciu buttona i prywa interwał
           onClick={() => {
+            // dispatch(setListStatus({ isRemoteSaveable: true }));
+            // dispatch(setToUpdate({ tasks, taskListMetaData }));
+
             saveListMutation.mutate({
               version: listsData.version,
               list: {
@@ -125,21 +128,20 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
                 taskList: tasks,
               },
             });
-            dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
-            dispatch(setToUpdate(null));
+
+
           }}
-          disabled={
-            !taskListMetaData.name || areTasksEmpty || listNameToEdit !== null
-          }
+          disabled={!taskListMetaData.name || areTasksEmpty || listNameToEdit !== null}
         >
           <span>
             <CircleIcon
               $isChanged={
-                !!toUpdate && tasks.length > 0 && listStatus.isRemoteSaveable
-              }
+                // !!toUpdate &&
+                tasks.length > 0 && listStatus.isRemoteSaveable && listStatus.existsInRemote && !listStatus.isIdenticalToRemote}
               $isError={isError}
               $isPending={isPending}
               $isUpdated={listStatus.isIdenticalToRemote}
+            // $isUpdated={isSuccess && listStatus.isIdenticalToRemote}
             />
             {t("tasks.buttons.save")}
           </span>
@@ -148,7 +150,6 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       <Button
         onClick={() => {
           dispatch(setTaskListToArchive(tasks));
-          // dispatch(setListStatus({ existsInRemote: false, isIdenticalToRemote: false, isRemoteSaveable: false }))
           dispatch(clearTaskList());
         }}
         disabled={areTasksEmpty}

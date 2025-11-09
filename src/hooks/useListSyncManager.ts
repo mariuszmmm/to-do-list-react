@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from ".";
 import { ListsData, List, Version, Task } from "../types";
 import {
@@ -51,25 +51,37 @@ export const useListSyncManager = ({
   const tasks = useAppSelector(selectTasks);
   const listStatus = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
-  const autoSaveCounterRef = useRef(0);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const checkRemoteListStatus = useCallback(() => {
-    if (!listsData || !taskListMetaData?.id || !listStatus.isRemoteSaveable) {
-      console.log("TESTTTTT");
+  // Check remote list status and update accordingly
+  useEffect(() => {
+    console.log("[checkRemoteListStatus] Starting check...");
+
+    if (
+      !listsData ||
+      !taskListMetaData?.id
+      // || !listStatus.isRemoteSaveable
+    ) {
+      console.log("[checkRemoteListStatus] Missing data:", {
+        hasListsData: !!listsData,
+        hasTaskListMetaData: !!taskListMetaData,
+        taskListMetaDataId: taskListMetaData?.id,
+        isRemoteSaveable: listStatus.isRemoteSaveable,
+      });
+
       if (
         !listStatus.existsInRemote &&
         !listStatus.isIdenticalToRemote &&
         !listStatus.isRemoteSaveable
       ) {
+        console.log("[checkRemoteListStatus] List status already reset");
         return;
       }
-      dispatch(
-        setListStatus({
-          existsInRemote: false,
-          isIdenticalToRemote: false,
-          isRemoteSaveable: false,
-        })
+
+      console.log(
+        "[checkRemoteListStatus] Resetting list status - no data available"
       );
+      dispatch(setListStatus({}));
       return;
     }
 
@@ -78,53 +90,140 @@ export const useListSyncManager = ({
     );
 
     if (!remoteList) {
-      if (listStatus.existsInRemote) {
+      console.log(
+        "[checkRemoteListStatus] List not found in remote. ListId:",
+        taskListMetaData.id
+      );
+
+      if (listStatus.existsInRemote === false) {
+        console.log(
+          "[checkRemoteListStatus] Status already indicates list doesn't exist remotely"
+        );
         return;
       }
+
+      console.log(
+        "[checkRemoteListStatus] Updating status - list doesn't exist remotely"
+      );
       dispatch(
         setListStatus({
           ...listStatus,
           existsInRemote: false,
+          isIdenticalToRemote: false,
         })
       );
       return;
     }
 
     const tasksMatch = areTasksEqual(remoteList.taskList, tasks);
+    console.log("[checkRemoteListStatus] Comparing tasks:", {
+      tasksMatch,
+      remoteTasks: remoteList.taskList.length,
+      localTasks: tasks.length,
+    });
+
     if (
-      listStatus.existsInRemote &&
+      listStatus.existsInRemote === true &&
       listStatus.isIdenticalToRemote === tasksMatch
+      // tasksMatch
     ) {
+      console.log(
+        "[checkRemoteListStatus] Status unchanged - no update needed"
+      );
       return;
     }
 
+    console.log("[checkRemoteListStatus] Updating list status:", {
+      isRemoteSaveable: true,
+      existsInRemote: true,
+      isIdenticalToRemote: tasksMatch,
+    });
+
     dispatch(
       setListStatus({
-        ...listStatus,
+        isRemoteSaveable: true,
         existsInRemote: true,
         isIdenticalToRemote: tasksMatch,
       })
     );
-  }, [listsData, taskListMetaData, tasks, listStatus, dispatch]);
 
-  const handleAutoSave = useCallback(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // toUpdate,
+    // dodaj tu zależność po isSuccess z saveListMutation
+
+    listsData, // ok
+    // taskListMetaData,
+    tasks,
+    // listStatus,
+    // dispatch
+    // saveListMutation.isSuccess,
+  ]);
+
+  // Auto-save with debounce - waits 5 seconds after conditions are met
+  useEffect(() => {
+    if (listStatus.isIdenticalToRemote) {
+      console.log("isIdenticalToRemote: ", listStatus.isIdenticalToRemote);
+      console.log(
+        "[handleAutoSave] List is identical to remote - skipping auto-save"
+      );
+      // dispatch(setToUpdate(null));
+      return;
+    }
+
+    // Clear any existing timeout when dependencies change
+    if (saveTimeoutRef.current) {
+      console.log(
+        "[handleAutoSave] Clearing previous timeout due to dependency change"
+      );
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+
+    // if (!toUpdate) {
+    //   console.log("[handleAutoSave] No toUpdate flag - skipping");
+    //   return;
+    // }
+
+    console.log(
+      "[handleAutoSave] toUpdate flag detected, checking conditions...",
+      {
+        toUpdate,
+        hasTaskListMetaData: !!taskListMetaData,
+        hasListsData: !!listsData,
+        hasVersion: !!listsData?.version,
+        tasksCount: tasks.length,
+        isRemoteSaveable: listStatus.isRemoteSaveable,
+      }
+    );
+
     if (
-      !toUpdate ||
       !taskListMetaData ||
       !listsData ||
       !listsData.version ||
       tasks.length === 0 ||
       !listStatus.isRemoteSaveable
     ) {
-      autoSaveCounterRef.current = 0;
+      console.log("[handleAutoSave] Conditions not met - cannot save");
       return;
     }
 
-    autoSaveCounterRef.current += 1;
-    console.log(`[AutoSave] Counter: ${autoSaveCounterRef.current}/1`);
+    // Schedule save after 5 seconds
+    console.log("[handleAutoSave] Scheduling save in 5 seconds...");
+    saveTimeoutRef.current = setTimeout(() => {
+      if (listStatus.isIdenticalToRemote) {
+        console.log(
+          "[handleAutoSave] List is identical to remote - skipping auto-save"
+        );
+        return;
+      }
+      console.log("[handleAutoSave] Performing auto-save after timeout", {
+        listId: taskListMetaData.id,
+        listName: taskListMetaData.name,
+        tasksCount: tasks.length,
+        version: listsData.version,
+      });
 
-    if (autoSaveCounterRef.current >= 1) {
-      console.log("[AutoSave] Performing auto-save now.");
       saveListMutation.mutate({
         version: listsData.version,
         list: {
@@ -135,62 +234,30 @@ export const useListSyncManager = ({
         },
       });
 
-      dispatch(setToUpdate(null));
-      autoSaveCounterRef.current = 0;
-    }
-  }, [
-    toUpdate,
-    taskListMetaData,
-    listsData,
-    tasks,
-    listStatus.isRemoteSaveable,
-    saveListMutation,
-    dispatch,
-  ]);
+      console.log("[handleAutoSave] Clearing toUpdate flag");
+      // dispatch(setToUpdate(null));
+      saveTimeoutRef.current = null;
+    }, 5000);
 
-  useEffect(() => {
-    const intervalCallback = () => {
-      // console.log("[ListSync] Interval tick");
-
-      // console.log(
-      //   "listsData: ",
-      //   listsData,
-      //   "taskListMetaData: ",
-      //   taskListMetaData,
-      //   "tasks: ",
-      //   tasks,
-      //   "toUpdate: ",
-      //   toUpdate
-      // );
-      if (!listsData) {
-        clearInterval(intervalId);
-        return;
-      }
-      checkRemoteListStatus();
-      handleAutoSave();
-    };
-
-    checkRemoteListStatus();
-
-    const intervalId = setInterval(intervalCallback, 5000);
-
+    // Cleanup function - clear timeout when component unmounts or dependencies change
     return () => {
-      console.log("[ListSync] Cleanup - clearing interval");
-      clearInterval(intervalId);
+      if (saveTimeoutRef.current) {
+        console.log("[handleAutoSave] Cleanup - clearing timeout");
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
     };
-  }, [
-    listsData,
-    taskListMetaData,
-    tasks,
-    toUpdate,
-    // checkRemoteListStatus,
-    // handleAutoSave,
-  ]);
 
-  useEffect(() => {
-    if (toUpdate) {
-      console.log("[AutoSave] Reset counter - new changes detected");
-      autoSaveCounterRef.current = 0;
-    }
-  }, [toUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // toUpdate,
+    tasks,
+    listStatus,
+
+    // taskListMetaData,
+    // listsData,
+    // listStatus.isRemoteSaveable,
+    // saveListMutation,
+    // dispatch,
+  ]);
 };

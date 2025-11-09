@@ -31,6 +31,8 @@ export const useAutoSave = ({
     useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
 
+  console.log("CHYBA NIE UZYWANY !!!!!!!!!!");
+
   useEffect(() => {
     console.log("useAutoSave useEffect triggered. Dependencies:", {
       toUpdate: !!toUpdate,

@@ -23,6 +23,7 @@ import {
   selectModalConfirmed,
   selectModalIsOpen,
 } from "../../Modal/modalSlice";
+import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 
 type Props = { listsData: ListsData };
 
@@ -40,6 +41,7 @@ const RemoteListsPage = ({ listsData }: Props) => {
   const selectedListById =
     lists.find(({ id }) => id === selectedListId) || null;
   const dispatch = useAppDispatch();
+  const { id: taskListId } = useAppSelector(selectTaskListMetaData);
 
   const { t } = useTranslation("translation", {
     keyPrefix: "remoteListsPage",
@@ -68,6 +70,14 @@ const RemoteListsPage = ({ listsData }: Props) => {
         version: listsData.version,
         listId: listToRemove.id,
       });
+      // sygnał do tasks która lista zostala usunięta 
+      console.log("Removing list with id:", listToRemove.id);
+
+      if (taskListId === listToRemove.id) dispatch(setListStatus({ isRemoteSaveable: false }));
+      if (removeListMutation.isSuccess) {
+        console.log("List removed successfully:", listToRemove.id);
+      }
+
       dispatch(setListToRemove(null));
     } else {
       if (confirmed === false) {

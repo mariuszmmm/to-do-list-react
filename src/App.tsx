@@ -19,10 +19,14 @@ import ArchivedListsPage from "./features/ArchivedListPage";
 import { useDataFetchingError } from "./hooks/useDataFetchingError";
 import { useSaveListMutation } from "./hooks/useSaveListMutation";
 import { useListSyncManager } from "./hooks/useListSyncManager";
+import { useEffect } from "react";
+import { selectVersion, setVersion } from "./features/RemoteListsPage/remoteListsSlice";
+import { useDispatch } from "react-redux";
+import { selectListStatus, setTasks } from "./features/tasks/tasksSlice";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const { data, isLoading, isError } = useQuery<ListsData>({
+  const { data, isLoading, isError, isSuccess } = useQuery<ListsData>({
     queryKey: ["lists"],
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
@@ -31,8 +35,33 @@ const App = () => {
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
 
+  const version = useAppSelector(selectVersion);
+  const dispatch = useDispatch();
+
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });
+
+  const listStatus = useAppSelector(selectListStatus);
+
+
+  useEffect(() => {
+    // console.log("useEffect triggered with isSuccess:", isSuccess, "and data.version:", data?.version);
+    console.log("data fetched:", data);
+    // console.log("!!!!!!!!!  store version:", version);
+    // console.log("listStatus:", listStatus);
+    if (isSuccess && data?.version != null) {
+
+      console.log("Updating version in store to:", data.version);
+      // dispatch(setTasks({ taskListMetaData, tasks, stateForUndo )); 
+
+
+      dispatch(setVersion(data.version));
+      // Dispatch action to set version in the store
+      // Assuming you have access to the dispatch function here
+      // dispatch(setVersion(data.version));
+    }
+    // eslint-disable-next-line
+  }, [isSuccess, data?.version]);
 
   return (
     <HashRouter>

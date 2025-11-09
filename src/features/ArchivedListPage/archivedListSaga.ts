@@ -34,18 +34,13 @@ function* handleArchivedListRemove() {
     })
   );
 
-  const { cancelled } = yield race({
+  const { confirmed } = yield race({
     confirmed: take(confirm),
     cancelled: take(cancel),
   });
 
-  if (cancelled) {
-    yield put(setArchivedListToRemove(null));
-    yield put(closeModal());
-    return;
-  }
+  if (confirmed) yield put(removeArchivedList(listToRemove.id));
 
-  yield put(removeArchivedList(listToRemove.id));
   yield put(setArchivedListToRemove(null));
   yield put(closeModal());
 }

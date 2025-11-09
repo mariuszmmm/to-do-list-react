@@ -9,9 +9,16 @@ export const useUpdateListsMutation = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
-
   return useMutation({
-    mutationFn: async ({ listsToSort }: { listsToSort: { lists: List[]; version: Version } }) => {
+    mutationFn: async ({
+      listsToSort,
+    }: {
+      listsToSort: { lists: List[]; version: Version };
+    }) => {
+      console.log(
+        "useUpdateListsMutation - mutationFn called with listsToSort:",
+        listsToSort
+      );
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");
