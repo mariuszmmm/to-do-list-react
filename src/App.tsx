@@ -22,7 +22,7 @@ import { useListSyncManager } from "./hooks/useListSyncManager";
 import { useEffect } from "react";
 import { selectVersion, setVersion } from "./features/RemoteListsPage/remoteListsSlice";
 import { useDispatch } from "react-redux";
-import { selectListStatus, setTasks } from "./features/tasks/tasksSlice";
+//  import { selectListStatus, setTasks } from "./features/tasks/tasksSlice";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -35,13 +35,13 @@ const App = () => {
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
 
-  const version = useAppSelector(selectVersion);
+//  const version = useAppSelector(selectVersion);
   const dispatch = useDispatch();
 
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });
 
-  const listStatus = useAppSelector(selectListStatus);
+ // const listStatus = useAppSelector(selectListStatus);
 
 
   useEffect(() => {
