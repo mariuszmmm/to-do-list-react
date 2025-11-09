@@ -1,4 +1,4 @@
-import { call, put, delay, select, takeLatest } from "redux-saga/effects";
+import { put, delay, select, takeLatest } from "redux-saga/effects";
 import { selectToUpdate, setToUpdate } from "../tasks/tasksSlice";
 
 export function* pollDataSaga() {
