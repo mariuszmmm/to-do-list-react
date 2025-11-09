@@ -23,8 +23,8 @@ import {
   setTaskListToArchive,
   selectToUpdate,
   selectListStatus,
-  setListStatus,
-  setToUpdate,
+//  setListStatus,
+ // setToUpdate,
   clearTaskList,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
@@ -58,12 +58,14 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const listStatus = useAppSelector(selectListStatus);
-  const toUpdate = useAppSelector(selectToUpdate);
+ // const toUpdate = useAppSelector(selectToUpdate);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-  const { isPending, isSuccess, isError } = saveListMutation;
+  const { isPending,
+// isSuccess, 
+isError } = saveListMutation;
 
   // console.log("taskListMetaData", taskListMetaData);
 
