@@ -88,7 +88,7 @@ function* setListToLoadHandler(
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
-  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
+//  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
     yield select(selectListStatus);
 
   // if (isRemoteSaveable) yield put(setListStatus({}));
