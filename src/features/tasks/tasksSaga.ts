@@ -133,10 +133,7 @@ function* saveTasksInLocalStorageHandler() {
 }
 
 function* setListStatusHandler() {
- // const {
-    isRemoteSaveable,
-   isIdenticalToRemote,
-  }: ReturnType<typeof selectListStatus> = yield select(selectListStatus);
+ // const {isRemoteSaveable, isIdenticalToRemote }: ReturnType<typeof selectListStatus> = yield select(selectListStatus);
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
