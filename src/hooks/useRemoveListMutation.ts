@@ -30,7 +30,7 @@ export const useRemoveListMutation = () => {
         openModal({
           message: { key: "modal.listRemove.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: async (response) => {
@@ -41,7 +41,7 @@ export const useRemoveListMutation = () => {
           openModal({
             message: { key: "modal.listRemove.message.error.conflict" },
             type: "error",
-          }),
+          })
         );
       } else {
         dispatch(
@@ -50,7 +50,7 @@ export const useRemoveListMutation = () => {
               key: "modal.listRemove.message.success",
             },
             type: "success",
-          }),
+          })
         );
       }
     },
@@ -59,7 +59,7 @@ export const useRemoveListMutation = () => {
         openModal({
           message: { key: "modal.listRemove.message.error.default" },
           type: "error",
-        }),
+        })
       );
     },
   });

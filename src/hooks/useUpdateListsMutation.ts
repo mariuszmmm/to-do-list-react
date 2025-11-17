@@ -24,7 +24,7 @@ export const useUpdateListsMutation = () => {
           title: { key: "modal.listsUpdate.title" },
           message: { key: "modal.listsUpdate.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: async (response) => {
@@ -35,14 +35,14 @@ export const useUpdateListsMutation = () => {
           openModal({
             message: { key: "modal.listsUpdate.message.error.conflict" },
             type: "error",
-          }),
+          })
         );
       } else {
         dispatch(
           openModal({
             message: { key: "modal.listsUpdate.message.success" },
             type: "success",
-          }),
+          })
         );
       }
     },
@@ -51,7 +51,7 @@ export const useUpdateListsMutation = () => {
         openModal({
           message: { key: "modal.listsUpdate.message.error.default" },
           type: "error",
-        }),
+        })
       );
     },
   });

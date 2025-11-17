@@ -32,8 +32,10 @@ export const useSaveListMutation = () => {
     //   );
     // },
     onSuccess: async (response) => {
-      // await queryClient.invalidateQueries({ queryKey: ["lists"] });
-      queryClient.setQueryData(["lists"], response.data);
+      console.log("List saved successfully:", response.data);
+      // Cache będzie zaktualizowany przez Ably, nie robimy tego tutaj
+      // queryClient.setQueryData(["lists"], response.data);
+
       if (response.conflict) {
         dispatch(
           openModal({
@@ -43,17 +45,6 @@ export const useSaveListMutation = () => {
           })
         );
       }
-      // else {
-      //   dispatch(
-      //     openModal({
-      //       message: {
-      //         key: "modal.listSave.message.success",
-      //         values: { name: list.name },
-      //       },
-      //       type: "success",
-      //     })
-      //   );
-      // }
     },
     onError: () => {
       dispatch(

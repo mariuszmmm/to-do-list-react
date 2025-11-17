@@ -2,6 +2,7 @@ import type { Handler } from "@netlify/functions";
 import UserData, { UserDoc } from "./models/UserData";
 import { Data } from "../../src/types";
 import { connectToDB } from "./config/mongoose";
+import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
   console.log("Handler invoked - Method:", event.httpMethod);
@@ -149,6 +150,12 @@ const handler: Handler = async (event, context) => {
     }
 
     console.log("Data saved successfully for user:", email);
+
+    // Publikuj aktualizację przez Ably
+    await publishAblyUpdate(email, {
+      email: savedUser.email,
+      lists: savedUser.lists,
+    });
 
     return {
       statusCode: 200,
