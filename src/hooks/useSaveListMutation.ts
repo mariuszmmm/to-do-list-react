@@ -1,4 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  //  useQueryClient
+} from "@tanstack/react-query";
 import { useAppDispatch } from ".";
 import { List } from "../types";
 import { getUserToken } from "../utils/getUserToken";
@@ -7,7 +10,7 @@ import { openModal } from "../Modal/modalSlice";
 
 export const useSaveListMutation = () => {
   const dispatch = useAppDispatch();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ list }: { list: List }) => {
