@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface StyledListItemProps {
   $edit?: boolean;
   selected?: boolean;
+  $synchronized?: boolean;
   hidden?: boolean;
   $sort?: boolean;
   $type?: "lists" | "tasks" | "tasksView";
@@ -37,17 +38,23 @@ export const StyledListItem = styled.li<StyledListItemProps>`
     $type === "tasks"
       ? "auto 1fr auto auto"
       : $type === "lists"
-        ? "auto 1fr auto"
-        : $type === "tasksView"
-          ? "auto 1fr"
-          : "auto"};
+      ? "auto 1fr auto"
+      : $type === "tasksView"
+      ? "auto 1fr"
+      : "auto"};
 
-  ${({ $edit, selected }) =>
-    ($edit || selected) &&
+  ${({ selected }) =>
+    selected &&
     css`
-      background-color: ${({ theme }) => theme.color.silver};
+      background-color: ${({ theme }) => theme.color.gallery};
     `}
 
+  ${({ $edit, $synchronized }) =>
+    ($edit || $synchronized) &&
+    css`
+      background-color: ${({ theme }) => theme.color.snowyMint};
+    `}
+    
   ${({ hidden }) =>
     hidden &&
     css`
@@ -59,10 +66,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
       $type === "lists"
         ? "1fr auto auto"
         : $type === "tasks"
-          ? "1fr auto"
-          : $type === "tasksView"
-            ? "1fr"
-            : "auto"};
+        ? "1fr auto"
+        : $type === "tasksView"
+        ? "1fr"
+        : "auto"};
   }
 `;
 
@@ -80,8 +87,8 @@ export const StyledListContent = styled.p<StyledListContentProps>`
       $type === "lists"
         ? "grid-column: span 2;"
         : $type === "tasks"
-          ? "grid-column: span 3;"
-          : ""}
+        ? "grid-column: span 3;"
+        : ""}
   }
 `;
 
@@ -90,7 +97,7 @@ export const TaskNumber = styled.span`
   color: ${({ theme }) => theme.color.black};
 `;
 
-export const StyledTask = styled.span<StyledTaskProps>`
+export const StyledSpan = styled.span<StyledTaskProps>`
   padding-left: 2px;
   white-space: pre-line;
   font-style: red;
@@ -119,6 +126,7 @@ export const StyledTask = styled.span<StyledTaskProps>`
     css`
       color: ${({ theme }) => theme.color.empress};
       font-style: italic;
-      font-size: 0.85em;
+      font-size: 0.85rem;
+      font-weight: normal;
     `}
 `;

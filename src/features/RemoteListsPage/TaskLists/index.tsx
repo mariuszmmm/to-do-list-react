@@ -17,7 +17,7 @@ import {
   StyledList,
   StyledListContent,
   StyledListItem,
-  StyledTask,
+  StyledSpan,
 } from "../../../common/StyledList";
 import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import i18n from "../../../utils/i18n";
@@ -28,6 +28,7 @@ type Props = {
   modalIsOpen: boolean;
   isListsSorting: boolean;
   listsToSort: List[] | null;
+  localListId: string;
 };
 
 export const TaskLists = ({
@@ -36,6 +37,7 @@ export const TaskLists = ({
   modalIsOpen,
   isListsSorting,
   listsToSort,
+  localListId
 }: Props) => {
   const dispatch = useAppDispatch();
 
@@ -47,6 +49,7 @@ export const TaskLists = ({
           selected={selectedListId === list.id && !isListsSorting}
           onClick={() => dispatch(selectList(isListsSorting ? null : list.id))}
           $type={"tasks"}
+          $synchronized={list.id === localListId}
         >
           {isListsSorting && listsToSort ? (
             <SortButtonsContainer>
@@ -73,15 +76,19 @@ export const TaskLists = ({
             </ToggleButton>
           )}
           <StyledListContent $type={"tasks"}>
-            <StyledTask $ListName>{list.name}</StyledTask>
+            <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
-            <StyledTask
+            <StyledSpan
               $comment
-            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledTask>
+            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledSpan>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
             <RemoveButton
-              onClick={() => dispatch(setListToRemove(list))}
+              onClick={(event) => {
+                event.stopPropagation();
+                dispatch(setListToRemove(list))
+              }
+              }
               disabled={modalIsOpen}
             >
               🗑️

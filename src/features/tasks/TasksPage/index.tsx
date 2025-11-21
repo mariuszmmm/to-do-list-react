@@ -49,8 +49,8 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
         bodyHidden={!showSearch}
       />
       <Section
-        title={<EditableListName />}
-        body={<TasksList />}
+        title={<EditableListName listsData={listsData} />}
+        body={<TasksList listsData={listsData} />}
         extraHeaderContent={
           <TasksButtons
             listsData={listsData}

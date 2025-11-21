@@ -10,12 +10,22 @@ import {
   setListNameToEdit,
   setListMetadata,
   selectTasks,
+  selectTime,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { StyledSpan } from "../../../../common/StyledList";
+import i18n from "../../../../utils/i18n";
+import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
+import { ListsData } from "../../../../types";
 
-export const EditableListName = () => {
+type Props = {
+  listsData?: ListsData;
+};
+
+export const EditableListName = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
+  const synchonizedTime = useAppSelector(selectTime)?.synchronizedTime;
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
@@ -60,9 +70,14 @@ export const EditableListName = () => {
   return (
     <NameContainer onSubmit={onNameSubmit}>
       {listNameToEdit === null ? (
-        <ListName>
-          {taskListMetaData?.name || t("tasks.defaultListName")}
-        </ListName>
+        <>
+          <StyledSpan $comment>
+            {`Lista z dnia:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
+          </StyledSpan>
+          <ListName>
+            {taskListMetaData?.name || t("tasks.defaultListName")}
+          </ListName>
+        </>
       ) : (
         <Input
           type="text"
@@ -73,7 +88,8 @@ export const EditableListName = () => {
           ref={inpurRef}
         />
       )}
-      <Button $special>
+      <Button $special
+        disabled={!listsData && !!synchonizedTime}>
         {listNameToEdit === null
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}

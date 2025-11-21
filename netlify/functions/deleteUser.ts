@@ -1,12 +1,16 @@
+// Netlify function to delete a user
 import { HandlerContext, HandlerEvent } from "@netlify/functions";
 import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
 
 const handler = async (_event: HandlerEvent, context: HandlerContext) => {
+  // Entry log
   console.log("Delete user function invoked");
 
+  // Connect to database
   await connectToDB();
 
+  // Check for authentication
   if (
     !context.clientContext ||
     !context.clientContext.user ||
@@ -19,7 +23,6 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
     };
   }
   const { identity, user } = context.clientContext;
-
   const userID = user.sub;
   const email = user.email;
   const userUrl = `${identity.url}/admin/users/{${userID}}`;
@@ -28,8 +31,8 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
   console.log(`Attempting to delete user: ${email} (ID: ${userID})`);
 
   try {
+    // Find user in DB
     const userData = await UserData.findOne({ email, account: "active" });
-
     if (!userData) {
       console.error(`User not found: ${email}`);
       return {
@@ -38,30 +41,26 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
       };
     }
 
-    console.log(`User found in database, calling identity API: ${userUrl}`);
-
+    // Delete user from identity API
     const response = await fetch(userUrl, {
       method: "DELETE",
       headers: { Authorization: adminAuthHeader },
     });
-
     if (!response.ok) {
       console.error(
         `Failed to delete user from identity: ${response.status} - ${response.statusText}`
       );
-
       return {
         statusCode: response.status,
         body: JSON.stringify({ message: response.statusText }),
       };
     }
 
-    console.log(`User deleted from identity, updating database`);
+    // Mark user as deleted in DB
     const updateResult = await UserData.updateOne(
       { email },
       { account: "deleted" }
     );
-
     if (updateResult.modifiedCount === 0) {
       console.error(`Failed to update user account to 'deleted': ${email}`);
       return {
@@ -70,11 +69,12 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
       };
     }
 
+    // Success response
     console.log(`User successfully deleted: ${email}`);
     return { statusCode: 204 };
   } catch (error) {
+    // Error response
     console.error("Failed to delete user", error);
-
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Failed to delete user" }),
@@ -82,4 +82,5 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
   }
 };
 
+// Export handler
 module.exports = { handler };

@@ -10,13 +10,19 @@ export const useUpdateListsMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (listsToSort: List[]) => {
+    mutationFn: async ({
+      listsToSort,
+      deviceId,
+    }: {
+      listsToSort: List[];
+      deviceId?: string;
+    }) => {
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");
         throw new Error("User token is null");
       }
-      return updateDataApi(token, listsToSort);
+      return updateDataApi(token, listsToSort, deviceId);
     },
     onMutate: () => {
       dispatch(

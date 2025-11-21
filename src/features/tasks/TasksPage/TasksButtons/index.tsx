@@ -23,6 +23,9 @@ import {
   setTaskListToArchive,
   selectListStatus,
   clearTaskList,
+  setListStatus,
+  selectUndoLocked,
+  selectTime,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import {
@@ -48,47 +51,37 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const editedTask = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
+  const synchonizedTime = useAppSelector(selectTime)?.synchronizedTime
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const listStatus = useAppSelector(selectListStatus);
+  const undoLocked = useAppSelector(selectUndoLocked);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
   const { isPending, isError } = saveListMutation;
 
-  const version =
-    listsData?.lists?.find((list) => list.id === taskListMetaData.id)?.version ||
-    0;
+  const isChanged =
+    tasks.length > 0 &&
+    listStatus.isRemoteSaveable &&
+    !listStatus.isIdenticalToRemote &&
+    !isError &&
+    !isPending;
 
   return (
     <ButtonsContainer>
       {!!listsData && (
         <Button
           onClick={() => {
-            saveListMutation.mutate({
-              list: {
-                id: taskListMetaData.id,
-                date: new Date().toISOString(),
-                name: taskListMetaData.name,
-                version,
-                taskList: tasks,
-              },
-            });
+            dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
           }}
           disabled={
-            !taskListMetaData.name || areTasksEmpty || listNameToEdit !== null || isPending
+            !taskListMetaData.name || listNameToEdit !== null || isPending
           }
         >
           <span>
             <CircleIcon
-              $isChanged={
-                tasks.length > 0 &&
-                listStatus.isRemoteSaveable &&
-                listStatus.existsInRemote &&
-                !listStatus.isIdenticalToRemote &&
-                !isError &&
-                !isPending
-              }
+              $isChanged={isChanged}
               $isError={isError}
               $isPending={isPending}
               $isUpdated={listStatus.isIdenticalToRemote}
@@ -99,24 +92,23 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       )}
       <Button
         onClick={() => {
-          dispatch(
+          if (!areTasksEmpty) dispatch(
             setTaskListToArchive({ tasks, listName: taskListMetaData.name }),
           );
           dispatch(clearTaskList());
         }}
-        disabled={areTasksEmpty}
       >
         {t("tasks.buttons.clear")}
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskDone || areTasksEmpty}
+        disabled={isEveryTaskDone || areTasksEmpty || (!listsData && !!synchonizedTime)}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskUndone || areTasksEmpty}
+        disabled={isEveryTaskUndone || areTasksEmpty || (!listsData && !!synchonizedTime)}
       >
         {t("tasks.buttons.allUndone")}
       </Button>
@@ -129,14 +121,14 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       </Button>
       <Button
         onClick={() => dispatch(switchTaskSort())}
-        disabled={tasks.length < 2}
+        disabled={tasks.length < 2 || (!listsData && !!synchonizedTime)}
         width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>
       <ButtonsContainer $sub>
         <Button
-          disabled={undoTasksStack.length === 0 || editedTask !== null}
+          disabled={undoTasksStack.length === 0 || editedTask !== null || (!listsData && undoLocked)}
           onClick={() => dispatch(undoTasks())}
           title={
             undoTasksStack.length === 0 || editedTask !== null

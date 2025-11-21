@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeDataApi } from "../api/fetchDataApi";
 import { useAppDispatch } from ".";
 import { openModal } from "../Modal/modalSlice";
-import { List, Version } from "../types";
+import { Version } from "../types";
 import { getUserToken } from "../utils/getUserToken";
 
 export const useRemoveListMutation = () => {
@@ -13,9 +13,11 @@ export const useRemoveListMutation = () => {
     mutationFn: async ({
       version,
       listId,
+      deviceId,
     }: {
       version: Version;
-      listId: List["id"];
+      listId: string;
+      deviceId?: string;
     }) => {
       const token = await getUserToken();
       if (!token) {
@@ -23,7 +25,7 @@ export const useRemoveListMutation = () => {
         throw new Error("User token is null");
       }
 
-      return removeDataApi(token, version, listId);
+      return removeDataApi(token, version, listId, deviceId);
     },
     onMutate: () => {
       dispatch(
@@ -34,7 +36,6 @@ export const useRemoveListMutation = () => {
       );
     },
     onSuccess: async (response) => {
-      // await queryClient.invalidateQueries({ queryKey: ["lists"] });
       queryClient.setQueryData(["lists"], response.data);
       if (response.data.conflict) {
         dispatch(

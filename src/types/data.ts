@@ -16,6 +16,7 @@ export type TaskListMetaData = {
 export type TaskListData = {
   tasks: Task[];
   taskListMetaData: TaskListMetaData;
+  changeTime?: string;
 };
 
 export type Data = {
@@ -24,9 +25,10 @@ export type Data = {
   list?: List;
   listId?: string;
   lists?: List[];
+  deviceId?: string;
 };
 
 export type ListsData = {
-  email: string;
   lists: List[];
+  conflict?: boolean;
 };

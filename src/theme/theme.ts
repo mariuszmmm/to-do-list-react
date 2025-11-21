@@ -8,6 +8,7 @@ export const theme = {
     empress: "#767374",
     teal: "#007380",
     crimson: "#db143c",
+    snowyMint: "#cfffcfff",
     forestGreen: "#228c22",
     red: "#ff0000",
     blue: "#0083e7ff",

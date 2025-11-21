@@ -1,10 +1,13 @@
+// Netlify function to get user data
 import type { Handler } from "@netlify/functions";
 import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
+  // Entry log
   console.log("getData function invoked");
 
+  // Check for authentication
   if (!context.clientContext || !context.clientContext.user) {
     console.log("Unauthorized access attempt");
     return {
@@ -13,14 +16,16 @@ const handler: Handler = async (event, context) => {
     };
   }
 
+  // Connect to database
   await connectToDB();
 
   try {
+    // Extract user email
     const { email }: { email: string } = context.clientContext.user;
     console.log(`Fetching data for user: ${email}`);
 
+    // Find user data
     const userData = await UserData.findOne({ email, account: "active" });
-
     if (!userData) {
       console.log(`User not found: ${email}`);
       return {
@@ -29,6 +34,7 @@ const handler: Handler = async (event, context) => {
       };
     }
 
+    // Success response
     console.log(`User data found for: ${email}`);
     return {
       statusCode: 200,
@@ -41,6 +47,7 @@ const handler: Handler = async (event, context) => {
       }),
     };
   } catch (error) {
+    // Error response
     console.error("Error fetching user data:", error);
     return {
       statusCode: 500,
@@ -49,4 +56,5 @@ const handler: Handler = async (event, context) => {
   }
 };
 
+// Export handler
 module.exports = { handler };

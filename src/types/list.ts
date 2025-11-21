@@ -7,4 +7,6 @@ export type List = {
   name: string;
   version: Version;
   taskList: Task[];
+  deviceId?: string;
+  synchonizedTime?: string;
 };

@@ -28,11 +28,16 @@ import {
   StyledList,
   StyledListContent,
   StyledListItem,
-  StyledTask,
+  StyledSpan,
   TaskNumber,
 } from "../../../../common/StyledList";
+import { ListsData } from "../../../../types";
 
-export const TasksList = () => {
+type Props = {
+  listsData?: ListsData;
+};
+
+export const TasksList = ({ listsData }: Props) => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
@@ -85,27 +90,27 @@ export const TasksList = () => {
                   }),
                 )
               }
-              disabled={editedTask !== null}
+              disabled={editedTask !== null || (!listsData && !!task.synchronized)}
             >
               {task.done ? "✔" : ""}
             </ToggleButton>
           )}
           <StyledListContent $type={"tasks"}>
             {!query ? <TaskNumber>{`${index + 1}. `}</TaskNumber> : ""}
-            <StyledTask $done={task.done}>
+            <StyledSpan $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}
                 disabled={editedTask !== null}
               >
                 {task.content}
               </StyledLink>
-            </StyledTask>
+            </StyledSpan>
           </StyledListContent>
           {!isTasksSorting && (
             <>
               <EditButton
                 onClick={() => dispatch(setTaskToEdit(task.id))}
-                disabled={!!editedTask}
+                disabled={!!editedTask || (!listsData && !!task.synchronized)}
               >
                 ✏️
               </EditButton>
@@ -118,7 +123,7 @@ export const TasksList = () => {
                     }),
                   )
                 }
-                disabled={editedTask !== null}
+                disabled={editedTask !== null || (!listsData && !!task.synchronized)}
               >
                 🗑️
               </RemoveButton>

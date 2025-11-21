@@ -18,10 +18,7 @@ const currentUrl = window.location.href;
 getTokenFromURL(currentUrl);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchInterval: 1000 * 60 } },
-});
+const queryClient = new QueryClient();
 
 root.render(
   <React.StrictMode>
@@ -37,5 +34,5 @@ root.render(
         </I18nextProvider>
       </ThemeProvider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

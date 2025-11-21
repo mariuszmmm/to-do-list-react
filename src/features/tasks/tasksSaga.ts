@@ -3,13 +3,13 @@ import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
   saveListMetadataInLocalStorage,
   saveSettingsInLocalStorage,
+  saveTimeInLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
 import {
   addTask,
   redoTasks,
   removeTask,
-  removeTasks,
   saveEditedTask,
   selectHideDone,
   selectTaskListMetaData,
@@ -30,6 +30,11 @@ import {
   clearTaskList,
   setListStatus,
   selectListStatus,
+  selectUndoTasksStack,
+  setUndoLocked,
+  selectUndoLocked,
+  selectTime,
+  setSynchronizeTime,
 } from "./tasksSlice";
 import {
   selectListToLoad,
@@ -86,9 +91,13 @@ function* setListToLoadHandler(
     return;
   }
 
-  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+//  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+ // const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
+
+
+
+
 
   yield put(
     setTasks({
@@ -98,7 +107,15 @@ function* setListToLoadHandler(
         name: listToLoadData.name,
       },
       tasks: listToLoadData.taskList,
-      stateForUndo: { tasks, taskListMetaData },
+      stateForUndo: null,
+    })
+  );
+
+  // dodać tylko jeśli lista remote
+  yield put(
+    setSynchronizeTime({
+      synchronizedTime: new Date().toISOString(),
+      tasks: listToLoadData.taskList,
     })
   );
 
@@ -116,14 +133,39 @@ function* setListToLoadHandler(
 
 function* saveTasksInLocalStorageHandler() {
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  if (!!tasks) yield call(saveTasksInLocalStorage, tasks);
+
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
-  yield call(saveTasksInLocalStorage, tasks);
-  yield call(saveListMetadataInLocalStorage, taskListMetaData);
+  if (!!taskListMetaData)
+    yield call(saveListMetadataInLocalStorage, taskListMetaData);
+
+  const time: ReturnType<typeof selectTime> = yield select(selectTime);
+  if (!!time) yield call(saveTimeInLocalStorage, time);
 }
 
-function* setListStatusHandler() {
-  // const {isRemoteSaveable, isIdenticalToRemote }: ReturnType<typeof selectListStatus> = yield select(selectListStatus);
+function* lockUndoHandler() {
+  const time: ReturnType<typeof selectTime> = yield select(selectTime);
+  const undoTasksStack: ReturnType<typeof selectUndoTasksStack> = yield select(
+    selectUndoTasksStack
+  );
+  const lockedUndo: ReturnType<typeof selectUndoLocked> = yield select(
+    selectUndoLocked
+  );
+
+  const lastUndo = undoTasksStack[undoTasksStack.length - 1]?.changeTime;
+  const synchronizedTime = time?.synchronizedTime;
+
+  if (!synchronizedTime || !lastUndo) {
+    if (lockedUndo) yield put(setUndoLocked(false));
+    return;
+  }
+
+  if (synchronizedTime >= lastUndo) {
+    if (!lockedUndo) yield put(setUndoLocked(true));
+  } else {
+    if (lockedUndo) yield put(setUndoLocked(false));
+  }
 }
 
 function* archiveTasksHandler() {
@@ -172,13 +214,13 @@ export function* tasksSaga() {
     [toggleShowSearch.type, toggleHideDone.type],
     saveSettingsInLocalStorageHandler
   );
+
   yield takeEvery(
     [
       addTask.type,
       saveEditedTask.type,
       toggleTaskDone.type,
       removeTask.type,
-      removeTasks.type,
       clearTaskList.type,
       setAllDone.type,
       setAllUndone.type,
@@ -192,12 +234,29 @@ export function* tasksSaga() {
     saveTasksInLocalStorageHandler
   );
 
+  yield takeEvery(
+    [
+      addTask.type,
+      saveEditedTask.type,
+      toggleTaskDone.type,
+      removeTask.type,
+      clearTaskList.type,
+      setAllDone.type,
+      setAllUndone.type,
+      setTasks.type,
+      undoTasks.type,
+      redoTasks.type,
+      setListMetadata.type,
+      taskMoveUp.type,
+      taskMoveDown.type,
+    ],
+    lockUndoHandler
+  );
+
   yield takeEvery(clearTaskList.type, archiveTasksHandler);
 
   yield takeEvery(
     [setListToLoad.type, setArchivedListToLoad.type],
     setListToLoadHandler
   );
-
-  yield takeEvery(setListStatus.type, setListStatusHandler);
 }

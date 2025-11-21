@@ -1,7 +1,10 @@
+import { getOrCreateDeviceId } from "../utils/deviceId";
 import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import ably from "../utils/ably";
-import { ListsData } from "../types";
+import type Ably from "ably";
+import { setChangeSource } from "../features/tasks/tasksSlice";
+import { useAppDispatch } from "./redux";
 
 interface UseAblySyncParams {
   userEmail: string | null;
@@ -9,8 +12,10 @@ interface UseAblySyncParams {
 }
 
 export const useAblySync = ({ userEmail, enabled }: UseAblySyncParams) => {
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<Ably.RealtimeChannel | null>(null);
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const deviceId = getOrCreateDeviceId();
 
   useEffect(() => {
     if (!enabled || !userEmail) {
@@ -21,28 +26,24 @@ export const useAblySync = ({ userEmail, enabled }: UseAblySyncParams) => {
     const channel = ably.channels.get(channelName);
     channelRef.current = channel;
 
-    const messageHandler = (message: any) => {
-      console.log("✅ Ably message received:", message);
-
+    const messageHandler = (message: Ably.Message) => {
+      const ablyDeviceId = message.data?.deviceId;
+      if (ablyDeviceId && ablyDeviceId === deviceId) return;
       if (message.data && message.data.lists) {
-        const newData: ListsData = {
-          email: message.data.email,
-          lists: message.data.lists,
-        };
-
-        console.log("📦 Updating cache with data from Ably", newData);
+        const newData = { lists: message.data.lists };
+        dispatch(setChangeSource("remote"));
         queryClient.setQueryData(["lists"], newData);
       }
     };
 
     channel.subscribe(messageHandler);
-    console.log(`🔌 Subscribed to Ably channel: ${channelName}`);
 
     return () => {
-      console.log(`🔌 Unsubscribing from Ably channel: ${channelName}`);
       channel.unsubscribe(messageHandler);
       channelRef.current = null;
     };
+
+    // eslint-disable-next-line
   }, [enabled, userEmail, queryClient]);
 
   return { channel: channelRef.current };

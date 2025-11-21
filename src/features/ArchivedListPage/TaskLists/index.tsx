@@ -4,7 +4,7 @@ import {
   StyledList,
   StyledListContent,
   StyledListItem,
-  StyledTask,
+  StyledSpan,
 } from "../../../common/StyledList";
 import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
 import {
@@ -42,11 +42,11 @@ export const TaskLists = ({
         >
           <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           <StyledListContent $type={"tasks"}>
-            <StyledTask $ListName>{list.name}</StyledTask>
+            <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
-            <StyledTask
+            <StyledSpan
               $comment
-            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledTask>
+            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledSpan>
           </StyledListContent>
           <RemoveButton
             onClick={() => dispatch(setArchivedListToRemove(list))}

@@ -20,6 +20,7 @@ import { useDataFetchingError } from "./hooks/useDataFetchingError";
 import { useSaveListMutation } from "./hooks/useSaveListMutation";
 import { useListSyncManager } from "./hooks/useListSyncManager";
 import { useAblySync } from "./hooks/useAblySync";
+import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -28,7 +29,9 @@ const App = () => {
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
   });
+  const { id: localListId } = useAppSelector(selectTaskListMetaData);
   const safeData = !!loggedUserEmail ? data : undefined;
+
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
 
@@ -63,7 +66,7 @@ const App = () => {
           {!!safeData && (
             <Route
               path="/lists"
-              element={<RemoteListsPage listsData={safeData} />}
+              element={<RemoteListsPage listsData={safeData} localListId={localListId} />}
             />
           )}
           <Route path="/info" element={<InfoPage />} />
