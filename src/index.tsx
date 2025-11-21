@@ -18,13 +18,9 @@ const currentUrl = window.location.href;
 getTokenFromURL(currentUrl);
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
+const queryClient = new QueryClient();
 
-const queryClient = new QueryClient({
-  // defaultOptions: { queries: { refetchInterval: 1000 * 60 } },
-});
-
-root.render(
-  // <React.StrictMode>
+const render = (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <I18nextProvider i18n={i18n}>
@@ -37,5 +33,6 @@ root.render(
       </I18nextProvider>
     </ThemeProvider>
   </Provider>
-  // </React.StrictMode>,
 );
+
+root.render(process.env.NODE_ENV === "development" ? <React.StrictMode>{render}</React.StrictMode> : render);
