@@ -5,7 +5,12 @@ import {
   getListMetadataFromLocalStorage,
   clearLocalStorage,
 } from "../../utils/localStorage";
-import { TaskListMetaData, Task, TaskListData } from "../../types";
+import {
+  TaskListMetaData,
+  Task,
+  TaskListData,
+  ChangeSource,
+} from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
 
@@ -22,9 +27,9 @@ interface TaskState {
   tasksToArchive: { listName: string; tasks: Task[] } | null;
   listStatus: {
     isRemoteSaveable?: boolean;
-    existsInRemote?: boolean;
     isIdenticalToRemote?: boolean;
   };
+  changeSource: ChangeSource;
 }
 
 const getInitialState = (): TaskState => ({
@@ -40,9 +45,9 @@ const getInitialState = (): TaskState => ({
   tasksToArchive: null,
   listStatus: {
     isRemoteSaveable: false,
-    existsInRemote: false,
     isIdenticalToRemote: false,
   },
+  changeSource: null,
 });
 
 const tasksSlice = createSlice({
@@ -64,6 +69,7 @@ const tasksSlice = createSlice({
       if (!state.taskListMetaData.name) {
         state.taskListMetaData.name = t("tasksPage.tasks.defaultListName");
       }
+      state.changeSource = "local";
     },
     setTaskToEdit: (
       state,
@@ -95,6 +101,7 @@ const tasksSlice = createSlice({
       state.tasks[index].editedDate = editedDate;
       state.editedTask = null;
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     toggleHideDone: (state) => {
       state.hideDone = !state.hideDone;
@@ -116,6 +123,7 @@ const tasksSlice = createSlice({
         state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
       }
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     removeTask: (
       state,
@@ -131,6 +139,7 @@ const tasksSlice = createSlice({
         state.undoTasksStack.push(stateForUndo);
         state.tasks.splice(index, 1);
         state.redoTasksStack = [];
+        state.changeSource = "local";
       }
     },
     removeTasks: (state) => {
@@ -143,6 +152,7 @@ const tasksSlice = createSlice({
       state.listNameToEdit = null;
       state.isTasksSorting = false;
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     setTaskListToArchive: (
       state,
@@ -166,10 +176,10 @@ const tasksSlice = createSlice({
       state.isTasksSorting = false;
       state.listStatus = {
         isRemoteSaveable: false,
-        existsInRemote: false,
         isIdenticalToRemote: false,
       };
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     setAllDone: (
       state,
@@ -180,6 +190,7 @@ const tasksSlice = createSlice({
         task.done = true;
       }
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     setAllUndone: (
       state,
@@ -190,6 +201,7 @@ const tasksSlice = createSlice({
         task.done = false;
       }
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     setTasks: (
       state,
@@ -205,6 +217,7 @@ const tasksSlice = createSlice({
       state.taskListMetaData = taskListMetaData;
       state.tasks = tasks;
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     toggleShowSearch: (state) => {
       state.showSearch = !state.showSearch;
@@ -218,6 +231,7 @@ const tasksSlice = createSlice({
       if (undoTasksStack === undefined) return;
       state.tasks = undoTasksStack.tasks;
       state.taskListMetaData = undoTasksStack.taskListMetaData;
+      state.changeSource = "local";
     },
     redoTasks: (state) => {
       state.undoTasksStack.push({
@@ -228,6 +242,7 @@ const tasksSlice = createSlice({
       if (redoTasksStack === undefined) return;
       state.tasks = redoTasksStack.tasks;
       state.taskListMetaData = redoTasksStack.taskListMetaData;
+      state.changeSource = "local";
     },
     setListNameToEdit: (
       state,
@@ -251,20 +266,19 @@ const tasksSlice = createSlice({
       state.undoTasksStack.push(stateForUndo);
       state.taskListMetaData = taskListMetaData;
       state.redoTasksStack = [];
+      state.changeSource = "local";
     },
     setListStatus: (
       state,
       {
-        payload: { isRemoteSaveable, existsInRemote, isIdenticalToRemote },
+        payload: { isRemoteSaveable, isIdenticalToRemote },
       }: PayloadAction<{
         isRemoteSaveable?: boolean;
-        existsInRemote?: boolean;
         isIdenticalToRemote?: boolean;
       }>
     ) => {
       state.listStatus = {
         isRemoteSaveable: isRemoteSaveable || false,
-        existsInRemote: existsInRemote || false,
         isIdenticalToRemote: isIdenticalToRemote || false,
       };
     },
@@ -284,6 +298,7 @@ const tasksSlice = createSlice({
         }
         return task;
       });
+      state.changeSource = "local";
     },
     taskMoveDown: (state, { payload: index }) => {
       let tasks = [...state.tasks];
@@ -301,6 +316,7 @@ const tasksSlice = createSlice({
         }
         return tasks;
       });
+      state.changeSource = "local";
     },
     switchTaskSort: (state) => {
       if (!state.isTasksSorting) {
@@ -316,6 +332,9 @@ const tasksSlice = createSlice({
     clearStorage: () => {
       clearLocalStorage();
       return getInitialState();
+    },
+    setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
+      state.changeSource = payload;
     },
   },
 });
@@ -343,6 +362,7 @@ export const {
   taskMoveDown,
   switchTaskSort,
   clearStorage,
+  setChangeSource,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;
@@ -383,5 +403,7 @@ export const selectTasksByQuery = (state: RootState, query: string | null) => {
     content.toUpperCase().includes(query.toUpperCase().trim())
   );
 };
+export const selectChangeSource = (state: RootState) =>
+  selectTasksState(state).changeSource;
 
 export default tasksSlice.reducer;

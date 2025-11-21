@@ -1,9 +1,6 @@
 import Ably from "ably";
 
-export const publishAblyUpdate = async (
-  email: string,
-  data: { email: string; lists: any[] }
-) => {
+export const publishAblyUpdate = async (email: string, data: any) => {
   try {
     if (!process.env.ABLY_API_KEY) {
       console.error("ABLY_API_KEY is not configured");
@@ -14,9 +11,8 @@ export const publishAblyUpdate = async (
     const channel = ably.channels.get(`user:${email}:lists`);
 
     await channel.publish("lists-updated", data);
-    console.log("Ably notification sent for user:", email);
+    console.log("Ably notification sent");
   } catch (error) {
     console.error("Failed to send Ably notification:", error);
-    // Nie rzucamy błędu - to nie powinno zatrzymać głównej operacji
   }
 };

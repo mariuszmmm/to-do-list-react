@@ -24,9 +24,10 @@ export type Data = {
   list?: List;
   listId?: string;
   lists?: List[];
+  deviceId?: string;
 };
 
 export type ListsData = {
-  email: string;
   lists: List[];
+  conflict?: boolean;
 };

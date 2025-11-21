@@ -1,46 +1,59 @@
+// Netlify function to update multiple lists for a user
 import type { Handler } from "@netlify/functions";
 import UserData, { UserDoc } from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
 import { Data } from "../../src/types";
+import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
+  // Entry log
   console.log("updateData function invoked");
 
+  // Connect to database
   await connectToDB();
 
-  if (
-    event.httpMethod !== "PUT" ||
-    !context.clientContext?.user ||
-    !event.body
-  ) {
-    console.log("Bad Request:", {
-      method: event.httpMethod,
-      hasUser: !!context.clientContext?.user,
-      hasBody: !!event.body,
-    });
+  // Only allow PUT method
+  if (event.httpMethod !== "PUT") {
+    console.log("Method not allowed:", event.httpMethod);
     return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "Bad Request" }),
+      statusCode: 405,
+      body: JSON.stringify({ message: "Method Not Allowed" }),
     };
   }
 
-  const { email } = context.clientContext.user;
+  // Check for authentication and request body
+  if (!context.clientContext || !context.clientContext.user || !event.body) {
+    console.log("Unauthorized - Missing client context or body");
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ message: "Unauthorized" }),
+    };
+  }
+
+  // Extract user email
+  const { email }: { email: string } = context.clientContext.user;
   console.log("User email:", email);
 
   try {
-    const user = (await UserData.findOne({
+    // Find user in DB
+    const foundUser = (await UserData.findOne({
       email,
       account: "active",
     })) as UserDoc | null;
-    if (!user) {
+    if (!foundUser) {
       console.log("User not found:", email);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
       };
     }
+    console.log("User found:", email, "Lists count:", foundUser.lists.length);
 
+    // Parse request data
     const data: Data = JSON.parse(event.body);
+    console.log("Request data:", data);
+
+    // Validate lists in request
     if (!data.lists) {
       console.log("No lists provided in request body");
       return {
@@ -60,62 +73,62 @@ const handler: Handler = async (event, context) => {
 
     // Check for version conflicts
     for (const incomingList of data.lists) {
-      const dbList = user.lists.find((l) => l.id === incomingList.id);
+      const dbList = foundUser.lists.find((l) => l.id === incomingList.id);
       if (dbList && dbList.version !== incomingList.version) {
-        console.log("Version conflict:", {
-          listId: incomingList.id,
-          dbVersion: dbList.version,
-          incomingVersion: incomingList.version,
-        });
+        console.log("Version mismatch detected for list ID:", incomingList.id);
         return {
           statusCode: 409,
           body: JSON.stringify({
-            message: "Version mismatch",
+            message: "Conflict detected: Version mismatch.",
             data: {
-              email: user.email,
-              lists: user.lists,
+              email: foundUser.email,
+              lists: foundUser.lists,
               conflict: true,
-              conflictListId: incomingList.id,
             },
           }),
         };
       }
     }
 
-    // Update or add lists, increment version only if changed
+    console.log("All versions match. Proceeding with update.");
+
+    // Update or add lists
     data.lists.forEach((incomingList) => {
-      const idx = user.lists.findIndex((l) => l.id === incomingList.id);
+      const idx = foundUser.lists.findIndex((l) => l.id === incomingList.id);
       if (idx !== -1) {
-        const dbList = user.lists[idx];
+        // Update existing list if changed
+        const dbList = foundUser.lists[idx];
         const changed =
           dbList.name !== incomingList.name ||
           dbList.date !== incomingList.date ||
           JSON.stringify(dbList.taskList) !==
             JSON.stringify(incomingList.taskList);
         if (changed) {
-          console.log("Updating list:", incomingList.id);
+          console.log("Updating existing list:", incomingList.id);
           dbList.name = incomingList.name;
           dbList.date = incomingList.date;
           dbList.taskList = incomingList.taskList;
           dbList.version = (incomingList.version || 0) + 1;
         } else {
-          console.log("No changes for list:", incomingList.id);
+          console.log("No changes detected for list ID:", incomingList.id);
         }
       } else {
+        // Add new list
         console.log("Adding new list:", incomingList.id);
-        user.lists.push({ ...incomingList, version: 0 });
+        foundUser.lists.push({ ...incomingList, version: 0 });
       }
     });
 
-    // Set the order to match frontend
+    // Sort lists to match incoming order
     const sortedLists = data.lists.map((incomingList) => {
-      const currentList = user.lists.find((l) => l.id === incomingList.id);
+      const currentList = foundUser.lists.find((l) => l.id === incomingList.id);
       return currentList ? currentList : { ...incomingList, version: 0 };
     });
-    user.lists.splice(0, user.lists.length);
-    sortedLists.forEach((listItem) => user.lists.push(listItem));
+    foundUser.lists.splice(0, foundUser.lists.length);
+    sortedLists.forEach((listItem) => foundUser.lists.push(listItem));
 
-    const savedUser = await user.save();
+    // Save user data
+    const savedUser = await foundUser.save();
     if (!savedUser) {
       console.error("Save operation failed for user:", email);
       return {
@@ -123,19 +136,30 @@ const handler: Handler = async (event, context) => {
         body: JSON.stringify({ message: "Failed to save user data." }),
       };
     }
-    console.log("User data saved successfully");
+    console.log("Data updated successfully for user:", email);
 
+    // Publish update via Ably
+    try {
+      await publishAblyUpdate(email, {
+        lists: savedUser.lists,
+        deviceId: data.deviceId,
+      });
+    } catch (ablyError) {
+      console.error("Ably publish error:", ablyError);
+    }
+
+    // Success response
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "OK",
+        message: "Data updated successfully",
         data: {
-          email: savedUser.email,
           lists: savedUser.lists,
         },
       }),
     };
   } catch (error) {
+    // Error response
     console.error("Error:", error);
     return {
       statusCode: 500,
@@ -144,4 +168,5 @@ const handler: Handler = async (event, context) => {
   }
 };
 
+// Export handler
 module.exports = { handler };

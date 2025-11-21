@@ -23,6 +23,7 @@ import {
   setTaskListToArchive,
   selectListStatus,
   clearTaskList,
+  setListStatus,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import {
@@ -56,24 +57,19 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   });
   const { isPending, isError } = saveListMutation;
 
-  const version =
-    listsData?.lists?.find((list) => list.id === taskListMetaData.id)?.version ||
-    0;
+  const isChanged =
+    tasks.length > 0 &&
+    listStatus.isRemoteSaveable &&
+    !listStatus.isIdenticalToRemote &&
+    !isError &&
+    !isPending;
 
   return (
     <ButtonsContainer>
       {!!listsData && (
         <Button
           onClick={() => {
-            saveListMutation.mutate({
-              list: {
-                id: taskListMetaData.id,
-                date: new Date().toISOString(),
-                name: taskListMetaData.name,
-                version,
-                taskList: tasks,
-              },
-            });
+            dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
           }}
           disabled={
             !taskListMetaData.name || areTasksEmpty || listNameToEdit !== null || isPending
@@ -81,14 +77,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
         >
           <span>
             <CircleIcon
-              $isChanged={
-                tasks.length > 0 &&
-                listStatus.isRemoteSaveable &&
-                listStatus.existsInRemote &&
-                !listStatus.isIdenticalToRemote &&
-                !isError &&
-                !isPending
-              }
+              $isChanged={isChanged}
               $isError={isError}
               $isPending={isPending}
               $isUpdated={listStatus.isIdenticalToRemote}

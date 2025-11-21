@@ -25,20 +25,20 @@ const accountSlice = createSlice({
         | "accountRecovery"
         | "accountDelete"
         | "dataRemoval"
-      >,
+      >
     ) => {
       state.accountMode = mode;
       state.message = "";
     },
     setIsWaitingForConfirmation: (
       state,
-      { payload }: PayloadAction<boolean>,
+      { payload }: PayloadAction<boolean>
     ) => {
       state.isWaitingForConfirmation = payload;
     },
     setLoggedUserEmail: (
       state,
-      { payload: email }: PayloadAction<string | null>,
+      { payload: email }: PayloadAction<string | null>
     ) => {
       state.loggedUserEmail = email;
       if (email === null) {

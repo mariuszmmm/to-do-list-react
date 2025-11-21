@@ -6,3 +6,5 @@ export type Task = {
   doneDate?: string | null;
   editedDate?: string | null;
 };
+
+export type ChangeSource = "local" | "remote" | null;

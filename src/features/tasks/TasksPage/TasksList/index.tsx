@@ -28,7 +28,7 @@ import {
   StyledList,
   StyledListContent,
   StyledListItem,
-  StyledTask,
+  StyledSpan,
   TaskNumber,
 } from "../../../../common/StyledList";
 
@@ -92,14 +92,14 @@ export const TasksList = () => {
           )}
           <StyledListContent $type={"tasks"}>
             {!query ? <TaskNumber>{`${index + 1}. `}</TaskNumber> : ""}
-            <StyledTask $done={task.done}>
+            <StyledSpan $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}
                 disabled={editedTask !== null}
               >
                 {task.content}
               </StyledLink>
-            </StyledTask>
+            </StyledSpan>
           </StyledListContent>
           {!isTasksSorting && (
             <>

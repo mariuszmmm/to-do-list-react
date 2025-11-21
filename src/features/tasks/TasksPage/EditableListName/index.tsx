@@ -12,6 +12,9 @@ import {
   selectTasks,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { StyledSpan } from "../../../../common/StyledList";
+import i18n from "../../../../utils/i18n";
+import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
 
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
@@ -60,9 +63,14 @@ export const EditableListName = () => {
   return (
     <NameContainer onSubmit={onNameSubmit}>
       {listNameToEdit === null ? (
-        <ListName>
-          {taskListMetaData?.name || t("tasks.defaultListName")}
-        </ListName>
+        <>
+          <StyledSpan $comment>
+            {`Lista z dnia:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
+          </StyledSpan>
+          <ListName>
+            {taskListMetaData?.name || t("tasks.defaultListName")}
+          </ListName>
+        </>
       ) : (
         <Input
           type="text"

@@ -1,16 +1,13 @@
-import {
-  useMutation,
-  //  useQueryClient
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppDispatch } from ".";
-import { List } from "../types";
+import { List, ListsData } from "../types";
 import { getUserToken } from "../utils/getUserToken";
 import { addDataApi } from "../api/fetchDataApi";
 import { openModal } from "../Modal/modalSlice";
 
 export const useSaveListMutation = () => {
   const dispatch = useAppDispatch();
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ list }: { list: List }) => {
@@ -34,12 +31,9 @@ export const useSaveListMutation = () => {
     //     })
     //   );
     // },
-    onSuccess: async (response) => {
-      console.log("List saved successfully:", response.data);
-      // Cache będzie zaktualizowany przez Ably, nie robimy tego tutaj
-      // queryClient.setQueryData(["lists"], response.data);
-
-      if (response.conflict) {
+    onSuccess: async (response: { data: ListsData }) => {
+      queryClient.setQueryData(["lists"], response.data);
+      if (response.data.conflict) {
         dispatch(
           openModal({
             title: { key: "modal.listSave.title" },

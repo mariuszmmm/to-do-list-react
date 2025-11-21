@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const NameContainer = styled.form`
   display: flex;
   align-items: start;
-  gap: 2px;
+  gap: 4px;
   flex-wrap: wrap;
   flex-direction: column;
   width: 100%;

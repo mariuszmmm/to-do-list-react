@@ -41,11 +41,12 @@ export const removeDataApi = async (
   token: string,
   version: Version,
   listId: string,
+  deviceId?: string
 ) => {
   return fetch("/removeData", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, listId }),
+    body: JSON.stringify({ version, listId, deviceId }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -61,11 +62,15 @@ export const removeDataApi = async (
     });
 };
 
-export const updateDataApi = async (token: string, lists: List[]) => {
+export const updateDataApi = async (
+  token: string,
+  lists: List[],
+  deviceId?: string
+) => {
   return fetch("/updateData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ lists }),
+    body: JSON.stringify({ lists, deviceId }),
   })
     .then((response) => {
       if (!response.ok) {

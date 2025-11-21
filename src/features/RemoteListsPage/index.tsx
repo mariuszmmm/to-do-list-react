@@ -16,6 +16,7 @@ import {
   setListToRemove,
   setListToSort,
   selectIsListsSorting,
+  selectList,
 } from "./remoteListsSlice";
 import {
   closeModal,
@@ -24,10 +25,11 @@ import {
   selectModalIsOpen,
 } from "../../Modal/modalSlice";
 import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
+import { getOrCreateDeviceId } from "../../utils/deviceId";
 
-type Props = { listsData: ListsData };
+type Props = { listsData: ListsData, localListId: string };
 
-const RemoteListsPage = ({ listsData }: Props) => {
+const RemoteListsPage = ({ listsData, localListId }: Props) => {
   const selectedListId = useAppSelector(selectSelectedListId);
   const modalIsOpen = useAppSelector(selectModalIsOpen);
   const confirmed = useAppSelector(selectModalConfirmed);
@@ -42,7 +44,7 @@ const RemoteListsPage = ({ listsData }: Props) => {
     lists.find(({ id }) => id === selectedListId) || null;
   const dispatch = useAppDispatch();
   const { id: taskListId } = useAppSelector(selectTaskListMetaData);
-
+  const deviceId = getOrCreateDeviceId();
   const { t } = useTranslation("translation", {
     keyPrefix: "remoteListsPage",
   });
@@ -57,11 +59,12 @@ const RemoteListsPage = ({ listsData }: Props) => {
       dispatch(setListToSort(listsData.lists));
     } else {
       if (!listsToSort) return;
-      updateListsMutation.mutate(listsToSort);
+      updateListsMutation.mutate({ listsToSort, deviceId });
       dispatch(setListToSort(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isListsSorting]);
+
 
   useEffect(() => {
     if (!listToRemove) return;
@@ -69,10 +72,11 @@ const RemoteListsPage = ({ listsData }: Props) => {
       removeListMutation.mutate({
         version: listToRemove.version,
         listId: listToRemove.id,
+        deviceId
       });
 
       if (taskListId === listToRemove.id) dispatch(setListStatus({}));
-
+      dispatch(selectList(null));
       dispatch(setListToRemove(null));
     } else {
       if (confirmed === false) {
@@ -107,6 +111,7 @@ const RemoteListsPage = ({ listsData }: Props) => {
             modalIsOpen={modalIsOpen}
             isListsSorting={isListsSorting}
             listsToSort={listsToSort}
+            localListId={localListId}
           />
         }
         extraHeaderContent={

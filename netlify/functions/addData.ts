@@ -1,3 +1,4 @@
+// Netlify function to add or update a single list for a user
 import type { Handler } from "@netlify/functions";
 import UserData, { UserDoc } from "./models/UserData";
 import { Data } from "../../src/types";
@@ -5,10 +6,13 @@ import { connectToDB } from "./config/mongoose";
 import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
-  console.log("Handler invoked - Method:", event.httpMethod);
+  // Entry log
+  console.log("addData function invoked");
 
+  // Connect to database
   await connectToDB();
 
+  // Only allow PUT method
   if (event.httpMethod !== "PUT") {
     console.log("Method not allowed:", event.httpMethod);
     return {
@@ -17,6 +21,7 @@ const handler: Handler = async (event, context) => {
     };
   }
 
+  // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
     console.log("Unauthorized - Missing client context or body");
     return {
@@ -25,10 +30,12 @@ const handler: Handler = async (event, context) => {
     };
   }
 
+  // Extract user email
   const { email }: { email: string } = context.clientContext.user;
-  console.log("Processing request for user:", email);
+  console.log("User email:", email);
 
   try {
+    // Find user in DB
     const foundUser = (await UserData.findOne({
       email,
       account: "active",
@@ -42,7 +49,11 @@ const handler: Handler = async (event, context) => {
     }
     console.log("User found:", email, "Lists count:", foundUser.lists.length);
 
+    // Parse request data
     const data: Data = JSON.parse(event.body);
+    console.log("Request data:", data);
+
+    // Validate list in request
     if (!data.list) {
       console.log("No list provided in request body");
       return {
@@ -50,85 +61,43 @@ const handler: Handler = async (event, context) => {
         body: JSON.stringify({ message: "No list provided" }),
       };
     }
-    console.log("Processing list:", data.list.id);
+    console.log("List ID:", data.list.id);
 
+    // Find if list exists
     const listIndex = foundUser.lists.findIndex(
       (list) => list.id === data.list?.id
     );
 
-    if (listIndex !== -1 && data.list) {
-      console.log("Updating existing list at index:", listIndex);
+    if (listIndex !== -1) {
+      // Update existing list
+      console.log("Updating existing list:", listIndex);
       const incomingList = data.list;
       const existingList = foundUser.lists[listIndex];
 
+      // Check for version conflict
       if (incomingList.version !== existingList.version) {
-        console.log("Version conflict detected. Attempting to merge changes.");
-
-        const hasNameConflict = existingList.name !== incomingList.name;
-        if (hasNameConflict) {
-          console.log("Name conflict found. Returning current server state.");
-          return {
-            statusCode: 200,
-            body: JSON.stringify({
+        console.log("Version mismatch detected for list ID:", data.list.id);
+        return {
+          statusCode: 409,
+          body: JSON.stringify({
+            message: "Conflict detected: Version mismatch.",
+            data: {
+              email: foundUser.email,
+              lists: foundUser.lists,
               conflict: true,
-              message: "Conflict detected: List name has been changed.",
-              data: { email: foundUser.email, lists: foundUser.lists },
-            }),
-          };
-        }
-
-        console.log("No name conflict. Merging task list changes.");
-
-        const mergedTasks = [...existingList.taskList];
-
-        for (const incomingTask of incomingList.taskList) {
-          const existingTaskIndex = mergedTasks.findIndex(
-            (t) => t.id === incomingTask.id
-          );
-
-          if (existingTaskIndex !== -1) {
-            const existingTask = mergedTasks[existingTaskIndex];
-
-            const clientContentChanged =
-              existingTask.content !== incomingTask.content;
-            const clientDoneChanged = existingTask.done !== incomingTask.done;
-
-            if (clientContentChanged) {
-              console.log(
-                `Content conflict for task ${incomingTask.id}. Server version is kept.`
-              );
-            }
-
-            if (clientDoneChanged) {
-              if (incomingTask.done) {
-                mergedTasks[existingTaskIndex] = {
-                  ...existingTask,
-                  done: true,
-                };
-                console.log(
-                  `Merged 'done' status for task ${incomingTask.id} to true.`
-                );
-              }
-            }
-          } else {
-            mergedTasks.push(incomingTask);
-            console.log(`Added new task with id ${incomingTask.id}.`);
-          }
-        }
-
-        existingList.taskList = mergedTasks;
-      } else {
-        console.log("No version conflict. Updating list directly.");
-        existingList.name = incomingList.name;
-        existingList.taskList = incomingList.taskList;
+            },
+          }),
+        };
       }
 
+      // Update list fields
+      existingList.name = incomingList.name;
+      existingList.taskList = incomingList.taskList;
       existingList.date = incomingList.date;
       existingList.version = (existingList.version || 0) + 1;
-
-      console.log("List updated - new version:", existingList.version);
     } else {
-      console.log("Creating new list:", data.list.id);
+      // Add new list
+      console.log("Adding new list");
       const newList = {
         ...data.list,
         version: 0,
@@ -136,38 +105,39 @@ const handler: Handler = async (event, context) => {
       foundUser.lists.push(newList);
     }
 
+    // Save user data
     const savedUser = await foundUser.save();
-
     if (!savedUser) {
-      console.error(
-        "Save operation did not return a user object for user:",
-        email
-      );
+      console.error("Save operation failed for user:", email);
       return {
         statusCode: 500,
         body: JSON.stringify({ message: "Failed to save data." }),
       };
     }
+    console.log("Data updated successfully for user:", email);
 
-    console.log("Data saved successfully for user:", email);
+    // Publish update via Ably
+    try {
+      await publishAblyUpdate(email, {
+        lists: savedUser.lists,
+        deviceId: data.list.deviceId,
+      });
+    } catch (ablyError) {
+      console.error("Ably publish error:", ablyError);
+    }
 
-    // Publikuj aktualizację przez Ably
-    await publishAblyUpdate(email, {
-      email: savedUser.email,
-      lists: savedUser.lists,
-    });
-
+    // Success response
     return {
       statusCode: 200,
       body: JSON.stringify({
         message: "Data updated successfully",
         data: {
-          email: savedUser.email,
           lists: savedUser.lists,
         },
       }),
     };
   } catch (error) {
+    // Error response
     console.error("Error processing request:", error);
     return {
       statusCode: 500,
@@ -176,4 +146,5 @@ const handler: Handler = async (event, context) => {
   }
 };
 
+// Export handler
 module.exports = { handler };
