@@ -9,14 +9,14 @@ export type ExampleTasks = {
 
 export type TaskListMetaData = {
   id: string;
-  date: string;
   name: string;
+  date: string;
+  updatedAt?: string;
 };
 
 export type TaskListData = {
   tasks: Task[];
   taskListMetaData: TaskListMetaData;
-  changeTime?: string;
 };
 
 export type Data = {

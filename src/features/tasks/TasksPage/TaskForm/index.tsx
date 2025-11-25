@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, FormEventHandler } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { nanoid } from "@reduxjs/toolkit";
 import { Input } from "../../../../common/Input";
 import { Form } from "../../../../common/Form";
 import { FormButton } from "../../../../common/FormButton";
@@ -50,29 +49,17 @@ export const TaskForm = () => {
   const addTaskContent = () => {
     const content = taskContent.trim();
     if (content) {
-      editedTask === null
+      !editedTask
         ? dispatch(
           addTask({
-            task: {
-              id: nanoid(8),
-              content,
-              done: false,
-              date: new Date().toISOString(),
-            },
+            content,
             stateForUndo: { tasks, taskListMetaData },
           }),
         )
         : content !== previousContent
           ? dispatch(
             saveEditedTask({
-              task: {
-                id: editedTask.id,
-                content,
-                done: editedTask.done,
-                date: editedTask.date,
-                editedDate: new Date().toISOString(),
-              },
-              stateForUndo: { tasks, taskListMetaData },
+              id: editedTask.id, content, stateForUndo: { tasks, taskListMetaData },
             }),
           )
           : dispatch(setTaskToEdit(null));
@@ -159,11 +146,11 @@ export const TaskForm = () => {
       </InputWrapper>
       <FormButtonWrapper>
         <FormButton type="submit" $singleInput disabled={isActive}>
-          {editedTask !== null
+          {!!editedTask
             ? t("form.inputButton.saveChanges")
             : t("form.inputButton.addTask")}
         </FormButton>
-        {editedTask !== null && (
+        {!!editedTask && (
           <FormButton
             type="button"
             $singleInput

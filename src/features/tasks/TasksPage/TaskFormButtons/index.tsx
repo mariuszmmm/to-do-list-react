@@ -15,6 +15,7 @@ import {
   selectAreTasksEmpty,
   selectTaskListMetaData,
   selectTasks,
+  setLastSyncedAt,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
@@ -49,9 +50,8 @@ export const TaskFormButtons = () => {
         setTasks({
           taskListMetaData: {
             id: data.taskListMetaData.id,
-            date: new Date().toISOString(),
             name: data.taskListMetaData.name,
-            // version: data.taskListMetaData.version,
+            date: data.taskListMetaData.date,
           },
           tasks: data.tasks,
           stateForUndo: {
@@ -61,6 +61,8 @@ export const TaskFormButtons = () => {
         }),
       );
     }
+
+    dispatch(setLastSyncedAt());
   };
 
   return (

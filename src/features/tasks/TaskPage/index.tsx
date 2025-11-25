@@ -37,16 +37,16 @@ const TaskPage = () => {
                 <Name>{t("dateCreated")}:</Name>
                 {formatCurrentDate(new Date(task.date), i18n.language)}
               </DateInfo>
-              {task.editedDate && (
+              {task.editedAt && (
                 <DateInfo>
                   <Name>{t("dateEdited")}:</Name>
-                  {formatCurrentDate(new Date(task.editedDate), i18n.language)}
+                  {formatCurrentDate(new Date(task.editedAt), i18n.language)}
                 </DateInfo>
               )}
-              {task.done && task.doneDate && (
+              {task.done && task.completedAt && (
                 <DateInfo>
                   <Name>{t("dateDone")}:</Name>
-                  {formatCurrentDate(new Date(task.doneDate), i18n.language)}
+                  {formatCurrentDate(new Date(task.completedAt), i18n.language)}
                 </DateInfo>
               )}
             </>

@@ -37,6 +37,7 @@ const langEn: typeof langPl = {
       inputPlaceholder: "Filter tasks",
     },
     tasks: {
+      listFrom: "List from",
       defaultListName: "New list",
       inputPlaceholder: "Enter list name",
       buttons: {

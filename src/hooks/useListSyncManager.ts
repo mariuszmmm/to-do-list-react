@@ -10,7 +10,7 @@ import {
   setTasks,
   setChangeSource,
   selectChangeSource,
-  setSynchronizeTime,
+  setLastSyncedAt,
 } from "../features/tasks/tasksSlice";
 import { UseMutationResult } from "@tanstack/react-query";
 
@@ -63,7 +63,6 @@ export const useListSyncManager = ({
    * Syncs remote changes to local state (if the remote list differs from the local one).
    */
   useEffect(() => {
-    console.log("useListSyncManager: listsData changed", tasks);
     if (!listsData || !listStatus.isRemoteSaveable) return;
 
     const remoteList = listsData.lists.find(
@@ -77,51 +76,33 @@ export const useListSyncManager = ({
         tasks
       );
 
-      
-const unsyncedTasks = tasks.filter((task) => !task.synchronized);
-      const uniqueUnsyncedTasks = unsyncedTasks.filter(
-        (task) =>
-          remoteList.taskList.findIndex(
-            (remoteTask) => remoteTask.id === task.id
-          ) === -1
+      const newTasks = remoteList.taskList.filter(
+        (remoteTask) =>
+          !tasks.some((localTask) => localTask.id === remoteTask.id)
       );
 
-      console.log(uniqueUnsyncedTasks);
+      const updatedTasks = remoteList.taskList.map((remoteTask) => {
+        const localTask = tasks.find((local) => local.id === remoteTask.id);
+        return localTask && localTask.updatedAt > remoteTask.updatedAt
+          ? localTask
+          : remoteTask;
+      });
 
-      
-
-
-      if (!isIdentical || uniqueUnsyncedTasks.length > 0) {
+      if (!isIdentical) {
         dispatch(
           setTasks({
             taskListMetaData: {
               id: remoteList.id,
-              date: remoteList.date,
               name: remoteList.name,
+              date: remoteList.date,
             },
-            tasks:
-              uniqueUnsyncedTasks.length > 0
-                ? [...remoteList.taskList, ...uniqueUnsyncedTasks]
-                : remoteList.taskList,
-            stateForUndo: null,
+            tasks: [...updatedTasks, ...newTasks],
+            stateForUndo: { tasks, taskListMetaData },
           })
         );
       }
 
-
-// czy setSynchronizeTime nie powinno byc pod  setTasks tak jak w taskSaga
-      dispatch(
-        setSynchronizeTime({
-          synchronizedTime: new Date().toISOString(),
-          tasks:
-            uniqueUnsyncedTasks.length > 0
-              ? [...remoteList.taskList, ...uniqueUnsyncedTasks]
-              : remoteList.taskList,
-        })
-      );
-
-
-
+      dispatch(setLastSyncedAt());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData]);

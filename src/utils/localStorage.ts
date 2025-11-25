@@ -14,7 +14,9 @@ export const saveSettingsInLocalStorage = (settings: Settings) =>
 export const getSettingsFromLocalStorage = (): Settings | null => {
   const data = localStorage.getItem(settingsKey);
   if (!data) return null;
-  return JSON.parse(data);
+  const parsed = JSON.parse(data) as Settings;
+
+  return parsed;
 };
 
 export const saveListMetadataInLocalStorage = (
@@ -27,40 +29,23 @@ export const getListMetadataFromLocalStorage = ():
   const data = localStorage.getItem(listMetadataKey);
   if (!data) return;
 
-  const parsed: TaskListMetaData = JSON.parse(data);
-  const id = parsed.id;
-  const date = parsed.date;
-  const name = parsed.name;
-
-  if (!id || !date || !name) {
+  const parsed = JSON.parse(data) as TaskListMetaData;
+  if (!parsed.id || !parsed.date || !parsed.name || !parsed.updatedAt) {
     return;
-  } else
-    return {
-      id,
-      date,
-      name,
-    };
+  }
+
+  return parsed;
 };
 
-export const saveTimeInLocalStorage = (time: {
-  lastChangeTime?: string;
-  synchronizedTime?: string;
-}) => localStorage.setItem(timeKey, JSON.stringify(time));
+export const saveLastSyncedAtFromLocalStorage = (time: string) =>
+  localStorage.setItem(timeKey, JSON.stringify(time));
 
-export const getTimeFromLocalStorage = ():
-  | {
-      lastChangeTime?: string;
-      synchronizedTime?: string;
-    }
-  | undefined => {
+export const getLastSyncedAtFromLocalStorage = (): string | undefined => {
   const data = localStorage.getItem(timeKey);
   if (!data) return;
-  const parsed = JSON.parse(data);
-  if (!parsed.synchonizedTime) {
-    return;
-  } else {
-    return parsed.synchonizedTime;
-  }
+  const parsed = JSON.parse(data) as string;
+
+  return parsed;
 };
 
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
@@ -69,7 +54,9 @@ export const saveTasksInLocalStorage = (tasks: Task[]) =>
 export const getTasksFromLocalStorage = (): Task[] | undefined => {
   const data = localStorage.getItem(tasksKey);
   if (!data) return;
-  return JSON.parse(data);
+  const parsed = JSON.parse(data) as Task[];
+
+  return parsed;
 };
 
 export const saveArchivedListsInStorage = (lists: List[]) => {
@@ -79,5 +66,7 @@ export const saveArchivedListsInStorage = (lists: List[]) => {
 export const getArchivedListFromLocalStorage = (): List[] | undefined => {
   const data = localStorage.getItem(archivedListsKey);
   if (!data) return;
-  return JSON.parse(data);
+  const parsed = JSON.parse(data) as List[];
+
+  return parsed;
 };

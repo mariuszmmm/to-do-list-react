@@ -24,8 +24,6 @@ import {
   selectListStatus,
   clearTaskList,
   setListStatus,
-  selectUndoLocked,
-  selectTime,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import {
@@ -48,13 +46,11 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const undoTasksStack = useAppSelector(selectUndoTasksStack);
   const redoTasksStack = useAppSelector(selectRedoTasksStack);
   const tasks = useAppSelector(selectTasks);
-  const editedTask = useAppSelector(selectEditedTask);
+  const editedTaskContent = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
-  const synchonizedTime = useAppSelector(selectTime)?.synchronizedTime
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const listStatus = useAppSelector(selectListStatus);
-  const undoLocked = useAppSelector(selectUndoLocked);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
@@ -76,7 +72,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
             dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
           }}
           disabled={
-            !taskListMetaData.name || listNameToEdit !== null || isPending
+            !taskListMetaData.name || !!listNameToEdit || isPending
           }
         >
           <span>
@@ -92,23 +88,25 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       )}
       <Button
         onClick={() => {
-          if (!areTasksEmpty) dispatch(
-            setTaskListToArchive({ tasks, listName: taskListMetaData.name }),
-          );
-          dispatch(clearTaskList());
+          areTasksEmpty ?
+            dispatch(clearTaskList({ tasks, taskListMetaData }))
+            :
+            dispatch(
+              setTaskListToArchive({ name: taskListMetaData.name, tasks }),
+            );
         }}
       >
         {t("tasks.buttons.clear")}
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskDone || areTasksEmpty || (!listsData && !!synchonizedTime)}
+        disabled={isEveryTaskDone || areTasksEmpty}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskUndone || areTasksEmpty || (!listsData && !!synchonizedTime)}
+        disabled={isEveryTaskUndone || areTasksEmpty}
       >
         {t("tasks.buttons.allUndone")}
       </Button>
@@ -121,17 +119,17 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       </Button>
       <Button
         onClick={() => dispatch(switchTaskSort())}
-        disabled={tasks.length < 2 || (!listsData && !!synchonizedTime)}
+        disabled={tasks.length < 2}
         width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>
       <ButtonsContainer $sub>
         <Button
-          disabled={undoTasksStack.length === 0 || editedTask !== null || (!listsData && undoLocked)}
+          disabled={undoTasksStack.length === 0 || !!editedTaskContent}
           onClick={() => dispatch(undoTasks())}
           title={
-            undoTasksStack.length === 0 || editedTask !== null
+            undoTasksStack.length === 0 || !!editedTaskContent
               ? ""
               : t("tasks.buttons.undo")
           }
@@ -139,10 +137,10 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
           <UndoIcon />
         </Button>
         <Button
-          disabled={redoTasksStack.length === 0 || editedTask !== null}
+          disabled={redoTasksStack.length === 0 || !!editedTaskContent}
           onClick={() => dispatch(redoTasks())}
           title={
-            redoTasksStack.length === 0 || editedTask !== null
+            redoTasksStack.length === 0 || !!editedTaskContent
               ? ""
               : t("tasks.buttons.redo")
           }

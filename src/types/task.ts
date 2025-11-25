@@ -3,9 +3,10 @@ export type Task = {
   content: string;
   done: boolean;
   date: string;
-  doneDate?: string | null;
-  editedDate?: string | null;
-  synchronized?: boolean;
+  editedAt?: string;
+  updatedAt: string;
+  completedAt?: string | null;
+  deleted?: boolean;
 };
 
 export type ChangeSource = "local" | "remote" | null;

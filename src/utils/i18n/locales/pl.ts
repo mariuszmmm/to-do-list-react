@@ -35,6 +35,7 @@ const langPl = {
       inputPlaceholder: "Filtruj zadania",
     },
     tasks: {
+      listFrom: "Lista z dnia",
       defaultListName: "Nowa lista",
       inputPlaceholder: "Wpisz nazwę listy",
       buttons: {

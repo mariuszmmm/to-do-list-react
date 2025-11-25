@@ -3,10 +3,9 @@ import { Task } from "./task";
 
 export type List = {
   id: string;
-  date: string;
   name: string;
+  date: string;
   version: Version;
   taskList: Task[];
   deviceId?: string;
-  synchonizedTime?: string;
 };

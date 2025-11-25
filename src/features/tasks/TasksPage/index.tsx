@@ -21,7 +21,7 @@ type Props = {
 
 const TasksPage = ({ listsData, saveListMutation }: Props) => {
   const showSearch = useAppSelector(selectShowSearch);
-  const editedTask = useAppSelector(selectEditedTask);
+  const editedTaskContent = useAppSelector(selectEditedTask);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
@@ -35,7 +35,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
       <Header title={t("title")} />
       <Section
         title={
-          editedTask === null
+          !editedTaskContent
             ? t("form.title.addTask")
             : t("form.title.editTask")
         }

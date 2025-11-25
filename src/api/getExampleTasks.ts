@@ -10,8 +10,8 @@ export const getExampleTasks = async (lang: string) => {
   const exampleTasks = (await response.json()) as ExampleTasks;
   const taskListMetaData = {
     id: nanoid(8),
-    date,
     name: exampleTasks.name,
+    date,
   };
   const tasks = exampleTasks.tasks.map((exampleTask) => ({
     ...exampleTask,

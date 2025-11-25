@@ -49,7 +49,6 @@ export const TaskLists = ({
           selected={selectedListId === list.id && !isListsSorting}
           onClick={() => dispatch(selectList(isListsSorting ? null : list.id))}
           $type={"tasks"}
-          $synchronized={list.id === localListId}
         >
           {isListsSorting && listsToSort ? (
             <SortButtonsContainer>

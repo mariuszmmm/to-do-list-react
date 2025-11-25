@@ -8,9 +8,9 @@ import {
   selectListNameToEdit,
   selectTaskListMetaData,
   setListNameToEdit,
-  setListMetadata,
+  setListName,
   selectTasks,
-  selectTime,
+  selectLastSyncedAt,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
@@ -25,12 +25,13 @@ type Props = {
 export const EditableListName = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
-  const synchonizedTime = useAppSelector(selectTime)?.synchronizedTime;
+  const name = taskListMetaData.name;
+  const lastSyncedAt = useAppSelector(selectLastSyncedAt);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-  const [name, setName] = useState(
-    taskListMetaData?.name || t("tasks.defaultListName"),
+  const [newName, setNewName] = useState(
+    name || t("tasks.defaultListName"),
   );
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const inpurRef = useRef<HTMLInputElement>(null);
@@ -38,29 +39,25 @@ export const EditableListName = ({ listsData }: Props) => {
 
   const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    const trimedContent = name.trim();
+    const trimedContent = newName.trim();
 
     if (trimedContent) {
-      if (listNameToEdit !== null) {
+      if (!!listNameToEdit) {
         dispatch(
-          setListMetadata({
-            taskListMetaData: {
-              ...taskListMetaData,
-              name: trimedContent,
-            },
+          setListName({
+            name: trimedContent,
             stateForUndo: { tasks, taskListMetaData },
           }),
         );
         dispatch(setListNameToEdit(null));
 
-        setName(trimedContent);
+        setNewName(trimedContent);
       } else {
         dispatch(
-          setListNameToEdit(
-            taskListMetaData?.name || t("tasks.defaultListName"),
+          setListNameToEdit(name || t("tasks.defaultListName"),
           ),
         );
-        setName(taskListMetaData?.name || t("tasks.defaultListName"));
+        setNewName(name || t("tasks.defaultListName"));
       }
     } else {
       inpurRef.current!.focus();
@@ -69,28 +66,28 @@ export const EditableListName = ({ listsData }: Props) => {
 
   return (
     <NameContainer onSubmit={onNameSubmit}>
-      {listNameToEdit === null ? (
+      {!listNameToEdit ? (
         <>
           <StyledSpan $comment>
-            {`Lista z dnia:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
+            {`${t("tasks.listFrom")}:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
           </StyledSpan>
           <ListName>
-            {taskListMetaData?.name || t("tasks.defaultListName")}
+            {name || t("tasks.defaultListName")}
           </ListName>
         </>
       ) : (
         <Input
           type="text"
-          value={name}
+          value={newName}
           placeholder={t("tasks.inputPlaceholder")}
-          onChange={({ target }) => setName(target.value)}
+          onChange={({ target }) => setNewName(target.value)}
           autoFocus
           ref={inpurRef}
         />
       )}
       <Button $special
-        disabled={!listsData && !!synchonizedTime}>
-        {listNameToEdit === null
+        disabled={!listsData && !!lastSyncedAt}>
+        {!listNameToEdit
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}
       </Button>

@@ -4,7 +4,7 @@ import {
   getTasksFromLocalStorage,
   getListMetadataFromLocalStorage,
   clearLocalStorage,
-  getTimeFromLocalStorage,
+  getLastSyncedAtFromLocalStorage,
 } from "../../utils/localStorage";
 import {
   TaskListMetaData,
@@ -17,49 +17,40 @@ import { t } from "i18next";
 
 interface TaskState {
   tasks: Task[];
-  editedTask: Task | null;
+  editedTask?: { id: string; content: string } | null;
   hideDone: boolean;
   showSearch: boolean;
   undoTasksStack: TaskListData[];
-  undoLocked: boolean;
   redoTasksStack: TaskListData[];
   taskListMetaData: TaskListMetaData;
-  time?: {
-    lastChangeTime?: string;
-    synchronizedTime?: string;
-  };
-  listNameToEdit: string | null;
+  lastSyncedAt?: string;
+  listNameToEdit?: string | null;
   isTasksSorting: boolean;
-  tasksToArchive: { listName: string; tasks: Task[] } | null;
+  tasksToArchive: { name: string; tasks: Task[] } | null;
   listStatus: {
     isRemoteSaveable?: boolean;
     isIdenticalToRemote?: boolean;
   };
-  changeSource: ChangeSource;
+  changeSource?: ChangeSource;
 }
 
+const time = new Date().toISOString();
 const getInitialState = (): TaskState => ({
   tasks: getTasksFromLocalStorage() || [],
-  editedTask: null,
   hideDone: getSettingsFromLocalStorage()?.hideDone || false,
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
   undoTasksStack: [],
-  undoLocked: false,
   redoTasksStack: [],
   taskListMetaData: getListMetadataFromLocalStorage() || {
     id: nanoid(8),
-    date: new Date().toISOString(),
     name: t("tasksPage.tasks.defaultListName"),
+    date: time,
+    updatedAt: time,
   },
-  time: getTimeFromLocalStorage() || undefined,
-  listNameToEdit: null,
+  lastSyncedAt: getLastSyncedAtFromLocalStorage(),
   isTasksSorting: false,
   tasksToArchive: null,
-  listStatus: {
-    isRemoteSaveable: false,
-    isIdenticalToRemote: false,
-  },
-  changeSource: null,
+  listStatus: {},
 });
 
 const tasksSlice = createSlice({
@@ -69,23 +60,23 @@ const tasksSlice = createSlice({
     addTask: (
       state,
       {
-        payload: { task, stateForUndo },
+        payload: { content, stateForUndo },
       }: PayloadAction<{
-        task: Task;
+        content: string;
         stateForUndo: TaskListData;
       }>
     ) => {
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
-      state.tasks.push(task);
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
-      if (!state.taskListMetaData.name) {
-        state.taskListMetaData.name = t("tasksPage.tasks.defaultListName");
-      }
+      state.tasks.push({
+        id: nanoid(8),
+        content,
+        done: false,
+        date: time,
+        updatedAt: time,
+      });
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     setTaskToEdit: (
@@ -97,32 +88,35 @@ const tasksSlice = createSlice({
         return;
       }
       const index = state.tasks.findIndex((task) => task.id === taskId);
-      state.editedTask = { ...state.tasks[index] };
+      if (index === -1) return;
+      state.editedTask = {
+        id: state.tasks[index].id,
+        content: state.tasks[index].content,
+      };
     },
     saveEditedTask: (
       state,
       {
-        payload: {
-          task: { id, content, editedDate },
-          stateForUndo,
-        },
+        payload: { id, content, stateForUndo },
       }: PayloadAction<{
-        task: Task;
+        id: string;
+        content: string;
         stateForUndo: TaskListData;
       }>
     ) => {
       const index = state.tasks.findIndex((task) => task.id === id);
       if (index === -1) return;
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
-      state.tasks[index].content = content;
-      state.tasks[index].editedDate = editedDate;
-      state.editedTask = null;
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      state.tasks[index] = {
+        ...state.tasks[index],
+        content,
+        editedAt: time,
+        updatedAt: time,
+      };
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.editedTask = null;
       state.changeSource = "local";
     },
     toggleHideDone: (state) => {
@@ -131,25 +125,25 @@ const tasksSlice = createSlice({
     toggleTaskDone: (
       state,
       {
-        payload: { taskId, doneDate, stateForUndo },
+        payload: { taskId, stateForUndo },
       }: PayloadAction<{
         taskId: string;
-        doneDate: string | null;
         stateForUndo: TaskListData;
       }>
     ) => {
-      const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      if (index !== -1) {
-        state.tasks[index].done = !state.tasks[index].done;
-        state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
-      }
+      if (index === -1) return;
+      const time = new Date().toISOString();
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      const { done } = state.tasks[index];
+      state.tasks[index] = {
+        ...state.tasks[index],
+        done: !done,
+        completedAt: done ? null : time,
+        updatedAt: time,
+      };
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     removeTask: (
@@ -162,79 +156,80 @@ const tasksSlice = createSlice({
       }>
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      if (index !== -1) {
-        const time = new Date().toISOString();
-        state.undoTasksStack.push({
-          ...stateForUndo,
-          changeTime: time,
-        });
-        state.time = { ...state.time, lastChangeTime: time };
-        state.tasks.splice(index, 1);
-        state.redoTasksStack = [];
-        state.changeSource = "local";
-      }
+      if (index === -1) return;
+      const time = new Date().toISOString();
+      state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
+      state.tasks[index] = {
+        ...state.tasks[index],
+        deleted: true,
+        updatedAt: time,
+      };
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     setTaskListToArchive: (
       state,
       {
         payload: tasksToArchive,
-      }: PayloadAction<{ tasks: Task[]; listName: string } | null>
+      }: PayloadAction<{ name: string; tasks: Task[] } | null>
     ) => {
       state.tasksToArchive = tasksToArchive;
     },
-    clearTaskList: (state) => {
+    clearTaskList: (
+      state,
+      { payload: stateForUndo }: PayloadAction<TaskListData>
+    ) => {
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        tasks: state.tasks,
-        taskListMetaData: state.taskListMetaData,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
+      state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
       state.tasks = [];
       state.editedTask = null;
-      state.taskListMetaData.id = nanoid(8);
-      state.taskListMetaData.date = time;
-      state.taskListMetaData.name = t("tasksPage.tasks.defaultListName");
-      state.time = undefined;
+      state.taskListMetaData = {
+        id: nanoid(8),
+        name: t("tasksPage.tasks.defaultListName"),
+        date: time,
+        updatedAt: time,
+      };
+      state.lastSyncedAt = undefined;
       state.listNameToEdit = null;
       state.isTasksSorting = false;
-      state.listStatus = {
-        isRemoteSaveable: false,
-        isIdenticalToRemote: false,
-      };
-      state.redoTasksStack = [];
+      state.tasksToArchive = null;
+      state.listStatus = {};
       state.changeSource = "local";
     },
     setAllDone: (
       state,
       { payload: stateForUndo }: PayloadAction<TaskListData>
     ) => {
+      if (state.tasks.length === 0 || state.tasks.every(({ done }) => done))
+        return;
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
+      state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
       for (const task of state.tasks) {
         task.done = true;
+        task.completedAt = time;
+        task.updatedAt = time;
       }
-      state.redoTasksStack = [];
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     setAllUndone: (
       state,
       { payload: stateForUndo }: PayloadAction<TaskListData>
     ) => {
+      if (state.tasks.length === 0 || state.tasks.every(({ done }) => !done))
+        return;
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
+      state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
       for (const task of state.tasks) {
         task.done = false;
+        task.completedAt = null;
+        task.updatedAt = time;
       }
-      state.redoTasksStack = [];
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     setTasks: (
@@ -244,19 +239,17 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        stateForUndo: TaskListData | null;
+        stateForUndo: TaskListData;
       }>
     ) => {
       const time = new Date().toISOString();
-      if (stateForUndo)
-        state.undoTasksStack.push({
-          ...stateForUndo,
-          changeTime: time,
-        });
-      state.time = { ...state.time, lastChangeTime: time };
-      state.taskListMetaData = taskListMetaData;
-      state.tasks = tasks;
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      state.tasks = tasks.map((task) => ({
+        ...task,
+        updatedAt: time,
+      }));
+      state.taskListMetaData = { ...taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     toggleShowSearch: (state) => {
@@ -267,9 +260,8 @@ const tasksSlice = createSlice({
         tasks: state.tasks,
         taskListMetaData: state.taskListMetaData,
       });
-
       const undoTasksStack = state.undoTasksStack.pop();
-      if (undoTasksStack === undefined) return;
+      if (!undoTasksStack) return;
       state.tasks = undoTasksStack.tasks;
       state.taskListMetaData = undoTasksStack.taskListMetaData;
       state.changeSource = "local";
@@ -278,10 +270,9 @@ const tasksSlice = createSlice({
       state.undoTasksStack.push({
         tasks: state.tasks,
         taskListMetaData: state.taskListMetaData,
-        changeTime: new Date().toISOString(),
       });
       const redoTasksStack = state.redoTasksStack.pop();
-      if (redoTasksStack === undefined) return;
+      if (!redoTasksStack) return;
       state.tasks = redoTasksStack.tasks;
       state.taskListMetaData = redoTasksStack.taskListMetaData;
       state.changeSource = "local";
@@ -296,23 +287,20 @@ const tasksSlice = createSlice({
         state.listNameToEdit = null;
       }
     },
-    setListMetadata: (
+    setListName: (
       state,
       {
-        payload: { taskListMetaData, stateForUndo },
-      }: PayloadAction<{
-        taskListMetaData: TaskListMetaData;
-        stateForUndo: TaskListData;
-      }>
+        payload: { name, stateForUndo },
+      }: PayloadAction<{ name: string; stateForUndo: TaskListData }>
     ) => {
       const time = new Date().toISOString();
-      state.undoTasksStack.push({
-        ...stateForUndo,
-        changeTime: time,
-      });
-      state.time = { ...state.time, lastChangeTime: time };
-      state.taskListMetaData = taskListMetaData;
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      state.taskListMetaData = {
+        ...state.taskListMetaData,
+        name,
+        updatedAt: time,
+      };
       state.changeSource = "local";
     },
     setListStatus: (
@@ -338,13 +326,14 @@ const tasksSlice = createSlice({
 
       state.tasks = tasks.map((task, i) => {
         if (i === index - 1) {
-          return selectedTask;
+          return { ...selectedTask, updatedAt: time };
         }
         if (i === index) {
-          return prevTask;
+          return { ...prevTask, updatedAt: time };
         }
         return task;
       });
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     taskMoveDown: (state, { payload: index }) => {
@@ -354,27 +343,19 @@ const tasksSlice = createSlice({
 
       if (!selectedTask || !nextTask) return;
 
-      state.tasks = tasks.map((tasks, i) => {
+      state.tasks = tasks.map((task, i) => {
         if (i === index) {
-          return nextTask;
+          return { ...nextTask, updatedAt: time };
         }
         if (i === index + 1) {
-          return selectedTask;
+          return { ...selectedTask, updatedAt: time };
         }
-        return tasks;
+        return task;
       });
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
     switchTaskSort: (state) => {
-      if (!state.isTasksSorting) {
-        state.undoTasksStack.push({
-          tasks: state.tasks,
-          taskListMetaData: state.taskListMetaData,
-          changeTime: new Date().toISOString(),
-        });
-      } else {
-        state.redoTasksStack = [];
-      }
       state.isTasksSorting = !state.isTasksSorting;
     },
     clearStorage: () => {
@@ -384,23 +365,9 @@ const tasksSlice = createSlice({
     setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
       state.changeSource = payload;
     },
-    setSynchronizeTime: (
-      state,
-      {
-        payload: { synchronizedTime, tasks },
-      }: PayloadAction<{
-        synchronizedTime: string;
-        tasks: Task[];
-      }>
-    ) => {
-      state.time = { ...state.time, synchronizedTime };
-      state.tasks = tasks.map((task) => ({
-        ...task,
-        synchronized: true,
-      }));
-    },
-    setUndoLocked: (state, { payload }: PayloadAction<boolean>) => {
-      state.undoLocked = payload;
+    setLastSyncedAt: (state) => {
+      const time = new Date().toISOString();
+      state.lastSyncedAt = time;
     },
   },
 });
@@ -421,15 +388,14 @@ export const {
   undoTasks,
   redoTasks,
   setListNameToEdit,
-  setListMetadata,
+  setListName,
   setListStatus,
   taskMoveUp,
   taskMoveDown,
   switchTaskSort,
   clearStorage,
   setChangeSource,
-  setSynchronizeTime,
-  setUndoLocked,
+  setLastSyncedAt,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;
@@ -447,7 +413,8 @@ export const selectRedoTasksStack = (state: RootState) =>
   selectTasksState(state).redoTasksStack;
 export const selectTaskListMetaData = (state: RootState) =>
   selectTasksState(state).taskListMetaData;
-export const selectTime = (state: RootState) => selectTasksState(state).time;
+export const selectLastSyncedAt = (state: RootState) =>
+  selectTasksState(state).lastSyncedAt;
 export const selectListNameToEdit = (state: RootState) =>
   selectTasksState(state).listNameToEdit;
 export const selectAreTasksEmpty = (state: RootState) =>
@@ -473,7 +440,5 @@ export const selectTasksByQuery = (state: RootState, query: string | null) => {
 };
 export const selectChangeSource = (state: RootState) =>
   selectTasksState(state).changeSource;
-export const selectUndoLocked = (state: RootState) =>
-  selectTasksState(state).undoLocked;
 
 export default tasksSlice.reducer;

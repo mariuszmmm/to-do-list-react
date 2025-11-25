@@ -3,7 +3,7 @@ import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
   saveListMetadataInLocalStorage,
   saveSettingsInLocalStorage,
-  saveTimeInLocalStorage,
+  saveLastSyncedAtFromLocalStorage,
   saveTasksInLocalStorage,
 } from "../../utils/localStorage";
 import {
@@ -18,7 +18,7 @@ import {
   selectTasksToArchive,
   setAllDone,
   setAllUndone,
-  setListMetadata,
+  setListName,
   setTaskListToArchive,
   setTasks,
   taskMoveDown,
@@ -30,11 +30,7 @@ import {
   clearTaskList,
   setListStatus,
   selectListStatus,
-  selectUndoTasksStack,
-  setUndoLocked,
-  selectUndoLocked,
-  selectTime,
-  setSynchronizeTime,
+  selectLastSyncedAt,
 } from "./tasksSlice";
 import {
   selectListToLoad,
@@ -63,10 +59,10 @@ function* setListToLoadHandler(
 ) {
   let listToLoadData: {
     id: string;
-    date: string;
-    taskList: Task[];
     name: string;
+    date: string;
     version: Version;
+    taskList: Task[];
   } | null = null;
 
   if (action.type === setListToLoad.type) {
@@ -91,31 +87,19 @@ function* setListToLoadHandler(
     return;
   }
 
-//  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
- // const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
-
-
-
-
 
   yield put(
     setTasks({
       taskListMetaData: {
         id: listToLoadData.id,
-        date: new Date().toISOString(),
         name: listToLoadData.name,
+        date: listToLoadData.date,
       },
       tasks: listToLoadData.taskList,
-      stateForUndo: null,
-    })
-  );
-
-  // dodać tylko jeśli lista remote
-  yield put(
-    setSynchronizeTime({
-      synchronizedTime: new Date().toISOString(),
-      tasks: listToLoadData.taskList,
+      stateForUndo: { tasks, taskListMetaData },
     })
   );
 
@@ -140,38 +124,20 @@ function* saveTasksInLocalStorageHandler() {
   if (!!taskListMetaData)
     yield call(saveListMetadataInLocalStorage, taskListMetaData);
 
-  const time: ReturnType<typeof selectTime> = yield select(selectTime);
-  if (!!time) yield call(saveTimeInLocalStorage, time);
-}
-
-function* lockUndoHandler() {
-  const time: ReturnType<typeof selectTime> = yield select(selectTime);
-  const undoTasksStack: ReturnType<typeof selectUndoTasksStack> = yield select(
-    selectUndoTasksStack
+  const lastSyncedAt: ReturnType<typeof selectLastSyncedAt> = yield select(
+    selectLastSyncedAt
   );
-  const lockedUndo: ReturnType<typeof selectUndoLocked> = yield select(
-    selectUndoLocked
-  );
-
-  const lastUndo = undoTasksStack[undoTasksStack.length - 1]?.changeTime;
-  const synchronizedTime = time?.synchronizedTime;
-
-  if (!synchronizedTime || !lastUndo) {
-    if (lockedUndo) yield put(setUndoLocked(false));
-    return;
-  }
-
-  if (synchronizedTime >= lastUndo) {
-    if (!lockedUndo) yield put(setUndoLocked(true));
-  } else {
-    if (lockedUndo) yield put(setUndoLocked(false));
-  }
+  if (!!lastSyncedAt)
+    yield call(saveLastSyncedAtFromLocalStorage, lastSyncedAt);
 }
 
 function* archiveTasksHandler() {
   const tasksToArchive: ReturnType<typeof selectTasksToArchive> = yield select(
     selectTasksToArchive
   );
+  const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+    yield select(selectTaskListMetaData);
 
   if (!tasksToArchive) return;
 
@@ -183,29 +149,19 @@ function* archiveTasksHandler() {
     })
   );
 
-  const { cancelled } = yield race({
+  const { confirmed } = yield race({
     confirmed: take(confirm),
     cancelled: take(cancel),
   });
-
-  if (cancelled) {
-    yield put(setTaskListToArchive(null));
-    yield put(closeModal());
-    return;
+  if (confirmed) {
+    yield put(
+      addArchivedList({
+        name: tasksToArchive.name,
+        tasks: tasksToArchive.tasks,
+      })
+    );
   }
-
-  const id = nanoid(8);
-  const date = new Date().toISOString();
-  const list = {
-    id,
-    date,
-    name: tasksToArchive.listName,
-    version: 0,
-    taskList: tasksToArchive.tasks,
-  };
-
-  yield put(addArchivedList(list));
-  yield put(setTaskListToArchive(null));
+  yield put(clearTaskList({ tasks, taskListMetaData }));
   yield put(closeModal());
 }
 
@@ -227,33 +183,14 @@ export function* tasksSaga() {
       setTasks.type,
       undoTasks.type,
       redoTasks.type,
-      setListMetadata.type,
+      setListName.type,
       taskMoveUp.type,
       taskMoveDown.type,
     ],
     saveTasksInLocalStorageHandler
   );
 
-  yield takeEvery(
-    [
-      addTask.type,
-      saveEditedTask.type,
-      toggleTaskDone.type,
-      removeTask.type,
-      clearTaskList.type,
-      setAllDone.type,
-      setAllUndone.type,
-      setTasks.type,
-      undoTasks.type,
-      redoTasks.type,
-      setListMetadata.type,
-      taskMoveUp.type,
-      taskMoveDown.type,
-    ],
-    lockUndoHandler
-  );
-
-  yield takeEvery(clearTaskList.type, archiveTasksHandler);
+  yield takeEvery(setTaskListToArchive.type, archiveTasksHandler);
 
   yield takeEvery(
     [setListToLoad.type, setArchivedListToLoad.type],

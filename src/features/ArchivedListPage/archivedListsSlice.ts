@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { List } from "../../types";
+import { List, Task } from "../../types";
 import { RootState } from "../../store";
 import { getArchivedListFromLocalStorage } from "../../utils/localStorage";
+import { nanoid } from "nanoid";
 
 interface ArchivedListsState {
   archivedLists: List[];
@@ -27,7 +28,7 @@ const archivedListsSlice = createSlice({
   reducers: {
     selectArchivedList: (
       state,
-      { payload: listId }: PayloadAction<string | null>,
+      { payload: listId }: PayloadAction<string | null>
     ) => {
       if (state.selectedArchivedListId === listId || listId === null) {
         state.selectedArchivedListId = null;
@@ -38,26 +39,41 @@ const archivedListsSlice = createSlice({
     },
     setArchivedListToLoad: (
       state,
-      { payload: archivedTaskList }: PayloadAction<List | null>,
+      { payload: archivedTaskList }: PayloadAction<List | null>
     ) => {
       state.archivedListToLoad = archivedTaskList;
       if (archivedTaskList === null) state.selectedArchivedListId = null;
     },
     setArchivedListToRemove: (
       state,
-      { payload: listToRemove }: PayloadAction<List | null>,
+      { payload: listToRemove }: PayloadAction<List | null>
     ) => {
       state.archivedListToRemove = listToRemove;
     },
     removeArchivedList: (state, { payload: listId }: PayloadAction<string>) => {
       state.archivedLists = state.archivedLists.filter(
-        (list) => list.id !== listId,
+        (list) => list.id !== listId
       );
       if (state.selectedArchivedListId === listId)
         state.selectedArchivedListId = null;
     },
-    addArchivedList: (state, { payload: list }: PayloadAction<List>) => {
-      if (!list) return;
+    addArchivedList: (
+      state,
+      {
+        payload: { name, tasks },
+      }: PayloadAction<{ name: string; tasks: Task[] }>
+    ) => {
+      const time = new Date().toISOString();
+      const list = {
+        id: nanoid(8),
+        name,
+        date: time,
+        version: 0,
+        taskList: tasks.map((task) => ({
+          ...task,
+          id: nanoid(8),
+        })),
+      };
       state.archivedLists.push(list);
     },
   },

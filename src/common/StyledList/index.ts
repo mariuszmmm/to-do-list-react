@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 interface StyledListItemProps {
   $edit?: boolean;
   selected?: boolean;
-  $synchronized?: boolean;
   hidden?: boolean;
   $sort?: boolean;
   $type?: "lists" | "tasks" | "tasksView";
@@ -49,8 +48,8 @@ export const StyledListItem = styled.li<StyledListItemProps>`
       background-color: ${({ theme }) => theme.color.gallery};
     `}
 
-  ${({ $edit, $synchronized }) =>
-    ($edit || $synchronized) &&
+  ${({ $edit }) =>
+    $edit &&
     css`
       background-color: ${({ theme }) => theme.color.snowyMint};
     `}

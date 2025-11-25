@@ -42,18 +42,17 @@ export const TasksList = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const hideDone = useAppSelector(selectHideDone);
-  const editedTask = useAppSelector(selectEditedTask);
+  const editedTaskContent = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksByQuery = useAppSelector((state) =>
     selectTasksByQuery(state, query),
   );
   const dispatch = useAppDispatch();
-  const date = new Date().toISOString();
 
   useEffect(() => {
-    if (!editedTask) return;
+    if (!editedTaskContent) return;
     window.scrollTo(0, 0);
-  }, [editedTask]);
+  }, [editedTaskContent]);
 
   return (
     <StyledList>
@@ -61,7 +60,7 @@ export const TasksList = ({ listsData }: Props) => {
         <StyledListItem
           key={task.id}
           hidden={task.done && hideDone}
-          $edit={editedTask?.id === task.id}
+          $edit={editedTaskContent?.id === task.id}
           $type={"tasks"}
         >
           {isTasksSorting ? (
@@ -85,12 +84,11 @@ export const TasksList = ({ listsData }: Props) => {
                 dispatch(
                   toggleTaskDone({
                     taskId: task.id,
-                    doneDate: task.done ? null : date,
                     stateForUndo: { tasks, taskListMetaData },
                   }),
                 )
               }
-              disabled={editedTask !== null || (!listsData && !!task.synchronized)}
+              disabled={!!editedTaskContent}
             >
               {task.done ? "✔" : ""}
             </ToggleButton>
@@ -100,7 +98,7 @@ export const TasksList = ({ listsData }: Props) => {
             <StyledSpan $done={task.done}>
               <StyledLink
                 to={`/tasks/${task.id}`}
-                disabled={editedTask !== null}
+                disabled={!!editedTaskContent}
               >
                 {task.content}
               </StyledLink>
@@ -110,7 +108,7 @@ export const TasksList = ({ listsData }: Props) => {
             <>
               <EditButton
                 onClick={() => dispatch(setTaskToEdit(task.id))}
-                disabled={!!editedTask || (!listsData && !!task.synchronized)}
+                disabled={!!editedTaskContent}
               >
                 ✏️
               </EditButton>
@@ -123,7 +121,7 @@ export const TasksList = ({ listsData }: Props) => {
                     }),
                   )
                 }
-                disabled={editedTask !== null || (!listsData && !!task.synchronized)}
+                disabled={!!editedTaskContent}
               >
                 🗑️
               </RemoveButton>
