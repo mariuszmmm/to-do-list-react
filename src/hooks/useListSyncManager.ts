@@ -36,7 +36,8 @@ const areTasksAndMetaDataEqual = (
     return (
       remoteTask.id === localTask.id &&
       remoteTask.content === localTask.content &&
-      remoteTask.done === localTask.done
+      remoteTask.done === localTask.done &&
+      !localTask.deleted
     );
   });
 
@@ -57,13 +58,83 @@ export const useListSyncManager = ({
   const listStatus = useAppSelector(selectListStatus);
   const changeSource = useAppSelector(selectChangeSource);
   const dispatch = useAppDispatch();
-  const { isPending } = saveListMutation;
+  const deviceId = getOrCreateDeviceId();
+  const { isPending, isError } = saveListMutation;
+
+  /**
+   * Updates the list sync status (whether it can be saved remotely, whether it is identical).
+   */
+  useEffect(() => {
+    if (!listsData) {
+      if (listStatus.isRemoteSaveable || listStatus.isIdenticalToRemote)
+        console.log(
+          "1. B [setListStatus] No lists data - resetting list status."
+        );
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+      );
+
+      return;
+    }
+    // else if (listsData.conflict) return;
+
+    console.log("1. A [setListStatus] Checking and updating list status...");
+
+    const remoteList = listsData.lists.find(
+      (list) => list.id === taskListMetaData.id
+    );
+
+    if (!remoteList) {
+      if (!listStatus.isRemoteSaveable && !listStatus.isIdenticalToRemote)
+        return;
+
+      console.log(
+        "1. C [setListStatus] Remote list not found - resetting list status."
+      );
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+      );
+      return;
+    }
+
+    const isIdentical = areTasksAndMetaDataEqual(
+      remoteList,
+      taskListMetaData,
+      tasks
+    );
+
+    console.log("1. D [setListStatus] Updating list status:", {
+      isRemoteSaveable: true,
+      isIdenticalToRemote: isIdentical,
+    });
+
+    console.log("taskListMetaData.updatedAt", taskListMetaData.updatedAt);
+    console.log("tasks", tasks);
+    console.log("listsData.lists[0].taskList", listsData.lists[0].taskList);
+    console.log("listsData", listsData);
+
+    if (isError) {
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+      );
+    } else {
+      dispatch(
+        setListStatus({
+          isRemoteSaveable: true,
+          isIdenticalToRemote: isIdentical,
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listsData, taskListMetaData, tasks]);
 
   /**
    * Syncs remote changes to local state (if the remote list differs from the local one).
    */
   useEffect(() => {
     if (!listsData || !listStatus.isRemoteSaveable) return;
+    console.log("2. A [update local list] Checking for remote updates...");
 
     const remoteList = listsData.lists.find(
       (list) => list.id === taskListMetaData.id
@@ -76,19 +147,53 @@ export const useListSyncManager = ({
         tasks
       );
 
-      const newTasks = remoteList.taskList.filter(
-        (remoteTask) =>
-          !tasks.some((localTask) => localTask.id === remoteTask.id)
-      );
+      let newTasks: Task[] = [];
 
-      const updatedTasks = remoteList.taskList.map((remoteTask) => {
-        const localTask = tasks.find((local) => local.id === remoteTask.id);
-        return localTask && localTask.updatedAt > remoteTask.updatedAt
-          ? localTask
-          : remoteTask;
+      console.log("remoteList", remoteList);
+      console.log("TEST", {
+        updatedAt: listsData.updatedAt,
+        taskListMetaDataUpdatedAt: taskListMetaData.updatedAt,
       });
+      if (
+        listsData.conflict ||
+        (!!listsData.updatedAt &&
+          !!taskListMetaData.updatedAt &&
+          listsData.updatedAt < taskListMetaData.updatedAt) ||
+        !!listsData.deletedTasksIds
+      ) {
+        newTasks = [...remoteList.taskList];
+      } else {
+        const localOnlyTasks = !!listsData.deletedTasksIds
+          ? tasks.filter(
+              (localTask) =>
+                !remoteList.taskList.some(
+                  (taskList) => taskList.id === localTask.id
+                ) && listsData.deletedTasksIds?.includes(localTask.id) === false
+            )
+          : tasks.filter(
+              (localTask) =>
+                !remoteList.taskList.some(
+                  (taskList) => taskList.id === localTask.id
+                )
+            );
+
+        console.log("deviceId", deviceId);
+        console.log("listsData.deviceId", listsData.deviceId);
+        console.log("listsData.deletedTasksIds", listsData.deletedTasksIds);
+
+        const updatedTasks = remoteList.taskList.map((remoteTask) => {
+          const localTask = tasks.find((local) => local.id === remoteTask.id);
+          if (!localTask) return remoteTask;
+          return localTask.updatedAt > remoteTask.updatedAt
+            ? localTask
+            : remoteTask;
+        });
+
+        newTasks = [...updatedTasks, ...localOnlyTasks];
+      }
 
       if (!isIdentical) {
+        console.log("2. B [update local list] Updating local list", remoteList);
         dispatch(
           setTasks({
             taskListMetaData: {
@@ -96,68 +201,34 @@ export const useListSyncManager = ({
               name: remoteList.name,
               date: remoteList.date,
             },
-            tasks: [...updatedTasks, ...newTasks],
-            stateForUndo: { tasks, taskListMetaData },
+            tasks: newTasks,
+            ...(!listsData.deletedTasksIds
+              ? { stateForUndo: { tasks, taskListMetaData } }
+              : {}),
           })
         );
       }
-
+      console.log("2. C [update local list] setLastSyncedAt");
       dispatch(setLastSyncedAt());
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData]);
 
   /**
-   * Updates the list sync status (whether it can be saved remotely, whether it is identical).
-   */
-  useEffect(() => {
-    if (listsData?.conflict) return;
-    if (!listsData) {
-      if (listStatus.isRemoteSaveable || listStatus.isIdenticalToRemote)
-        dispatch(setListStatus({}));
-
-      return;
-    }
-
-    const remoteList = listsData.lists.find(
-      (list) => list.id === taskListMetaData.id
-    );
-
-    if (!remoteList) {
-      if (!listStatus.isRemoteSaveable && !listStatus.isIdenticalToRemote)
-        return;
-      dispatch(setListStatus({}));
-      return;
-    }
-
-    const isIdentical = areTasksAndMetaDataEqual(
-      remoteList,
-      taskListMetaData,
-      tasks
-    );
-
-    dispatch(
-      setListStatus({
-        isRemoteSaveable: true,
-        isIdenticalToRemote: isIdentical,
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listsData, taskListMetaData, tasks]);
-
-  /**
    * Triggers saving the list to the remote API if the local list differs from the remote one.
    */
-  const deviceId = getOrCreateDeviceId();
+
   useEffect(() => {
     if (
-      !taskListMetaData ||
       !listsData ||
-      !listStatus.isRemoteSaveable ||
-      (listStatus.isRemoteSaveable && listStatus.isIdenticalToRemote) ||
-      isPending
+      isPending ||
+      (!listStatus.isRemoteSaveable && !listStatus.manualSaveTriggered) ||
+      (listStatus.isRemoteSaveable && listStatus.isIdenticalToRemote)
     )
       return;
+
+    console.log("3. A [Save remote] Checking if remote save is needed...");
 
     const remoteList = listsData.lists.find(
       (list) => list.id === taskListMetaData.id
@@ -179,6 +250,10 @@ export const useListSyncManager = ({
       return;
     }
 
+    console.log("3. B [Save remote] Saving list to remote...", {
+      taskListMetaData,
+      tasks,
+    });
     saveListMutation.mutate({
       list: {
         id: taskListMetaData.id,
@@ -187,8 +262,12 @@ export const useListSyncManager = ({
         version,
         taskList: tasks,
         deviceId,
+        updatedAt: taskListMetaData.updatedAt,
       },
     });
+    listStatus.manualSaveTriggered &&
+      dispatch(setListStatus({ manualSaveTriggered: false }));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listStatus, taskListMetaData, tasks]);
 };

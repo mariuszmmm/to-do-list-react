@@ -24,6 +24,7 @@ import {
   selectListStatus,
   clearTaskList,
   setListStatus,
+  setChangeSource,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import {
@@ -69,7 +70,8 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       {!!listsData && (
         <Button
           onClick={() => {
-            dispatch(setListStatus({ ...listStatus, isRemoteSaveable: true }));
+            dispatch(setChangeSource("local"));
+            dispatch(setListStatus({ manualSaveTriggered: true }));
           }}
           disabled={
             !taskListMetaData.name || !!listNameToEdit || isPending

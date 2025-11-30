@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
   saveListMetadataInLocalStorage,
@@ -28,8 +27,6 @@ import {
   toggleTaskDone,
   undoTasks,
   clearTaskList,
-  setListStatus,
-  selectListStatus,
   selectLastSyncedAt,
 } from "./tasksSlice";
 import {
@@ -75,30 +72,43 @@ function* setListToLoadHandler(
   } else if (action.type === setArchivedListToLoad.type) {
     const archivedListToLoad = action.payload;
     if (!archivedListToLoad) return;
-    const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
-      yield select(selectListStatus);
-    if (isRemoteSaveable) yield put(setListStatus({}));
-
-    listToLoadData = {
-      ...archivedListToLoad,
-      id: nanoid(8),
-    };
-  } else {
-    return;
-  }
+    listToLoadData = { ...archivedListToLoad, id: "" };
+  } else return;
 
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
 
   yield put(
+    openModal({
+      title: { key: "modal.listLoad.title" },
+      message: { key: "modal.listLoad.message.confirm" },
+      type: "yes/no",
+    })
+  );
+
+  let listName = listToLoadData.name;
+  const tasksAfterConfirmation = [...listToLoadData.taskList] as Task[];
+
+  const { confirmed } = yield race({
+    confirmed: take(confirm),
+    cancelled: take(cancel),
+  });
+  if (confirmed) {
+    listName = taskListMetaData.name;
+    tasksAfterConfirmation.unshift(...tasks);
+  }
+
+  yield put(
     setTasks({
       taskListMetaData: {
-        id: listToLoadData.id,
-        name: listToLoadData.name,
+        ...(listToLoadData.id
+          ? { id: listToLoadData.id }
+          : { id: taskListMetaData.id }),
+        name: listName,
         date: listToLoadData.date,
       },
-      tasks: listToLoadData.taskList,
+      tasks: tasksAfterConfirmation,
       stateForUndo: { tasks, taskListMetaData },
     })
   );

@@ -1,4 +1,9 @@
-import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  nanoid,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import {
   getSettingsFromLocalStorage,
   getTasksFromLocalStorage,
@@ -26,13 +31,21 @@ interface TaskState {
   lastSyncedAt?: string;
   listNameToEdit?: string | null;
   isTasksSorting: boolean;
-  tasksToArchive: { name: string; tasks: Task[] } | null;
+  tasksToArchive?: { name: string; tasks: Task[] } | null;
   listStatus: {
-    isRemoteSaveable?: boolean;
-    isIdenticalToRemote?: boolean;
+    manualSaveTriggered: boolean;
+    isRemoteSaveable: boolean;
+    isIdenticalToRemote: boolean;
   };
   changeSource?: ChangeSource;
 }
+
+const getNewTaskListMetaData = () => ({
+  id: nanoid(8),
+  name: t("tasksPage.tasks.defaultListName") || "", // czasem za późno wczytuje tłumaczenia
+  date: time,
+  updatedAt: time,
+});
 
 const time = new Date().toISOString();
 const getInitialState = (): TaskState => ({
@@ -41,16 +54,15 @@ const getInitialState = (): TaskState => ({
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
   undoTasksStack: [],
   redoTasksStack: [],
-  taskListMetaData: getListMetadataFromLocalStorage() || {
-    id: nanoid(8),
-    name: t("tasksPage.tasks.defaultListName"),
-    date: time,
-    updatedAt: time,
-  },
+  taskListMetaData:
+    getListMetadataFromLocalStorage() || getNewTaskListMetaData(),
   lastSyncedAt: getLastSyncedAtFromLocalStorage(),
   isTasksSorting: false,
-  tasksToArchive: null,
-  listStatus: {},
+  listStatus: {
+    manualSaveTriggered: false,
+    isRemoteSaveable: false,
+    isIdenticalToRemote: false,
+  },
 });
 
 const tasksSlice = createSlice({
@@ -149,10 +161,11 @@ const tasksSlice = createSlice({
     removeTask: (
       state,
       {
-        payload: { taskId, stateForUndo },
+        payload: { taskId, stateForUndo, isRemoteSaveable },
       }: PayloadAction<{
         taskId: string;
         stateForUndo: TaskListData;
+        isRemoteSaveable?: boolean;
       }>
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
@@ -160,11 +173,13 @@ const tasksSlice = createSlice({
       const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
-      state.tasks[index] = {
-        ...state.tasks[index],
-        deleted: true,
-        updatedAt: time,
-      };
+      isRemoteSaveable
+        ? (state.tasks[index] = {
+            ...state.tasks[index],
+            deleted: true,
+            updatedAt: time,
+          })
+        : state.tasks.splice(index, 1);
       state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
     },
@@ -195,7 +210,11 @@ const tasksSlice = createSlice({
       state.listNameToEdit = null;
       state.isTasksSorting = false;
       state.tasksToArchive = null;
-      state.listStatus = {};
+      state.listStatus = {
+        manualSaveTriggered: false,
+        isRemoteSaveable: false,
+        isIdenticalToRemote: false,
+      };
       state.changeSource = "local";
     },
     setAllDone: (
@@ -239,12 +258,14 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        stateForUndo: TaskListData;
+        stateForUndo?: TaskListData;
       }>
     ) => {
       const time = new Date().toISOString();
-      state.undoTasksStack.push(stateForUndo);
-      state.redoTasksStack = [];
+      if (stateForUndo) {
+        state.undoTasksStack.push(stateForUndo);
+        state.redoTasksStack = [];
+      }
       state.tasks = tasks.map((task) => ({
         ...task,
         updatedAt: time,
@@ -291,11 +312,13 @@ const tasksSlice = createSlice({
       state,
       {
         payload: { name, stateForUndo },
-      }: PayloadAction<{ name: string; stateForUndo: TaskListData }>
+      }: PayloadAction<{ name: string; stateForUndo?: TaskListData }>
     ) => {
       const time = new Date().toISOString();
-      state.undoTasksStack.push(stateForUndo);
-      state.redoTasksStack = [];
+      if (!!stateForUndo) {
+        state.undoTasksStack.push(stateForUndo);
+        state.redoTasksStack = [];
+      }
       state.taskListMetaData = {
         ...state.taskListMetaData,
         name,
@@ -306,16 +329,22 @@ const tasksSlice = createSlice({
     setListStatus: (
       state,
       {
-        payload: { isRemoteSaveable, isIdenticalToRemote },
+        payload: { manualSaveTriggered, isRemoteSaveable, isIdenticalToRemote },
       }: PayloadAction<{
+        manualSaveTriggered?: boolean;
         isRemoteSaveable?: boolean;
         isIdenticalToRemote?: boolean;
       }>
     ) => {
-      state.listStatus = {
-        isRemoteSaveable: isRemoteSaveable || false,
-        isIdenticalToRemote: isIdenticalToRemote || false,
-      };
+      if (manualSaveTriggered !== undefined) {
+        state.listStatus.manualSaveTriggered = manualSaveTriggered;
+      }
+      if (isRemoteSaveable !== undefined) {
+        state.listStatus.isRemoteSaveable = isRemoteSaveable;
+      }
+      if (isIdenticalToRemote !== undefined) {
+        state.listStatus.isIdenticalToRemote = isIdenticalToRemote;
+      }
     },
     taskMoveUp: (state, { payload: index }) => {
       let tasks = [...state.tasks];
@@ -431,13 +460,16 @@ export const selectListStatus = (state: RootState) =>
   selectTasksState(state).listStatus;
 export const selectIsTasksSorting = (state: RootState) =>
   selectTasksState(state).isTasksSorting;
-export const selectTasksByQuery = (state: RootState, query: string | null) => {
-  const tasks = selectTasks(state);
-  if (!query || query === "") return tasks;
-  return tasks.filter(({ content }) =>
-    content.toUpperCase().includes(query.toUpperCase().trim())
-  );
-};
+export const selectActiveTasksByQuery = createSelector(
+  [selectTasks, (_: RootState, query: string | null) => query],
+  (tasks, query) => {
+    const filtered = tasks.filter((task) => !task.deleted);
+    if (!query) return filtered;
+    return filtered.filter((task) =>
+      task.content.toUpperCase().includes(query.toUpperCase().trim())
+    );
+  }
+);
 export const selectChangeSource = (state: RootState) =>
   selectTasksState(state).changeSource;
 

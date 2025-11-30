@@ -209,8 +209,9 @@ const langDe: typeof langPl = {
       nextButton: "Weiter",
       refreshButton: "Aktualisieren",
       replaceButton: "Ersetzen",
-      yes: "Ja",
-      no: "Nein",
+      addButton: "Hinzufügen",
+      yesButton: "Ja",
+      noButton: "Nein",
     },
     login: {
       title: "Anmeldung",
@@ -348,7 +349,8 @@ const langDe: typeof langPl = {
     listLoad: {
       title: "Liste laden",
       message: {
-        info: "Die Liste <strong>{{name}}</strong> wurde in die aktuelle Aufgabenliste geladen.",
+        confirm: "Möchtest du die Aufgaben zur aktuellen Liste hinzufügen?",
+        info: "Die Liste <strong>{{name}}</strong> wurde geladen.",
       },
     },
     confirmation: {

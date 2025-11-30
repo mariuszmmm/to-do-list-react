@@ -1,3 +1,4 @@
+import { updateDataApi } from "./../api/fetchDataApi";
 import { Version } from "./account";
 import { List } from "./list";
 import { Task } from "./task";
@@ -26,9 +27,14 @@ export type Data = {
   listId?: string;
   lists?: List[];
   deviceId?: string;
+  deletedTasksIds?: string[];
+  updatedAt?: string;
 };
 
 export type ListsData = {
   lists: List[];
   conflict?: boolean;
+  deviceId?: string;
+  deletedTasksIds?: string[];
+  updatedAt?: string;
 };

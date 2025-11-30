@@ -14,13 +14,14 @@ import {
   toggleTaskDone,
   setTaskToEdit,
   removeTask,
-  selectTasksByQuery,
   selectEditedTask,
   selectTasks,
   selectTaskListMetaData,
   taskMoveUp,
   taskMoveDown,
   selectIsTasksSorting,
+  selectActiveTasksByQuery,
+  selectListStatus,
 } from "../../tasksSlice";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
 import { useEffect } from "react";
@@ -31,22 +32,17 @@ import {
   StyledSpan,
   TaskNumber,
 } from "../../../../common/StyledList";
-import { ListsData } from "../../../../types";
 
-type Props = {
-  listsData?: ListsData;
-};
-
-export const TasksList = ({ listsData }: Props) => {
+export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const hideDone = useAppSelector(selectHideDone);
   const editedTaskContent = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
-  const tasksByQuery = useAppSelector((state) =>
-    selectTasksByQuery(state, query),
-  );
+  const filteredTasks = useAppSelector(state => selectActiveTasksByQuery(state, query));
+  const { isRemoteSaveable } = useAppSelector(selectListStatus)
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -56,7 +52,7 @@ export const TasksList = ({ listsData }: Props) => {
 
   return (
     <StyledList>
-      {tasksByQuery.map((task, index) => (
+      {filteredTasks.map((task, index) => (
         <StyledListItem
           key={task.id}
           hidden={task.done && hideDone}
@@ -73,7 +69,7 @@ export const TasksList = ({ listsData }: Props) => {
               </SortButton>
               <SortButton
                 onClick={() => dispatch(() => dispatch(taskMoveDown(index)))}
-                disabled={index === tasksByQuery.length - 1}
+                disabled={index === filteredTasks.length - 1}
               >
                 <ArrowDownIcon />
               </SortButton>
@@ -118,6 +114,7 @@ export const TasksList = ({ listsData }: Props) => {
                     removeTask({
                       taskId: task.id,
                       stateForUndo: { tasks, taskListMetaData },
+                      isRemoteSaveable
                     }),
                   )
                 }

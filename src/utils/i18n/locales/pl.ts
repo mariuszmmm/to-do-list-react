@@ -207,8 +207,9 @@ const langPl = {
       nextButton: "Dalej",
       refreshButton: "Odśwież",
       replaceButton: "Zastąp",
-      yes: "Tak",
-      no: "Nie",
+      addButton: "Dodaj",
+      yesButton: "Tak",
+      noButton: "Nie",
     },
     login: {
       title: "Logowanie",
@@ -345,7 +346,8 @@ const langPl = {
     listLoad: {
       title: "Ładowanie listy",
       message: {
-        info: "Lista <strong>{{name}}</strong> została załadowana do bieżacej listy zadań.",
+        confirm: "Czy checesz dodać zadania do bieżącej listy?",
+        info: "Lista <strong>{{name}}</strong> została załadowana.",
       },
     },
     confirmation: {

@@ -62,6 +62,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
       updateListsMutation.mutate({ listsToSort, deviceId });
       dispatch(setListToSort(null));
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isListsSorting]);
 
@@ -96,6 +97,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
         }),
       );
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listToRemove, confirmed]);
 

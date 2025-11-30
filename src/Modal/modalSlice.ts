@@ -39,7 +39,7 @@ export const modalSlice = createSlice({
       state,
       {
         payload: { title, message, confirmButton, endButton, type },
-      }: PayloadAction<ModalPayload>,
+      }: PayloadAction<ModalPayload>
     ) => {
       state.isOpen = true;
       if (title) state.title = title;

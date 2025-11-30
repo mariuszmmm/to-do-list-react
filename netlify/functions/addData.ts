@@ -68,6 +68,7 @@ const handler: Handler = async (event, context) => {
       (list) => list.id === data.list?.id
     );
 
+    let deletedTasksIds: string[] = [];
     if (listIndex !== -1) {
       // Update existing list
       console.log("Updating existing list:", listIndex);
@@ -90,9 +91,15 @@ const handler: Handler = async (event, context) => {
         };
       }
 
+      deletedTasksIds = incomingList.taskList
+        .filter((task) => task.deleted)
+        .map((task) => task.id);
+
       // Update list fields
       existingList.name = incomingList.name;
-      existingList.taskList = incomingList.taskList;
+      existingList.taskList = incomingList.taskList.filter(
+        (task) => !deletedTasksIds.includes(task.id)
+      );
       existingList.date = incomingList.date;
       existingList.version = (existingList.version || 0) + 1;
     } else {
@@ -121,6 +128,8 @@ const handler: Handler = async (event, context) => {
       await publishAblyUpdate(email, {
         lists: savedUser.lists,
         deviceId: data.list.deviceId,
+        ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
+        updatedAt: data.list.updatedAt,
       });
     } catch (ablyError) {
       console.error("Ably publish error:", ablyError);
@@ -133,6 +142,9 @@ const handler: Handler = async (event, context) => {
         message: "Data updated successfully",
         data: {
           lists: savedUser.lists,
+          deviceId: data.list.deviceId,
+          ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
+          updatedAt: data.list.updatedAt,
         },
       }),
     };

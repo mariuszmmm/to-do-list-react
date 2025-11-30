@@ -76,10 +76,10 @@ export const Modal = () => {
             {type === "yes/no" && (
               <>
                 <ModalYesButton onClick={() => dispatch(confirm())}>
-                  <Trans i18nKey="modal.buttons.yes" />
+                  <Trans i18nKey="modal.buttons.yesButton" />
                 </ModalYesButton>
                 <ModalNoButton onClick={() => dispatch(cancel())}>
-                  <Trans i18nKey="modal.buttons.no" />
+                  <Trans i18nKey="modal.buttons.noButton" />
                 </ModalNoButton>
               </>
             )}

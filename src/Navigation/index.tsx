@@ -34,7 +34,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
       dispatch(setLoggedUserEmail(user ? user.email : null));
     }
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -44,7 +44,8 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
 
     if (!authRoutes) window.addEventListener("storage", handleStorageEvent);
     return () => window.removeEventListener("storage", handleStorageEvent);
-    // eslint-disable-next-line
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

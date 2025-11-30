@@ -34,26 +34,26 @@ const remoteListsSlice = createSlice({
     },
     setListToAdd: (
       state,
-      { payload: listToAdd }: PayloadAction<List | null>,
+      { payload: listToAdd }: PayloadAction<List | null>
     ) => {
       state.listToAdd = listToAdd;
     },
     setListToLoad: (
       state,
-      { payload: taskList }: PayloadAction<List | null>,
+      { payload: taskList }: PayloadAction<List | null>
     ) => {
       state.listToLoad = taskList;
       if (taskList === null) state.selectedListId = null;
     },
     setListToRemove: (
       state,
-      { payload: listToRemove }: PayloadAction<List | null>,
+      { payload: listToRemove }: PayloadAction<List | null>
     ) => {
       state.listToRemove = listToRemove;
     },
     setListToSort: (
       state,
-      { payload: sortedList }: PayloadAction<List[] | null>,
+      { payload: sortedList }: PayloadAction<List[] | null>
     ) => {
       state.listsToSort = sortedList;
     },

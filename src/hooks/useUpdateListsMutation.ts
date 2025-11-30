@@ -34,7 +34,6 @@ export const useUpdateListsMutation = () => {
       );
     },
     onSuccess: async (response) => {
-      // await queryClient.invalidateQueries({ queryKey: ["lists"] });
       queryClient.setQueryData(["lists"], response.data);
       if (response.data.conflict) {
         dispatch(

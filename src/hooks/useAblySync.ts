@@ -30,9 +30,8 @@ export const useAblySync = ({ userEmail, enabled }: UseAblySyncParams) => {
       const ablyDeviceId = message.data?.deviceId;
       if (ablyDeviceId && ablyDeviceId === deviceId) return;
       if (message.data && message.data.lists) {
-        const newData = { lists: message.data.lists };
         dispatch(setChangeSource("remote"));
-        queryClient.setQueryData(["lists"], newData);
+        queryClient.setQueryData(["lists"], message.data);
       }
     };
 
@@ -43,7 +42,7 @@ export const useAblySync = ({ userEmail, enabled }: UseAblySyncParams) => {
       channelRef.current = null;
     };
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, userEmail, queryClient]);
 
   return { channel: channelRef.current };

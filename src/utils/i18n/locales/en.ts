@@ -209,8 +209,9 @@ const langEn: typeof langPl = {
       nextButton: "Next",
       refreshButton: "Refresh",
       replaceButton: "Replace",
-      yes: "Yes",
-      no: "No",
+      addButton: "Add",
+      yesButton: "Yes",
+      noButton: "No",
     },
     login: {
       title: "Login",
@@ -345,7 +346,8 @@ const langEn: typeof langPl = {
     listLoad: {
       title: "Loading list",
       message: {
-        info: "The list <strong>{{name}}</strong> has been loaded from the database.",
+        confirm: "Do you want to add tasks to the current list?",
+        info: "The list <strong>{{name}}</strong> has been loaded.",
       },
     },
     confirmation: {

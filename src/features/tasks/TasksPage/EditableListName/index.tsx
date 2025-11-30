@@ -1,4 +1,4 @@
-import { FormEventHandler, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
@@ -30,12 +30,17 @@ export const EditableListName = ({ listsData }: Props) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-  const [newName, setNewName] = useState(
-    name || t("tasks.defaultListName"),
-  );
+  const [newName, setNewName] = useState(name || t("tasks.defaultListName"));
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const inpurRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!!name) return;
+    dispatch(setListName({ name: t("tasks.defaultListName") }));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -54,10 +59,9 @@ export const EditableListName = ({ listsData }: Props) => {
         setNewName(trimedContent);
       } else {
         dispatch(
-          setListNameToEdit(name || t("tasks.defaultListName"),
-          ),
+          setListNameToEdit(name),
         );
-        setNewName(name || t("tasks.defaultListName"));
+        setNewName(name);
       }
     } else {
       inpurRef.current!.focus();
@@ -72,7 +76,7 @@ export const EditableListName = ({ listsData }: Props) => {
             {`${t("tasks.listFrom")}:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
           </StyledSpan>
           <ListName>
-            {name || t("tasks.defaultListName")}
+            {name}
           </ListName>
         </>
       ) : (

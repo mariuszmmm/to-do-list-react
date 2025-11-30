@@ -8,4 +8,5 @@ export type List = {
   version: Version;
   taskList: Task[];
   deviceId?: string;
+  updatedAt?: string;
 };

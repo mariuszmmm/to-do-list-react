@@ -47,6 +47,7 @@ export const TaskLists = ({
         <StyledListItem
           key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
+          $edit={list.id === localListId}
           onClick={() => dispatch(selectList(isListsSorting ? null : list.id))}
           $type={"tasks"}
         >

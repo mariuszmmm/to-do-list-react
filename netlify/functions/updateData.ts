@@ -155,6 +155,7 @@ const handler: Handler = async (event, context) => {
         message: "Data updated successfully",
         data: {
           lists: savedUser.lists,
+          deviceId: data.deviceId,
         },
       }),
     };
