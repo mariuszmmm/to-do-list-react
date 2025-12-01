@@ -32,6 +32,7 @@ export const useAblySync = ({ userEmail, enabled }: UseAblySyncParams) => {
       if (message.data && message.data.lists) {
         dispatch(setChangeSource("remote"));
         queryClient.setQueryData(["lists"], message.data);
+        console.log("Ably message received and lists updated:", message.data);
       }
     };
 

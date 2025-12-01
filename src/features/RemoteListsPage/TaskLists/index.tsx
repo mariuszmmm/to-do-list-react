@@ -21,6 +21,7 @@ import {
 } from "../../../common/StyledList";
 import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import i18n from "../../../utils/i18n";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   lists: List[];
@@ -39,6 +40,7 @@ export const TaskLists = ({
   listsToSort,
   localListId
 }: Props) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   return (
@@ -78,9 +80,12 @@ export const TaskLists = ({
           <StyledListContent $type={"tasks"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
-            <StyledSpan
-              $comment
-            >{`(${formatCurrentDate(new Date(list.date), i18n.language)})`}</StyledSpan>
+            <StyledSpan $comment>
+              {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
+              <strong> •</strong>{` (`}&nbsp;
+              {t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}
+              &nbsp;{`)`}
+            </StyledSpan>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
             <RemoveButton

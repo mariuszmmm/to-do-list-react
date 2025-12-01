@@ -4,7 +4,14 @@ const langPl = {
     lists: "Listy",
     info: "Informacje",
   },
+  listFrom: "Lista z dnia",
   currentDate: { desc: "Dziś jest " },
+  currentTaskCount: {
+    tasks: "{{count}}\u00A0zadanie",
+    tasks_few: "{{count}}\u00A0zadania",
+    tasks_many: "{{count}}\u00A0zadań",
+    tasks_other: "{{count}}\u00A0zadań",
+  },
   tasksPage: {
     title: "Lista zadań",
     form: {
@@ -35,7 +42,6 @@ const langPl = {
       inputPlaceholder: "Filtruj zadania",
     },
     tasks: {
-      listFrom: "Lista z dnia",
       defaultListName: "Nowa lista",
       inputPlaceholder: "Wpisz nazwę listy",
       buttons: {

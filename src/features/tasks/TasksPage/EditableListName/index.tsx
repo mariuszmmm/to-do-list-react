@@ -13,19 +13,13 @@ import {
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
-import i18n from "../../../../utils/i18n";
 import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
-import { ListsData } from "../../../../types";
 
-type Props = {
-  listsData?: ListsData;
-};
-
-export const EditableListName = ({ listsData }: Props) => {
+export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const name = taskListMetaData.name;
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
   const [newName, setNewName] = useState(name || t("tasks.defaultListName"));
@@ -71,7 +65,10 @@ export const EditableListName = ({ listsData }: Props) => {
       {!listNameToEdit ? (
         <>
           <StyledSpan $comment>
-            {`${t("tasks.listFrom")}:  ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
+            {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
+            <strong> •</strong>{` (`}&nbsp;
+            {i18n.t('currentTaskCount.tasks', { count: tasks.length ?? 0 })}
+            &nbsp;{`)`}
           </StyledSpan>
           <ListName>
             {name}
@@ -87,8 +84,7 @@ export const EditableListName = ({ listsData }: Props) => {
           ref={inpurRef}
         />
       )}
-      <Button $special
-        disabled={!listsData}>
+      <Button $special>
         {!listNameToEdit
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}

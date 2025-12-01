@@ -50,15 +50,43 @@ const handler: Handler = async (event, context) => {
     console.log("User found:", email, "Lists count:", foundUser.lists.length);
 
     // Parse request data
-    const data: Data = JSON.parse(event.body);
+    let data: Data;
+    try {
+      data = JSON.parse(event.body);
+    } catch (parseError) {
+      const err = parseError as Error;
+      console.error("JSON parse error:", err);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: "Invalid JSON in request body",
+          error: err.message,
+        }),
+      };
+    }
     console.log("Request data:", data);
 
     // Validate list in request
-    if (!data.list) {
-      console.log("No list provided in request body");
+    if (!data.list || typeof data.list !== "object") {
+      console.log("No valid list provided in request body");
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: "No list provided" }),
+        body: JSON.stringify({
+          message: "No list provided or invalid list structure",
+        }),
+      };
+    }
+    if (
+      !data.list.id ||
+      !data.list.taskList ||
+      !Array.isArray(data.list.taskList)
+    ) {
+      console.log("List missing required fields");
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: "List missing required fields (id, taskList)",
+        }),
       };
     }
     console.log("List ID:", data.list.id);
@@ -114,7 +142,35 @@ const handler: Handler = async (event, context) => {
     }
 
     // Save user data
-    const savedUser = await foundUser.save();
+    let savedUser;
+    try {
+      savedUser = await foundUser.save();
+    } catch (dbError) {
+      const err = dbError as Error;
+      console.error("Database save error:", err);
+      if ((err as any).name === "VersionError") {
+        return {
+          statusCode: 409,
+          body: JSON.stringify({
+            message: "Conflict detected: Version mismatch during save.",
+            error: err.message,
+            stack: err.stack,
+            data: {
+              email: foundUser.email,
+              lists: foundUser.lists,
+              conflict: true,
+            },
+          }),
+        };
+      }
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          message: "Database error during save",
+          error: err.message,
+        }),
+      };
+    }
     if (!savedUser) {
       console.error("Save operation failed for user:", email);
       return {
@@ -149,10 +205,26 @@ const handler: Handler = async (event, context) => {
     };
   } catch (error) {
     // Error response
-    console.error("Error processing request:", error);
+    const err = error as Error;
+    console.error("Error processing request:", err);
+    // Obsługa VersionError z Mongoose
+    if ((err as any).name === "VersionError") {
+      return {
+        statusCode: 409,
+        body: JSON.stringify({
+          message: "Conflict detected: Version mismatch during save.",
+          error: err.message,
+          stack: err.stack,
+        }),
+      };
+    }
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Internal Server Error" }),
+      body: JSON.stringify({
+        message: "Internal Server Error",
+        error: err.message,
+        stack: err.stack,
+      }),
     };
   }
 };

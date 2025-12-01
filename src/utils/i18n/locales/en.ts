@@ -6,7 +6,14 @@ const langEn: typeof langPl = {
     lists: "Lists",
     info: "Info",
   },
+  listFrom: "List from",
   currentDate: { desc: "Today is " },
+  currentTaskCount: {
+    tasks: "{{count}}\u00A0task",
+    tasks_few: "{{count}}\u00A0tasks",
+    tasks_many: "{{count}}\u00A0tasks",
+    tasks_other: "{{count}}\u00A0tasks",
+  },
   tasksPage: {
     title: "Task List",
     form: {
@@ -37,7 +44,6 @@ const langEn: typeof langPl = {
       inputPlaceholder: "Filter tasks",
     },
     tasks: {
-      listFrom: "List from",
       defaultListName: "New list",
       inputPlaceholder: "Enter list name",
       buttons: {

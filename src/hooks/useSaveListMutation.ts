@@ -39,15 +39,19 @@ export const useSaveListMutation = () => {
     // },
     onSuccess: async (response: { data: ListsData }) => {
       queryClient.setQueryData(["lists"], response.data);
-      if (response.data.conflict) {
-        dispatch(
-          openModal({
-            title: { key: "modal.listSave.title" },
-            message: { key: "modal.listSave.message.error.conflict" },
-            type: "error",
-          })
-        );
-      }
+      // if (response.data.conflict) {
+      //   dispatch(
+      //     openModal({
+      //       title: { key: "modal.listSave.title" },
+      //       message: { key: "modal.listSave.message.error.conflict" },
+      //       type: "error",
+      //     })
+      //   );
+      // }
+
+      // if (response.data.conflict) {
+      //   console.warn("List save conflict detected", response.data);
+      // }
     },
     onError: () => {
       dispatch(
