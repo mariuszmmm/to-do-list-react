@@ -97,8 +97,7 @@ export const useListSyncManager = ({
       taskListMetaData,
       tasks
     );
-
-    if (isError) {
+    if (isError && listStatus.isRemoteSaveable) {
       dispatch(
         setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
       );
@@ -135,8 +134,6 @@ export const useListSyncManager = ({
     );
 
     if (isIdentical) return;
-
-    console.log("TEST", { remoteList, taskListMetaData, tasks });
 
     let newTasks: Task[] = [];
     let newMeta: TaskListMetaData;
