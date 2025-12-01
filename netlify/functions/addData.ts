@@ -96,11 +96,12 @@ const handler: Handler = async (event, context) => {
         .map((task) => task.id);
 
       // Update list fields
+      existingList.date = incomingList.date;
       existingList.name = incomingList.name;
+      existingList.updatedAt = incomingList.updatedAt;
       existingList.taskList = incomingList.taskList.filter(
         (task) => !deletedTasksIds.includes(task.id)
       );
-      existingList.date = incomingList.date;
       existingList.version = (existingList.version || 0) + 1;
     } else {
       // Add new list
@@ -127,9 +128,8 @@ const handler: Handler = async (event, context) => {
     try {
       await publishAblyUpdate(email, {
         lists: savedUser.lists,
-        deviceId: data.list.deviceId,
+        deviceId: data.deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
-        updatedAt: data.list.updatedAt,
       });
     } catch (ablyError) {
       console.error("Ably publish error:", ablyError);
@@ -142,9 +142,8 @@ const handler: Handler = async (event, context) => {
         message: "Data updated successfully",
         data: {
           lists: savedUser.lists,
-          deviceId: data.list.deviceId,
+          deviceId: data.deviceId,
           ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
-          updatedAt: data.list.updatedAt,
         },
       }),
     };

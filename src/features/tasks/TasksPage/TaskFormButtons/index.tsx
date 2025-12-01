@@ -15,11 +15,11 @@ import {
   selectAreTasksEmpty,
   selectTaskListMetaData,
   selectTasks,
-  setLastSyncedAt,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
-import { TaskListData } from "../../../../types";
+import { Task } from "../../../../types";
+import { nanoid } from "nanoid";
 
 export const TaskFormButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
@@ -36,7 +36,7 @@ export const TaskFormButtons = () => {
     ? lang
     : defaultLanguage;
 
-  const { isError, isFetching, refetch } = useQuery<TaskListData>({
+  const { isError, isFetching, refetch } = useQuery<{ name: string, tasks: Task[] }>({
     queryKey: ["exampleTasks", langForExample],
     queryFn: () => getExampleTasks(langForExample),
     enabled: false,
@@ -44,14 +44,16 @@ export const TaskFormButtons = () => {
 
   const setExampleTasks = async () => {
     const { data, isSuccess } = await refetch();
+    const time = new Date().toISOString();
 
     if (data && isSuccess) {
       dispatch(
         setTasks({
           taskListMetaData: {
-            id: data.taskListMetaData.id,
-            name: data.taskListMetaData.name,
-            date: data.taskListMetaData.date,
+            id: nanoid(8),
+            name: data.name,
+            date: time,
+            updatedAt: time,
           },
           tasks: data.tasks,
           stateForUndo: {
@@ -61,8 +63,6 @@ export const TaskFormButtons = () => {
         }),
       );
     }
-
-    dispatch(setLastSyncedAt());
   };
 
   return (

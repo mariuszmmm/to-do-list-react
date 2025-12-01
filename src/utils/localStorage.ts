@@ -4,7 +4,6 @@ const settingsKey = "settings" as const;
 const listMetadataKey = "taskListMetaData" as const;
 const tasksKey = "tasks" as const;
 const archivedListsKey = "archivedLists" as const;
-const timeKey = "time" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
@@ -33,17 +32,6 @@ export const getListMetadataFromLocalStorage = ():
   if (!parsed.id || !parsed.date || !parsed.name || !parsed.updatedAt) {
     return;
   }
-
-  return parsed;
-};
-
-export const saveLastSyncedAtFromLocalStorage = (time: string) =>
-  localStorage.setItem(timeKey, JSON.stringify(time));
-
-export const getLastSyncedAtFromLocalStorage = (): string | undefined => {
-  const data = localStorage.getItem(timeKey);
-  if (!data) return;
-  const parsed = JSON.parse(data) as string;
 
   return parsed;
 };

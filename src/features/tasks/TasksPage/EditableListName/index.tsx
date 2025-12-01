@@ -10,7 +10,6 @@ import {
   setListNameToEdit,
   setListName,
   selectTasks,
-  selectLastSyncedAt,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
@@ -26,7 +25,6 @@ export const EditableListName = ({ listsData }: Props) => {
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const name = taskListMetaData.name;
-  const lastSyncedAt = useAppSelector(selectLastSyncedAt);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
@@ -90,7 +88,7 @@ export const EditableListName = ({ listsData }: Props) => {
         />
       )}
       <Button $special
-        disabled={!listsData && !!lastSyncedAt}>
+        disabled={!listsData}>
         {!listNameToEdit
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}

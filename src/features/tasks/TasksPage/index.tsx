@@ -16,7 +16,7 @@ import { UseMutationResult } from "@tanstack/react-query";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<any, Error, { list: List }, unknown>;
+  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List, deviceId: string }, unknown>;
 };
 
 const TasksPage = ({ listsData, saveListMutation }: Props) => {

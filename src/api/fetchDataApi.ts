@@ -17,11 +17,15 @@ export const getDataApi = async (token: string) => {
     });
 };
 
-export const addDataApi = async (token: string, list: List) => {
+export const addDataApi = async (
+  token: string,
+  list: List,
+  deviceId: string
+) => {
   return fetch("/addData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ list }),
+    body: JSON.stringify({ list, deviceId }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -41,7 +45,7 @@ export const removeDataApi = async (
   token: string,
   version: Version,
   listId: string,
-  deviceId?: string
+  deviceId: string
 ) => {
   return fetch("/removeData", {
     method: "DELETE",
@@ -65,7 +69,7 @@ export const removeDataApi = async (
 export const updateDataApi = async (
   token: string,
   lists: List[],
-  deviceId?: string
+  deviceId: string
 ) => {
   return fetch("/updateData", {
     method: "PUT",

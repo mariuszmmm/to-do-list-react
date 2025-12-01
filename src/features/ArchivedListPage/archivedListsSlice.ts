@@ -68,6 +68,7 @@ const archivedListsSlice = createSlice({
         id: nanoid(8),
         name,
         date: time,
+        updatedAt: time,
         version: 0,
         taskList: tasks.map((task) => ({
           ...task,

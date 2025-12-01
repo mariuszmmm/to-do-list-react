@@ -1,5 +1,7 @@
 import { getOrCreateDeviceId } from "../utils/deviceId";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import debounce from "lodash.debounce";
+import { DebouncedFunc } from "lodash";
 import { useAppDispatch, useAppSelector } from ".";
 import { ListsData, List, Task, TaskListMetaData } from "../types";
 import {
@@ -10,14 +12,18 @@ import {
   setTasks,
   setChangeSource,
   selectChangeSource,
-  setLastSyncedAt,
 } from "../features/tasks/tasksSlice";
 import { UseMutationResult } from "@tanstack/react-query";
 
-/**
- * Compares remote list metadata and tasks with local ones.
- * Returns true if they are identical.
- */
+interface UseListSyncManagerParams {
+  listsData?: ListsData;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
+}
 const areTasksAndMetaDataEqual = (
   remoteList: List,
   localMeta: TaskListMetaData,
@@ -44,11 +50,6 @@ const areTasksAndMetaDataEqual = (
   return metaDataMatch && tasksMatch;
 };
 
-interface UseListSyncManagerParams {
-  listsData?: ListsData;
-  saveListMutation: UseMutationResult<any, Error, { list: List }, unknown>;
-}
-
 export const useListSyncManager = ({
   listsData,
   saveListMutation,
@@ -60,25 +61,21 @@ export const useListSyncManager = ({
   const dispatch = useAppDispatch();
   const deviceId = getOrCreateDeviceId();
   const { isPending, isError } = saveListMutation;
+  const pendingTasksRef = useRef<Task[]>(tasks);
+  const pendingMetaRef = useRef<TaskListMetaData>(taskListMetaData);
+  const pendingLocalChangesRef = useRef<boolean>(false);
+  const debouncedMutateRef = useRef<DebouncedFunc<
+    (payload: { list: List; deviceId: string }) => void
+  > | null>(null);
 
-  /**
-   * Updates the list sync status (whether it can be saved remotely, whether it is identical).
-   */
+  // Mark that there are local changes whenever tasks or metadata change
   useEffect(() => {
     if (!listsData) {
-      if (listStatus.isRemoteSaveable || listStatus.isIdenticalToRemote)
-        console.log(
-          "1. B [setListStatus] No lists data - resetting list status."
-        );
       dispatch(
         setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
       );
-
       return;
     }
-    // else if (listsData.conflict) return;
-
-    console.log("1. A [setListStatus] Checking and updating list status...");
 
     const remoteList = listsData.lists.find(
       (list) => list.id === taskListMetaData.id
@@ -88,12 +85,10 @@ export const useListSyncManager = ({
       if (!listStatus.isRemoteSaveable && !listStatus.isIdenticalToRemote)
         return;
 
-      console.log(
-        "1. C [setListStatus] Remote list not found - resetting list status."
-      );
       dispatch(
         setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
       );
+
       return;
     }
 
@@ -102,16 +97,6 @@ export const useListSyncManager = ({
       taskListMetaData,
       tasks
     );
-
-    console.log("1. D [setListStatus] Updating list status:", {
-      isRemoteSaveable: true,
-      isIdenticalToRemote: isIdentical,
-    });
-
-    console.log("taskListMetaData.updatedAt", taskListMetaData.updatedAt);
-    console.log("tasks", tasks);
-    console.log("listsData.lists[0].taskList", listsData.lists[0].taskList);
-    console.log("listsData", listsData);
 
     if (isError) {
       dispatch(
@@ -129,96 +114,110 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData, taskListMetaData, tasks]);
 
-  /**
-   * Syncs remote changes to local state (if the remote list differs from the local one).
-   */
+  // Update local list if remote data changes
   useEffect(() => {
-    if (!listsData || !listStatus.isRemoteSaveable) return;
-    console.log("2. A [update local list] Checking for remote updates...");
+    if (
+      !listsData ||
+      !listStatus.isRemoteSaveable ||
+      pendingLocalChangesRef.current
+    )
+      return;
 
     const remoteList = listsData.lists.find(
       (list) => list.id === taskListMetaData.id
     );
+    if (!remoteList) return;
 
-    if (!!remoteList) {
-      const isIdentical = areTasksAndMetaDataEqual(
-        remoteList,
-        taskListMetaData,
-        tasks
-      );
+    const isIdentical = areTasksAndMetaDataEqual(
+      remoteList,
+      taskListMetaData,
+      tasks
+    );
 
-      let newTasks: Task[] = [];
+    if (isIdentical) return;
 
-      console.log("remoteList", remoteList);
-      console.log("TEST", {
-        updatedAt: listsData.updatedAt,
-        taskListMetaDataUpdatedAt: taskListMetaData.updatedAt,
-      });
-      if (
-        listsData.conflict ||
-        (!!listsData.updatedAt &&
-          !!taskListMetaData.updatedAt &&
-          listsData.updatedAt < taskListMetaData.updatedAt) ||
-        !!listsData.deletedTasksIds
-      ) {
-        newTasks = [...remoteList.taskList];
-      } else {
-        const localOnlyTasks = !!listsData.deletedTasksIds
-          ? tasks.filter(
-              (localTask) =>
-                !remoteList.taskList.some(
-                  (taskList) => taskList.id === localTask.id
-                ) && listsData.deletedTasksIds?.includes(localTask.id) === false
-            )
-          : tasks.filter(
-              (localTask) =>
-                !remoteList.taskList.some(
-                  (taskList) => taskList.id === localTask.id
-                )
+    console.log("TEST", { remoteList, taskListMetaData, tasks });
+
+    let newTasks: Task[] = [];
+    let newMeta: TaskListMetaData;
+
+    if (listsData.conflict) {
+      newMeta = {
+        id: remoteList.id,
+        name: remoteList.name,
+        date: remoteList.date,
+        updatedAt: remoteList.updatedAt,
+      };
+      newTasks = [...remoteList.taskList];
+    } else {
+      const localOnlyTasks = !!listsData.deletedTasksIds
+        ? tasks.filter((localTask) => {
+            const isDeleted =
+              listsData.deletedTasksIds?.includes(localTask.id) === true;
+            const isNotInRemote = !remoteList.taskList.some(
+              (task) => task.id === localTask.id
             );
 
-        console.log("deviceId", deviceId);
-        console.log("listsData.deviceId", listsData.deviceId);
-        console.log("listsData.deletedTasksIds", listsData.deletedTasksIds);
-
-        const updatedTasks = remoteList.taskList.map((remoteTask) => {
-          const localTask = tasks.find((local) => local.id === remoteTask.id);
-          if (!localTask) return remoteTask;
-          return localTask.updatedAt > remoteTask.updatedAt
-            ? localTask
-            : remoteTask;
-        });
-
-        newTasks = [...updatedTasks, ...localOnlyTasks];
-      }
-
-      if (!isIdentical) {
-        console.log("2. B [update local list] Updating local list", remoteList);
-        dispatch(
-          setTasks({
-            taskListMetaData: {
-              id: remoteList.id,
-              name: remoteList.name,
-              date: remoteList.date,
-            },
-            tasks: newTasks,
-            ...(!listsData.deletedTasksIds
-              ? { stateForUndo: { tasks, taskListMetaData } }
-              : {}),
+            return (
+              (isNotInRemote && !isDeleted) ||
+              (isDeleted && localTask.updatedAt > remoteList.updatedAt)
+            );
           })
-        );
-      }
-      console.log("2. C [update local list] setLastSyncedAt");
-      dispatch(setLastSyncedAt());
+        : tasks.filter(
+            (localTask) =>
+              !remoteList.taskList.some(
+                (taskList) => taskList.id === localTask.id
+              )
+          );
+
+      const updatedTasks = remoteList.taskList.map((remoteTask) => {
+        const localTask = tasks.find((local) => local.id === remoteTask.id);
+        if (!localTask) return remoteTask;
+        return localTask.updatedAt > remoteTask.updatedAt
+          ? localTask
+          : remoteTask;
+      });
+
+      const sourceMeta =
+        taskListMetaData.updatedAt > remoteList.updatedAt
+          ? taskListMetaData
+          : remoteList;
+      newMeta = {
+        id: sourceMeta.id,
+        name: sourceMeta.name,
+        date: sourceMeta.date,
+        updatedAt: sourceMeta.updatedAt,
+      };
+      newTasks = [...updatedTasks, ...localOnlyTasks];
     }
+
+    dispatch(setTasks({ taskListMetaData: newMeta, tasks: newTasks }));
+    pendingTasksRef.current = newTasks;
+    pendingMetaRef.current = newMeta;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData]);
 
-  /**
-   * Triggers saving the list to the remote API if the local list differs from the remote one.
-   */
+  // Initialize debounced mutate function
+  useEffect(() => {
+    debouncedMutateRef.current = debounce(
+      (payload: { list: List; deviceId: string }) => {
+        saveListMutation.mutate(payload);
+      },
+      1000
+    );
+    return () => {
+      debouncedMutateRef.current && debouncedMutateRef.current.cancel();
+    };
+  }, [saveListMutation]);
 
+  // Keep refs updated with latest tasks and metadata
+  useEffect(() => {
+    pendingTasksRef.current = tasks;
+    pendingMetaRef.current = taskListMetaData;
+  }, [tasks, taskListMetaData]);
+
+  // Trigger save when there are local changes
   useEffect(() => {
     if (
       !listsData ||
@@ -228,8 +227,6 @@ export const useListSyncManager = ({
     )
       return;
 
-    console.log("3. A [Save remote] Checking if remote save is needed...");
-
     const remoteList = listsData.lists.find(
       (list) => list.id === taskListMetaData.id
     );
@@ -237,9 +234,7 @@ export const useListSyncManager = ({
       ? areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks)
       : false;
 
-    if (isIdentical) {
-      return;
-    }
+    if (isIdentical) return;
 
     const version =
       listsData.lists.find((list) => list.id === taskListMetaData.id)
@@ -250,24 +245,33 @@ export const useListSyncManager = ({
       return;
     }
 
-    console.log("3. B [Save remote] Saving list to remote...", {
-      taskListMetaData,
-      tasks,
-    });
-    saveListMutation.mutate({
+    const payload = {
       list: {
-        id: taskListMetaData.id,
-        date: taskListMetaData.date,
-        name: taskListMetaData.name,
+        id: pendingMetaRef.current.id,
+        date: pendingMetaRef.current.date,
+        updatedAt: pendingMetaRef.current.updatedAt,
+        name: pendingMetaRef.current.name,
+        taskList: pendingTasksRef.current,
         version,
-        taskList: tasks,
-        deviceId,
-        updatedAt: taskListMetaData.updatedAt,
       },
-    });
-    listStatus.manualSaveTriggered &&
+      deviceId,
+    };
+
+    if (listStatus.manualSaveTriggered) {
+      saveListMutation.mutate(payload);
+      pendingLocalChangesRef.current = false;
       dispatch(setListStatus({ manualSaveTriggered: false }));
+    } else if (debouncedMutateRef.current) {
+      debouncedMutateRef.current(payload);
+      pendingLocalChangesRef.current = false;
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listStatus, taskListMetaData, tasks]);
+  }, [
+    listStatus,
+    taskListMetaData,
+    tasks,
+    pendingTasksRef.current,
+    pendingMetaRef.current,
+  ]);
 };

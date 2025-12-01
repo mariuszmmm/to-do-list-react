@@ -11,7 +11,6 @@ export const publishAblyUpdate = async (email: string, data: any) => {
     const channel = ably.channels.get(`user:${email}:lists`);
 
     await channel.publish("lists-updated", data);
-    console.log("Ably notification sent");
   } catch (error) {
     console.error("Failed to send Ably notification:", error);
   }

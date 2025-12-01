@@ -15,7 +15,7 @@ export const useUpdateListsMutation = () => {
       deviceId,
     }: {
       listsToSort: List[];
-      deviceId?: string;
+      deviceId: string;
     }) => {
       const token = await getUserToken();
       if (!token) {

@@ -17,7 +17,7 @@ export const useRemoveListMutation = () => {
     }: {
       version: Version;
       listId: string;
-      deviceId?: string;
+      deviceId: string;
     }) => {
       const token = await getUserToken();
       if (!token) {

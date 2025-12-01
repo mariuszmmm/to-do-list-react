@@ -10,14 +10,20 @@ export const useSaveListMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ list }: { list: List }) => {
+    mutationFn: async ({
+      list,
+      deviceId,
+    }: {
+      list: List;
+      deviceId: string;
+    }) => {
       const token = await getUserToken();
       if (!token) {
         console.error("No token found");
         throw new Error("User token is null");
       }
 
-      return addDataApi(token, list);
+      return addDataApi(token, list, deviceId);
     },
     // onMutate: ({ list }) => {
     //   dispatch(
