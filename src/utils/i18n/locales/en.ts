@@ -88,7 +88,7 @@ const langEn: typeof langPl = {
     subTitle: "Selected list",
   },
   remoteListsPage: {
-    title: "Remote lists",
+    title: "My lists",
     lists: {
       select: "Select a list",
       empty: "You have no remote lists 😯",
@@ -98,7 +98,7 @@ const langEn: typeof langPl = {
       sort: "Enable sorting",
       notSort: "Disable sorting",
     },
-    subTitle: "Selected list",
+    subTitle: "Selected list (preview)",
   },
   infoPage: {
     aboutApp: {
