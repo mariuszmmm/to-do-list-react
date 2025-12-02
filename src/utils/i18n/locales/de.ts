@@ -88,7 +88,7 @@ const langDe: typeof langPl = {
     subTitle: "Ausgewählte Liste",
   },
   remoteListsPage: {
-    title: "Remote Listen",
+    title: "Meine Listen",
     lists: {
       select: "Liste auswählen",
       empty: "Du hast keine Remote Listen 😯",
@@ -98,7 +98,7 @@ const langDe: typeof langPl = {
       sort: "Sortierung aktivieren",
       notSort: "Sortierung deaktivieren",
     },
-    subTitle: "Ausgewählte Liste",
+    subTitle: "Aufgabenliste (Vorschau)",
   },
   infoPage: {
     aboutApp: {
