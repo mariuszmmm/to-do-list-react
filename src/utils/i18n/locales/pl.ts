@@ -86,7 +86,7 @@ const langPl = {
     subTitle: "Wybrana lista",
   },
   remoteListsPage: {
-    title: "Listy zdalne",
+    title: "Moje listy",
     lists: {
       select: "Wybierz listę",
       empty: "Nie masz zdalnych list 😯",
@@ -96,7 +96,7 @@ const langPl = {
       sort: "Włącz sortowanie",
       notSort: "Wyłącz sortowanie",
     },
-    subTitle: "Wybrana lista",
+    subTitle: "Wybrana lista (podgląd)",
   },
   infoPage: {
     aboutApp: {
