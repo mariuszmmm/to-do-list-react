@@ -16,7 +16,7 @@ export const TasksListView = ({ tasks }: TasksListViewProps) => (
   <StyledList>
     {tasks?.map((task, index) => (
       <StyledListItem key={task.id} $type={"tasks"}>
-        <ToggleButton disabled>{task.done ? "✔" : ""}</ToggleButton>
+  //      <ToggleButton disabled>{task.done ? "✔" : ""}</ToggleButton>
         <StyledListContent $type={"tasks"}>
           <TaskNumber>{`${index + 1}. `}</TaskNumber>
           <StyledSpan $done={task.done} $noLink>
