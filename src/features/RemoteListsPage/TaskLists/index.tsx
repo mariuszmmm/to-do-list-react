@@ -80,12 +80,11 @@ export const TaskLists = ({
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
             <StyledSpan $comment>
-
+              {list.id === localListId && <CircleIcon $isActive />}
               {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
               <strong> •</strong>{` (`}&nbsp;
               {t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}
               &nbsp;{`)`}
-              {list.id === localListId && <CircleIcon $isActive />}
             </StyledSpan>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
