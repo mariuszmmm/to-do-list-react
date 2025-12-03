@@ -85,7 +85,7 @@ const langDe: typeof langPl = {
     buttons: {
       load: "Ausgewählte Liste laden",
     },
-    subTitle: "Ausgewählte Liste",
+    subTitle: "Aufgabenliste (Vorschau)",
   },
   remoteListsPage: {
     title: "Meine Listen",
@@ -94,7 +94,7 @@ const langDe: typeof langPl = {
       empty: "Du hast keine Remote Listen 😯",
     },
     buttons: {
-      load: "Ausgewählte Liste laden",
+      load: "Ausgewählte Liste bearbeiten",
       sort: "Sortierung aktivieren",
       notSort: "Sortierung deaktivieren",
     },
@@ -156,7 +156,7 @@ const langDe: typeof langPl = {
     },
   },
   accountPage: {
-    title: "Dein Konto",
+    title: "Benutzerbereich",
     notLoggedIn: "Du bist nicht eingeloggt",
     buttons: {
       register: "Registrieren",

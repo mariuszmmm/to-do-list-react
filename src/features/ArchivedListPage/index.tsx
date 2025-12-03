@@ -7,12 +7,14 @@ import { TasksListView } from "../../common/TasksListView";
 import { TaskLists } from "./TaskLists";
 import { ListsButtons } from "./ListsButtons";
 import {
+  selectArchivedList,
   selectArchivedLists,
   selectIsArchivedListsSorting,
   selectIsArchivedTaskListEmpty,
   selectSelectedArchivedListId,
 } from "./archivedListsSlice";
 import { selectModalIsOpen } from "../../Modal/modalSlice";
+import { useDispatch } from "react-redux";
 
 const ArchivedListsPage = () => {
   const archivedLists = useAppSelector(selectArchivedLists);
@@ -21,6 +23,7 @@ const ArchivedListsPage = () => {
   const selectedListId = useAppSelector(selectSelectedArchivedListId);
   const modalIsOpen = useAppSelector(selectModalIsOpen);
   const isListsSorting = useAppSelector(selectIsArchivedListsSorting);
+  const dispatch = useDispatch();
   const selectedListById =
     archivedLists.find(({ id }) => id === selectedArchivedListId) || null;
 
@@ -30,6 +33,9 @@ const ArchivedListsPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    !selectedListId && dispatch(selectArchivedList(archivedLists[0].id));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

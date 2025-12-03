@@ -25,12 +25,7 @@ const remoteListsSlice = createSlice({
   initialState: getInitialState(),
   reducers: {
     selectList: (state, { payload: listId }: PayloadAction<string | null>) => {
-      if (state.selectedListId === listId || listId === null) {
-        state.selectedListId = null;
-      } else {
-        state.selectedListId = listId;
-      }
-      state.listToLoad = null;
+      state.selectedListId = listId;
     },
     setListToAdd: (
       state,

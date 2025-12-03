@@ -51,7 +51,15 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (lists.length > 0 && lists.find(({ id }) => id === taskListId)) {
+      dispatch(selectList(taskListId))
+      return;
+    }
+    !selectedListId && dispatch(selectList(lists[0].id));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   useEffect(() => {
     if (!listsData) return;
@@ -60,7 +68,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
     } else {
       if (!listsToSort) return;
       updateListsMutation.mutate({ listsToSort, deviceId });
-      dispatch(setListToSort(null));
+      !!selectedListId && dispatch(setListToSort(null));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -19,6 +19,7 @@ interface CircleIconProps {
   $isError?: boolean;
   $isUpdated?: boolean;
   $isChanged?: boolean;
+  $isActive?: boolean;
 }
 
 export const MicrophoneIcon = styled(Microphone)<MicrophoneIconProps>`
@@ -107,12 +108,30 @@ export const CircleLoadingIcon = styled(CircleLoading)`
 
 export const CircleIcon = styled(Circle)<CircleIconProps>`
   margin-right: 10px;
+  scale: 1.3;
+  padding-top: 1px;
+
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      margin-left: 8px;
+      scale: 1.6;
+      padding-top: 3px;
+    `};
+
   filter: brightness(140%);
-  color: ${({ theme, $isPending, $isUpdated, $isChanged, $isError }) => {
+  color: ${({
+    theme,
+    $isPending,
+    $isUpdated,
+    $isChanged,
+    $isError,
+    $isActive,
+  }) => {
     if ($isError) return theme.color.red;
     if ($isChanged) return theme.color.yellow;
     if ($isPending) return theme.color.blue;
-    if ($isUpdated) return theme.color.forestGreen;
+    if ($isUpdated || $isActive) return theme.color.forestGreen;
     return theme.color.black;
   }};
 `;

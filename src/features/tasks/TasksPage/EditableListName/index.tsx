@@ -79,7 +79,14 @@ export const EditableListName = () => {
           type="text"
           value={newName}
           placeholder={t("tasks.inputPlaceholder")}
-          onChange={({ target }) => setNewName(target.value)}
+          onChange={({ target }) => {
+            const value = target.value;
+            if (value.length === 1) {
+              setNewName(value.toUpperCase());
+            } else {
+              setNewName(value);
+            }
+          }}
           autoFocus
           ref={inpurRef}
         />

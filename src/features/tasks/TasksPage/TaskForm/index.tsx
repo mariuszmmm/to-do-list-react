@@ -69,7 +69,12 @@ export const TaskForm = () => {
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    if (isListening) stop();
+    if (!isListening) {
+      setTimeout(() => inputRef.current!.focus(), 0);
+    } else {
+      stop();
+      inputRef.current?.blur();
+    }
     addTaskContent();
   };
 
@@ -123,7 +128,14 @@ export const TaskForm = () => {
             value={taskContent}
             name="taskName"
             placeholder={t("form.inputPlaceholder")}
-            onChange={({ target }) => setTaskContent(target.value)}
+            onChange={({ target }) => {
+              const value = target.value;
+              if (value.length === 1) {
+                setTaskContent(value.toUpperCase());
+              } else {
+                setTaskContent(value);
+              }
+            }}
             ref={inputRef}
           />
         )}

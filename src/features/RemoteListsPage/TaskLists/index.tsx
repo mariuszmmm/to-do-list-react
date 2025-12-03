@@ -1,7 +1,7 @@
 import { useAppDispatch } from "../../../hooks/redux";
 import { List } from "../../../types";
 import { moveListDown, moveListUp } from "../../../utils/moveList";
-import { ArrowDownIcon, ArrowUpIcon } from "../../../common/icons";
+import { ArrowDownIcon, ArrowUpIcon, CircleIcon } from "../../../common/icons";
 import {
   RemoveButton,
   SortButton,
@@ -49,8 +49,7 @@ export const TaskLists = ({
         <StyledListItem
           key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
-          $edit={list.id === localListId}
-          onClick={() => dispatch(selectList(isListsSorting ? null : list.id))}
+          onClick={() => !isListsSorting && selectedListId !== list.id && dispatch(selectList(list.id))}
           $type={"tasks"}
         >
           {isListsSorting && listsToSort ? (
@@ -81,10 +80,12 @@ export const TaskLists = ({
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
             <StyledSpan $comment>
+
               {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
               <strong> •</strong>{` (`}&nbsp;
               {t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}
               &nbsp;{`)`}
+              {list.id === localListId && <CircleIcon $isActive />}
             </StyledSpan>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (

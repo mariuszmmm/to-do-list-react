@@ -30,12 +30,7 @@ const archivedListsSlice = createSlice({
       state,
       { payload: listId }: PayloadAction<string | null>
     ) => {
-      if (state.selectedArchivedListId === listId || listId === null) {
-        state.selectedArchivedListId = null;
-      } else {
-        state.selectedArchivedListId = listId;
-      }
-      state.archivedListToLoad = null;
+      state.selectedArchivedListId = listId;
     },
     setArchivedListToLoad: (
       state,

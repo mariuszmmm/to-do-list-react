@@ -85,7 +85,7 @@ const langEn: typeof langPl = {
     buttons: {
       load: "Load selected list",
     },
-    subTitle: "Selected list",
+    subTitle: "Selected list (preview)",
   },
   remoteListsPage: {
     title: "My lists",
@@ -94,7 +94,7 @@ const langEn: typeof langPl = {
       empty: "You have no remote lists 😯",
     },
     buttons: {
-      load: "Load selected list",
+      load: "Edit selected list",
       sort: "Enable sorting",
       notSort: "Disable sorting",
     },
@@ -156,7 +156,7 @@ const langEn: typeof langPl = {
     },
   },
   accountPage: {
-    title: "Your account",
+    title: "User Panel",
     notLoggedIn: "You are not logged in",
     buttons: {
       register: "Registration",

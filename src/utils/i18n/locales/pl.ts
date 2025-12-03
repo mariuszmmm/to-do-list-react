@@ -83,7 +83,7 @@ const langPl = {
     buttons: {
       load: "Załaduj wybraną listę",
     },
-    subTitle: "Wybrana lista",
+    subTitle: "Wybrana lista (podgląd)",
   },
   remoteListsPage: {
     title: "Moje listy",
@@ -92,7 +92,7 @@ const langPl = {
       empty: "Nie masz zdalnych list 😯",
     },
     buttons: {
-      load: "Załaduj wybraną listę",
+      load: "Edytuj wybraną listę",
       sort: "Włącz sortowanie",
       notSort: "Wyłącz sortowanie",
     },
@@ -154,7 +154,7 @@ const langPl = {
     },
   },
   accountPage: {
-    title: "Twoje konto",
+    title: "Panel użytkownika",
     notLoggedIn: "Jesteś niezalogowany",
     buttons: {
       register: "Rejestracja",
