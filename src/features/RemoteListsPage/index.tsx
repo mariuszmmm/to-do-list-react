@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux";
 import { useUpdateListsMutation } from "../../hooks/useUpdateListsMutation";
@@ -30,6 +31,9 @@ import { getOrCreateDeviceId } from "../../utils/deviceId";
 type Props = { listsData: ListsData, localListId: string };
 
 const RemoteListsPage = ({ listsData, localListId }: Props) => {
+  const taskListsRef = useRef<HTMLDivElement>(null);
+  const previewListRef = useRef<HTMLDivElement>(null);
+  const [minPreviewHeight, setMinPreviewHeight] = useState<number>(0);
   const selectedListId = useAppSelector(selectSelectedListId);
   const modalIsOpen = useAppSelector(selectModalIsOpen);
   const confirmed = useAppSelector(selectModalConfirmed);
@@ -59,6 +63,20 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    let maxListHeight = 0;
+    if (previewListRef.current) {
+      maxListHeight = previewListRef.current.offsetHeight;
+    }
+    if (taskListsRef.current && maxListHeight === 0) {
+      maxListHeight = taskListsRef.current.offsetHeight;
+    }
+    const screenHeight = window.innerHeight;
+    setMinPreviewHeight(Math.min(maxListHeight, screenHeight - 250));
+  }, [lists, isListsSorting, selectedListId]);
+
+
 
 
   useEffect(() => {
@@ -115,14 +133,16 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
       <Section
         title={areListsEmpty ? t("lists.empty") : t("lists.select")}
         body={
-          <TaskLists
-            lists={lists}
-            selectedListId={selectedListId}
-            modalIsOpen={modalIsOpen}
-            isListsSorting={isListsSorting}
-            listsToSort={listsToSort}
-            localListId={localListId}
-          />
+          <div ref={taskListsRef}>
+            <TaskLists
+              lists={lists}
+              selectedListId={selectedListId}
+              modalIsOpen={modalIsOpen}
+              isListsSorting={isListsSorting}
+              listsToSort={listsToSort}
+              localListId={localListId}
+            />
+          </div>
         }
         extraHeaderContent={
           <ListsButtons lists={lists} selectedListById={selectedListById} />
@@ -133,7 +153,11 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
           <Header title={t("subTitle")} sub />
           <Section
             title={selectedListById.name}
-            body={<TasksListView tasks={selectedListById.taskList} />}
+            body={
+              <div ref={previewListRef} style={{ minHeight: minPreviewHeight }}>
+                <TasksListView tasks={selectedListById.taskList} />
+              </div>
+            }
           />
         </>
       )}

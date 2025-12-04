@@ -166,6 +166,7 @@ const langDe: typeof langPl = {
       resetPassword: "Passwort zurücksetzen",
       cancel: "Abbrechen",
     },
+    activeUsers: "Aktive Nutzer: {{count}}",
     form: {
       buttons: {
         login: "Anmelden",

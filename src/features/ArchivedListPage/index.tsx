@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
@@ -17,6 +18,9 @@ import { selectModalIsOpen } from "../../Modal/modalSlice";
 import { useDispatch } from "react-redux";
 
 const ArchivedListsPage = () => {
+  const taskListsRef = useRef<HTMLDivElement>(null);
+  const previewListRef = useRef<HTMLDivElement>(null);
+  const [minPreviewHeight, setMinPreviewHeight] = useState<number>(0);
   const archivedLists = useAppSelector(selectArchivedLists);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const selectedArchivedListId = useAppSelector(selectSelectedArchivedListId);
@@ -34,9 +38,20 @@ const ArchivedListsPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     !selectedListId && dispatch(selectArchivedList(archivedLists[0].id));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    let maxListHeight = 0;
+    if (previewListRef.current) {
+      maxListHeight = previewListRef.current.offsetHeight;
+    }
+    if (taskListsRef.current && maxListHeight === 0) {
+      maxListHeight = taskListsRef.current.offsetHeight;
+    }
+    const screenHeight = window.innerHeight;
+    setMinPreviewHeight(Math.min(maxListHeight, screenHeight - 250));
+  }, [archivedLists, isListsSorting, selectedListId]);
 
   return (
     <>
@@ -44,12 +59,14 @@ const ArchivedListsPage = () => {
       <Section
         title={isArchivedTaskListEmpty ? t("lists.empty") : t("lists.select")}
         body={
-          <TaskLists
-            lists={archivedLists}
-            selectedListId={selectedListId}
-            modalIsOpen={modalIsOpen}
-            isListsSorting={isListsSorting}
-          />
+          <div ref={taskListsRef}>
+            <TaskLists
+              lists={archivedLists}
+              selectedListId={selectedListId}
+              modalIsOpen={modalIsOpen}
+              isListsSorting={isListsSorting}
+            />
+          </div>
         }
         extraHeaderContent={
           <ListsButtons
@@ -63,7 +80,11 @@ const ArchivedListsPage = () => {
           <Header title={t("subTitle")} sub />
           <Section
             title={selectedListById.name}
-            body={<TasksListView tasks={selectedListById.taskList} />}
+            body={
+              <div ref={previewListRef} style={{ minHeight: minPreviewHeight }}>
+                <TasksListView tasks={selectedListById.taskList} />
+              </div>
+            }
           />
         </>
       )}

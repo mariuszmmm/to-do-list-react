@@ -164,6 +164,7 @@ const langPl = {
       resetPassword: "Zresetuj hasło",
       cancel: "Anuluj",
     },
+    activeUsers: "Aktywni użytkownicy: {{count}}",
     form: {
       buttons: {
         login: "Zaloguj",
