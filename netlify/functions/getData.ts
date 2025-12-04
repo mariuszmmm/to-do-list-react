@@ -5,11 +5,11 @@ import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
   // Entry log
-  console.log("getData function invoked");
+  console.log("[getData] Function invoked");
 
   // Check for authentication
   if (!context.clientContext || !context.clientContext.user) {
-    console.log("Unauthorized access attempt");
+    console.log("[getData] Unauthorized access attempt");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -22,12 +22,12 @@ const handler: Handler = async (event, context) => {
   try {
     // Extract user email
     const { email }: { email: string } = context.clientContext.user;
-    console.log(`Fetching data for user: ${email}`);
+    console.log(`[getData] Fetching data for user: ${email}`);
 
     // Find user data
     const userData = await UserData.findOne({ email, account: "active" });
     if (!userData) {
-      console.log(`User not found: ${email}`);
+      console.log(`[getData] User not found: ${email}`);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
@@ -35,7 +35,7 @@ const handler: Handler = async (event, context) => {
     }
 
     // Success response
-    console.log(`User data found for: ${email}`);
+    console.log(`[getData] User data found for: ${email}`);
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -48,7 +48,7 @@ const handler: Handler = async (event, context) => {
     };
   } catch (error) {
     // Error response
-    console.error("Error fetching user data:", error);
+    console.error("[getData] Error fetching user data:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Internal server error" }),

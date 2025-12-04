@@ -8,14 +8,16 @@ import { connectToDB } from "./config/mongoose";
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
   console.log(
-    `[${new Date().toISOString()}] Request received: ${event.httpMethod}`
+    `[confirmUser] [${new Date().toISOString()}] Request received: ${
+      event.httpMethod
+    }`
   );
 
   await connectToDB();
 
   // Only allow POST method
   if (event.httpMethod !== "POST") {
-    console.error("Method Not Allowed");
+    console.error("[confirmUser] Method Not Allowed");
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -25,7 +27,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   // Get secret from environment
   const SECRET = process.env.WEBHOOK_SECRET;
   if (!SECRET) {
-    console.error("Missing WEBHOOK_SECRET key");
+    console.error("[confirmUser] Missing WEBHOOK_SECRET key");
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Missing WEBHOOK_SECRET key" }),
@@ -35,7 +37,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   // Validate signature header
   const signature = event.headers["x-webhook-signature"];
   if (!signature) {
-    console.error("Missing signature in headers");
+    console.error("[confirmUser] Missing signature in headers");
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "Missing signature in headers" }),
@@ -44,7 +46,7 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Validate request body
   if (!event.body) {
-    console.error("No data");
+    console.error("[confirmUser] No data");
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "No data" }),
@@ -60,7 +62,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       .update(event.body)
       .digest("hex");
     if (calculatedHash !== expectedHash) {
-      console.error("Signature is invalid");
+      console.error("[confirmUser] Signature is invalid");
       return {
         statusCode: 403,
         body: JSON.stringify({ message: "Signature is invalid" }),
@@ -70,12 +72,12 @@ const handler: Handler = async (event: HandlerEvent) => {
     // Parse user data
     const { user } = JSON.parse(event.body);
     const { email } = user;
-    console.log(`[POST] Processing user: ${email}`);
+    console.log(`[confirmUser] Processing user: ${email}`);
 
     // Find or create user
     let findedUser = await UserData.findOne({ email });
     if (!findedUser) {
-      console.log(`[POST] Creating new user: ${email}`);
+      console.log(`[confirmUser] Creating new user: ${email}`);
       const registeredUser = new UserData({
         email,
         account: "active",
@@ -83,7 +85,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       });
       findedUser = await registeredUser.save();
       if (!findedUser) {
-        console.error(`[POST] Failed to create user: ${email}`);
+        console.error(`[confirmUser] Failed to create user: ${email}`);
         return {
           statusCode: 500,
           body: JSON.stringify({ message: "Failed to create user." }),
@@ -92,14 +94,14 @@ const handler: Handler = async (event: HandlerEvent) => {
     }
 
     // Success response
-    console.log(`[POST] User confirmed: ${email}`);
+    console.log(`[confirmUser] User confirmed: ${email}`);
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "User confirmed", email }),
     };
   } catch (error) {
     // Error response
-    console.error("Error confirming user:", error);
+    console.error("[confirmUser] Error confirming user:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Internal Server Error" }),

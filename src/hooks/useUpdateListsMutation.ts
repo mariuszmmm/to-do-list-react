@@ -34,7 +34,7 @@ export const useUpdateListsMutation = () => {
       );
     },
     onSuccess: async (response) => {
-      queryClient.setQueryData(["lists"], response.data);
+      queryClient.setQueryData(["listsData"], response.data);
       if (response.data.conflict) {
         dispatch(
           openModal({

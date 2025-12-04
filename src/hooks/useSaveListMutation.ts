@@ -38,7 +38,7 @@ export const useSaveListMutation = () => {
     //   );
     // },
     onSuccess: async (response: { data: ListsData }) => {
-      queryClient.setQueryData(["lists"], response.data);
+      queryClient.setQueryData(["listsData"], response.data);
       // if (response.data.conflict) {
       //   dispatch(
       //     openModal({
@@ -48,7 +48,6 @@ export const useSaveListMutation = () => {
       //     })
       //   );
       // }
-
       // if (response.data.conflict) {
       //   console.warn("List save conflict detected", response.data);
       // }

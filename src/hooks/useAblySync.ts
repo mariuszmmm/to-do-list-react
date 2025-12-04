@@ -31,7 +31,7 @@
 //       if (ablyDeviceId && ablyDeviceId === deviceId) return;
 //       if (message.data && message.data.lists) {
 //         dispatch(setChangeSource("remote"));
-//         queryClient.setQueryData(["lists"], message.data);
+//         queryClient.setQueryData(["listsData"], message.data);
 //       }
 //     };
 

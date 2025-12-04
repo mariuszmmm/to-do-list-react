@@ -3,11 +3,11 @@ import type { Handler, HandlerEvent } from "@netlify/functions";
 
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
-  console.log("Translation function invoked");
+  console.log("[translateMessage] Translation function invoked");
 
   // Only allow POST method
   if (event.httpMethod !== "POST") {
-    console.error("Method Not Allowed");
+    console.error("[translateMessage] Method Not Allowed");
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -19,7 +19,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   const API_URL = process.env.TRANSLATION_API_URL;
 
   if (!KEY) {
-    console.error("Missing TRANSLATION_API_KEY");
+    console.error("[translateMessage] Missing TRANSLATION_API_KEY");
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Missing TRANSLATION_API_KEY" }),
@@ -28,7 +28,7 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Validate request body
   if (!event.body) {
-    console.error("No data");
+    console.error("[translateMessage] No data");
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "No data" }),
@@ -37,7 +37,10 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Parse request data
   const { text, targetLanguage } = JSON.parse(event.body);
-  console.log(`Translating text to ${targetLanguage}:`, text);
+  console.log(
+    `[translateMessage] Translating text to ${targetLanguage}:`,
+    text
+  );
 
   // Call translation API
   let response;
@@ -52,12 +55,16 @@ const handler: Handler = async (event: HandlerEvent) => {
       }),
     });
     if (!apiRes.ok) {
-      console.error("Translation API error:", apiRes.status, apiRes.statusText);
+      console.error(
+        "[translateMessage] Translation API error:",
+        apiRes.status,
+        apiRes.statusText
+      );
       throw new Error(apiRes.statusText);
     }
     response = await apiRes.json();
   } catch (err) {
-    console.error("Error fetching translation", err);
+    console.error("[translateMessage] Error fetching translation", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Error fetching translation" }),
@@ -66,7 +73,7 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Log and return translation
   const translatedText = response?.data?.translations?.[0]?.translatedText;
-  console.log("Translation successful:", translatedText);
+  console.log("[translateMessage] Translation successful:", translatedText);
 
   return {
     statusCode: 200,

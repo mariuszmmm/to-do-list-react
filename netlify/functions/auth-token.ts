@@ -5,7 +5,7 @@ import Ably from "ably";
 const handler: Handler = async (event, context) => {
   // Sprawdź czy użytkownik jest uwierzytelniony
   if (!context.clientContext || !context.clientContext.user) {
-    console.log("Unauthorized - Missing client context");
+    console.log("[auth-token] Unauthorized - Missing client context");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -13,7 +13,7 @@ const handler: Handler = async (event, context) => {
   }
 
   const { email }: { email: string } = context.clientContext.user;
-  console.log("Generating token for user:", email);
+  console.log("[auth-token] Generating token for user:", email);
 
   try {
     // Utwórz klienta Ably z kluczem API (tylko server-side!)
@@ -35,7 +35,7 @@ const handler: Handler = async (event, context) => {
     };
   } catch (error) {
     const err = error as Error;
-    console.error("Error generating token:", err);
+    console.error("[auth-token] Error generating token:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({

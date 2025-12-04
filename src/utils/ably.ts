@@ -1,31 +1,28 @@
-// import Ably from "ably";
-// import { getOrCreateDeviceId } from "./deviceId";
-
-// const clientId = getOrCreateDeviceId();
-
-// const ably = new Ably.Realtime({
-//   key: process.env.REACT_APP_ABLY_API_KEY,
-//   clientId,
-// });
-
-// export default ably;
-
 import Ably from "ably";
-// import { getOrCreateDeviceId } from "./deviceId";
-
-// const clientId = getOrCreateDeviceId();
+import { getUserToken } from "./getUserToken";
 
 const ably = new Ably.Realtime({
-  authUrl: "/.netlify/functions/auth-token",
-  authMethod: "GET", // domyślnie GET
-  authHeaders: {
-    // dodatkowe nagłówki jeśli potrzebne
-  },
-  authParams: {
-    // dodatkowe parametry query jeśli potrzebne
+  authCallback: async (tokenParams, callback) => {
+    try {
+      const userToken = await getUserToken();
+      const response = await fetch("/auth-token", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const ablyTokenRequest = await response.json();
+      callback(null, ablyTokenRequest);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      callback(errorMessage, null);
+    }
   },
 });
 
 export default ably;
-
-// export {};

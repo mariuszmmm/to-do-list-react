@@ -7,14 +7,14 @@ import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
   // Entry log
-  console.log("removeData function invoked");
+  console.log("[removeData] Function invoked");
 
   // Connect to database
   await connectToDB();
 
   // Only allow DELETE method
   if (event.httpMethod !== "DELETE") {
-    console.log("Method not allowed:", event.httpMethod);
+    console.log("[removeData] Method not allowed:", event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -23,7 +23,7 @@ const handler: Handler = async (event, context) => {
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log("Unauthorized - Missing client context or body");
+    console.log("[removeData] Unauthorized - Missing client context or body");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -32,7 +32,7 @@ const handler: Handler = async (event, context) => {
 
   // Extract user email
   const { email }: { email: string } = context.clientContext.user;
-  console.log("User email:", email);
+  console.log("[removeData] User email:", email);
 
   try {
     // Find user in DB
@@ -41,27 +41,32 @@ const handler: Handler = async (event, context) => {
       account: "active",
     })) as UserDoc | null;
     if (!foundUser) {
-      console.log("User not found:", email);
+      console.log("[removeData] User not found:", email);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
       };
     }
-    console.log("User found:", email, "Lists count:", foundUser.lists.length);
+    console.log(
+      "[removeData] User found:",
+      email,
+      "Lists count:",
+      foundUser.lists.length
+    );
 
     // Parse request data
     const data: Data = JSON.parse(event.body);
-    console.log("Request data:", data);
+    console.log("[removeData] Request data:", data);
 
     // Validate listId in request
     if (!data.listId) {
-      console.log("No list ID provided");
+      console.log("[removeData] No list ID provided");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "No list ID provided" }),
       };
     }
-    console.log("Removing list with ID:", data.listId);
+    console.log("[removeData] Removing list with ID:", data.listId);
 
     // Find list index
     const listIndex = foundUser.lists.findIndex(
@@ -70,9 +75,9 @@ const handler: Handler = async (event, context) => {
 
     if (listIndex !== -1) {
       // List found, check version
-      console.log("List found at index:", listIndex);
+      console.log("[removeData] List found at index:", listIndex);
       if (foundUser.lists[listIndex].version !== data.version) {
-        console.log("Version mismatch for list ID:", data.listId);
+        console.log("[removeData] Version mismatch for list ID:", data.listId);
         return {
           statusCode: 409,
           body: JSON.stringify({
@@ -87,17 +92,20 @@ const handler: Handler = async (event, context) => {
       }
 
       // Remove list and save
-      console.log("Versions match. Proceeding with removal.");
+      console.log("[removeData] Versions match. Proceeding with removal.");
       foundUser.lists.splice(listIndex, 1);
       const savedUser = await foundUser.save();
       if (!savedUser) {
-        console.error("Save operation failed for user:", email);
+        console.error("[removeData] Save operation failed for user:", email);
         return {
           statusCode: 500,
           body: JSON.stringify({ message: "Failed to save user data." }),
         };
       }
-      console.log("List removed and data saved successfully for user:", email);
+      console.log(
+        "[removeData] List removed and data saved successfully for user:",
+        email
+      );
 
       // Publish update via Ably
       try {
@@ -106,14 +114,14 @@ const handler: Handler = async (event, context) => {
           deviceId: data.deviceId,
         });
       } catch (ablyError) {
-        console.error("Ably publish error:", ablyError);
+        console.error("[removeData] Ably publish error:", ablyError);
       }
 
       // Success response
       return {
         statusCode: 200,
         body: JSON.stringify({
-          message: "Data updated successfully",
+          message: "[removeData] Data updated successfully",
           data: {
             lists: savedUser.lists,
             deviceId: data.deviceId,
@@ -122,7 +130,7 @@ const handler: Handler = async (event, context) => {
       };
     } else {
       // List not found
-      console.log("List not found:", data.listId);
+      console.log("[removeData] List not found:", data.listId);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "List not found" }),
@@ -130,7 +138,7 @@ const handler: Handler = async (event, context) => {
     }
   } catch (error) {
     // Error response
-    console.error("Error in removeData function:", error);
+    console.error("[removeData] Error in removeData function:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: "Internal Server Error" }),
