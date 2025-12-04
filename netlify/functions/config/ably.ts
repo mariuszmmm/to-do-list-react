@@ -1,5 +1,10 @@
 import Ably from "ably";
 
+const ably = new Ably.Rest({
+  key: process.env.ABLY_API_KEY,
+  idempotentRestPublishing: true,
+});
+
 export const publishAblyUpdate = async (email: string, data: any) => {
   try {
     if (!process.env.ABLY_API_KEY) {
@@ -7,9 +12,7 @@ export const publishAblyUpdate = async (email: string, data: any) => {
       return;
     }
 
-    const ably = new Ably.Rest({ key: process.env.ABLY_API_KEY });
     const channel = ably.channels.get(`user:${email}:lists`);
-
     await channel.publish("lists-updated", data);
   } catch (error) {
     console.error("Failed to send Ably notification:", error);

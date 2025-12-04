@@ -8,19 +8,19 @@ import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
 import { selectLoggedUserEmail } from "./accountSlice";
 import { useTranslation } from "react-i18next";
-import { getOrCreateDeviceId } from "../../utils/deviceId";
-import { useAblyPresence } from "../../hooks/useAblyPresence";
+// import { getOrCreateDeviceId } from "../../utils/deviceId";
+// import { useAblyPresence } from "../../hooks/useAblyPresence";
 
-const ABLY_ACCOUNT_CHANNEL = "account:presence";
+// const ABLY_ACCOUNT_CHANNEL = "account:presence";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
-  const deviceId = getOrCreateDeviceId();
-  const userId = loggedUserEmail || deviceId;
-  const membersCount = useAblyPresence(ABLY_ACCOUNT_CHANNEL, userId);
+  // const deviceId = getOrCreateDeviceId();
+  // const userId = loggedUserEmail || deviceId;
+  // const membersCount = useAblyPresence(ABLY_ACCOUNT_CHANNEL, userId);
   const [backendActiveUsers, setBackendActiveUsers] = useState<number | null>(null);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const AccountPage = () => {
         extraContent={<AccountExtraButtons />}
       />
       <div style={{ textAlign: "center", marginTop: 16 }}>
-        <strong>{t("activeUsers", { count: membersCount })}</strong>
+        {/* <strong>{t("activeUsers", { count: membersCount })}</strong> */}
         <br />
         <span style={{ fontSize: 12, color: "#888" }}>
           Backend (serverless): {backendActiveUsers !== null ? backendActiveUsers : "?"}

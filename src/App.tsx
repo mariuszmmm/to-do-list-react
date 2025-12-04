@@ -19,8 +19,9 @@ import ArchivedListsPage from "./features/ArchivedListPage";
 import { useDataFetchingError } from "./hooks/useDataFetchingError";
 import { useSaveListMutation } from "./hooks/useSaveListMutation";
 import { useListSyncManager } from "./hooks/useListSyncManager";
-import { useAblySync } from "./hooks/useAblySync";
+// import { useAblySync } from "./hooks/useAblySync";
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
+import { useAblySubscription } from "./hooks/useAblySubscription";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -37,7 +38,8 @@ const App = () => {
 
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });
-  useAblySync({ userEmail: loggedUserEmail, enabled: !!loggedUserEmail });
+  // useAblySync({ userEmail: loggedUserEmail, enabled: !!loggedUserEmail });
+  useAblySubscription(loggedUserEmail);
 
   return (
     <HashRouter>
