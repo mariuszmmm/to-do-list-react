@@ -11,15 +11,17 @@ export const useAblyPresence = (channelName: string, userId: string) => {
 
     // Raportowanie obecności do backendu co 30 sekund
     const reportPresence = () => {
-      fetch("/reportPresence", {
+      fetch("/.netlify/functions/reportPresence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId })
-      }).then(() => {
-        console.log("Presence reported for", userId);
-      }).catch((err) => {
-        console.error("Presence report error", err);
-      });
+        body: JSON.stringify({ userId }),
+      })
+        .then(() => {
+          console.log("Presence reported for", userId);
+        })
+        .catch((err) => {
+          console.error("Presence report error", err);
+        });
     };
     reportPresence();
     const interval = setInterval(reportPresence, 30000);
