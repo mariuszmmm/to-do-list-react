@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
@@ -21,9 +21,23 @@ const AccountPage = () => {
   const deviceId = getOrCreateDeviceId();
   const userId = loggedUserEmail || deviceId;
   const membersCount = useAblyPresence(ABLY_ACCOUNT_CHANNEL, userId);
+  const [backendActiveUsers, setBackendActiveUsers] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Pobierz liczbę aktywnych użytkowników z backendu
+    const fetchBackendActiveUsers = () => {
+      fetch("/.netlify/functions/reportPresence")
+        .then((res) => res.text())
+        .then((text) => {
+          const match = text.match(/Active users: (\d+)/);
+          if (match) setBackendActiveUsers(Number(match[1]));
+        })
+        .catch(() => setBackendActiveUsers(null));
+    };
+    fetchBackendActiveUsers();
+    const interval = setInterval(fetchBackendActiveUsers, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -37,6 +51,10 @@ const AccountPage = () => {
       />
       <div style={{ textAlign: "center", marginTop: 16 }}>
         <strong>{t("activeUsers", { count: membersCount })}</strong>
+        <br />
+        <span style={{ fontSize: 12, color: "#888" }}>
+          Backend (serverless): {backendActiveUsers !== null ? backendActiveUsers : "?"}
+        </span>
       </div>
     </>
   );
