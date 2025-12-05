@@ -7,6 +7,7 @@ const getInitialState = (): AccountState => ({
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
   message: "",
+  presenceCount: 0,
 });
 
 const accountSlice = createSlice({
@@ -48,6 +49,9 @@ const accountSlice = createSlice({
     setMessage: (state, { payload: message }: PayloadAction<string>) => {
       state.message = message;
     },
+    setPresenceCount: (state, action: PayloadAction<number>) => {
+      state.presenceCount = action.payload;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   setIsWaitingForConfirmation,
   setLoggedUserEmail,
   setMessage,
+  setPresenceCount,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -68,5 +73,7 @@ export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
+export const selectPresenceCount = (state: RootState) =>
+  state.account.presenceCount;
 
 export default accountSlice.reducer;

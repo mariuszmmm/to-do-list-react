@@ -1,5 +1,4 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAppSelector } from "./hooks/redux";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
@@ -12,15 +11,20 @@ import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
 import { useQuery } from "@tanstack/react-query";
 import { refreshData } from "./utils/refreshData";
-import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
+import { selectLoggedUserEmail, setPresenceCount } from "./features/AccountPage/accountSlice";
 import { ListsData } from "./types";
 import RemoteListsPage from "./features/RemoteListsPage";
 import ArchivedListsPage from "./features/ArchivedListPage";
-import { useDataFetchingError } from "./hooks/useDataFetchingError";
-import { useSaveListMutation } from "./hooks/useSaveListMutation";
-import { useListSyncManager } from "./hooks/useListSyncManager";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useDataFetchingError,
+  useSaveListMutation,
+  useListSyncManager,
+  useAblySubscription
+} from "./hooks";
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
-import { useAblySubscription } from "./hooks/useAblySubscription";
+
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -29,15 +33,21 @@ const App = () => {
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
   });
-  const { id: localListId } = useAppSelector(selectTaskListMetaData);
   const safeData = !!loggedUserEmail ? data : undefined;
-
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
+  const { id: localListId } = useAppSelector(selectTaskListMetaData);
+  const dispatch = useAppDispatch();
 
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });
-  useAblySubscription({ userEmail: loggedUserEmail, enabled: !!loggedUserEmail });
+  useAblySubscription({
+    userEmail: loggedUserEmail,
+    enabled: !!loggedUserEmail,
+    onPresenceUpdate: (count) => dispatch(setPresenceCount(count))
+  });
+
+  console.log("App component rendered. Logged user:", loggedUserEmail);
 
   return (
     <HashRouter>

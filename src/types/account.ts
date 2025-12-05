@@ -10,6 +10,7 @@ export interface AccountState {
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
   message: string;
+  presenceCount: number;
 }
 
 export type RecoveryStatus =

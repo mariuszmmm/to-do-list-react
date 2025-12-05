@@ -25,8 +25,10 @@ const handler: Handler = async (event, context) => {
     const tokenRequest = await ably.auth.createTokenRequest({
       clientId: email,
       capability: {
-        [`user:${email}:lists`]: ["subscribe", "presence"],
+        [`user:${email}:lists`]: ["subscribe", "presence", "publish"],
       },
+      ttl: 3600000, // Token ważny przez 1 godzinę  - domyślnie
+      // ttl: 60 * 1000, // Token ważny przez 1 minutę - do testów
     });
 
     return {

@@ -19,19 +19,21 @@ getTokenFromURL(currentUrl);
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
 
+console.log("Rendering App component...");
+
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <I18nextProvider i18n={i18n}>
-        <Normalize />
-        <GlobalStyle />
-        <QueryClientProvider client={queryClient}>
-          {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
-          <App />
-        </QueryClientProvider>
-      </I18nextProvider>
-    </ThemeProvider>
-  </Provider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <I18nextProvider i18n={i18n}>
+          <Normalize />
+          <GlobalStyle />
+          <QueryClientProvider client={queryClient}>
+            {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
+            <App />
+          </QueryClientProvider>
+        </I18nextProvider>
+      </ThemeProvider>
+    </Provider>
+  </React.StrictMode>
 );
