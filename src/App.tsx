@@ -11,7 +11,7 @@ import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
 import { useQuery } from "@tanstack/react-query";
 import { refreshData } from "./utils/refreshData";
-import { selectLoggedUserEmail, setPresenceCount } from "./features/AccountPage/accountSlice";
+import { selectLoggedUserEmail, setPresenceData } from "./features/AccountPage/accountSlice";
 import { ListsData } from "./types";
 import RemoteListsPage from "./features/RemoteListsPage";
 import ArchivedListsPage from "./features/ArchivedListPage";
@@ -44,7 +44,9 @@ const App = () => {
   useAblySubscription({
     userEmail: loggedUserEmail,
     enabled: !!loggedUserEmail,
-    onPresenceUpdate: (count) => dispatch(setPresenceCount(count))
+    onPresenceUpdate: (data) => {
+      dispatch(setPresenceData(data));
+    }
   });
 
   console.log("App component rendered. Logged user:", loggedUserEmail);

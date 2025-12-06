@@ -166,7 +166,25 @@ const langDe: typeof langPl = {
       resetPassword: "Passwort zurücksetzen",
       cancel: "Abbrechen",
     },
-    loggedInUsers: "Angemeldete Benutzer: {{count}}",
+    deviceCount: {
+      device: "Du bist auf {{count}} Gerät angemeldet",
+      device_few: "Du bist auf {{count}} Geräten angemeldet",
+      device_many: "Du bist auf {{count}} Geräten angemeldet",
+      device_other: "Du bist auf {{count}} Geräten angemeldet",
+    },
+    activeUsers: {
+      label: "Angemeldete Benutzer:",
+      count: "Anzahl der aktiven Benutzer: {{count}}",
+      count_few: "Anzahl der aktiven Benutzer: {{count}}",
+      count_many: "Anzahl der aktiven Benutzer: {{count}}",
+      count_other: "Anzahl der aktiven Benutzer: {{count}}",
+    },
+    allDevices: {
+      device: "Anzahl der aktiven Geräte: {{count}}",
+      device_few: "Anzahl der aktiven Geräte: {{count}}",
+      device_many: "Anzahl der aktiven Geräte: {{count}}",
+      device_other: "Anzahl der aktiven Geräte: {{count}}",
+    },
     form: {
       buttons: {
         login: "Anmelden",

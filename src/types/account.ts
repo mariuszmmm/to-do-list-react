@@ -1,3 +1,8 @@
+export interface PresenceUser {
+  email: string;
+  deviceCount: number;
+}
+
 export interface AccountState {
   accountMode:
     | "login"
@@ -10,7 +15,8 @@ export interface AccountState {
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
   message: string;
-  presenceCount: number;
+  presenceUsers: PresenceUser[];
+  userDevicesCount: number;
 }
 
 export type RecoveryStatus =

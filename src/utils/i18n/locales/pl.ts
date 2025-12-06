@@ -164,7 +164,25 @@ const langPl = {
       resetPassword: "Zresetuj hasło",
       cancel: "Anuluj",
     },
-    loggedInUsers: "Zalogowanych użytkowników: {{count}}",
+    deviceCount: {
+      device: "Jesteś zalogowany na {{count}} urządzeniu",
+      device_few: "Jesteś zalogowany na {{count}} urządzeniach",
+      device_many: "Jesteś zalogowany na {{count}} urządzeniach",
+      device_other: "Jesteś zalogowany na {{count}} urządzeniach",
+    },
+    activeUsers: {
+      label: "Zalogowani użytkownicy:",
+      count: "Ilość aktywnych użytkowników: {{count}}",
+      count_few: "Ilość aktywnych użytkowników: {{count}}",
+      count_many: "Ilość aktywnych użytkowników: {{count}}",
+      count_other: "Ilość aktywnych użytkowników: {{count}}",
+    },
+    allDevices: {
+      device: "Ilość aktywnych urządzeń: {{count}}",
+      device_few: "Ilość aktywnych urządzeń: {{count}}",
+      device_many: "Ilość aktywnych urządzeń: {{count}}",
+      device_other: "Ilość aktywnych urządzeń: {{count}}",
+    },
     form: {
       buttons: {
         login: "Zaloguj",

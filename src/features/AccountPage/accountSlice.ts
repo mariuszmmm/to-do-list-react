@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { AccountState } from "../../types";
+import { AccountState, PresenceUser } from "../../types";
 
 const getInitialState = (): AccountState => ({
   accountMode: "login",
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
   message: "",
-  presenceCount: 0,
+  presenceUsers: [],
+  userDevicesCount: 0,
 });
 
 const accountSlice = createSlice({
@@ -49,8 +50,16 @@ const accountSlice = createSlice({
     setMessage: (state, { payload: message }: PayloadAction<string>) => {
       state.message = message;
     },
-    setPresenceCount: (state, action: PayloadAction<number>) => {
-      state.presenceCount = action.payload;
+    setPresenceData: (
+      state,
+      action: PayloadAction<{
+        users: PresenceUser[];
+        totalUsers: number;
+        userDevices: number;
+      }>
+    ) => {
+      state.presenceUsers = action.payload.users;
+      state.userDevicesCount = action.payload.userDevices;
     },
   },
 });
@@ -60,7 +69,7 @@ export const {
   setIsWaitingForConfirmation,
   setLoggedUserEmail,
   setMessage,
-  setPresenceCount,
+  setPresenceData,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -73,7 +82,11 @@ export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
-export const selectPresenceCount = (state: RootState) =>
-  state.account.presenceCount;
+export const selectPresenceUsers = (state: RootState) =>
+  state.account.presenceUsers;
+export const selectUserDevicesCount = (state: RootState) =>
+  state.account.userDevicesCount;
+export const selectCurrentUserEmail = (state: RootState) =>
+  state.account.loggedUserEmail;
 
 export default accountSlice.reducer;

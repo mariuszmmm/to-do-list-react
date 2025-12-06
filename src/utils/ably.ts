@@ -1,5 +1,6 @@
 import Ably from "ably";
 import { getUserToken } from "./getUserToken";
+import { getOrCreateDeviceId } from "./deviceId";
 
 let ablyInstance: Ably.Realtime | null = null;
 
@@ -9,7 +10,8 @@ export const getAblyInstance = (): Ably.Realtime => {
       authCallback: async (tokenParams, callback) => {
         try {
           const userToken = await getUserToken();
-          const response = await fetch("/auth-token", {
+          const deviceId = getOrCreateDeviceId();
+          const response = await fetch(`/auth-token?deviceId=${deviceId}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${userToken}`,
