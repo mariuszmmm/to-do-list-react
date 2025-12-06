@@ -25,32 +25,14 @@ export const useSaveListMutation = () => {
 
       return addDataApi(token, list, deviceId);
     },
-    // onMutate: ({ list }) => {
-    //   dispatch(
-    //     openModal({
-    //       title: { key: "modal.listSave.title" },
-    //       message: {
-    //         key: "modal.listSave.message.loading",
-    //         values: { name: list.name },
-    //       },
-    //       type: "loading",
-    //     })
-    //   );
-    // },
+    onMutate: ({ list }) => {
+      process.env.NODE_ENV === "development" &&
+        console.log("Saving list mutation started for list:", list);
+    },
     onSuccess: async (response: { data: ListsData }) => {
       queryClient.setQueryData(["listsData"], response.data);
-      // if (response.data.conflict) {
-      //   dispatch(
-      //     openModal({
-      //       title: { key: "modal.listSave.title" },
-      //       message: { key: "modal.listSave.message.error.conflict" },
-      //       type: "error",
-      //     })
-      //   );
-      // }
-      // if (response.data.conflict) {
-      //   console.warn("List save conflict detected", response.data);
-      // }
+      process.env.NODE_ENV === "development" &&
+        console.log("Saving list mutation completed for list:", response.data);
     },
     onError: () => {
       dispatch(

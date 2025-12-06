@@ -2,17 +2,25 @@ import { useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
+import { StyledSpan } from "../../common/StyledList";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
-import { selectCurrentUserEmail, selectLoggedUserEmail, selectPresenceUsers, selectUserDevicesCount } from "./accountSlice";
+import { PresenceUsersList } from "./PresenceUsersList";
+import {
+  selectAllDevicesCount,
+  selectLoggedUserEmail,
+  selectTotalUsersCount,
+  selectUserDevicesCount
+} from "./accountSlice";
 import { useTranslation } from "react-i18next";
+import { NameContainer } from "../tasks/TasksPage/EditableListName/styled";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const userDevices = useAppSelector(selectUserDevicesCount);
-  const presenceUsers = useAppSelector(selectPresenceUsers);
-  const currentUserEmail = useAppSelector(selectCurrentUserEmail);
+  const totalUsersCount = useAppSelector(selectTotalUsersCount);
+  const allDevicesCount = useAppSelector(selectAllDevicesCount);
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
@@ -28,35 +36,31 @@ const AccountPage = () => {
         title={loggedUserEmail || t("notLoggedIn")}
         extraHeaderContent={<AccountButtons />}
         body={<AccountForm />}
-        extraContent={<AccountExtraButtons />}
+        extraContent={
+          <>
+            <AccountExtraButtons />
+            <br />
+            {loggedUserEmail &&
+              <StyledSpan $comment>
+                {t("deviceCount.device", { count: userDevices })}
+              </StyledSpan>
+            }
+          </>
+        }
       />
-      {loggedUserEmail &&
-        <div >
-          <p style={{ textAlign: 'center' }}>
-            <strong>{t("deviceCount.device", { count: userDevices })}</strong>
-          </p>
-          <p style={{ marginTop: '6em', marginBottom: '0.5em' }}>
-            <strong>{t("activeUsers.count", { count: presenceUsers.length })}</strong>
-          </p>
-          <p style={{ marginBottom: '0.5em' }}>
-            <strong>{t("allDevices.device", { count: presenceUsers.reduce((sum, user) => sum + user.deviceCount, 0) })}</strong>
-          </p>
-          <p style={{ marginBottom: '0.5em' }}>
-            <strong>{t("activeUsers.label")}</strong>
-          </p>
-          <ul style={{ listStyle: 'none', paddingLeft: '6px', margin: '4px' }}>
-            {presenceUsers.map(({ email, deviceCount }) => {
-              const isCurrentUser = email === currentUserEmail;
-              const deviceText = deviceCount > 1 && ` (${deviceCount})`
-              return (
-                <li key={email}>
-                  - <span>{isCurrentUser ? <strong>{email}</strong> : email}</span>
-                  {deviceText && <span>{deviceText}</span>}
-                </li>
-              );
-            })}
-          </ul>
-        </div>}
+      {loggedUserEmail && (
+        <Section
+          title={
+            <NameContainer $account>
+              {t("activeUsers.count", { count: totalUsersCount })}
+              <StyledSpan $comment>
+                {t("allDevices.device", { count: allDevicesCount })}
+              </StyledSpan>
+            </NameContainer>
+          }
+          body={<PresenceUsersList />}
+        />
+      )}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import Ably from "ably";
 import { getUserToken } from "./getUserToken";
 import { getOrCreateDeviceId } from "./deviceId";
+import { auth } from "../api/auth";
 
 let ablyInstance: Ably.Realtime | null = null;
 
@@ -10,7 +11,9 @@ export const getAblyInstance = (): Ably.Realtime => {
       authCallback: async (tokenParams, callback) => {
         try {
           const userToken = await getUserToken();
+          const email = auth.currentUser()?.email;
           const deviceId = getOrCreateDeviceId();
+          const clientId = email ? `${email}:${deviceId}` : deviceId;
           const response = await fetch(`/auth-token?deviceId=${deviceId}`, {
             method: "GET",
             headers: {
@@ -23,6 +26,11 @@ export const getAblyInstance = (): Ably.Realtime => {
           }
 
           const ablyTokenRequest = await response.json();
+
+          if (clientId && !ablyTokenRequest.clientId) {
+            ablyTokenRequest.clientId = clientId;
+          }
+
           callback(null, ablyTokenRequest);
         } catch (err) {
           const errorMessage = err instanceof Error ? err.message : String(err);

@@ -172,6 +172,12 @@ const langDe: typeof langPl = {
       device_many: "Du bist auf {{count}} Geräten angemeldet",
       device_other: "Du bist auf {{count}} Geräten angemeldet",
     },
+    userDeviceCount: {
+      device: "angemeldet auf {{count}} Gerät",
+      device_few: "angemeldet auf {{count}} Geräten",
+      device_many: "angemeldet auf {{count}} Geräten",
+      device_other: "angemeldet auf {{count}} Geräten",
+    },
     activeUsers: {
       label: "Angemeldete Benutzer:",
       count: "Anzahl der aktiven Benutzer: {{count}}",
@@ -180,10 +186,10 @@ const langDe: typeof langPl = {
       count_other: "Anzahl der aktiven Benutzer: {{count}}",
     },
     allDevices: {
-      device: "Anzahl der aktiven Geräte: {{count}}",
-      device_few: "Anzahl der aktiven Geräte: {{count}}",
-      device_many: "Anzahl der aktiven Geräte: {{count}}",
-      device_other: "Anzahl der aktiven Geräte: {{count}}",
+      device: "Gesamtzahl der aktiven Geräte: {{count}}",
+      device_few: "Gesamtzahl der aktiven Geräte: {{count}}",
+      device_many: "Gesamtzahl der aktiven Geräte: {{count}}",
+      device_other: "Gesamtzahl der aktiven Geräte: {{count}}",
     },
     form: {
       buttons: {

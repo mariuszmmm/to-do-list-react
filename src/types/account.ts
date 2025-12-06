@@ -17,6 +17,8 @@ export interface AccountState {
   message: string;
   presenceUsers: PresenceUser[];
   userDevicesCount: number;
+  totalUsersCount: number;
+  allDevicesCount: number;
 }
 
 export type RecoveryStatus =

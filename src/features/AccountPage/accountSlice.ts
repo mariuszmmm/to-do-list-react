@@ -9,6 +9,8 @@ const getInitialState = (): AccountState => ({
   message: "",
   presenceUsers: [],
   userDevicesCount: 0,
+  totalUsersCount: 0,
+  allDevicesCount: 0,
 });
 
 const accountSlice = createSlice({
@@ -56,10 +58,13 @@ const accountSlice = createSlice({
         users: PresenceUser[];
         totalUsers: number;
         userDevices: number;
+        allDevices: number;
       }>
     ) => {
       state.presenceUsers = action.payload.users;
       state.userDevicesCount = action.payload.userDevices;
+      state.totalUsersCount = action.payload.totalUsers;
+      state.allDevicesCount = action.payload.allDevices;
     },
   },
 });
@@ -86,6 +91,10 @@ export const selectPresenceUsers = (state: RootState) =>
   state.account.presenceUsers;
 export const selectUserDevicesCount = (state: RootState) =>
   state.account.userDevicesCount;
+export const selectTotalUsersCount = (state: RootState) =>
+  state.account.totalUsersCount;
+export const selectAllDevicesCount = (state: RootState) =>
+  state.account.allDevicesCount;
 export const selectCurrentUserEmail = (state: RootState) =>
   state.account.loggedUserEmail;
 

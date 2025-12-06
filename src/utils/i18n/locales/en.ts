@@ -172,6 +172,12 @@ const langEn: typeof langPl = {
       device_many: "You are logged in on {{count}} devices",
       device_other: "You are logged in on {{count}} devices",
     },
+    userDeviceCount: {
+      device: "logged in on {{count}} device",
+      device_few: "logged in on {{count}} devices",
+      device_many: "logged in on {{count}} devices",
+      device_other: "logged in on {{count}} devices",
+    },
     activeUsers: {
       label: "Logged in users:",
       count: "Number of active users: {{count}}",
@@ -180,10 +186,10 @@ const langEn: typeof langPl = {
       count_other: "Number of active users: {{count}}",
     },
     allDevices: {
-      device: "Number of active devices: {{count}}",
-      device_few: "Number of active devices: {{count}}",
-      device_many: "Number of active devices: {{count}}",
-      device_other: "Number of active devices: {{count}}",
+      device: "Total active devices: {{count}}",
+      device_few: "Total active devices: {{count}}",
+      device_many: "Total active devices: {{count}}",
+      device_other: "Total active devices: {{count}}",
     },
     form: {
       buttons: {

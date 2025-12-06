@@ -49,7 +49,7 @@ const App = () => {
     }
   });
 
-  console.log("App component rendered. Logged user:", loggedUserEmail);
+  process.env.NODE_ENV === "development" && console.log("App component rendered. Logged user:", loggedUserEmail);
 
   return (
     <HashRouter>

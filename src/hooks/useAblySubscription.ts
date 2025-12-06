@@ -7,9 +7,10 @@ import { setChangeSource } from "../features/tasks/tasksSlice";
 import { useAppDispatch } from "./redux";
 
 interface PresenceData {
-  users: PresenceUser[]; // Lista dla komponentu z listą
-  totalUsers: number; // Liczba użytkowników dla prostego wyświetlania
-  userDevices: number; // Liczba urządzeń aktualnego użytkownika
+  users: PresenceUser[];
+  totalUsers: number;
+  userDevices: number;
+  allDevices: number;
 }
 
 interface UseAblySyncParams {
@@ -26,8 +27,6 @@ export const useAblySubscription = ({
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const deviceId = getOrCreateDeviceId();
-
-  // Stabilna referencja do callback
   const callbackRef = useRef(onPresenceUpdate);
 
   useEffect(() => {
@@ -41,105 +40,43 @@ export const useAblySubscription = ({
     }
 
     const ably = getAblyInstance();
-
-    // Kanał osobisty dla synchronizacji danych
     const dataChannel = ably.channels.get(`user:${userEmail}:lists`);
-
-    // Kanał globalny dla presence wszystkich użytkowników
     const presenceChannel = ably.channels.get("global:presence");
-
     const currentDeviceId = getOrCreateDeviceId();
 
     let isCleanedUp = false;
 
-    // Funkcja do aktualizacji liczby użytkowników
     const updatePresenceCount = async () => {
       try {
         const members = await presenceChannel.presence.get();
-
-        // Grupuj urządzenia po emailach
-        const emailDeviceMap = new Map<string, number>();
-
-        members.forEach((member) => {
-          const clientId = member.clientId || "";
-          const email = clientId.split(":")[0];
-
-          if (email) {
-            emailDeviceMap.set(email, (emailDeviceMap.get(email) || 0) + 1);
-          }
-        });
-
-        // Konwertuj do tablicy obiektów
-        const users: PresenceUser[] = Array.from(emailDeviceMap.entries()).map(
-          ([email, deviceCount]) => ({
-            email,
-            deviceCount,
-          })
-        );
-
-        // Sortuj alfabetycznie po emailu
-        users.sort((a, b) => a.email.localeCompare(b.email));
-
-        // Oblicz liczby dla prostego wyświetlania
+        const counts = members.reduce<Record<string, number>>((acc, m) => {
+          const email = (m.clientId || "").split(":")[0];
+          if (email) acc[email] = (acc[email] || 0) + 1;
+          return acc;
+        }, {});
+        const users: PresenceUser[] = Object.keys(counts)
+          .sort((a, b) => a.localeCompare(b))
+          .map((email) => ({ email, deviceCount: counts[email] }));
         const totalUsers = users.length;
-        const userDevices = emailDeviceMap.get(userEmail || "") || 0;
-
-        console.log(
-          `[Presence] Total users: ${totalUsers}, User devices: ${userDevices}`
-        );
-        console.log(`[Presence] Users:`, users);
+        const userDevices = counts[userEmail || ""] || 0;
+        const allDevices = members.length;
 
         callbackRef.current?.({
           users,
           totalUsers,
           userDevices,
+          allDevices,
         });
       } catch (err) {
         console.error("[Presence] Error getting members:", err);
       }
     };
 
-    // Subskrypcja na zmiany presence
-    const handlePresenceUpdate = (presenceMember: any) => {
-      console.log(
-        `[Presence] ${presenceMember.clientId} is now ${presenceMember.action}`
-      );
-      updatePresenceCount();
+    const handlePresenceEvent = async () => {
+      await updatePresenceCount();
     };
-
-    // Inicjalizacja kanału
-    const initializeChannel = async () => {
-      try {
-        // Attach do obu kanałów
-        await dataChannel.attach();
-        await presenceChannel.attach();
-
-        if (!isCleanedUp) {
-          // Subskrypcja presence na kanale globalnym
-          presenceChannel.presence.subscribe(handlePresenceUpdate);
-
-          // Pobierz początkową liczbę
-          await updatePresenceCount();
-
-          // Enter do globalnego presence
-          await presenceChannel.presence.enter({
-            email: userEmail,
-            deviceId: currentDeviceId,
-            status: "available",
-          });
-
-          console.log("[Presence] Entered global presence");
-        }
-      } catch (err) {
-        console.error("[Presence] Error during initialization:", err);
-      }
-    };
-
-    initializeChannel();
 
     const handleMessage = (message: any) => {
-      console.log("[useAblySubscription] Received Ably update:", message.data);
-
       if (!message.data) return;
       if (message.data.deviceId === currentDeviceId) return;
       const ablyDeviceId = message.data?.deviceId;
@@ -158,43 +95,68 @@ export const useAblySubscription = ({
       }
     };
 
-    dataChannel.subscribe("lists-updated", handleMessage);
-    console.log(
-      "[useAblySubscription] Subscribed to data channel:",
-      `user:${userEmail}:lists`
-    );
+    const initializeChannel = async () => {
+      try {
+        await dataChannel.attach();
+        if (isCleanedUp) return;
 
-    // CLEANUP
+        await presenceChannel.attach();
+        if (isCleanedUp) return;
+      } catch (err) {
+        console.error("[Channel] Attach failed:", err);
+        return;
+      }
+
+      try {
+        dataChannel.subscribe("lists-updated", handleMessage);
+
+        if (isCleanedUp) return;
+
+        presenceChannel.presence.subscribe("enter", handlePresenceEvent);
+        presenceChannel.presence.subscribe("leave", handlePresenceEvent);
+        presenceChannel.presence.subscribe("update", handlePresenceEvent);
+        await updatePresenceCount();
+        if (isCleanedUp) return;
+        await presenceChannel.presence.enter({
+          email: userEmail,
+          deviceId: currentDeviceId,
+          status: "available",
+        });
+      } catch (err) {
+        console.error("[Presence] Error during initialization:", err);
+      }
+    };
+
+    initializeChannel();
+
     return () => {
       isCleanedUp = true;
 
-      // Natychmiast zaktualizuj UI
+      presenceChannel.presence.unsubscribe("enter", handlePresenceEvent);
+      presenceChannel.presence.unsubscribe("leave", handlePresenceEvent);
+      presenceChannel.presence.unsubscribe("update", handlePresenceEvent);
+      dataChannel.unsubscribe("lists-updated", handleMessage);
+
       callbackRef.current?.({
         users: [],
         totalUsers: 0,
         userDevices: 0,
+        allDevices: 0,
       });
-      console.log("[Presence] Optimistically cleared presence data");
-      console.log("[Presence] Optimistically set counts to 0");
 
-      // Cleanup presence
-      presenceChannel.presence.unsubscribe(handlePresenceUpdate);
-      presenceChannel.presence.leave({ status: "offline" }).catch((err) => {
-        if (!err.message?.includes("detached")) {
-          console.error("[Presence] Error leaving presence:", err);
-        }
-      });
-      presenceChannel.detach().catch(() => {});
-
-      // Cleanup data channel
-      dataChannel.unsubscribe("lists-updated", handleMessage);
-      dataChannel.detach().catch(() => {});
-
-      if (!userEmail) {
-        closeAblyConnection();
-      }
-
-      console.log("[useAblySubscription] Cleanup completed");
+      Promise.all([
+        presenceChannel.presence.leave({ status: "offline" }),
+        presenceChannel.detach(),
+        dataChannel.detach(),
+      ])
+        .catch((err) => {
+          console.error("[Cleanup] Error:", err);
+        })
+        .finally(() => {
+          if (!userEmail) {
+            closeAblyConnection();
+          }
+        });
     };
   }, [userEmail, queryClient, enabled, dispatch, deviceId]);
 };
