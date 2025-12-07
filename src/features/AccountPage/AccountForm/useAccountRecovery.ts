@@ -17,15 +17,16 @@ export const useAccountRecovery = () => {
           title: { key: "modal.accountRecovery.title" },
           message: { key: "modal.accountRecovery.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: () => {
       dispatch(
         openModal({
+          title: { key: "modal.accountRecovery.title" },
           message: { key: "modal.accountRecovery.message.info" },
           type: "info",
-        }),
+        })
       );
 
       dispatch(setAccountMode("login"));
@@ -36,11 +37,12 @@ export const useAccountRecovery = () => {
 
       dispatch(
         openModal({
+          title: { key: "modal.accountRecovery.title" },
           message: translatedText || {
             key: "modal.accountRecovery.message.error.default",
           },
           type: "error",
-        }),
+        })
       );
     },
   });

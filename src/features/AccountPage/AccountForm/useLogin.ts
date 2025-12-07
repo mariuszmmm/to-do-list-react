@@ -17,18 +17,19 @@ export const useLogin = () => {
           title: { key: "modal.login.title" },
           message: { key: "modal.login.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: (response) => {
       dispatch(
         openModal({
+          title: { key: "modal.login.title" },
           message: {
             key: "modal.login.message.success",
             values: { user: response.email },
           },
           type: "success",
-        }),
+        })
       );
 
       dispatch(setAccountMode("logged"));
@@ -38,16 +39,17 @@ export const useLogin = () => {
       const error_description = error.json.error_description;
       const translatedText = await translateText(
         error_description,
-        i18n.language,
+        i18n.language
       );
 
       dispatch(
         openModal({
+          title: { key: "modal.login.title" },
           message: translatedText || {
             key: "modal.login.message.error.default",
           },
           type: "error",
-        }),
+        })
       );
     },
   });

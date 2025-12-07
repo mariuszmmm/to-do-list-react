@@ -38,6 +38,7 @@ export const useTokenValidation = () => {
         dispatch(setAccountMode("login"));
         dispatch(
           openModal({
+            title: { key: "modal.logout.title" },
             message: { key: "modal.logout.message.success" },
             type: "info",
           })
@@ -56,6 +57,7 @@ export const useTokenValidation = () => {
         dispatch(setAccountMode("login"));
         dispatch(
           openModal({
+            title: { key: "modal.logout.title" },
             message: { key: "modal.logout.message.success" },
             type: "info",
           })

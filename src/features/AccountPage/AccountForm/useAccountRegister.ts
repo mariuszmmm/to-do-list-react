@@ -17,16 +17,17 @@ export const useAccountRegister = () => {
           title: { key: "modal.accountRegister.title" },
           message: { key: "modal.accountRegister.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: () => {
       dispatch(setIsWaitingForConfirmation(true));
       dispatch(
         openModal({
+          title: { key: "modal.accountRegister.title" },
           message: { key: "modal.accountRegister.message.info" },
           type: "info",
-        }),
+        })
       );
     },
     onError: async (error: any) => {
@@ -35,11 +36,12 @@ export const useAccountRegister = () => {
 
       dispatch(
         openModal({
+          title: { key: "modal.accountRegister.title" },
           message: translatedText || {
             key: "modal.accountRegister.message.error.default",
           },
           type: "error",
-        }),
+        })
       );
     },
   });

@@ -44,6 +44,7 @@ export const ContactForm = () => {
         if (response.status === 200) {
           dispatch(
             openModal({
+              title: { key: "modal.sendMessage.title" },
               type: "success",
               message: t("sendMessage.message.success"),
             }),
@@ -57,6 +58,7 @@ export const ContactForm = () => {
       .catch((error) => {
         dispatch(
           openModal({
+            title: { key: "modal.sendMessage.title" },
             type: "error",
             message: t("sendMessage.message.error.default"),
           }),

@@ -38,6 +38,7 @@ export const useUpdateListsMutation = () => {
       if (response.data.conflict) {
         dispatch(
           openModal({
+            title: { key: "modal.listsUpdate.title" },
             message: { key: "modal.listsUpdate.message.error.conflict" },
             type: "error",
           })
@@ -45,6 +46,7 @@ export const useUpdateListsMutation = () => {
       } else {
         dispatch(
           openModal({
+            title: { key: "modal.listsUpdate.title" },
             message: { key: "modal.listsUpdate.message.success" },
             type: "success",
           })
@@ -54,6 +56,7 @@ export const useUpdateListsMutation = () => {
     onError: () => {
       dispatch(
         openModal({
+          title: { key: "modal.listsUpdate.title" },
           message: { key: "modal.listsUpdate.message.error.default" },
           type: "error",
         })

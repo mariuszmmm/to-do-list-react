@@ -30,6 +30,7 @@ export const useRemoveListMutation = () => {
     onMutate: () => {
       dispatch(
         openModal({
+          title: { key: "modal.listRemove.title" },
           message: { key: "modal.listRemove.message.loading" },
           type: "loading",
         })
@@ -40,6 +41,7 @@ export const useRemoveListMutation = () => {
       if (response.data.conflict) {
         dispatch(
           openModal({
+            title: { key: "modal.listRemove.title" },
             message: { key: "modal.listRemove.message.error.conflict" },
             type: "error",
           })
@@ -47,6 +49,7 @@ export const useRemoveListMutation = () => {
       } else {
         dispatch(
           openModal({
+            title: { key: "modal.listRemove.title" },
             message: {
               key: "modal.listRemove.message.success",
             },
@@ -58,6 +61,7 @@ export const useRemoveListMutation = () => {
     onError: () => {
       dispatch(
         openModal({
+          title: { key: "modal.listRemove.title" },
           message: { key: "modal.listRemove.message.error.default" },
           type: "error",
         })

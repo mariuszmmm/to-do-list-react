@@ -32,6 +32,7 @@ const UserConfirmationPage = () => {
         await auth.confirm(token);
         dispatch(
           openModal({
+            title: { key: "modal.confirmation.title" },
             message: { key: "modal.confirmation.message.success" },
             type: "success",
           }),
@@ -40,6 +41,7 @@ const UserConfirmationPage = () => {
       } catch (error) {
         dispatch(
           openModal({
+            title: { key: "modal.confirmation.title" },
             message: { key: "modal.confirmation.message.error.default" },
             type: "error",
           }),

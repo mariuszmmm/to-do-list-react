@@ -25,15 +25,16 @@ export const usePasswordChange = () => {
           title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: () => {
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.success" },
           type: "success",
-        }),
+        })
       );
 
       dispatch(setAccountMode("logged"));
@@ -41,9 +42,10 @@ export const usePasswordChange = () => {
     onError: () => {
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
-        }),
+        })
       );
     },
   });

@@ -16,26 +16,29 @@ export const useLogout = () => {
     onMutate: () => {
       dispatch(
         openModal({
+          title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: () => {
       dispatch(setLoggedUserEmail(null));
       dispatch(
         openModal({
+          title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.success" },
           type: "success",
-        }),
+        })
       );
     },
     onError: async () => {
       dispatch(
         openModal({
+          title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.error.default" },
           type: "error",
-        }),
+        })
       );
     },
   });

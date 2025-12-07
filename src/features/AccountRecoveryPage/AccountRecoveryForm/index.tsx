@@ -46,6 +46,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         await auth.recover(token);
         dispatch(
           openModal({
+            title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.success" },
             confirmButton: { key: "modal.buttons.nextButton" },
             type: "success",
@@ -54,6 +55,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
       } catch (error) {
         dispatch(
           openModal({
+            title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.error.linkExpired" },
             type: "error",
           }),
@@ -90,6 +92,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
       await user.update({ password }).then((user) => user.logout());
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.success" },
           type: "success",
         }),
@@ -100,6 +103,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
     } catch (error) {
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
         }),
