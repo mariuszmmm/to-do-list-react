@@ -7,12 +7,16 @@
 
 # testing
 /coverage
+.jest-cache/
+jest-cache/
 
 # production
 /build
 
 # misc
 .DS_Store
+Thumbs.db
+.vscode/
 .env.local
 .env.development.local
 .env.test.local
@@ -25,3 +29,6 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
+
+# Deno (nie używamy w tym projekcie)
+deno.lock

@@ -1,5 +1,5 @@
 /**
- * Utility functions for managing and validating authentication tokens
+ * Funkcje narzędziowe do zarządzania i walidacji tokenów autentykacji
  */
 
 export interface TokenData {
@@ -18,29 +18,34 @@ export interface GoTrueUser {
 }
 
 /**
- * Checks if a token is currently valid
- * @param user - The GoTrue user object from localStorage
- * @param bufferMs - Buffer in milliseconds before expiration (default: 60s)
- * @returns true if token is valid and not expired
+ * Sprawdza czy token jest aktualnie ważny
+ * @param user - Obiekt użytkownika GoTrue z localStorage
+ * @param bufferMs - Bufor w milisekundach przed wygaśnięciem (domyślnie: 60s)
+ * @returns true jeśli token jest ważny i nie wygasł
  */
-export const isTokenValid = (user: GoTrueUser | null | undefined, bufferMs: number = 60000): boolean => {
+export const isTokenValid = (
+  user: GoTrueUser | null | undefined,
+  bufferMs: number = 60000
+): boolean => {
   if (!user?.token?.expires_at) {
     return false;
   }
 
   const now = Date.now();
   const expiresAt = user.token.expires_at;
-  
-  // Add buffer to prevent using tokens that are about to expire
-  return now < (expiresAt - bufferMs);
+
+  // Dodaj bufor aby zapobiec używaniu tokenów które są blisko wygaśnięcia
+  return now < expiresAt - bufferMs;
 };
 
 /**
- * Gets remaining time until token expires
- * @param user - The GoTrue user object from localStorage
- * @returns Remaining time in milliseconds, or 0 if expired/invalid
+ * Zwraca pozostały czas do wygaśnięcia tokena
+ * @param user - Obiekt użytkownika GoTrue z localStorage
+ * @returns Pozostały czas w milisekundach, lub 0 jeśli wygasł/nieprawidłowy
  */
-export const getTokenExpiresIn = (user: GoTrueUser | null | undefined): number => {
+export const getTokenExpiresIn = (
+  user: GoTrueUser | null | undefined
+): number => {
   if (!user?.token?.expires_at) {
     return 0;
   }
@@ -50,18 +55,20 @@ export const getTokenExpiresIn = (user: GoTrueUser | null | undefined): number =
 };
 
 /**
- * Gets the access token from user object
- * @param user - The GoTrue user object from localStorage
- * @returns Access token string or null
+ * Zwraca token dostępu z obiektu użytkownika
+ * @param user - Obiekt użytkownika GoTrue z localStorage
+ * @returns String tokena dostępu lub null
  */
-export const getAccessToken = (user: GoTrueUser | null | undefined): string | null => {
+export const getAccessToken = (
+  user: GoTrueUser | null | undefined
+): string | null => {
   return user?.token?.access_token || null;
 };
 
 /**
- * Checks if user object exists and has valid structure
- * @param user - The GoTrue user object from localStorage
- * @returns true if user object is valid
+ * Sprawdza czy obiekt użytkownika istnieje i ma prawidłową strukturę
+ * @param user - Obiekt użytkownika GoTrue z localStorage
+ * @returns true jeśli obiekt użytkownika jest prawidłowy
  */
 export const isUserValid = (user: GoTrueUser | null | undefined): boolean => {
   return !!(user?.id && user?.email && user?.token);

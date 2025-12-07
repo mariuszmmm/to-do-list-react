@@ -21,7 +21,8 @@ import {
   useDataFetchingError,
   useSaveListMutation,
   useListSyncManager,
-  useAblySubscription
+  useAblySubscription,
+  useTokenValidation
 } from "./hooks";
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
 
@@ -38,6 +39,9 @@ const App = () => {
   const saveListMutation = useSaveListMutation();
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
   const dispatch = useAppDispatch();
+
+  // Monitor token validity
+  useTokenValidation();
 
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });

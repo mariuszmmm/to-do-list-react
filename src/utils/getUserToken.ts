@@ -1,4 +1,5 @@
 import { auth } from "../api/auth";
+import { isTokenValid } from "./tokenUtils";
 
 export const getUserToken = async () => {
   const user = auth.currentUser();
@@ -6,9 +7,6 @@ export const getUserToken = async () => {
   if (!user || !user.token) {
     return null;
   }
-
-  const expires_at = user.token.expires_at;
-  const isTokenExpired = new Date().getTime() > expires_at - 60000;
 
   const refreshToken = async () => {
     try {
@@ -24,7 +22,8 @@ export const getUserToken = async () => {
     }
   };
 
-  if (isTokenExpired) {
+  // Sprawdź czy token jest jeszcze ważny (z buforem 60s)
+  if (!isTokenValid(user, 60000)) {
     return await refreshToken();
   } else {
     return user.token.access_token;
