@@ -82,9 +82,9 @@ export const TaskLists = ({
             <StyledSpan $comment>
               {list.id === localListId && <CircleIcon $isActive />}
               {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
-              <strong> •</strong>{` (`}&nbsp;
-              {t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}
-              &nbsp;{`)`}
+              <strong> •</strong>&nbsp;
+              {`(`}&nbsp;{t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}&nbsp;{`)`}
+              {list.id === localListId && <>&nbsp;•&nbsp;{t("currentList")}</>}
             </StyledSpan>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (

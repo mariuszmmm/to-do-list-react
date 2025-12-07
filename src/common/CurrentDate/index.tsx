@@ -20,7 +20,7 @@ export const CurrentDate = ({ authRoutes }: { authRoutes: string[] }) => {
   return (
     <DateContainer>
       <StyledDate $comentary>
-        {t("desc")}
+        {t("description")}
         {formatCurrentDay(currentDate, i18n.language)},
       </StyledDate>
       <StyledDate>{formatCurrentTime(currentDate, i18n.language)}</StyledDate>

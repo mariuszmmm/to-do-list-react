@@ -7,7 +7,8 @@ const langEn: typeof langPl = {
     info: "Info",
   },
   listFrom: "List from",
-  currentDate: { desc: "Today is " },
+  currentList: "current",
+  currentDate: { description: "Today is " },
   currentTaskCount: {
     tasks: "{{count}}\u00A0task",
     tasks_few: "{{count}}\u00A0tasks",

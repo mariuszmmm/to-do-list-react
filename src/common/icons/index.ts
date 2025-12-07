@@ -109,14 +109,15 @@ export const CircleLoadingIcon = styled(CircleLoading)`
 export const CircleIcon = styled(Circle)<CircleIconProps>`
   margin-right: 10px;
   scale: 1.3;
-  padding-top: 1px;
+  width: 0.7rem;
+  height: auto;
 
   ${({ $isActive }) =>
     $isActive &&
     css`
       margin-left: 8px;
       scale: 1.6;
-      padding-top: 3px;
+      width: 0.6rem;
     `};
 
   filter: brightness(140%);

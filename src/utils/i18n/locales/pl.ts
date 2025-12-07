@@ -5,7 +5,8 @@ const langPl = {
     info: "Informacje",
   },
   listFrom: "Lista z dnia",
-  currentDate: { desc: "Dziś jest " },
+  currentList: "bieżąca",
+  currentDate: { description: "Dziś jest " },
   currentTaskCount: {
     tasks: "{{count}}\u00A0zadanie",
     tasks_few: "{{count}}\u00A0zadania",
