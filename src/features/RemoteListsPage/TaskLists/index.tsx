@@ -18,6 +18,8 @@ import {
   StyledListContent,
   StyledListItem,
   StyledSpan,
+  ListMeta,
+  ListMetaText,
 } from "../../../common/StyledList";
 import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import i18n from "../../../utils/i18n";
@@ -79,13 +81,16 @@ export const TaskLists = ({
           <StyledListContent $type={"tasks"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
-            <StyledSpan $comment>
+            <ListMeta>
               {list.id === localListId && <CircleIcon $isActive />}
-              {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
-              <strong> •</strong>&nbsp;
-              {`(`}&nbsp;{t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}&nbsp;{`)`}
-              {list.id === localListId && <>&nbsp;•&nbsp;{t("currentList")}</>}
-            </StyledSpan>
+              <ListMetaText>
+                <StyledSpan $comment>
+                  {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
+                  {list.taskList.length > 0 && <><strong>•</strong>&nbsp;(&nbsp;{t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}&nbsp;)&nbsp;</>}
+                  {list.id === localListId && <><strong>•</strong>&nbsp;{t("currentList")}</>}
+                </StyledSpan>
+              </ListMetaText>
+            </ListMeta>
           </StyledListContent>
           {!isListsSorting && !listsToSort && (
             <RemoveButton
@@ -104,3 +109,4 @@ export const TaskLists = ({
     </StyledList>
   );
 };
+

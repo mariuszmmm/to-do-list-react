@@ -67,10 +67,9 @@ export const EditableListName = () => {
       {!listNameToEdit ? (
         <>
           <StyledSpan $comment>
-            {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
-            <strong> •</strong>&nbsp;
-            {`(`}&nbsp;{i18n.t('currentTaskCount.tasks', { count: tasks.length ?? 0 })}&nbsp;{`)`}
-            <strong> •</strong>&nbsp;{`${isRemoteSaveable ? "online" : "offline"}`}
+            {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)} `}
+            {tasks.length > 0 && <><strong>•</strong>&nbsp;(&nbsp;{i18n.t('currentTaskCount.tasks', { count: tasks.length })}&nbsp;){" "}</>}
+            <strong>•</strong>&nbsp;{`${isRemoteSaveable ? "online" : "offline"}`}
           </StyledSpan>
           <ListName>
             {name}

@@ -127,6 +127,20 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       font-style: italic;
       font-size: 0.85rem;
       font-weight: normal;
-      padding-top: 4px;
     `}
+`;
+
+export const ListMeta = styled.div`
+  display: flex;
+  padding-top: 4px;
+`;
+
+export const ListMetaText = styled.div`
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 4px;
+  row-gap: 2px;
 `;

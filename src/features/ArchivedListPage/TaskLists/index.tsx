@@ -1,6 +1,8 @@
 import { List } from "../../../types";
 import { useAppDispatch } from "../../../hooks/redux";
 import {
+  ListMeta,
+  ListMetaText,
   StyledList,
   StyledListContent,
   StyledListItem,
@@ -45,12 +47,14 @@ export const TaskLists = ({
           <StyledListContent $type={"tasks"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
-            <StyledSpan $comment>
-              {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)}`}
-              <strong> •</strong>{` (`}&nbsp;
-              {t('currentTaskCount.tasks', { count: list.taskList.length ?? 0 })}
-              &nbsp;{`)`}
-            </StyledSpan>
+            <ListMeta>
+              <ListMetaText>
+                <StyledSpan $comment>
+                  {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
+                  {list.taskList.length > 0 && <><strong>•</strong>&nbsp;(&nbsp;{t('currentTaskCount.tasks', { count: list.taskList.length })}&nbsp;)</>}
+                </StyledSpan>
+              </ListMetaText>
+            </ListMeta>
           </StyledListContent>
           <RemoveButton
             onClick={() => dispatch(setArchivedListToRemove(list))}

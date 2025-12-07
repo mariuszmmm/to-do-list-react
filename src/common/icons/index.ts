@@ -107,7 +107,7 @@ export const CircleLoadingIcon = styled(CircleLoading)`
 `;
 
 export const CircleIcon = styled(Circle)<CircleIconProps>`
-  margin-right: 10px;
+  margin-right: 8px;
   scale: 1.3;
   width: 0.7rem;
   height: auto;
