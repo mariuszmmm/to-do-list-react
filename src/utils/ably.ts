@@ -12,9 +12,14 @@ export const getAblyInstance = (): Ably.Realtime => {
         try {
           const userToken = await getUserToken();
           const email = auth.currentUser()?.email;
+
+          if (!email) {
+            callback("User not authenticated", null);
+            return;
+          }
+
           const deviceId = getOrCreateDeviceId();
-          const clientId = email ? `${email}:${deviceId}` : deviceId;
-          const response = await fetch(`/auth-token?deviceId=${deviceId}`, {
+          const response = await fetch(`/ably-auth?deviceId=${deviceId}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${userToken}`,
@@ -22,15 +27,12 @@ export const getAblyInstance = (): Ably.Realtime => {
           });
 
           if (!response.ok) {
-            throw new Error(response.statusText);
+            const errorData = await response.json();
+            callback(errorData.message || response.statusText, null);
+            return;
           }
 
           const ablyTokenRequest = await response.json();
-
-          if (clientId && !ablyTokenRequest.clientId) {
-            ablyTokenRequest.clientId = clientId;
-          }
-
           callback(null, ablyTokenRequest);
         } catch (err) {
           const errorMessage = err instanceof Error ? err.message : String(err);

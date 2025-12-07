@@ -127,5 +127,6 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       font-style: italic;
       font-size: 0.85rem;
       font-weight: normal;
+      padding-top: 4px;
     `}
 `;

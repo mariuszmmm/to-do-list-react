@@ -10,6 +10,7 @@ import {
   setListNameToEdit,
   setListName,
   selectTasks,
+  selectListStatus,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
@@ -25,6 +26,7 @@ export const EditableListName = () => {
   const [newName, setNewName] = useState(name || t("tasks.defaultListName"));
   const listNameToEdit = useAppSelector(selectListNameToEdit);
   const inpurRef = useRef<HTMLInputElement>(null);
+  const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -66,9 +68,9 @@ export const EditableListName = () => {
         <>
           <StyledSpan $comment>
             {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)}`}
-            <strong> •</strong>{` (`}&nbsp;
-            {i18n.t('currentTaskCount.tasks', { count: tasks.length ?? 0 })}
-            &nbsp;{`)`}
+            <strong> •</strong>&nbsp;
+            {`(`}&nbsp;{i18n.t('currentTaskCount.tasks', { count: tasks.length ?? 0 })}&nbsp;{`)`}
+            <strong> •</strong>&nbsp;{`${isRemoteSaveable ? "online" : "offline"}`}
           </StyledSpan>
           <ListName>
             {name}

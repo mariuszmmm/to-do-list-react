@@ -1,11 +1,11 @@
-// netlify/functions/auth-token.ts
+// netlify/functions/ably-auth.ts
 import type { Handler } from "@netlify/functions";
 import Ably from "ably";
 
 const handler: Handler = async (event, context) => {
   // Sprawdź czy użytkownik jest uwierzytelniony
   if (!context.clientContext || !context.clientContext.user) {
-    console.log("[auth-token] Unauthorized - Missing client context");
+    console.log("[ably-auth] Unauthorized - Missing client context");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -25,7 +25,7 @@ const handler: Handler = async (event, context) => {
   }
 
   console.log(
-    "[auth-token] Generating token for user:",
+    "[ably-auth] Generating token for user:",
     email,
     "device:",
     deviceId
@@ -56,7 +56,7 @@ const handler: Handler = async (event, context) => {
     };
   } catch (error) {
     const err = error as Error;
-    console.error("[auth-token] Error generating token:", err);
+    console.error("[ably-auth] Error generating token:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({

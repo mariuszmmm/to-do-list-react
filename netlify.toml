@@ -34,6 +34,6 @@
   status = 200
 
   [[redirects]]
-  from = "/auth-token"
-  to = "/.netlify/functions/auth-token"
+  from = "/ably-auth"
+  to = "/.netlify/functions/ably-auth"
   status = 200
