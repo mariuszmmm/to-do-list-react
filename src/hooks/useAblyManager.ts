@@ -36,7 +36,6 @@ export const useAblyManager = () => {
   const presenceChannelRef = useRef<any | null>(null);
   const isInitializedRef = useRef<boolean>(false);
 
-  // Subscribe do confirmation events
   const onConfirmation = useCallback(
     (email: string, callback: ConfirmationCallback) => {
       const callbacks = subscriptionsRef.confirmation.get(email) || [];
@@ -51,7 +50,6 @@ export const useAblyManager = () => {
     []
   );
 
-  // Subscribe do lists update events
   const onListsUpdate = useCallback(
     (email: string, callback: ListsUpdateCallback) => {
       const callbacks = subscriptionsRef.listsUpdate.get(email) || [];
@@ -66,7 +64,6 @@ export const useAblyManager = () => {
     []
   );
 
-  // Subscribe do presence update events
   const onPresenceUpdate = useCallback((callback: PresenceUpdateCallback) => {
     const callbacks = subscriptionsRef.presenceUpdate.get("global") || [];
     callbacks.push(callback);
@@ -78,7 +75,6 @@ export const useAblyManager = () => {
     };
   }, []);
 
-  // Initialize Ably channels when user logs in
   useEffect(() => {
     if (!loggedUserEmail) {
       return;
@@ -114,7 +110,6 @@ export const useAblyManager = () => {
         await presenceChannel.attach();
         await confirmationChannel.attach();
       } catch (err) {
-        // Ignoruj błędy podczas StrictMode cleanup (attach superseded by detach)
         if (err instanceof Error && err.message.includes("superseded")) {
           return;
         }
@@ -122,11 +117,9 @@ export const useAblyManager = () => {
         return;
       }
 
-      // Setup data channel listeners
       const handleListsMessage = (message: any) => {
         if (!message.data?.lists) return;
         if (message.data.deviceId === currentDeviceId) return;
-
         const callbacks =
           subscriptionsRef.listsUpdate.get(loggedUserEmail) || [];
         callbacks.forEach((cb) => cb(message.data));
@@ -134,7 +127,6 @@ export const useAblyManager = () => {
 
       dataChannel.subscribe("lists-updated", handleListsMessage);
 
-      // Setup confirmation channel listeners
       const handleConfirmation = (message: any) => {
         if (message.data?.type === "user-confirmed") {
           const email = message.data.email;
@@ -145,10 +137,8 @@ export const useAblyManager = () => {
 
       confirmationChannel.subscribe("user-confirmed", handleConfirmation);
 
-      // Setup presence channel listeners
       const updatePresenceCount = async () => {
         try {
-          // Ignoruj jeśli kanał jest detached (StrictMode cleanup)
           if (presenceChannel.state !== "attached") {
             return;
           }
@@ -176,7 +166,6 @@ export const useAblyManager = () => {
             })
           );
         } catch (err) {
-          // Ignoruj błędy gdy kanał jest detached
           if (err instanceof Error && err.message.includes("detached")) {
             return;
           }
@@ -207,7 +196,6 @@ export const useAblyManager = () => {
 
     initializeChannels();
 
-    // Store references for cleanup
     const channels = channelsRef.current;
 
     return () => {
@@ -245,7 +233,6 @@ export const useAblyManager = () => {
     };
   }, [loggedUserEmail]);
 
-  // Close Ably on logout
   useEffect(() => {
     if (!loggedUserEmail) {
       closeAblyConnection();

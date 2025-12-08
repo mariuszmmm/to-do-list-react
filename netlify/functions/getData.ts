@@ -41,7 +41,7 @@ const handler: Handler = async (event, context) => {
       body: JSON.stringify({
         message: "User data found",
         data: {
-          email: userData.email,
+          // email: userData.email,
           lists: userData.lists,
         },
       }),

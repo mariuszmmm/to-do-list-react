@@ -34,7 +34,6 @@ export const useTokenValidation = () => {
     // 1. Już otrzymaliśmy raz ważny token
     // 2. Token teraz wygasł (= 0)
     if (hasReceivedValidTokenRef.current && tokenRemainingMs <= 0) {
-      console.warn("Token wygasł, wylogowywanie użytkownika");
       dispatch(setLoggedUserEmail(null));
       dispatch(setAccountMode("login"));
       dispatch(

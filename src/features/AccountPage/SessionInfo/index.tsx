@@ -42,7 +42,7 @@ export const SessionInfo = () => {
     };
 
     updateSessionData();
-  }, []);
+  }, [remainingMs]);
 
   if (!sessionData.email) {
     return null;

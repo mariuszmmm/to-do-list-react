@@ -7,8 +7,9 @@ import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";
 import { Trans, useTranslation } from "react-i18next";
 import { StyledLink } from "../../common/StyledLink";
-import { useAblyManager } from "../../hooks/useAblyManager";
 import { setLoggedUserEmail } from "../AccountPage/accountSlice";
+import Ably from "ably";
+import { getOrCreateDeviceId } from "../../utils/deviceId";
 
 type Status = "waiting" | "success" | "error";
 
@@ -18,9 +19,8 @@ const UserConfirmationPage = () => {
     keyPrefix: "confirmationPage",
   });
   const dispatch = useAppDispatch();
-  const { onConfirmation } = useAblyManager();
   const webhookTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const channelRef = useRef<any | null>(null);
 
   useEffect(() => {
     const confirmation = async () => {
@@ -39,53 +39,66 @@ const UserConfirmationPage = () => {
         const confirmedUser = await auth.confirm(token);
         const userEmail = confirmedUser?.email;
 
-        console.log(`[Confirmation] Confirmed user:`, confirmedUser);
-        console.log(`[Confirmation] Current user after confirm:`, auth.currentUser());
-
         if (!userEmail) {
           throw new Error("Failed to get user email after confirmation");
         }
 
-        console.log(`[Confirmation] User ${userEmail} confirmed in GoTrue`);
-
-        // Czekaj na webhook from confirmUser (up to 10 seconds)
-        // Webhook wysyła event Ably o potwierdzeniu
         await new Promise<void>((resolve, reject) => {
           try {
-            const handleWebhook = () => {
-              console.log(
-                `[Confirmation] Webhook received for ${userEmail}`
-              );
+            const deviceId = getOrCreateDeviceId();
+            const ably = new Ably.Realtime({
+              authCallback: async (tokenParams, callback) => {
+                try {
+                  const response = await fetch(
+                    `/ably-auth?email=${userEmail}&deviceId=${deviceId}`,
+                    { method: "GET" }
+                  );
+
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    callback(errorData.message || response.statusText, null);
+                    return;
+                  }
+
+                  const ablyTokenRequest = await response.json();
+                  callback(null, ablyTokenRequest);
+                } catch (err) {
+                  const errorMessage =
+                    err instanceof Error ? err.message : String(err);
+                  callback(errorMessage, null);
+                }
+              },
+            });
+
+            const channel = ably.channels.get(`user:${userEmail}:confirmation`);
+            channelRef.current = channel;
+
+            const handleWebhook = async (message: any) => {
               cleanup();
               resolve();
             };
 
-            const cleanup = () => {
-              if (unsubscribeRef.current) {
-                unsubscribeRef.current();
+            const cleanup = async () => {
+              if (channelRef.current) {
+                await channelRef.current.detach();
+                channelRef.current = null;
               }
               if (webhookTimeoutRef.current) {
                 clearTimeout(webhookTimeoutRef.current);
               }
             };
 
-            unsubscribeRef.current = onConfirmation(userEmail, handleWebhook);
+            channel.subscribe("user-confirmed", handleWebhook);
 
-            // Timeout 10 sekund na webhook
-            webhookTimeoutRef.current = setTimeout(() => {
-              console.warn(
-                `[Confirmation] Webhook timeout for ${userEmail}, proceeding anyway`
-              );
-              cleanup();
-              resolve(); // Kontynuuj mimo braku webhooks (user jest potwierdzony w GoTrue)
+            webhookTimeoutRef.current = setTimeout(async () => {
+              await cleanup();
+              resolve();
             }, 10000);
           } catch (error) {
             reject(error);
           }
         });
 
-        // Automatycznie zaloguj użytkownika
-        console.log(`[Confirmation] Auto-login user ${userEmail}`);
         dispatch(setLoggedUserEmail(userEmail));
 
         dispatch(
@@ -97,7 +110,6 @@ const UserConfirmationPage = () => {
         );
         setStatus("success");
       } catch (error) {
-        console.error("[Confirmation] Error:", error);
         dispatch(
           openModal({
             title: { key: "modal.confirmation.title" },
@@ -112,14 +124,11 @@ const UserConfirmationPage = () => {
     confirmation();
 
     return () => {
-      if (unsubscribeRef.current) {
-        unsubscribeRef.current();
-      }
       if (webhookTimeoutRef.current) {
         clearTimeout(webhookTimeoutRef.current);
       }
     };
-  }, [dispatch, onConfirmation]);
+  }, [dispatch]);
 
   return (
     <>

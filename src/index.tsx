@@ -19,8 +19,6 @@ getTokenFromURL(currentUrl);
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
 
-process.env.NODE_ENV === "development" && console.log("Rendering App component...");
-
 const AppProviders = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>
     <ThemeProvider theme={theme}>
@@ -37,15 +35,15 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => (
 );
 
 root.render(
-  process.env.NODE_ENV === "development" ? (
-    <React.StrictMode>
-      <AppProviders>
-        <App />
-      </AppProviders>
-    </React.StrictMode>
-  ) : (
-    <AppProviders>
-      <App />
-    </AppProviders>
-  )
+  // process.env.NODE_ENV === "development" ? (
+  //   <React.StrictMode>
+  //     <AppProviders>
+  //       <App />
+  //     </AppProviders>
+  //   </React.StrictMode>
+  // ) : (
+  <AppProviders>
+    <App />
+  </AppProviders>
+  // )
 );

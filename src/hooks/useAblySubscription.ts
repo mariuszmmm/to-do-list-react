@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useAblyManager } from "./useAblyManager";
 import { useQueryClient } from "@tanstack/react-query";
+import { setChangeSource } from "../features/tasks/tasksSlice";
+import { useAppDispatch } from "./redux";
+import { getOrCreateDeviceId } from "../utils/deviceId";
 
 export interface PresenceData {
   users: Array<{ email: string; deviceCount: number }>;
@@ -29,6 +32,7 @@ export const useAblySubscription = ({
     onListsUpdate: subscribeListsUpdate,
   } = useAblyManager();
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
 
   // Subscribe do presence updates
   useEffect(() => {
@@ -51,9 +55,20 @@ export const useAblySubscription = ({
       return;
     }
 
+    const currentDeviceId = getOrCreateDeviceId();
+
     const unsubscribe = subscribeListsUpdate(userEmail, (data) => {
-      console.log("[AblySubscription] Lists updated:", data);
       if (data.lists) {
+        console.log("id ", data.deviceId, currentDeviceId);
+        if (data.deviceId === currentDeviceId) return;
+
+        process.env.NODE_ENV === "development" &&
+          console.log(
+            "[useAblySubscription] Received lists update via Ably:",
+            data
+          );
+
+        dispatch(setChangeSource("remote"));
         queryClient.setQueryData(["listsData"], data);
       }
     });
@@ -63,5 +78,7 @@ export const useAblySubscription = ({
         unsubscribe();
       }
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, userEmail, subscribeListsUpdate, queryClient]);
 };
