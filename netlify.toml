@@ -1,3 +1,9 @@
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  node_bundler = "esbuild"
+
 [[redirects]]
   from = "/getData"
   to = "/.netlify/functions/getData"
@@ -33,7 +39,7 @@
   to = "/.netlify/functions/translateMessage"
   status = 200
 
-  [[redirects]]
+[[redirects]]
   from = "/ably-auth"
   to = "/.netlify/functions/ably-auth"
   status = 200
