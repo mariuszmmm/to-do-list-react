@@ -114,7 +114,7 @@ const handler: Handler = async (event, context) => {
           body: JSON.stringify({
             message: "Conflict detected: Version mismatch.",
             data: {
-              email: foundUser.email,
+              // email: foundUser.email,
               lists: foundUser.lists,
               conflict: true,
             },
@@ -159,7 +159,7 @@ const handler: Handler = async (event, context) => {
             error: err.message,
             stack: err.stack,
             data: {
-              email: foundUser.email,
+              // email: foundUser.email,
               lists: foundUser.lists,
               conflict: true,
             },
@@ -190,6 +190,7 @@ const handler: Handler = async (event, context) => {
         deviceId: data.deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
       });
+      console.log("[addData] Ably notification sent successfully");
     } catch (ablyError) {
       console.error("[addData] Ably publish error:", ablyError);
     }

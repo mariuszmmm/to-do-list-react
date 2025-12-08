@@ -180,6 +180,8 @@ export const useListSyncManager = ({
 
   // Initialize debounced mutate function
   useEffect(() => {
+    process.env.NODE_ENV === "development" &&
+      console.log("Initializing debounced mutate function");
     debouncedMutateRef.current = debounce(
       (payload: { list: List; deviceId: string }) => {
         saveListMutation.mutate(payload);

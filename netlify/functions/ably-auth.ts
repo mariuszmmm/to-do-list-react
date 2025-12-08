@@ -3,19 +3,23 @@ import type { Handler } from "@netlify/functions";
 import Ably from "ably";
 
 const handler: Handler = async (event, context) => {
-  // Sprawdź czy użytkownik jest uwierzytelniony
-  if (!context.clientContext || !context.clientContext.user) {
-    console.log("[ably-auth] Unauthorized - Missing client context");
+  // Pobierz email z query params (dla confirmation channel bez JWT)
+  const emailParam = event.queryStringParameters?.email;
+  const deviceId = event.queryStringParameters?.deviceId;
+
+  // Sprawdź czy użytkownik jest uwierzytelniony (dla pełnych uprawnień)
+  const isAuthenticated = context?.clientContext?.user !== undefined;
+  const email = isAuthenticated
+    ? context?.clientContext?.user?.email
+    : emailParam;
+
+  if (!email) {
+    console.log("[ably-auth] Unauthorized - Missing email");
     return {
       statusCode: 401,
-      body: JSON.stringify({ message: "Unauthorized" }),
+      body: JSON.stringify({ message: "Missing email" }),
     };
   }
-
-  const { email }: { email: string } = context.clientContext.user;
-
-  // Pobierz deviceId z query params
-  const deviceId = event.queryStringParameters?.deviceId;
 
   if (!deviceId) {
     return {
@@ -28,7 +32,9 @@ const handler: Handler = async (event, context) => {
     "[ably-auth] Generating token for user:",
     email,
     "device:",
-    deviceId
+    deviceId,
+    "authenticated:",
+    isAuthenticated
   );
 
   try {
@@ -39,14 +45,22 @@ const handler: Handler = async (event, context) => {
 
     const uniqueClientId = `${email}:${deviceId}`;
 
+    // Jeśli nie zalogowany, tylko confirmation channel
+    const capability = isAuthenticated
+      ? {
+          [`user:${email}:lists`]: ["subscribe"] as const,
+          [`user:${email}:confirmation`]: ["subscribe"] as const,
+          "global:presence": ["subscribe", "presence"] as const,
+        }
+      : {
+          // Tylko confirmation channel dla niezalogowanych
+          [`user:${email}:confirmation`]: ["subscribe"] as const,
+        };
+
     // Wygeneruj TokenRequest z odpowiednimi uprawnieniami
     const tokenRequest = await ably.auth.createTokenRequest({
       clientId: uniqueClientId,
-      capability: {
-        [`user:${email}:lists`]: ["subscribe"],
-        [`user:${email}:confirmation`]: ["subscribe"],
-        "global:presence": ["subscribe", "presence"],
-      },
+      capability: capability as any,
       ttl: 3600000,
     });
 

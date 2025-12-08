@@ -34,7 +34,7 @@ const App = () => {
     queryKey: ["listsData"],
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
-    // refetchInterval: 60 * 1000,
+    refetchInterval: 60 * 1000,
   });
   const safeData = !!loggedUserEmail ? data : undefined;
   const authRoutes = ["/user-confirmation", "/account-recovery"];
@@ -52,7 +52,7 @@ const App = () => {
     }
   });
 
-  process.env.NODE_ENV === "development" && console.log("App component rendered. Logged user:", loggedUserEmail);
+  process.env.NODE_ENV === "development" && console.log("Rendering App component...");
 
   return (
     <HashRouter>

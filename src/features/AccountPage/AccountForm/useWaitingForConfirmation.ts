@@ -4,10 +4,13 @@ import {
   setAccountMode,
   setIsWaitingForConfirmation,
   setMessage,
+  setLoggedUserEmail,
 } from "../accountSlice";
-import { useLogin } from "./useLogin";
 import { useRef } from "react";
-import { useAblyManager } from "../../../hooks/useAblyManager";
+import Ably from "ably";
+import { getOrCreateDeviceId } from "../../../utils/deviceId";
+import { auth } from "../../../api/auth";
+import { openModal } from "../../../Modal/modalSlice";
 
 interface WaitingForConfirmationProps {
   email?: string;
@@ -20,21 +23,43 @@ export const useWaitingForConfirmation = ({
   password,
   message,
 }: WaitingForConfirmationProps) => {
-  const login = useLogin();
   const dispatch = useAppDispatch();
-  const { onConfirmation } = useAblyManager();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
+  const channelRef = useRef<any | null>(null);
 
   const waitingForConfirmation = () => {
     if (!email || !password) return;
 
     try {
-      // Subskrybuj do confirmation event'u
-      unsubscribeRef.current = onConfirmation(email, async () => {
-        console.log(`[Confirmation] User ${email} confirmed via Ably`);
+      const deviceId = getOrCreateDeviceId();
+      const ably = new Ably.Realtime({
+        authCallback: async (tokenParams, callback) => {
+          try {
+            const response = await fetch(
+              `/ably-auth?email=${email}&deviceId=${deviceId}`,
+              { method: "GET" }
+            );
 
-        // Wyczyść timeout
+            if (!response.ok) {
+              const errorData = await response.json();
+              callback(errorData.message || response.statusText, null);
+              return;
+            }
+
+            const ablyTokenRequest = await response.json();
+            callback(null, ablyTokenRequest);
+          } catch (err) {
+            const errorMessage =
+              err instanceof Error ? err.message : String(err);
+            callback(errorMessage, null);
+          }
+        },
+      });
+
+      const channel = ably.channels.get(`user:${email}:confirmation`);
+      channelRef.current = channel;
+
+      const handleConfirmation = async (message: any) => {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
@@ -42,33 +67,54 @@ export const useWaitingForConfirmation = ({
         if (message) dispatch(setMessage(""));
         dispatch(setIsWaitingForConfirmation(false));
 
-        // Automatycznie zaloguj użytkownika
-        login.mutate({ email, password });
-      });
+        try {
+          const response = await auth.login(email, password, true);
+          dispatch(setAccountMode("logged"));
+          dispatch(setLoggedUserEmail(response.email));
 
-      // Timeout - jeśli nie potwierdzono w ciągu 10 minut, przerwij czekanie
-      timeoutRef.current = setTimeout(() => {
-        console.warn(
-          `[Confirmation] Timeout waiting for ${email} confirmation`
-        );
-        if (unsubscribeRef.current) {
-          unsubscribeRef.current();
+          dispatch(
+            openModal({
+              title: { key: "modal.login.title" },
+              message: {
+                key: "modal.login.message.success",
+                values: { user: response.email },
+              },
+              type: "success",
+            })
+          );
+        } catch (err) {
+          dispatch(setAccountMode("login"));
+          dispatch(setMessage("Login failed after confirmation"));
+        }
+
+        channel.unsubscribe("user-confirmed", handleConfirmation);
+        await channel.detach();
+        channelRef.current = null;
+      };
+
+      channel.subscribe("user-confirmed", handleConfirmation);
+
+      timeoutRef.current = setTimeout(async () => {
+        if (channelRef.current) {
+          channelRef.current.unsubscribe("user-confirmed", handleConfirmation);
+          await channelRef.current.detach();
+          channelRef.current = null;
         }
         dispatch(setAccountMode("login"));
         if (message) dispatch(setMessage(""));
         dispatch(setIsWaitingForConfirmation(false));
-      }, 600000); // 10 minut
+      }, 600000);
     } catch (error) {
-      console.error("Error setting up confirmation listener:", error);
       dispatch(setIsWaitingForConfirmation(false));
     }
 
-    return () => {
+    return async () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      if (unsubscribeRef.current) {
-        unsubscribeRef.current();
+      if (channelRef.current) {
+        await channelRef.current.detach();
+        channelRef.current = null;
       }
     };
   };

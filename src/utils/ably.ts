@@ -5,16 +5,39 @@ import { auth } from "../api/auth";
 
 let ablyInstance: Ably.Realtime | null = null;
 
+// Helper: Pobranie emaila z JWT tokenu
+const getEmailFromToken = (token: string): string | null => {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1]));
+    return payload.email || null;
+  } catch (err) {
+    console.error("[getEmailFromToken] Error decoding token:", err);
+    return null;
+  }
+};
+
 export const getAblyInstance = (): Ably.Realtime => {
   if (!ablyInstance) {
     ablyInstance = new Ably.Realtime({
       authCallback: async (tokenParams, callback) => {
         try {
           const userToken = await getUserToken();
-          const email = auth.currentUser()?.email;
+
+          if (!userToken) {
+            callback("No token available", null);
+            return;
+          }
+
+          // Pobierz email z JWT tokenu (ponieważ auth.currentUser().email może być undefined)
+          const email = getEmailFromToken(userToken);
 
           if (!email) {
-            callback("User not authenticated", null);
+            callback(
+              "User not authenticated - cannot extract email from token",
+              null
+            );
             return;
           }
 
