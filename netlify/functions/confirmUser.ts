@@ -4,7 +4,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
-import { publishAblyUpdate } from "./config/ably";
+import { publishConfirmation } from "./config/ably";
 
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
@@ -96,7 +96,7 @@ const handler: Handler = async (event: HandlerEvent) => {
 
     // Send Ably notification to user's confirmation channel
     try {
-      await publishAblyUpdate(email, {
+      await publishConfirmation(email, {
         type: "user-confirmed",
         email,
         confirmedAt: new Date().toISOString(),

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAblyManager } from "./useAblyManager";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface PresenceData {
   users: Array<{ email: string; deviceCount: number }>;
@@ -27,6 +28,7 @@ export const useAblySubscription = ({
     onPresenceUpdate: subscribePresence,
     onListsUpdate: subscribeListsUpdate,
   } = useAblyManager();
+  const queryClient = useQueryClient();
 
   // Subscribe do presence updates
   useEffect(() => {
@@ -51,6 +53,9 @@ export const useAblySubscription = ({
 
     const unsubscribe = subscribeListsUpdate(userEmail, (data) => {
       console.log("[AblySubscription] Lists updated:", data);
+      if (data.lists) {
+        queryClient.setQueryData(["listsData"], data);
+      }
     });
 
     return () => {
@@ -58,5 +63,5 @@ export const useAblySubscription = ({
         unsubscribe();
       }
     };
-  }, [enabled, userEmail, subscribeListsUpdate]);
+  }, [enabled, userEmail, subscribeListsUpdate, queryClient]);
 };

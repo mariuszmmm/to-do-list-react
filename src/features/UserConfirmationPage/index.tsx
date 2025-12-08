@@ -8,6 +8,7 @@ import { Container } from "../../common/Container";
 import { Trans, useTranslation } from "react-i18next";
 import { StyledLink } from "../../common/StyledLink";
 import { useAblyManager } from "../../hooks/useAblyManager";
+import { setLoggedUserEmail } from "../AccountPage/accountSlice";
 
 type Status = "waiting" | "success" | "error";
 
@@ -37,6 +38,9 @@ const UserConfirmationPage = () => {
         // Potwierdź w Netlify GoTrue
         const confirmedUser = await auth.confirm(token);
         const userEmail = confirmedUser?.email;
+
+        console.log(`[Confirmation] Confirmed user:`, confirmedUser);
+        console.log(`[Confirmation] Current user after confirm:`, auth.currentUser());
 
         if (!userEmail) {
           throw new Error("Failed to get user email after confirmation");
@@ -79,6 +83,10 @@ const UserConfirmationPage = () => {
             reject(error);
           }
         });
+
+        // Automatycznie zaloguj użytkownika
+        console.log(`[Confirmation] Auto-login user ${userEmail}`);
+        dispatch(setLoggedUserEmail(userEmail));
 
         dispatch(
           openModal({
