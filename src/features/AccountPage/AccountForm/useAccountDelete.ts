@@ -11,14 +11,14 @@ export const useAccountDelete = () => {
   return useMutation({
     mutationFn: async () => {
       const user = auth.currentUser();
-      const userToken = getUserToken();
+      const userToken = await getUserToken();
 
       if (!userToken || !user) {
         dispatch(setLoggedUserEmail(null));
         throw new Error("User is logged out");
       }
 
-      const response = await deleteUserApi(user.token.access_token);
+      const response = await deleteUserApi(userToken);
       if (response.statusCode !== 204) throw new Error();
 
       return response;
@@ -26,9 +26,10 @@ export const useAccountDelete = () => {
     onMutate: () => {
       dispatch(
         openModal({
+          title: { key: "modal.accountDelete.title" },
           message: { key: "modal.accountDelete.message.loading" },
           type: "loading",
-        }),
+        })
       );
     },
     onSuccess: async () => {
@@ -36,9 +37,10 @@ export const useAccountDelete = () => {
       dispatch(setAccountMode("login"));
       dispatch(
         openModal({
+          title: { key: "modal.accountDelete.title" },
           message: { key: "modal.accountDelete.message.success" },
           type: "loading",
-        }),
+        })
       );
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -50,16 +52,17 @@ export const useAccountDelete = () => {
           message: { key: "modal.dataRemoval.message.confirm" },
           confirmButton: { key: "modal.buttons.deleteButton" },
           type: "confirm",
-        }),
+        })
       );
     },
     onError: async () => {
       dispatch(setAccountMode("logged"));
       dispatch(
         openModal({
+          title: { key: "modal.accountDelete.title" },
           message: { key: "modal.accountDelete.message.error.default" },
           type: "error",
-        }),
+        })
       );
     },
   });

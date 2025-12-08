@@ -11,6 +11,7 @@ const getInitialState = (): AccountState => ({
   userDevicesCount: 0,
   totalUsersCount: 0,
   allDevicesCount: 0,
+  tokenRemainingMs: 0,
 });
 
 const accountSlice = createSlice({
@@ -66,6 +67,9 @@ const accountSlice = createSlice({
       state.totalUsersCount = action.payload.totalUsers;
       state.allDevicesCount = action.payload.allDevices;
     },
+    setTokenRemainingMs: (state, { payload: ms }: PayloadAction<number>) => {
+      state.tokenRemainingMs = ms;
+    },
   },
 });
 
@@ -75,6 +79,7 @@ export const {
   setLoggedUserEmail,
   setMessage,
   setPresenceData,
+  setTokenRemainingMs,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -97,5 +102,7 @@ export const selectAllDevicesCount = (state: RootState) =>
   state.account.allDevicesCount;
 export const selectCurrentUserEmail = (state: RootState) =>
   state.account.loggedUserEmail;
+export const selectTokenRemainingMs = (state: RootState) =>
+  state.account.tokenRemainingMs;
 
 export default accountSlice.reducer;

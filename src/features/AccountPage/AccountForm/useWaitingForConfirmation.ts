@@ -1,12 +1,13 @@
 import { useAppDispatch } from "../../../hooks/redux";
 import { AccountState } from "../../../types";
-import { confirmUserApi } from "../../../api/fetchUserApi";
 import {
   setAccountMode,
   setIsWaitingForConfirmation,
   setMessage,
 } from "../accountSlice";
 import { useLogin } from "./useLogin";
+import { useRef } from "react";
+import { useAblyManager } from "../../../hooks/useAblyManager";
 
 interface WaitingForConfirmationProps {
   email?: string;
@@ -21,39 +22,54 @@ export const useWaitingForConfirmation = ({
 }: WaitingForConfirmationProps) => {
   const login = useLogin();
   const dispatch = useAppDispatch();
+  const { onConfirmation } = useAblyManager();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   const waitingForConfirmation = () => {
     if (!email || !password) return;
-    const interval = setInterval(async () => {
-      try {
-        const confirmationResponse = await confirmUserApi(email);
-        const confirmedEmail = confirmationResponse?.email;
 
-        if (confirmedEmail) {
-          clearTimeout(timeout);
-          clearInterval(interval);
-          if (message) dispatch(setMessage(""));
-          dispatch(setIsWaitingForConfirmation(false));
-          login.mutate({ email, password });
+    try {
+      // Subskrybuj do confirmation event'u
+      unsubscribeRef.current = onConfirmation(email, async () => {
+        console.log(`[Confirmation] User ${email} confirmed via Ably`);
+
+        // Wyczyść timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
         }
-      } catch (error) {
-        clearInterval(interval);
-        clearTimeout(timeout);
-        dispatch(setIsWaitingForConfirmation(false));
-        console.error("Error confirming user", error);
-      }
-    }, 2000);
 
-    const timeout = setTimeout(() => {
-      dispatch(setAccountMode("login"));
-      if (message) dispatch(setMessage(""));
+        if (message) dispatch(setMessage(""));
+        dispatch(setIsWaitingForConfirmation(false));
+
+        // Automatycznie zaloguj użytkownika
+        login.mutate({ email, password });
+      });
+
+      // Timeout - jeśli nie potwierdzono w ciągu 10 minut, przerwij czekanie
+      timeoutRef.current = setTimeout(() => {
+        console.warn(
+          `[Confirmation] Timeout waiting for ${email} confirmation`
+        );
+        if (unsubscribeRef.current) {
+          unsubscribeRef.current();
+        }
+        dispatch(setAccountMode("login"));
+        if (message) dispatch(setMessage(""));
+        dispatch(setIsWaitingForConfirmation(false));
+      }, 600000); // 10 minut
+    } catch (error) {
+      console.error("Error setting up confirmation listener:", error);
       dispatch(setIsWaitingForConfirmation(false));
-      clearInterval(interval);
-    }, 60000);
+    }
 
     return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
     };
   };
 

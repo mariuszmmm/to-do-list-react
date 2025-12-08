@@ -4,8 +4,8 @@ import { ModalTranslationKeys } from "../@types/i18next";
 import langPl from "../utils/i18n/locales/pl";
 
 interface ModalPayload {
-  title?: { key: ModalTranslationKeys<typeof langPl, "modal"> };
-  message?:
+  title: { key: ModalTranslationKeys<typeof langPl, "modal"> } | null;
+  message:
     | {
         key: ModalTranslationKeys<typeof langPl, "modal">;
         values?: Record<string, string>;
@@ -23,8 +23,8 @@ interface ModalState extends ModalPayload {
 
 const getInitialState = (): ModalState => ({
   isOpen: false,
-  title: undefined,
-  message: undefined,
+  title: null,
+  message: "",
   confirmButton: { key: "modal.buttons.confirmButton" },
   endButton: { key: "modal.buttons.closeButton" },
   type: "info",

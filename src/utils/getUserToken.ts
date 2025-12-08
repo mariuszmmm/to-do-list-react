@@ -22,8 +22,9 @@ export const getUserToken = async () => {
     }
   };
 
-  // Sprawdź czy token jest jeszcze ważny (z buforem 60s)
-  if (!isTokenValid(user, 60000)) {
+  // Sprawdź czy token jest jeszcze ważny (z buforem 30s)
+  // Buffor zmniejszony do 30s ponieważ useTokenRefresh odnawiał token 5 minut wcześniej
+  if (!isTokenValid(user, 30000)) {
     return await refreshToken();
   } else {
     return user.token.access_token;
