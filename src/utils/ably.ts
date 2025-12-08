@@ -1,7 +1,6 @@
 import Ably from "ably";
 import { getUserToken } from "./getUserToken";
 import { getOrCreateDeviceId } from "./deviceId";
-import { auth } from "../api/auth";
 
 let ablyInstance: Ably.Realtime | null = null;
 
