@@ -44,10 +44,10 @@ const handler: Handler = async (event, context) => {
       clientId: uniqueClientId,
       capability: {
         [`user:${email}:lists`]: ["subscribe"],
+        [`user:${email}:confirmation`]: ["subscribe"],
         "global:presence": ["subscribe", "presence"],
       },
-      // ttl: 3600000, // Token ważny przez 1 godzinę  - domyślnie
-      ttl: 60 * 1000, // Token ważny przez 1 minutę - do testów
+      ttl: 3600000,
     });
 
     return {

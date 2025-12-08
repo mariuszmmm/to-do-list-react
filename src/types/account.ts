@@ -19,6 +19,7 @@ export interface AccountState {
   userDevicesCount: number;
   totalUsersCount: number;
   allDevicesCount: number;
+  tokenRemainingMs: number;
 }
 
 export type RecoveryStatus =

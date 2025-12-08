@@ -7,6 +7,7 @@ import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
 import { PresenceUsersList } from "./PresenceUsersList";
+import { SessionInfo } from "./SessionInfo";
 import {
   selectAllDevicesCount,
   selectLoggedUserEmail,
@@ -48,6 +49,12 @@ const AccountPage = () => {
           </>
         }
       />
+      {loggedUserEmail && (
+        <Section
+          title={t("sessionInfo.title")}
+          body={<SessionInfo />}
+        />
+      )}
       {loggedUserEmail && (
         <Section
           title={

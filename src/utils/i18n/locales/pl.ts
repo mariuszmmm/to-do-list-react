@@ -210,6 +210,17 @@ const langPl = {
         passwordMessage: "hasło musi mieć co najmniej 4 znaki.",
       },
     },
+    sessionInfo: {
+      title: "📋 Informacje o sesji",
+      createdAt: "Konto utworzone",
+      confirmedAt: "Email potwierdzony",
+      tokenTitle: "🔐 Token autentykacji",
+      tokenExpiresAt: "Token ważny do",
+      tokenExpiresIn: "Token wygasa za",
+      tokenStatus: "Status tokena",
+      tokenActive: "Token aktywny",
+      tokenExpired: "Token wygasł",
+    },
   },
   confirmationPage: {
     message: {

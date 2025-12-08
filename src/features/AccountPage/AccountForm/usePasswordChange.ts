@@ -8,9 +8,9 @@ import { getUserToken } from "../../../utils/getUserToken";
 export const usePasswordChange = () => {
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: ({ password }: { password: string }) => {
+    mutationFn: async ({ password }: { password: string }) => {
       const user = auth.currentUser();
-      const userToken = getUserToken();
+      const userToken = await getUserToken();
 
       if (!userToken || !user) {
         dispatch(setLoggedUserEmail(null));

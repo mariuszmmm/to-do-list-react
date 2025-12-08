@@ -17,6 +17,7 @@ interface StyledTaskProps {
   $ListName?: boolean;
   $comment?: boolean;
   $noLink?: boolean;
+  $tokenStatus?: "active" | "expired";
 }
 
 export const StyledList = styled.ul`
@@ -72,7 +73,7 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   }
 `;
 
-export const StyledListContent = styled.p<StyledListContentProps>`
+export const StyledListContent = styled.div<StyledListContentProps>`
   word-break: break-word;
   margin: 0;
   color: ${({ theme }) => theme.color.teal};
@@ -128,6 +129,16 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       font-size: 0.85rem;
       font-weight: normal;
     `}
+
+  strong {
+    ${({ $tokenStatus, theme }) =>
+      $tokenStatus &&
+      css`
+        color: ${$tokenStatus === "active"
+          ? theme.color.forestGreen
+          : theme.color.red};
+      `}
+  }
 `;
 
 export const ListMeta = styled.div`

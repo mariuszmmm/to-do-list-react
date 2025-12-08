@@ -4,6 +4,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
+import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
@@ -91,6 +92,22 @@ const handler: Handler = async (event: HandlerEvent) => {
           body: JSON.stringify({ message: "Failed to create user." }),
         };
       }
+    }
+
+    // Send Ably notification to user's confirmation channel
+    try {
+      await publishAblyUpdate(email, {
+        type: "user-confirmed",
+        email,
+        confirmedAt: new Date().toISOString(),
+      });
+      console.log(`[confirmUser] Ably notification sent for user: ${email}`);
+    } catch (ablyError) {
+      console.error(
+        `[confirmUser] Failed to send Ably notification:`,
+        ablyError
+      );
+      // Don't fail the webhook if Ably fails - user is already confirmed in MongoDB
     }
 
     // Success response

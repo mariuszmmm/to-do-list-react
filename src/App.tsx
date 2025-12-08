@@ -9,6 +9,8 @@ import AccountRecoveryPage from "./features/AccountRecoveryPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
+import { TokenManager } from "./components/TokenManager";
+import { AblyManager } from "./components/AblyManager";
 import { useQuery } from "@tanstack/react-query";
 import { refreshData } from "./utils/refreshData";
 import { selectLoggedUserEmail, setPresenceData } from "./features/AccountPage/accountSlice";
@@ -22,7 +24,6 @@ import {
   useSaveListMutation,
   useListSyncManager,
   useAblySubscription,
-  useTokenValidation
 } from "./hooks";
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
 
@@ -33,15 +34,13 @@ const App = () => {
     queryKey: ["listsData"],
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
+    // refetchInterval: 60 * 1000,
   });
   const safeData = !!loggedUserEmail ? data : undefined;
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
   const dispatch = useAppDispatch();
-
-  // Monitor token validity
-  useTokenValidation();
 
   useDataFetchingError({ loggedUserEmail, isError });
   useListSyncManager({ listsData: safeData, saveListMutation });
@@ -57,6 +56,8 @@ const App = () => {
 
   return (
     <HashRouter>
+      <TokenManager />
+      <AblyManager />
       <Navigation
         listsData={safeData}
         isLoading={isLoading}

@@ -189,7 +189,9 @@ export const useListSyncManager = ({
     return () => {
       debouncedMutateRef.current && debouncedMutateRef.current.cancel();
     };
-  }, [saveListMutation]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Keep refs updated with latest tasks and metadata
   useEffect(() => {

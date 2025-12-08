@@ -212,6 +212,17 @@ const langEn: typeof langPl = {
         passwordMessage: "password must be at least 4 characters long",
       },
     },
+    sessionInfo: {
+      title: "📋 Session Information",
+      createdAt: "Account created",
+      confirmedAt: "Email confirmed",
+      tokenTitle: "🔐 Authentication Token",
+      tokenExpiresAt: "Token expires at",
+      tokenExpiresIn: "Token expires in",
+      tokenStatus: "Token status",
+      tokenActive: "Token is active",
+      tokenExpired: "Token expired",
+    },
   },
   confirmationPage: {
     message: {
