@@ -15,7 +15,9 @@ const handler: Handler = async (event, context) => {
 
   // Wyciągnij role użytkownika z app_metadata
   const roles = isAuthenticated
-    ? (context?.clientContext?.user?.app_metadata?.roles as string[] | undefined) || []
+    ? (context?.clientContext?.user?.app_metadata?.roles as
+        | string[]
+        | undefined) || []
     : [];
   const isAdmin = roles.includes("admin");
 
