@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { auth } from "../../../api/auth";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
-import { setLoggedUserEmail } from "../accountSlice";
+import { setLoggedUser } from "../accountSlice";
 
 export const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +25,7 @@ export const useLogout = () => {
     onSuccess: () => {
       process.env.NODE_ENV === "development" &&
         console.log("Logout successful");
-      dispatch(setLoggedUserEmail(null));
+      dispatch(setLoggedUser(null));
       dispatch(
         openModal({
           title: { key: "modal.logout.title" },

@@ -7,7 +7,7 @@ import { Text } from "../../common/Text";
 import { Container } from "../../common/Container";
 import { Trans, useTranslation } from "react-i18next";
 import { StyledLink } from "../../common/StyledLink";
-import { setLoggedUserEmail } from "../AccountPage/accountSlice";
+import { setLoggedUser } from "../AccountPage/accountSlice";
 import Ably from "ably";
 import { getOrCreateDeviceId } from "../../utils/deviceId";
 
@@ -37,7 +37,11 @@ const UserConfirmationPage = () => {
 
         // Potwierdź w Netlify GoTrue
         const confirmedUser = await auth.confirm(token);
+
+        console.log("!!!!!!!!!!!!Confirmed user:", confirmedUser);
         const userEmail = confirmedUser?.email;
+        const name = confirmedUser?.user_metadata?.full_name;
+        const roles = confirmedUser?.app_metadata.roles;
 
         if (!userEmail) {
           throw new Error("Failed to get user email after confirmation");
@@ -99,7 +103,9 @@ const UserConfirmationPage = () => {
           }
         });
 
-        dispatch(setLoggedUserEmail(userEmail));
+        dispatch(
+          setLoggedUser({ email: userEmail, name, roles, })
+        );
 
         dispatch(
           openModal({

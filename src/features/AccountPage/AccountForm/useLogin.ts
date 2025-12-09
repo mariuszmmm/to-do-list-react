@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { auth } from "../../../api/auth";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
-import { setAccountMode, setLoggedUserEmail } from "../accountSlice";
+import { setAccountMode, setLoggedUser } from "../accountSlice";
 import { translateText } from "../../../utils/translateText";
 import i18n from "../../../utils/i18n";
 
@@ -35,7 +35,14 @@ export const useLogin = () => {
       );
 
       dispatch(setAccountMode("logged"));
-      response.email && dispatch(setLoggedUserEmail(response.email));
+      response.email &&
+        dispatch(
+          setLoggedUser({
+            email: response.email,
+            name: response.user_metadata.full_name,
+            roles: response.app_metadata.roles,
+          })
+        );
     },
     onError: async (error: any) => {
       const msg = error.json?.error_description || error.json;

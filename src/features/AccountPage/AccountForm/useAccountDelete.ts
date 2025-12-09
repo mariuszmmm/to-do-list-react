@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { auth } from "../../../api/auth";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
-import { setAccountMode, setLoggedUserEmail } from "../accountSlice";
+import { setAccountMode, setLoggedUser } from "../accountSlice";
 import { getUserToken } from "../../../utils/getUserToken";
 import { deleteUserApi } from "../../../api/fetchUserApi";
 
@@ -14,7 +14,7 @@ export const useAccountDelete = () => {
       const userToken = await getUserToken();
 
       if (!userToken || !user) {
-        dispatch(setLoggedUserEmail(null));
+        dispatch(setLoggedUser(null));
         throw new Error("User is logged out");
       }
 
@@ -33,7 +33,7 @@ export const useAccountDelete = () => {
       );
     },
     onSuccess: async () => {
-      dispatch(setLoggedUserEmail(null));
+      dispatch(setLoggedUser(null));
       dispatch(setAccountMode("login"));
       dispatch(
         openModal({

@@ -4,7 +4,7 @@ import {
   setAccountMode,
   setIsWaitingForConfirmation,
   setMessage,
-  setLoggedUserEmail,
+  setLoggedUser,
 } from "../accountSlice";
 import { useRef } from "react";
 import Ably from "ably";
@@ -71,10 +71,16 @@ export const useWaitingForConfirmation = ({
           const response = await auth.login(email, password, true);
 
           process.env.NODE_ENV === "development" &&
-            console.log("Login successful:", response);
+            console.log("!!!!!!!!!! Login successful:", response);
 
           dispatch(setAccountMode("logged"));
-          dispatch(setLoggedUserEmail(response.email));
+          dispatch(
+            setLoggedUser({
+              email: response.email,
+              name: response.user_metadata.full_name,
+              roles: response.app_metadata.roles,
+            })
+          );
 
           dispatch(
             openModal({

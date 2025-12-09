@@ -14,12 +14,13 @@ export interface AccountState {
     | "dataRemoval";
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
+  loggedUserName: string;
+  loggedUserRoles: Array<"admin" | "user">;
   message: string;
   presenceUsers: PresenceUser[];
   userDevicesCount: number;
   totalUsersCount: number;
   allDevicesCount: number;
-  tokenRemainingMs: number;
 }
 
 export type RecoveryStatus =

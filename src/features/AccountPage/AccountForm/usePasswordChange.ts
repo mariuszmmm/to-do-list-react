@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { auth } from "../../../api/auth";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
-import { setAccountMode, setLoggedUserEmail } from "../accountSlice";
+import { setAccountMode, setLoggedUser } from "../accountSlice";
 import { getUserToken } from "../../../utils/getUserToken";
 
 export const usePasswordChange = () => {
@@ -13,7 +13,7 @@ export const usePasswordChange = () => {
       const userToken = await getUserToken();
 
       if (!userToken || !user) {
-        dispatch(setLoggedUserEmail(null));
+        dispatch(setLoggedUser(null));
         throw new Error("User is logged out");
       }
 
