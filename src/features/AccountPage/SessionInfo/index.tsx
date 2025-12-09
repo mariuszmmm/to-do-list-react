@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import { selectTokenRemainingMs } from "../accountSlice";
+import { formatTokenTime } from "../../../utils/formatTokenTime";
 
 interface SessionData {
   email?: string;
@@ -49,14 +50,7 @@ export const SessionInfo = () => {
   }
 
   const tokenValid = remainingMs > 0;
-  const totalSeconds = Math.max(0, Math.floor(remainingMs / 1000));
-  const formattedTime = (() => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    const pad = (value: number) => value.toString().padStart(2, "0");
-    return `${hours}h ${pad(minutes)}m ${pad(seconds)}s`;
-  })();
+  const formattedTime = formatTokenTime(remainingMs);
 
   return (
     <div>

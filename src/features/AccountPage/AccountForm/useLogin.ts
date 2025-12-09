@@ -21,6 +21,8 @@ export const useLogin = () => {
       );
     },
     onSuccess: (response) => {
+      process.env.NODE_ENV === "development" &&
+        console.log("Login successful:", response);
       dispatch(
         openModal({
           title: { key: "modal.login.title" },
@@ -33,15 +35,11 @@ export const useLogin = () => {
       );
 
       dispatch(setAccountMode("logged"));
-      dispatch(setLoggedUserEmail(response.email));
+      response.email && dispatch(setLoggedUserEmail(response.email));
     },
     onError: async (error: any) => {
-      const error_description = error.json.error_description;
-      const translatedText = await translateText(
-        error_description,
-        i18n.language
-      );
-
+      const msg = error.json?.error_description || error.json;
+      const translatedText = await translateText(msg, i18n.language);
       dispatch(
         openModal({
           title: { key: "modal.login.title" },
