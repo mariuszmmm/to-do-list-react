@@ -6,12 +6,13 @@ const getInitialState = (): AccountState => ({
   accountMode: "login",
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
+  loggedUserName: "",
+  loggedUserRoles: [],
   message: "",
   presenceUsers: [],
   userDevicesCount: 0,
   totalUsersCount: 0,
   allDevicesCount: 0,
-  tokenRemainingMs: 0,
 });
 
 const accountSlice = createSlice({
@@ -41,15 +42,32 @@ const accountSlice = createSlice({
     ) => {
       state.isWaitingForConfirmation = payload;
     },
-    setLoggedUserEmail: (
+    setLoggedUser: (
       state,
-      { payload: email }: PayloadAction<string | null>
+      {
+        payload,
+      }: PayloadAction<{
+        email: string | null;
+        name?: string;
+        roles?: AccountState["loggedUserRoles"];
+      } | null>
     ) => {
-      state.loggedUserEmail = email;
-      if (email === null) {
+      if (payload === null || payload.email === null) {
+        state.loggedUserEmail = null;
+        state.loggedUserName = "";
+        state.loggedUserRoles = [];
         state.accountMode = "login";
+        return;
       }
+      if (!!payload.email) console.log("Setting logged user:", payload.email);
+      if (!!payload.name) console.log("User name:", payload.name);
+      if (!!payload.roles) console.log("User roles:", payload.roles);
+
+      state.loggedUserEmail = payload.email;
+      state.loggedUserName = payload.name || "";
+      state.loggedUserRoles = payload.roles || [];
     },
+
     setMessage: (state, { payload: message }: PayloadAction<string>) => {
       state.message = message;
     },
@@ -67,19 +85,15 @@ const accountSlice = createSlice({
       state.totalUsersCount = action.payload.totalUsers;
       state.allDevicesCount = action.payload.allDevices;
     },
-    setTokenRemainingMs: (state, { payload: ms }: PayloadAction<number>) => {
-      state.tokenRemainingMs = ms;
-    },
   },
 });
 
 export const {
   setAccountMode,
   setIsWaitingForConfirmation,
-  setLoggedUserEmail,
+  setLoggedUser,
   setMessage,
   setPresenceData,
-  setTokenRemainingMs,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -90,6 +104,8 @@ export const selectIsWaitingForConfirmation = (state: RootState) =>
   selectAccountState(state).isWaitingForConfirmation;
 export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
+export const selectLoggedUserRoles = (state: RootState) =>
+  selectAccountState(state).loggedUserRoles;
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
 export const selectPresenceUsers = (state: RootState) =>
@@ -102,7 +118,5 @@ export const selectAllDevicesCount = (state: RootState) =>
   state.account.allDevicesCount;
 export const selectCurrentUserEmail = (state: RootState) =>
   state.account.loggedUserEmail;
-export const selectTokenRemainingMs = (state: RootState) =>
-  state.account.tokenRemainingMs;
 
 export default accountSlice.reducer;

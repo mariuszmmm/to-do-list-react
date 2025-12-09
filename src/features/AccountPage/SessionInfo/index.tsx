@@ -1,10 +1,11 @@
 import { auth } from "../../../api/auth";
 import { StyledSpan } from "../../../common/StyledList";
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "../../../hooks/redux";
-import { selectTokenRemainingMs } from "../accountSlice";
+import { selectLoggedUserEmail } from "../accountSlice";
 import { formatTokenTime } from "../../../utils/formatTokenTime";
+import { getTokenExpiresIn } from "../../../utils/tokenUtils";
 
 interface SessionData {
   email?: string;
@@ -18,13 +19,17 @@ export const SessionInfo = () => {
     keyPrefix: "accountPage",
   });
   const [sessionData, setSessionData] = useState<SessionData>({});
-  const remainingMs = useAppSelector(selectTokenRemainingMs);
+  const [remainingMs, setRemainingMs] = useState<number>(0);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Aktualizuj dane sesji i uruchom countdown
   useEffect(() => {
     const updateSessionData = () => {
       const user = auth.currentUser();
       if (!user) {
         setSessionData({});
+        setRemainingMs(0);
         return;
       }
 
@@ -40,10 +45,47 @@ export const SessionInfo = () => {
           ? new Date(user.token.expires_at).toLocaleString()
           : undefined,
       });
+
+      // Ustaw początkową wartość pozostałego czasu
+      const remaining = getTokenExpiresIn(user);
+      setRemainingMs(remaining);
     };
 
     updateSessionData();
-  }, [remainingMs]);
+  }, [loggedUserEmail]);
+
+  // Countdown tokena co 1 sekundę
+  useEffect(() => {
+    if (!loggedUserEmail) {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+      setRemainingMs(0);
+      return;
+    }
+
+    const updateCountdown = () => {
+      const user = auth.currentUser();
+      if (!user) {
+        setRemainingMs(0);
+        return;
+      }
+
+      const remaining = getTokenExpiresIn(user);
+      setRemainingMs(remaining);
+    };
+
+    // Aktualizuj co 1 sekundę
+    countdownIntervalRef.current = setInterval(updateCountdown, 1000);
+
+    return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+    };
+  }, [loggedUserEmail]);
 
   if (!sessionData.email) {
     return null;

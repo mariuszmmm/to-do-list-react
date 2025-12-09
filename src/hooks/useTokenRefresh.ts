@@ -1,23 +1,20 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "./redux";
-import {
-  selectLoggedUserEmail,
-  selectTokenRemainingMs,
-} from "../features/AccountPage/accountSlice";
+import { selectLoggedUserEmail } from "../features/AccountPage/accountSlice";
 import { auth } from "../api/auth";
+import { getTokenExpiresIn } from "../utils/tokenUtils";
 
 /**
- * Hook który proaktywnie odnawiać token przed jego wygaśnięciem
+ * Hook który proaktywnie odnawia token przed jego wygaśnięciem
  * Odnawianie następuje 5 minut przed faktycznym wygaśnięciem
- * Czyta czas wygaśnięcia z Reduxu (useTokenCountdown)
+ * Sprawdza ważność tokena bezpośrednio z auth.currentUser()
  * Zapewnia, że użytkownik nigdy nie zostanie wylogowany podczas aktywnego użytku aplikacji
  */
 export const useTokenRefresh = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const tokenRemainingMs = useAppSelector(selectTokenRemainingMs);
   const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isRefreshingRef = useRef(false);
-  const lastScheduledTimeRef = useRef<number>(0);
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Funkcja do odnawiania tokena - stabilna przez useCallback
   const refreshToken = useCallback(async () => {
@@ -46,64 +43,79 @@ export const useTokenRefresh = () => {
     }
   }, []);
 
-  // Effect do zarządzania timeoutem odnawiania
+  // Effect do zarządzania odnawianiem tokena
   useEffect(() => {
-    // Wyczyść stary timeout jeśli istnieje
-    if (refreshTimeoutRef.current) {
-      clearTimeout(refreshTimeoutRef.current);
-      refreshTimeoutRef.current = null;
-    }
-
-    // Jeśli użytkownik nie jest zalogowany lub token wygasł, nie planuj niczego
-    if (!loggedUserEmail || tokenRemainingMs <= 0) {
-      lastScheduledTimeRef.current = 0;
-      return;
-    }
-
-    // Odnawiaj 5 minut (300000ms) przed wygaśnięciem
-    const refreshThreshold = 300000;
-    const timeUntilRefresh = tokenRemainingMs - refreshThreshold;
-
-    // Zaokrąglij do pełnych sekund aby uniknąć aktualizowania timeout'u co ms
-    const roundedTimeUntilRefresh = Math.max(
-      0,
-      Math.floor(timeUntilRefresh / 1000) * 1000
-    );
-
-    // Jeśli zaokrąglona wartość się nie zmieniła, nie aktualizuj timeout'u
-    if (
-      roundedTimeUntilRefresh === lastScheduledTimeRef.current &&
-      roundedTimeUntilRefresh > 0
-    ) {
-      return;
-    }
-
-    lastScheduledTimeRef.current = roundedTimeUntilRefresh;
-
-    if (roundedTimeUntilRefresh > 0) {
-      // Token jest jeszcze ważny, zaplanuj odnawianie
-      refreshTimeoutRef.current = setTimeout(() => {
-        refreshToken();
-      }, roundedTimeUntilRefresh);
-
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          `Następne odnawianie tokena za ${Math.round(
-            roundedTimeUntilRefresh / 1000
-          )}s`
-        );
+    if (!loggedUserEmail) {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+        checkIntervalRef.current = null;
       }
-    } else if (timeUntilRefresh > 0) {
-      // Token wygasa za mniej niż 1 sekundę, ale > 0, odnawiaj natychmiast
-      refreshToken();
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+        refreshTimeoutRef.current = null;
+      }
+      return;
     }
+
+    // Funkcja sprawdzająca czy czas na refresh
+    const checkAndScheduleRefresh = () => {
+      const user = auth.currentUser();
+      if (!user) {
+        return;
+      }
+
+      const tokenRemainingMs = getTokenExpiresIn(user);
+
+      // Jeśli token wygasł, nic nie rób (useTokenValidation wyloguje)
+      if (tokenRemainingMs <= 0) {
+        return;
+      }
+
+      // Odnawiaj 5 minut (300000ms) przed wygaśnięciem
+      const refreshThreshold = 300000;
+      const timeUntilRefresh = tokenRemainingMs - refreshThreshold;
+
+      // Jeśli już zaplanowano refresh, nie rób nic
+      if (refreshTimeoutRef.current) {
+        return;
+      }
+
+      if (timeUntilRefresh <= 0) {
+        // Czas na refresh teraz
+        refreshToken();
+      } else if (timeUntilRefresh < 60000) {
+        // Mniej niż minuta do refreshu, zaplanuj dokładny timeout
+        refreshTimeoutRef.current = setTimeout(() => {
+          refreshToken();
+          refreshTimeoutRef.current = null;
+        }, timeUntilRefresh);
+
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            `Odnawianie tokena zaplanowane za ${Math.round(
+              timeUntilRefresh / 1000
+            )}s`
+          );
+        }
+      }
+    };
+
+    // Sprawdź natychmiast
+    checkAndScheduleRefresh();
+
+    // Sprawdzaj co minutę czy czas na refresh
+    checkIntervalRef.current = setInterval(checkAndScheduleRefresh, 60000);
 
     // Czyszczenie
     return () => {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+        checkIntervalRef.current = null;
+      }
       if (refreshTimeoutRef.current) {
         clearTimeout(refreshTimeoutRef.current);
         refreshTimeoutRef.current = null;
       }
     };
-  }, [loggedUserEmail, tokenRemainingMs, refreshToken]);
+  }, [loggedUserEmail, refreshToken]);
 };

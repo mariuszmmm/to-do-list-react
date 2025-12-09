@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "./redux";
 import { clearLocalStorage } from "../utils/localStorage";
 import {
-  setLoggedUserEmail,
+  setLoggedUser,
   setAccountMode,
 } from "../features/AccountPage/accountSlice";
 import { openModal } from "../Modal/modalSlice";
@@ -22,14 +22,14 @@ export const useDataFetchingError = ({
     if (!loggedUserEmail) return;
     if (isError) {
       clearLocalStorage();
-      dispatch(setLoggedUserEmail(null));
+      dispatch(setLoggedUser(null));
       dispatch(setAccountMode("login"));
       dispatch(
         openModal({
           title: { key: "modal.listsDownload.title" },
           message: { key: "modal.listsDownload.message.error.default" },
           type: "error",
-        }),
+        })
       );
     }
   }, [loggedUserEmail, isError, dispatch]);

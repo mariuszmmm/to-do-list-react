@@ -13,6 +13,12 @@ const handler: Handler = async (event, context) => {
     ? context?.clientContext?.user?.email
     : emailParam;
 
+  // Wyciągnij role użytkownika z app_metadata
+  const roles = isAuthenticated
+    ? (context?.clientContext?.user?.app_metadata?.roles as string[] | undefined) || []
+    : [];
+  const isAdmin = roles.includes("admin");
+
   if (!email) {
     console.log("[ably-auth] Unauthorized - Missing email");
     return {
@@ -45,17 +51,36 @@ const handler: Handler = async (event, context) => {
 
     const uniqueClientId = `${email}:${deviceId}`;
 
-    // Jeśli nie zalogowany, tylko confirmation channel
-    const capability = isAuthenticated
-      ? {
-          [`user:${email}:lists`]: ["subscribe"] as const,
-          [`user:${email}:confirmation`]: ["subscribe"] as const,
-          "global:presence": ["subscribe", "presence"] as const,
-        }
-      : {
-          // Tylko confirmation channel dla niezalogowanych
-          [`user:${email}:confirmation`]: ["subscribe"] as const,
-        };
+    // Zdefiniuj capability na podstawie statusu autentykacji i roli
+    let capability;
+
+    if (!isAuthenticated) {
+      // Niezalogowany: tylko confirmation channel
+      capability = {
+        [`user:${email}:confirmation`]: ["subscribe"] as const,
+      };
+    } else if (isAdmin) {
+      // Admin: dostęp do wszystkich kanałów włącznie z global presence
+      capability = {
+        [`user:${email}:lists`]: ["subscribe"] as const,
+        [`user:${email}:confirmation`]: ["subscribe"] as const,
+        "global:presence": ["subscribe", "presence"] as const,
+      };
+    } else {
+      // Zwykły user: dostęp do swoich kanałów, ale tylko presence dla swoich urządzeń
+      capability = {
+        [`user:${email}:lists`]: ["subscribe"] as const,
+        [`user:${email}:confirmation`]: ["subscribe"] as const,
+        [`user:${email}:presence`]: ["subscribe", "presence"] as const,
+      };
+    }
+
+    console.log(
+      "[ably-auth] User role:",
+      isAdmin ? "admin" : "user",
+      "email:",
+      email
+    );
 
     // Wygeneruj TokenRequest z odpowiednimi uprawnieniami
     const tokenRequest = await ably.auth.createTokenRequest({

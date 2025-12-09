@@ -6,7 +6,7 @@ import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
 import { auth } from "../api/auth";
 import {
   setAccountMode,
-  setLoggedUserEmail,
+  setLoggedUser,
 } from "../features/AccountPage/accountSlice";
 import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
@@ -30,8 +30,14 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
 
   useEffect(() => {
     if (!authRoute && user) {
+
+      console.log("!!!!!!!!!!!Current user found in Navigation:", user);
       dispatch(setAccountMode(user ? "logged" : "login"));
-      dispatch(setLoggedUserEmail(user ? user.email : null));
+      dispatch(setLoggedUser(user ? {
+        email: user.email,
+        name: user?.user_metadata?.full_name,
+        roles: user?.app_metadata?.roles,
+      } : null));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
