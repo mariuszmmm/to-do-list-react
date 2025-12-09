@@ -223,6 +223,35 @@ const langDe: typeof langPl = {
       tokenActive: "Token ist aktiv",
       tokenExpired: "Token ist abgelaufen",
     },
+    backup: {
+      title: "Sicherung & Wiederherstellung",
+      download: "Sicherung herunterladen",
+      downloading: "Sicherung wird heruntergeladen...",
+      downloadTooltip: "Sicherung auf Ihren Computer herunterladen",
+      downloadSuccess: "Sicherung erfolgreich heruntergeladen!",
+      downloadError: "Fehler beim Herunterladen der Sicherung",
+      upload: "Auf Google Drive hochladen",
+      uploadTooltip: "Sicherung auf Google Drive hochladen",
+      uploadSuccess: "Sicherung erfolgreich auf Google Drive hochgeladen!",
+      uploadError: "Fehler beim Hochladen der Sicherung",
+      restore: "Von Google Drive wiederherstellen",
+      restoreTooltip: "Daten aus Google Drive-Sicherung wiederherstellen",
+      restoreSuccess:
+        "Sicherung erfolgreich wiederhergestellt! {{count}} Listen wiederhergestellt.",
+      restoreError: "Fehler beim Wiederherstellen der Sicherung",
+      authorizeGoogle: "Google autorisieren",
+      authorizeGoogleTooltip: "Google Drive-Zugriff autorisieren",
+      processing: "Wird verarbeitet...",
+      authSuccess: "Autorisierung erfolgreich!",
+      authError: "Autorisierungsfehler",
+      uploading: "Sicherung auf Google Drive wird hochgeladen...",
+      restoring: "Sicherung von Google Drive wird wiederhergestellt...",
+      notAuthorized: "Nicht mit Google Drive autorisiert",
+      configError: "Google Drive-Konfiguration fehlt",
+      savingError: "Fehler beim Speichern der Sicherung",
+      enterFileId: "Google Drive File ID eingeben:",
+      cancelled: "Wiederherstellung abgebrochen",
+    },
   },
   confirmationPage: {
     message: {
@@ -230,6 +259,9 @@ const langDe: typeof langPl = {
         "Die Registrierung war erfolgreich, du kannst die Seite schließen.",
       error: "Registrierung fehlgeschlagen.",
     },
+    closeTab:
+      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückgehen.",
+    tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
   accountRecoveryPage: {
@@ -240,6 +272,9 @@ const langDe: typeof langPl = {
         "Konto wurde wiederhergestellt.<br/> Du kannst zum vorher geöffneten Tab zurückkehren.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
+    closeTab:
+      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückgehen.",
+    tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
   modal: {

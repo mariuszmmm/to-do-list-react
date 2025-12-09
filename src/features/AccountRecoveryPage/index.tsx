@@ -6,7 +6,6 @@ import { Container } from "../../common/Container";
 import { Text } from "../../common/Text";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { StyledLink } from "../../common/StyledLink";
 import { RecoveryStatus } from "../../types";
 
 const AccountRecoveryPage = () => {
@@ -39,10 +38,12 @@ const AccountRecoveryPage = () => {
               />
             </b>
           </Text>
-          <StyledLink to="/tasks">
-            <b>{"⇨ "}</b>
-            {t("home")}
-          </StyledLink>
+          <Text style={{ marginTop: "20px" }}>
+            {status === "accountRecovered"
+              ? t("closeTab")
+              : t("tryAgain")
+            }
+          </Text>
         </Container>
       )}
     </>

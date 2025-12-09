@@ -59,10 +59,6 @@ const accountSlice = createSlice({
         state.accountMode = "login";
         return;
       }
-      if (!!payload.email) console.log("Setting logged user:", payload.email);
-      if (!!payload.name) console.log("User name:", payload.name);
-      if (!!payload.roles) console.log("User roles:", payload.roles);
-
       state.loggedUserEmail = payload.email;
       state.loggedUserName = payload.name || "";
       state.loggedUserRoles = payload.roles || [];
@@ -104,8 +100,8 @@ export const selectIsWaitingForConfirmation = (state: RootState) =>
   selectAccountState(state).isWaitingForConfirmation;
 export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
-export const selectLoggedUserRoles = (state: RootState) =>
-  selectAccountState(state).loggedUserRoles;
+export const selectIsAdmin = (state: RootState) =>
+  selectAccountState(state).loggedUserRoles.includes("admin");
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
 export const selectPresenceUsers = (state: RootState) =>
