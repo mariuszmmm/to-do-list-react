@@ -7,11 +7,11 @@ import { setLoggedUserEmail } from "../accountSlice";
 export const useLogout = () => {
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       const user = auth.currentUser();
       if (!user) throw new Error("No user found");
 
-      return user.logout();
+      return await user.logout();
     },
     onMutate: () => {
       dispatch(
@@ -23,6 +23,8 @@ export const useLogout = () => {
       );
     },
     onSuccess: () => {
+      process.env.NODE_ENV === "development" &&
+        console.log("Logout successful");
       dispatch(setLoggedUserEmail(null));
       dispatch(
         openModal({
