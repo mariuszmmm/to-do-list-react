@@ -29,15 +29,18 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
   const authRoute = authRoutes.includes(pathname);
 
   useEffect(() => {
-    if (!authRoute && user) {
-
-      console.log("!!!!!!!!!!!Current user found in Navigation:", user);
-      dispatch(setAccountMode(user ? "logged" : "login"));
-      dispatch(setLoggedUser(user ? {
-        email: user.email,
-        name: user?.user_metadata?.full_name,
-        roles: user?.app_metadata?.roles,
-      } : null));
+    if (!authRoute) {
+      if (user) {
+        dispatch(setAccountMode("logged"));
+        dispatch(setLoggedUser({
+          email: user.email,
+          name: user?.user_metadata?.full_name,
+          roles: user?.app_metadata?.roles,
+        }));
+      } else {
+        dispatch(setAccountMode("login"));
+        dispatch(setLoggedUser(null));
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

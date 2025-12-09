@@ -25,6 +25,31 @@
   status = 200
 
 [[redirects]]
+  from = "/backupData"
+  to = "/.netlify/functions/backupData"
+  status = 200
+
+[[redirects]]
+  from = "/uploadToGoogleDrive"
+  to = "/.netlify/functions/uploadToGoogleDrive"
+  status = 200
+
+[[redirects]]
+  from = "/restoreFromGoogleDrive"
+  to = "/.netlify/functions/restoreFromGoogleDrive"
+  status = 200
+
+[[redirects]]
+  from = "/restoreFromFile"
+  to = "/.netlify/functions/restoreFromFile"
+  status = 200
+
+[[redirects]]
+  from = "/google-oauth-callback"
+  to = "/.netlify/functions/googleOAuthCallback"
+  status = 200
+
+[[redirects]]
   from = "/confirmUser"
   to = "/.netlify/functions/confirmUser"
   status = 200

@@ -6,12 +6,13 @@ import { StyledSpan } from "../../common/StyledList";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
+import { BackupButtons } from "./BackupButtons";
 import { PresenceUsersList } from "./PresenceUsersList";
 import { SessionInfo } from "./SessionInfo";
 import {
   selectAllDevicesCount,
   selectLoggedUserEmail,
-  // selectLoggedUserRoles,
+  selectIsAdmin,
   selectTotalUsersCount,
   selectUserDevicesCount
 } from "./accountSlice";
@@ -20,11 +21,10 @@ import { NameContainer } from "../tasks/TasksPage/EditableListName/styled";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  // const loggedUserRoles = useAppSelector(selectLoggedUserRoles);
+  const isAdmin = useAppSelector(selectIsAdmin);
   const userDevices = useAppSelector(selectUserDevicesCount);
   const totalUsersCount = useAppSelector(selectTotalUsersCount);
   const allDevicesCount = useAppSelector(selectAllDevicesCount);
-  // const isAdmin = loggedUserRoles?.includes("admin");
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
@@ -52,29 +52,31 @@ const AccountPage = () => {
           </>
         }
       />
-      {loggedUserEmail &&
-        // isAdmin && 
-        (
-          <Section
-            title={t("sessionInfo.title")}
-            body={<SessionInfo />}
-          />
-        )}
-      {loggedUserEmail &&
-        // && isAdmin 
-        (
-          <Section
-            title={
-              <NameContainer $account>
-                {t("activeUsers.count", { count: totalUsersCount })}
-                <StyledSpan $comment>
-                  {t("allDevices.device", { count: allDevicesCount })}
-                </StyledSpan>
-              </NameContainer>
-            }
-            body={<PresenceUsersList />}
-          />
-        )}
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={t("backup.title")}
+          body={<BackupButtons />}
+        />
+      )}
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={t("sessionInfo.title")}
+          body={<SessionInfo />}
+        />
+      )}
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={
+            <NameContainer $account>
+              {t("activeUsers.count", { count: totalUsersCount })}
+              <StyledSpan $comment>
+                {t("allDevices.device", { count: allDevicesCount })}
+              </StyledSpan>
+            </NameContainer>
+          }
+          body={<PresenceUsersList />}
+        />
+      )}
     </>
   );
 };

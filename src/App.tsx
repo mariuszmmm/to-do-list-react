@@ -1,4 +1,5 @@
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
@@ -28,13 +29,14 @@ import {
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
 
 
-const App = () => {
+const AppContent = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const navigate = useNavigate();
   const { data, isLoading, isError } = useQuery<ListsData>({
     queryKey: ["listsData"],
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
-    refetchInterval: 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
   const safeData = !!loggedUserEmail ? data : undefined;
   const authRoutes = ["/user-confirmation", "/account-recovery"];
@@ -52,10 +54,22 @@ const App = () => {
     }
   });
 
+  // Handle Google OAuth callback
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      // Store code and redirect to account page
+      sessionStorage.setItem("google_oauth_code", code);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      navigate("/account");
+    }
+  }, [navigate]);
+
   process.env.NODE_ENV === "development" && console.log("Rendering App component...");
 
   return (
-    <HashRouter>
+    <>
       <TokenManager />
       <AblyManager />
       <Navigation
@@ -92,6 +106,14 @@ const App = () => {
         </Routes>
       </Container>
       <Modal />
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <HashRouter>
+      <AppContent />
     </HashRouter>
   );
 };
