@@ -232,6 +232,10 @@ const langEn: typeof langPl = {
     },
     backup: {
       title: "Backup & Restore",
+      processingAuthorization: "Processing authorization...",
+      googleDriveAuthSuccess: "Google Drive authorization successful!",
+      restoreFromComputer: "Restore from Computer",
+      restoreFromComputerTooltip: "Restore backup from local JSON file",
       download: "Download Backup",
       downloading: "Downloading backup...",
       downloadTooltip: "Download backup to your computer",

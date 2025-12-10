@@ -230,6 +230,11 @@ const langPl = {
     },
     backup: {
       title: "Kopia zapasowa i przywracanie",
+      processingAuthorization: "Przetwarzanie autoryzacji...",
+      googleDriveAuthSuccess: "Autoryzacja Google Drive zakończona sukcesem!",
+      restoreFromComputer: "Przywróć z pliku na komputerze",
+      restoreFromComputerTooltip:
+        "Wczytaj kopię zapasową z pliku JSON na komputerze",
       download: "Pobierz kopię zapasową",
       downloading: "Pobieranie kopii zapasowej...",
       downloadTooltip: "Pobierz kopię zapasową na komputer",

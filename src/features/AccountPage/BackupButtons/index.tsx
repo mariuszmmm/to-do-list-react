@@ -17,7 +17,7 @@ import {
 import { RemoveButton } from "../../../common/taskButtons";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { openModal, closeModal, selectModalConfirmed } from "../../../Modal/modalSlice";
-import { SectionContainer } from "../../../common/SectionContainer";
+import { BackupListContainer } from "../../../common/BackupListContainer";
 import {
   BackupListTitle,
   BackupItem,
@@ -67,7 +67,7 @@ export const BackupButtons = () => {
       (async () => {
         try {
           setIsLoading(true);
-          setMessage("Processing authorization...");
+          setMessage(t("processingAuthorization"));
           setMessageType("info");
 
           process.env.NODE_ENV === "development" && console.log("[OAuth] Received code:", code);
@@ -100,7 +100,7 @@ export const BackupButtons = () => {
           setGoogleAccessToken(data.accessToken);
           setShowGoogleAuth(false);
 
-          setMessage("Google Drive authorization successful!");
+          setMessage(t("googleDriveAuthSuccess"));
           setMessageType("success");
         } catch (error) {
           console.error("[OAuth] Error:", error);
@@ -494,7 +494,7 @@ export const BackupButtons = () => {
     <div>
       {/* Backup Files List */}
       {showBackupList && backupFiles.length > 0 ? (
-        <SectionContainer>
+        <BackupListContainer>
           <BackupListTitle>{t("selectBackup")}</BackupListTitle>
           <BackupItemsContainer>
             {backupFiles
@@ -577,10 +577,9 @@ export const BackupButtons = () => {
               ✖ {t("cancel")}
             </PaginationButton>
           </BackupActionsContainer>
-        </SectionContainer>
+        </BackupListContainer>
       ) : (
         <>
-          {/* Status Messages - displayed at the top with fixed height */}
           <MessageContainer>
             {message && (
               <Info $warning={messageType === "error"}>
@@ -601,15 +600,15 @@ export const BackupButtons = () => {
             <Button
               onClick={handleRestoreFromFile}
               disabled={isLoading}
-              title="Restore backup from local file (JSON)"
+              title={t("restoreFromComputerTooltip")}
             >
-              📂 Restore from Computer
+              📂 {t("restoreFromComputer")}
             </Button>
 
             <Button
               onClick={handleUploadToGoogleDrive}
               disabled={isLoading || showGoogleAuth}
-              title={showGoogleAuth ? "Please authorize Google Drive first" : t("uploadTooltip")}
+              title={showGoogleAuth ? t("authorizeGoogleTooltip") : t("uploadTooltip")}
             >
               ☁️ {t("upload")}
             </Button>
@@ -617,7 +616,7 @@ export const BackupButtons = () => {
             <Button
               onClick={handleRestoreFromGoogleDrive}
               disabled={isLoading || showGoogleAuth}
-              title={showGoogleAuth ? "Please authorize Google Drive first" : t("restoreTooltip")}
+              title={showGoogleAuth ? t("authorizeGoogleTooltip") : t("restoreTooltip")}
             >
               ☁️ {t("restore")}
             </Button>

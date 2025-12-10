@@ -231,6 +231,11 @@ const langDe: typeof langPl = {
     },
     backup: {
       title: "Sicherung & Wiederherstellung",
+      processingAuthorization: "Autorisierung wird verarbeitet...",
+      googleDriveAuthSuccess: "Google Drive-Autorisierung erfolgreich!",
+      restoreFromComputer: "Wiederherstellen vom Computer",
+      restoreFromComputerTooltip:
+        "Sicherung aus lokaler JSON-Datei wiederherstellen",
       download: "Sicherung herunterladen",
       downloading: "Sicherung wird heruntergeladen...",
       downloadTooltip: "Sicherung auf Ihren Computer herunterladen",
