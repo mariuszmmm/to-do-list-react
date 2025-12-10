@@ -178,7 +178,8 @@ const langPl = {
       device_other: "zalogowany na {{count}} urządzeniach",
     },
     activeUsers: {
-      label: "Zalogowani użytkownicy:",
+      label: "Zalogowani użytkownicy",
+      summaryTitle: "Aktywność użytkowników",
       count: "Ilość aktywnych użytkowników: {{count}}",
       count_few: "Ilość aktywnych użytkowników: {{count}}",
       count_many: "Ilość aktywnych użytkowników: {{count}}",
@@ -211,15 +212,21 @@ const langPl = {
       },
     },
     sessionInfo: {
-      title: "📋 Informacje o sesji",
+      title: "Informacje o sesji",
       createdAt: "Konto utworzone",
       confirmedAt: "Email potwierdzony",
-      tokenTitle: "🔐 Token autentykacji",
+      tokenTitle: "Token autentykacji",
       tokenExpiresAt: "Token wygasa",
       tokenExpiresIn: "Token wygasa za",
       tokenStatus: "Status tokena",
       tokenActive: "Token jest aktywny",
       tokenExpired: "Token wygasł",
+    },
+    autoRefresh: {
+      label: "Automatyczne odświeżanie tokena",
+      enabledDescription:
+        "Token będzie automatycznie odświeżany po wygaśnięciu",
+      disabledDescription: "Zostaniesz wylogowany po wygaśnięciu tokena",
     },
     backup: {
       title: "Kopia zapasowa i przywracanie",
@@ -249,6 +256,22 @@ const langPl = {
       savingError: "Błąd podczas zapisywania kopii zapasowej",
       enterFileId: "Wpisz ID pliku Google Drive:",
       cancelled: "Przywracanie anulowane",
+      selectBackup: "Wybierz kopię do przywrócenia",
+      noBackups: "Brak kopii zapasowych na Google Drive",
+      prev: "Wstecz",
+      next: "Dalej",
+      cancel: "Anuluj",
+      deleteBackup: {
+        deleting: "Usuwanie kopii zapasowej",
+        success: "Kopia zapasowa usunięta pomyślnie!",
+        error: "Błąd podczas usuwania kopii zapasowej",
+        tooltip: "Usuń tę kopię zapasową",
+        confirm: "Czy na pewno chcesz usunąć kopię zapasową '{{name}}'?",
+      },
+    },
+    toggle: {
+      show: "Rozwiń sekcję",
+      hide: "Zwiń sekcję",
     },
   },
   confirmationPage: {
@@ -406,6 +429,18 @@ const langPl = {
           conflict:
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
           default: "Wystąpił błąd podczas usuwania listy.",
+        },
+      },
+    },
+    deleteBackup: {
+      title: "Usuwanie kopii zapasowej",
+      message: {
+        confirm:
+          "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
+        loading: "Trwa usuwanie kopii zapasowej...",
+        success: "Kopia zapasowa została usunięta.",
+        error: {
+          default: "Błąd podczas usuwania kopii zapasowej.",
         },
       },
     },

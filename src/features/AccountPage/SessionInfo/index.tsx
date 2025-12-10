@@ -28,9 +28,23 @@ export const SessionInfo = () => {
     const updateSessionData = () => {
       const user = auth.currentUser();
       if (!user) {
+        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Brak użytkownika (user == null).');
         setSessionData({});
         setRemainingMs(0);
         return;
+      }
+
+      process.env.NODE_ENV === "development" && console.log('[SessionInfo] Użytkownik obecny:', user.email, user);
+      if (user.token) {
+        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token:', user.token);
+        if (user.token.expires_at) {
+          process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token wygasa:', new Date(user.token.expires_at).toLocaleString());
+        }
+        if (user.token.refresh_token) {
+          process.env.NODE_ENV === "development" && console.log('[SessionInfo] Refresh token obecny:', user.token.refresh_token);
+        }
+      } else {
+        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Brak tokena w user.token');
       }
 
       setSessionData({
@@ -49,6 +63,7 @@ export const SessionInfo = () => {
       // Ustaw początkową wartość pozostałego czasu
       const remaining = getTokenExpiresIn(user);
       setRemainingMs(remaining);
+      process.env.NODE_ENV === "development" && console.log('[SessionInfo] Pozostały czas ważności tokena (ms):', remaining);
     };
 
     updateSessionData();
@@ -74,6 +89,9 @@ export const SessionInfo = () => {
 
       const remaining = getTokenExpiresIn(user);
       setRemainingMs(remaining);
+      if (remaining <= 0) {
+        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token wygasł!');
+      }
     };
 
     // Aktualizuj co 1 sekundę

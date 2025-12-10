@@ -1,10 +1,12 @@
 import { auth } from "../api/auth";
-import { isTokenValid } from "./tokenUtils";
+import { getTokenExpiresIn } from "./tokenUtils";
 
 export const getUserToken = async () => {
   const user = auth.currentUser();
 
   if (!user || !user.token) {
+    process.env.NODE_ENV === "development" &&
+      console.log("[getUserToken] Brak użytkownika lub tokena");
     return null;
   }
 
@@ -15,18 +17,31 @@ export const getUserToken = async () => {
         throw new Error("No user found");
       }
       const token = await user.jwt();
+      process.env.NODE_ENV === "development" &&
+        console.log("[getUserToken] Token odświeżony pomyślnie", {
+          expiresIn: user.token?.expires_in,
+          expiresAt: new Date(user.token?.expires_at || 0).toLocaleString(),
+        });
       return token;
     } catch (error) {
-      console.error("Error renewing token", error);
+      console.error("[getUserToken] Błąd podczas odświeżania tokena:", error);
       return null;
     }
   };
 
-  // Sprawdź czy token jest jeszcze ważny (z buforem 30s)
-  // Buffor zmniejszony do 30s ponieważ useTokenRefresh odnawiał token 5 minut wcześniej
-  if (!isTokenValid(user, 30000)) {
+  // Odśwież token tylko jeśli wygasł lokalnie
+  const remainingMs = getTokenExpiresIn(user);
+  process.env.NODE_ENV === "development" &&
+    console.log(
+      "[getUserToken] Pozostały czas ważności tokena (ms):",
+      remainingMs
+    );
+
+  if (remainingMs <= 0) {
+    process.env.NODE_ENV === "development" &&
+      console.log("[getUserToken] Token wygasł, próba odświeżenia");
     return await refreshToken();
-  } else {
-    return user.token.access_token;
   }
+
+  return user.token.access_token;
 };

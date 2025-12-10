@@ -7,14 +7,16 @@ import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
   // Entry log
-  console.log("[addData] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[addData] Function invoked");
 
   // Connect to database
   await connectToDB();
 
   // Only allow PUT method
   if (event.httpMethod !== "PUT") {
-    console.log("[addData] Method not allowed:", event.httpMethod);
+    process.env.NODE_ENV === "development" &&
+      console.log("[addData] Method not allowed:", event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -23,7 +25,8 @@ const handler: Handler = async (event, context) => {
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log("[addData] Unauthorized - Missing client context or body");
+    process.env.NODE_ENV === "development" &&
+      console.log("[addData] Unauthorized - Missing client context or body");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -32,7 +35,7 @@ const handler: Handler = async (event, context) => {
 
   // Extract user email
   const { email }: { email: string } = context.clientContext.user;
-  // console.log("User email:", email);
+  // process.env.NODE_ENV === "development" && console.log("User email:", email);
 
   try {
     // Find user in DB
@@ -41,13 +44,14 @@ const handler: Handler = async (event, context) => {
       account: "active",
     })) as UserDoc | null;
     if (!foundUser) {
-      console.log("[addData] User not found:", email);
+      process.env.NODE_ENV === "development" &&
+        console.log("[addData] User not found:", email);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
       };
     }
-    // console.log("User found:", email, "Lists count:", foundUser.lists.length);
+    // process.env.NODE_ENV === "development" && console.log("User found:", email, "Lists count:", foundUser.lists.length);
 
     // Parse request data
     let data: Data;
@@ -64,11 +68,12 @@ const handler: Handler = async (event, context) => {
         }),
       };
     }
-    // console.log("Request data:", data);
+    // process.env.NODE_ENV === "development" && console.log("Request data:", data);
 
     // Validate list in request
     if (!data.list || typeof data.list !== "object") {
-      console.log("[addData] No valid list provided in request body");
+      process.env.NODE_ENV === "development" &&
+        console.log("[addData] No valid list provided in request body");
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -81,7 +86,8 @@ const handler: Handler = async (event, context) => {
       !data.list.taskList ||
       !Array.isArray(data.list.taskList)
     ) {
-      console.log("[addData] List missing required fields");
+      process.env.NODE_ENV === "development" &&
+        console.log("[addData] List missing required fields");
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -89,7 +95,7 @@ const handler: Handler = async (event, context) => {
         }),
       };
     }
-    // console.log("List ID:", data.list.id);
+    // process.env.NODE_ENV === "development" && console.log("List ID:", data.list.id);
 
     // Find if list exists
     const listIndex = foundUser.lists.findIndex(
@@ -99,16 +105,17 @@ const handler: Handler = async (event, context) => {
     let deletedTasksIds: string[] = [];
     if (listIndex !== -1) {
       // Update existing list
-      // console.log("Updating existing list:", listIndex);
+      // process.env.NODE_ENV === "development" && console.log("Updating existing list:", listIndex);
       const incomingList = data.list;
       const existingList = foundUser.lists[listIndex];
 
       // Check for version conflict
       if (incomingList.version !== existingList.version) {
-        console.log(
-          "[addData] Version mismatch detected for list ID:",
-          data.list.id
-        );
+        process.env.NODE_ENV === "development" &&
+          console.log(
+            "[addData] Version mismatch detected for list ID:",
+            data.list.id
+          );
         return {
           statusCode: 409,
           body: JSON.stringify({
@@ -136,7 +143,8 @@ const handler: Handler = async (event, context) => {
       existingList.version = (existingList.version || 0) + 1;
     } else {
       // Add new list
-      console.log("[addData] Adding new list");
+      process.env.NODE_ENV === "development" &&
+        console.log("[addData] Adding new list");
       const newList = {
         ...data.list,
         version: 0,
@@ -181,7 +189,8 @@ const handler: Handler = async (event, context) => {
         body: JSON.stringify({ message: "Failed to save data." }),
       };
     }
-    console.log("[addData] Data updated successfully for user:", email);
+    process.env.NODE_ENV === "development" &&
+      console.log("[addData] Data updated successfully for user:", email);
 
     // Publish update via Ably
     try {
@@ -190,7 +199,8 @@ const handler: Handler = async (event, context) => {
         deviceId: data.deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
       });
-      console.log("[addData] Ably notification sent successfully");
+      process.env.NODE_ENV === "development" &&
+        console.log("[addData] Ably notification sent successfully");
     } catch (ablyError) {
       console.error("[addData] Ably publish error:", ablyError);
     }

@@ -59,10 +59,12 @@ export const useAblySubscription = ({
 
     const unsubscribe = subscribeListsUpdate(userEmail, (data) => {
       if (data.lists) {
-        console.log("id ", data.deviceId, currentDeviceId);
+        process.env.NODE_ENV === "development" &&
+          console.log("id ", data.deviceId, currentDeviceId);
         if (data.deviceId === currentDeviceId) return;
 
         process.env.NODE_ENV === "development" &&
+          process.env.NODE_ENV === "development" &&
           console.log(
             "[useAblySubscription] Received lists update via Ably:",
             data

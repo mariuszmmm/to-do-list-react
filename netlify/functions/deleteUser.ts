@@ -5,7 +5,8 @@ import { connectToDB } from "./config/mongoose";
 
 const handler = async (_event: HandlerEvent, context: HandlerContext) => {
   // Entry log
-  console.log("[deleteUser] Delete user function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[deleteUser] Delete user function invoked");
 
   // Connect to database
   await connectToDB();
@@ -28,9 +29,10 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
   const userUrl = `${identity.url}/admin/users/{${userID}}`;
   const adminAuthHeader = `Bearer ${identity.token}`;
 
-  console.log(
-    `[deleteUser] Attempting to delete user: ${email} (ID: ${userID})`
-  );
+  process.env.NODE_ENV === "development" &&
+    console.log(
+      `[deleteUser] Attempting to delete user: ${email} (ID: ${userID})`
+    );
 
   try {
     // Find user in DB
@@ -74,7 +76,8 @@ const handler = async (_event: HandlerEvent, context: HandlerContext) => {
     }
 
     // Success response
-    console.log(`[deleteUser] User successfully deleted: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[deleteUser] User successfully deleted: ${email}`);
     return { statusCode: 204 };
   } catch (error) {
     // Error response

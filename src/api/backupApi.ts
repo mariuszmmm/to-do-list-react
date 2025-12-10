@@ -325,3 +325,52 @@ export const listGoogleDriveBackupsApi = async (
     };
   }
 };
+
+// Delete backup from Google Drive
+export const deleteBackupFromGoogleDriveApi = async (
+  accessToken: string,
+  fileId: string
+): Promise<{ success: boolean; message: string }> => {
+  try {
+    process.env.NODE_ENV === "development" &&
+      console.log("[Delete Backup] Starting delete for fileId:", fileId);
+
+    const response = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${fileId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    process.env.NODE_ENV === "development" &&
+      console.log("[Delete Backup] Response status:", response.status);
+
+    // 204 No Content is success for DELETE requests
+    if (response.status === 204 || response.ok) {
+      process.env.NODE_ENV === "development" &&
+        console.log("[Delete Backup] File deleted successfully");
+      return {
+        success: true,
+        message: "Backup deleted successfully",
+      };
+    }
+
+    const errorText = await response.text();
+    console.error("[Delete Backup] Error response:", errorText);
+
+    return {
+      success: false,
+      message: `Failed to delete backup: ${response.statusText}`,
+    };
+  } catch (error) {
+    console.error("Error deleting backup from Google Drive", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to delete backup",
+    };
+  }
+};

@@ -27,11 +27,13 @@ export const useSaveListMutation = () => {
     },
     onMutate: ({ list }) => {
       process.env.NODE_ENV === "development" &&
+        process.env.NODE_ENV === "development" &&
         console.log("Saving list mutation started for list:", list);
     },
     onSuccess: async (response: { data: ListsData }) => {
       queryClient.setQueryData(["listsData"], response.data);
       process.env.NODE_ENV === "development" &&
+        process.env.NODE_ENV === "development" &&
         console.log("Saving list mutation completed for list:", response.data);
     },
     onError: () => {

@@ -71,6 +71,7 @@ export const useWaitingForConfirmation = ({
           const response = await auth.login(email, password, true);
 
           process.env.NODE_ENV === "development" &&
+            process.env.NODE_ENV === "development" &&
             console.log("Login successful:", response);
 
           dispatch(setAccountMode("logged"));

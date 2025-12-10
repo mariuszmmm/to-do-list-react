@@ -180,7 +180,8 @@ const langDe: typeof langPl = {
       device_other: "angemeldet auf {{count}} Geräten",
     },
     activeUsers: {
-      label: "Angemeldete Benutzer:",
+      label: "Angemeldete Benutzer",
+      summaryTitle: "Übersicht der Benutzeraktivität",
       count: "Anzahl der aktiven Benutzer: {{count}}",
       count_few: "Anzahl der aktiven Benutzer: {{count}}",
       count_many: "Anzahl der aktiven Benutzer: {{count}}",
@@ -213,15 +214,20 @@ const langDe: typeof langPl = {
       },
     },
     sessionInfo: {
-      title: "📋 Sitzungsinformationen",
+      title: "Sitzungsinformationen",
       createdAt: "Konto erstellt",
       confirmedAt: "E-Mail bestätigt",
-      tokenTitle: "🔐 Authentifizierungstoken",
+      tokenTitle: "Authentifizierungstoken",
       tokenExpiresAt: "Token läuft ab um",
       tokenExpiresIn: "Token läuft ab in",
       tokenStatus: "Token-Status",
       tokenActive: "Token ist aktiv",
       tokenExpired: "Token ist abgelaufen",
+    },
+    autoRefresh: {
+      label: "Automatische Token-Aktualisierung",
+      enabledDescription: "Das Token wird beim Ablauf automatisch erneuert",
+      disabledDescription: "Du wirst abgemeldet, wenn das Token abläuft",
     },
     backup: {
       title: "Sicherung & Wiederherstellung",
@@ -251,6 +257,22 @@ const langDe: typeof langPl = {
       savingError: "Fehler beim Speichern der Sicherung",
       enterFileId: "Google Drive File ID eingeben:",
       cancelled: "Wiederherstellung abgebrochen",
+      selectBackup: "Wähle ein Backup zum Wiederherstellen",
+      noBackups: "Keine Sicherungen auf Google Drive gefunden",
+      prev: "Zurück",
+      next: "Weiter",
+      cancel: "Abbrechen",
+      deleteBackup: {
+        deleting: "Sicherung wird gelöscht",
+        success: "Sicherung erfolgreich gelöscht!",
+        error: "Fehler beim Löschen der Sicherung",
+        tooltip: "Diese Sicherung löschen",
+        confirm: "Möchtest du die Sicherung '{{name}}' wirklich löschen?",
+      },
+    },
+    toggle: {
+      show: "Sektion ausklappen",
+      hide: "Sektion einklappen",
     },
   },
   confirmationPage: {
@@ -409,6 +431,18 @@ const langDe: typeof langPl = {
           conflict:
             "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
           default: "Fehler beim Löschen der Liste.",
+        },
+      },
+    },
+    deleteBackup: {
+      title: "Sicherung löschen",
+      message: {
+        confirm:
+          "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
+        loading: "Sicherung wird gelöscht...",
+        success: "Die Sicherung wurde gelöscht.",
+        error: {
+          default: "Fehler beim Löschen der Sicherung.",
         },
       },
     },

@@ -180,7 +180,8 @@ const langEn: typeof langPl = {
       device_other: "logged in on {{count}} devices",
     },
     activeUsers: {
-      label: "Logged in users:",
+      label: "Logged in users",
+      summaryTitle: "User activity overview",
       count: "Number of active users: {{count}}",
       count_few: "Number of active users: {{count}}",
       count_many: "Number of active users: {{count}}",
@@ -213,15 +214,21 @@ const langEn: typeof langPl = {
       },
     },
     sessionInfo: {
-      title: "📋 Session Information",
+      title: "Session Information",
       createdAt: "Account created",
       confirmedAt: "Email confirmed",
-      tokenTitle: "🔐 Authentication Token",
+      tokenTitle: "Authentication Token",
       tokenExpiresAt: "Token expires at",
       tokenExpiresIn: "Token expires in",
       tokenStatus: "Token status",
       tokenActive: "Token is active",
       tokenExpired: "Token expired",
+    },
+    autoRefresh: {
+      label: "Automatic token refresh",
+      enabledDescription:
+        "The token will refresh automatically when it expires",
+      disabledDescription: "You will be logged out when the token expires",
     },
     backup: {
       title: "Backup & Restore",
@@ -250,6 +257,22 @@ const langEn: typeof langPl = {
       savingError: "Error saving backup to file",
       enterFileId: "Enter Google Drive File ID:",
       cancelled: "Restore cancelled",
+      selectBackup: "Select a backup to restore",
+      noBackups: "No backup files found on Google Drive",
+      prev: "Previous",
+      next: "Next",
+      cancel: "Cancel",
+      deleteBackup: {
+        deleting: "Deleting backup",
+        success: "Backup deleted successfully!",
+        error: "Error deleting backup",
+        tooltip: "Delete this backup",
+        confirm: "Are you sure you want to delete the backup '{{name}}'?",
+      },
+    },
+    toggle: {
+      show: "Expand section",
+      hide: "Collapse section",
     },
   },
   confirmationPage: {
@@ -403,6 +426,18 @@ const langEn: typeof langPl = {
           conflict:
             "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while deleting the list.",
+        },
+      },
+    },
+    deleteBackup: {
+      title: "Deleting backup",
+      message: {
+        confirm:
+          "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
+        loading: "Deleting backup...",
+        success: "The backup has been deleted.",
+        error: {
+          default: "An error occurred while deleting the backup.",
         },
       },
     },

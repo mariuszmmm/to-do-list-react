@@ -14,7 +14,8 @@ const handler: Handler = async (event, context) => {
     : emailParam;
 
   if (!email) {
-    console.log("[ably-auth] Unauthorized - Missing email");
+    process.env.NODE_ENV === "development" &&
+      console.log("[ably-auth] Unauthorized - Missing email");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Missing email" }),
@@ -28,14 +29,15 @@ const handler: Handler = async (event, context) => {
     };
   }
 
-  console.log(
-    "[ably-auth] Generating token for user:",
-    email,
-    "device:",
-    deviceId,
-    "authenticated:",
-    isAuthenticated
-  );
+  process.env.NODE_ENV === "development" &&
+    console.log(
+      "[ably-auth] Generating token for user:",
+      email,
+      "device:",
+      deviceId,
+      "authenticated:",
+      isAuthenticated
+    );
 
   try {
     // Utwórz klienta Ably z kluczem API (tylko server-side!)

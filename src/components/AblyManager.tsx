@@ -1,13 +1,17 @@
-import { useAblyManager } from "../hooks/useAblyManager";
+import { useAblyManager, useAblySubscription } from "../hooks";
+import { useAppDispatch } from "../hooks";
+import { setPresenceData } from "../features/AccountPage/accountSlice";
 
-/**
- * Komponent który zarządza wszystkimi subskrypcjami Ably
- * Inicjalizuje kanały, setup listenery, nie renderuje nic
- * Eksponuje API przez context lub direct hook usage
- */
-export const AblyManager = () => {
-  // Inicjalizuj manager i setup wszystkie kanały
+export const AblyManager = ({ userEmail, enabled }: { userEmail: string | null, enabled: boolean }) => {
+  const dispatch = useAppDispatch();
   useAblyManager();
-
+  useAblySubscription({
+    userEmail,
+    enabled,
+    onPresenceUpdate: (data) => {
+      dispatch(setPresenceData(data));
+    }
+  });
   return null;
 };
+

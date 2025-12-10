@@ -2,7 +2,8 @@
 import type { Handler } from "@netlify/functions";
 
 const handler: Handler = async (event) => {
-  console.log("[googleOAuthCallback] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[googleOAuthCallback] Function invoked");
 
   if (event.httpMethod !== "POST") {
     return {
@@ -37,9 +38,10 @@ const handler: Handler = async (event) => {
       };
     }
 
-    console.log(
-      `[googleOAuthCallback] Exchanging code for token. Redirect URI: ${redirectUri}`
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        `[googleOAuthCallback] Exchanging code for token. Redirect URI: ${redirectUri}`
+      );
 
     // Exchange authorization code for access token
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
@@ -69,7 +71,8 @@ const handler: Handler = async (event) => {
     }
 
     const tokenData = await tokenResponse.json();
-    console.log(`[googleOAuthCallback] Token exchange successful`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[googleOAuthCallback] Token exchange successful`);
 
     return {
       statusCode: 200,

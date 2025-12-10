@@ -3,7 +3,8 @@ import type { Handler, HandlerEvent } from "@netlify/functions";
 
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
-  console.log("[translateMessage] Translation function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[translateMessage] Translation function invoked");
 
   // Only allow POST method
   if (event.httpMethod !== "POST") {
@@ -37,10 +38,11 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Parse request data
   const { text, targetLanguage } = JSON.parse(event.body);
-  console.log(
-    `[translateMessage] Translating text to ${targetLanguage}:`,
-    text
-  );
+  process.env.NODE_ENV === "development" &&
+    console.log(
+      `[translateMessage] Translating text to ${targetLanguage}:`,
+      text
+    );
 
   // Call translation API
   let response;
@@ -73,7 +75,8 @@ const handler: Handler = async (event: HandlerEvent) => {
 
   // Log and return translation
   const translatedText = response?.data?.translations?.[0]?.translatedText;
-  console.log("[translateMessage] Translation successful:", translatedText);
+  process.env.NODE_ENV === "development" &&
+    console.log("[translateMessage] Translation successful:", translatedText);
 
   return {
     statusCode: 200,

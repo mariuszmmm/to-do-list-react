@@ -4,6 +4,7 @@ const settingsKey = "settings" as const;
 const listMetadataKey = "taskListMetaData" as const;
 const tasksKey = "tasks" as const;
 const archivedListsKey = "archivedLists" as const;
+const autoRefreshKey = "autoRefreshEnabled" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
@@ -57,4 +58,15 @@ export const getArchivedListFromLocalStorage = (): List[] | undefined => {
   const parsed = JSON.parse(data) as List[];
 
   return parsed;
+};
+
+export const getAutoRefreshSettingFromLocalStorage = (): boolean => {
+  const stored = localStorage.getItem(autoRefreshKey);
+  return stored === null ? true : stored === "true";
+};
+
+export const saveAutoRefreshSettingInLocalStorage = (
+  enabled: boolean
+): void => {
+  localStorage.setItem(autoRefreshKey, JSON.stringify(enabled));
 };

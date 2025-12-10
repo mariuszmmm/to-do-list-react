@@ -67,7 +67,7 @@ export const useListSyncManager = ({
     (payload: { list: List; deviceId: string }) => void
   > | null>(null);
 
-  // Mark that there are local changes whenever tasks or metadata change
+  // Sprawdź status listy przy zmianie danych zdalnych lub lokalnych
   useEffect(() => {
     if (!listsData) {
       dispatch(
@@ -112,7 +112,7 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData, taskListMetaData, tasks]);
 
-  // Update local list if remote data changes
+  // Aktualizuj lokalną listę, gdy zmienią się dane zdalne
   useEffect(() => {
     if (!listsData || !listStatus.isRemoteSaveable) return;
 
@@ -178,10 +178,8 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData]);
 
-  // Initialize debounced mutate function
+  // Zainicjuj funkcję debounced do zapisu
   useEffect(() => {
-    process.env.NODE_ENV === "development" &&
-      console.log("Initializing debounced mutate function");
     debouncedMutateRef.current = debounce(
       (payload: { list: List; deviceId: string }) => {
         saveListMutation.mutate(payload);
@@ -195,13 +193,13 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep refs updated with latest tasks and metadata
+  // Aktualizuj referencje do najnowszych zadań i metadanych
   useEffect(() => {
     pendingTasksRef.current = tasks;
     pendingMetaRef.current = taskListMetaData;
   }, [tasks, taskListMetaData]);
 
-  // Trigger save when there are local changes
+  // Wywołaj zapis, gdy są lokalne zmiany
   useEffect(() => {
     if (
       !listsData ||

@@ -9,6 +9,7 @@ import {
   setAccountMode,
 } from "../accountSlice";
 import { useTranslation } from "react-i18next";
+import { AutoRefreshToggle } from "../AutoRefreshToggle";
 
 export const AccountExtraButtons = () => {
   const accountMode = useAppSelector(selectAccountMode);
@@ -20,9 +21,10 @@ export const AccountExtraButtons = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <ButtonsContainer $extra>
-      {!loggedUserEmail
-        ? (accountMode === "login" || accountMode === "accountRecovery") && (
+    <>
+      <ButtonsContainer $extra>
+        {!loggedUserEmail
+          ? (accountMode === "login" || accountMode === "accountRecovery") && (
             <Button
               $special
               onClick={() =>
@@ -38,13 +40,15 @@ export const AccountExtraButtons = () => {
                 : t("buttons.cancel")}
             </Button>
           )
-        : accountMode === "passwordChange" && (
+          : accountMode === "passwordChange" && (
             <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
               {t("buttons.cancel")}
             </Button>
           )}
 
-      {!!message && <Info $warning>{message}</Info>}
-    </ButtonsContainer>
+        {!!message && <Info $warning>{message}</Info>}
+      </ButtonsContainer>
+      <AutoRefreshToggle />
+    </>
   );
 };

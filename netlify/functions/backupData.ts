@@ -4,11 +4,13 @@ import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
-  console.log("[backupData] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[backupData] Function invoked");
 
   // Check for authentication
   if (!context.clientContext || !context.clientContext.user) {
-    console.log("[backupData] Unauthorized access attempt");
+    process.env.NODE_ENV === "development" &&
+      console.log("[backupData] Unauthorized access attempt");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -21,12 +23,14 @@ const handler: Handler = async (event, context) => {
   try {
     // Extract user email
     const { email }: { email: string } = context.clientContext.user;
-    console.log(`[backupData] Creating backup for admin user: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[backupData] Creating backup for admin user: ${email}`);
 
     // Find all users' data (admin backup)
     const allUserData = await UserData.find({ account: "active" });
     if (!allUserData || allUserData.length === 0) {
-      console.log(`[backupData] No user data found`);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[backupData] No user data found`);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "No user data found" }),
@@ -65,9 +69,10 @@ const handler: Handler = async (event, context) => {
       totalTasks,
     };
 
-    console.log(
-      `[backupData] Full backup created successfully for admin: ${email}. Users: ${allUserData.length}, Lists: ${totalLists}, Tasks: ${totalTasks}`
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        `[backupData] Full backup created successfully for admin: ${email}. Users: ${allUserData.length}, Lists: ${totalLists}, Tasks: ${totalTasks}`
+      );
     return {
       statusCode: 200,
       headers: {
