@@ -7,6 +7,8 @@ interface SectionProps {
   extraHeaderContent?: ReactElement;
   extraContent?: ReactElement;
   bodyHidden?: boolean;
+  onlyOpenButton?: boolean;
+  onHeaderClick?: () => void;
 }
 
 export const Section = ({
@@ -15,10 +17,16 @@ export const Section = ({
   extraHeaderContent,
   extraContent,
   bodyHidden,
+  onlyOpenButton,
+  onHeaderClick,
 }: SectionProps) => (
   <StyledSection>
     {title && (
-      <SectionHeader $bodyHidden={bodyHidden}>
+      <SectionHeader
+        $bodyHidden={bodyHidden}
+        $onlyOpenButton={onlyOpenButton}
+        onClick={onHeaderClick}
+      >
         {title}
         {extraHeaderContent}
       </SectionHeader>

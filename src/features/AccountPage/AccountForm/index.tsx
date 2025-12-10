@@ -22,6 +22,7 @@ import {
   closeModal,
   openModal,
   selectModalConfirmed,
+  selectModalState,
 } from "../../../Modal/modalSlice";
 import { usePasswordChange } from "./usePasswordChange";
 import { useAccountRecovery } from "./useAccountRecovery";
@@ -40,6 +41,7 @@ export const AccountForm = () => {
   const message = useAppSelector(selectMessage);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const confirmed = useAppSelector(selectModalConfirmed);
+  const modalState = useAppSelector(selectModalState);
 
   const isWaitingForConfirmation = useAppSelector(
     selectIsWaitingForConfirmation,
@@ -77,10 +79,25 @@ export const AccountForm = () => {
   }, [isWaitingForConfirmation, waitingForConfirmation]);
 
   useEffect(() => {
+    const modalTitleKey = modalState.title?.key;
+    const isAccountConfirmModal =
+      modalState.type === "confirm" &&
+      (modalTitleKey === "modal.logout.title" ||
+        modalTitleKey === "modal.accountDelete.title" ||
+        modalTitleKey === "modal.dataRemoval.title");
+
+    if (!isAccountConfirmModal) return;
+
     if (confirmed) {
-      if (accountMode === "logged") logout.mutate();
-      if (accountMode === "accountDelete") accountDelete.mutate();
-      if (accountMode === "dataRemoval") {
+      if (modalTitleKey === "modal.logout.title" && accountMode === "logged") {
+        logout.mutate();
+      }
+
+      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
+        accountDelete.mutate();
+      }
+
+      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
         dispatch(clearStorage());
         dispatch(setAccountMode("login"));
         dispatch(
@@ -91,16 +108,20 @@ export const AccountForm = () => {
           }),
         );
       }
-    } else {
-      if (confirmed === false) {
-        if (accountMode === "accountDelete") dispatch(setAccountMode("logged"));
-        if (accountMode === "dataRemoval") dispatch(setAccountMode("login"));
-        dispatch(closeModal());
+    } else if (confirmed === false) {
+      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
+        dispatch(setAccountMode("logged"));
       }
+
+      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
+        dispatch(setAccountMode("login"));
+      }
+
+      dispatch(closeModal());
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmed]);
+  }, [confirmed, modalState, accountMode]);
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();

@@ -5,13 +5,15 @@ import { connectToDB } from "./config/mongoose";
 import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
-  console.log("[restoreFromFile] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[restoreFromFile] Function invoked");
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log(
-      "[restoreFromFile] Unauthorized - Missing client context or body"
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        "[restoreFromFile] Unauthorized - Missing client context or body"
+      );
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -20,7 +22,8 @@ const handler: Handler = async (event, context) => {
 
   // Only allow POST method
   if (event.httpMethod !== "POST") {
-    console.log("[restoreFromFile] Method not allowed:", event.httpMethod);
+    process.env.NODE_ENV === "development" &&
+      console.log("[restoreFromFile] Method not allowed:", event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -42,12 +45,14 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    console.log(`[restoreFromFile] Restoring backup for user: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[restoreFromFile] Restoring backup for user: ${email}`);
 
     // Find user data
     const userData = await UserData.findOne({ email, account: "active" });
     if (!userData) {
-      console.log(`[restoreFromFile] User not found: ${email}`);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[restoreFromFile] User not found: ${email}`);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
@@ -55,10 +60,11 @@ const handler: Handler = async (event, context) => {
     }
 
     try {
-      console.log(
-        `[restoreFromFile] Backup structure:`,
-        JSON.stringify(backupData).substring(0, 200)
-      );
+      process.env.NODE_ENV === "development" &&
+        console.log(
+          `[restoreFromFile] Backup structure:`,
+          JSON.stringify(backupData).substring(0, 200)
+        );
 
       // Handle both old format (single user) and new format (multiple users)
       let listsToRestore;
@@ -73,13 +79,15 @@ const handler: Handler = async (event, context) => {
           throw new Error("User data not found in backup");
         }
         listsToRestore = userBackup.lists;
-        console.log(
-          `[restoreFromFile] Found user ${email} in multi-user backup`
-        );
+        process.env.NODE_ENV === "development" &&
+          console.log(
+            `[restoreFromFile] Found user ${email} in multi-user backup`
+          );
       } else if (Array.isArray(backupData.lists)) {
         // Old format: direct lists array
         listsToRestore = backupData.lists;
-        console.log(`[restoreFromFile] Using single-user backup format`);
+        process.env.NODE_ENV === "development" &&
+          console.log(`[restoreFromFile] Using single-user backup format`);
       } else {
         throw new Error("Invalid backup format: unrecognized structure");
       }
@@ -100,9 +108,10 @@ const handler: Handler = async (event, context) => {
       userData.lists = normalizedLists;
       await userData.save();
 
-      console.log(
-        `[restoreFromFile] Backup restored successfully for: ${email}, lists: ${normalizedLists.length}`
-      );
+      process.env.NODE_ENV === "development" &&
+        console.log(
+          `[restoreFromFile] Backup restored successfully for: ${email}, lists: ${normalizedLists.length}`
+        );
 
       // Publish update via Ably
       await publishAblyUpdate(email, {

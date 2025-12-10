@@ -4,13 +4,15 @@ import UserData from "./models/UserData";
 import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
-  console.log("[uploadToGoogleDrive] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[uploadToGoogleDrive] Function invoked");
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log(
-      "[uploadToGoogleDrive] Unauthorized - Missing client context or body"
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        "[uploadToGoogleDrive] Unauthorized - Missing client context or body"
+      );
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -19,7 +21,11 @@ const handler: Handler = async (event, context) => {
 
   // Only allow POST method
   if (event.httpMethod !== "POST") {
-    console.log("[uploadToGoogleDrive] Method not allowed:", event.httpMethod);
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        "[uploadToGoogleDrive] Method not allowed:",
+        event.httpMethod
+      );
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -41,12 +47,14 @@ const handler: Handler = async (event, context) => {
       };
     }
 
-    console.log(`[uploadToGoogleDrive] Uploading backup for user: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[uploadToGoogleDrive] Uploading backup for user: ${email}`);
 
     // Find user data
     const userData = await UserData.findOne({ email, account: "active" });
     if (!userData) {
-      console.log(`[uploadToGoogleDrive] User not found: ${email}`);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[uploadToGoogleDrive] User not found: ${email}`);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
@@ -75,9 +83,10 @@ const handler: Handler = async (event, context) => {
         throw new Error(uploadResponse.message);
       }
 
-      console.log(
-        `[uploadToGoogleDrive] File uploaded successfully: ${uploadResponse.fileId}`
-      );
+      process.env.NODE_ENV === "development" &&
+        console.log(
+          `[uploadToGoogleDrive] File uploaded successfully: ${uploadResponse.fileId}`
+        );
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -131,9 +140,10 @@ async function findOrCreateFolder(
 
     // If folder exists, return its ID
     if (searchData.files && searchData.files.length > 0) {
-      console.log(
-        `[uploadToGoogleDrive] Found existing folder: ${searchData.files[0].id}`
-      );
+      process.env.NODE_ENV === "development" &&
+        console.log(
+          `[uploadToGoogleDrive] Found existing folder: ${searchData.files[0].id}`
+        );
       return searchData.files[0].id;
     }
 
@@ -159,7 +169,8 @@ async function findOrCreateFolder(
     }
 
     const createData = await createResponse.json();
-    console.log(`[uploadToGoogleDrive] Created new folder: ${createData.id}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[uploadToGoogleDrive] Created new folder: ${createData.id}`);
     return createData.id;
   } catch (error) {
     console.error("Error finding/creating folder:", error);

@@ -8,11 +8,12 @@ import { publishConfirmation } from "./config/ably";
 
 const handler: Handler = async (event: HandlerEvent) => {
   // Entry log
-  console.log(
-    `[confirmUser] [${new Date().toISOString()}] Request received: ${
-      event.httpMethod
-    }`
-  );
+  process.env.NODE_ENV === "development" &&
+    console.log(
+      `[confirmUser] [${new Date().toISOString()}] Request received: ${
+        event.httpMethod
+      }`
+    );
 
   await connectToDB();
 
@@ -73,12 +74,14 @@ const handler: Handler = async (event: HandlerEvent) => {
     // Parse user data
     const { user } = JSON.parse(event.body);
     const { email } = user;
-    console.log(`[confirmUser] Processing user: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[confirmUser] Processing user: ${email}`);
 
     // Find or create user
     let findedUser = await UserData.findOne({ email });
     if (!findedUser) {
-      console.log(`[confirmUser] Creating new user: ${email}`);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[confirmUser] Creating new user: ${email}`);
       const registeredUser = new UserData({
         email,
         account: "active",
@@ -101,7 +104,8 @@ const handler: Handler = async (event: HandlerEvent) => {
         email,
         confirmedAt: new Date().toISOString(),
       });
-      console.log(`[confirmUser] Ably notification sent for user: ${email}`);
+      process.env.NODE_ENV === "development" &&
+        console.log(`[confirmUser] Ably notification sent for user: ${email}`);
     } catch (ablyError) {
       console.error(
         `[confirmUser] Failed to send Ably notification:`,
@@ -111,7 +115,8 @@ const handler: Handler = async (event: HandlerEvent) => {
     }
 
     // Success response
-    console.log(`[confirmUser] User confirmed: ${email}`);
+    process.env.NODE_ENV === "development" &&
+      console.log(`[confirmUser] User confirmed: ${email}`);
     return {
       statusCode: 200,
       body: JSON.stringify({ message: "User confirmed", email }),

@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 interface SectionHeaderProps {
   $bodyHidden?: boolean;
+  $onlyOpenButton?: boolean;
 }
 
 export const StyledSection = styled.section`
@@ -22,9 +23,12 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
   word-break: break-word;
   border-bottom: ${({ $bodyHidden, theme }) =>
     $bodyHidden ? "none" : `1px solid ${theme.color.alto}`};
+  cursor: pointer;
+  user-select: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    flex-direction: column;
+    flex-direction: ${({ $onlyOpenButton }) =>
+      $onlyOpenButton ? "row" : "column"};
     padding-bottom: 10px;
   }
 `;

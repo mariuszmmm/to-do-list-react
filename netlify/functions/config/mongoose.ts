@@ -10,14 +10,18 @@ if (!uri || !dbName) {
 
 export async function connectToDB() {
   if (mongoose.connection.readyState === 1) {
-    console.log("[connectToDB] Already connected to MongoDB");
+    process.env.NODE_ENV === "development" &&
+      console.log("[connectToDB] Already connected to MongoDB");
     return mongoose;
   }
 
-  console.log("[connectToDB] Connecting to MongoDB...");
-  console.log("[connectToDB] Database:", dbName);
+  process.env.NODE_ENV === "development" &&
+    console.log("[connectToDB] Connecting to MongoDB...");
+  process.env.NODE_ENV === "development" &&
+    console.log("[connectToDB] Database:", dbName);
 
   await mongoose.connect(uri!, { dbName });
-  console.log("[connectToDB] Connected to MongoDB");
+  process.env.NODE_ENV === "development" &&
+    console.log("[connectToDB] Connected to MongoDB");
   return mongoose;
 }

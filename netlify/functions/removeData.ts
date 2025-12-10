@@ -7,14 +7,16 @@ import { connectToDB } from "./config/mongoose";
 
 const handler: Handler = async (event, context) => {
   // Entry log
-  console.log("[removeData] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[removeData] Function invoked");
 
   // Connect to database
   await connectToDB();
 
   // Only allow DELETE method
   if (event.httpMethod !== "DELETE") {
-    console.log("[removeData] Method not allowed:", event.httpMethod);
+    process.env.NODE_ENV === "development" &&
+      console.log("[removeData] Method not allowed:", event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -23,7 +25,8 @@ const handler: Handler = async (event, context) => {
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log("[removeData] Unauthorized - Missing client context or body");
+    process.env.NODE_ENV === "development" &&
+      console.log("[removeData] Unauthorized - Missing client context or body");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -32,7 +35,8 @@ const handler: Handler = async (event, context) => {
 
   // Extract user email
   const { email }: { email: string } = context.clientContext.user;
-  console.log("[removeData] User email:", email);
+  process.env.NODE_ENV === "development" &&
+    console.log("[removeData] User email:", email);
 
   try {
     // Find user in DB
@@ -41,32 +45,37 @@ const handler: Handler = async (event, context) => {
       account: "active",
     })) as UserDoc | null;
     if (!foundUser) {
-      console.log("[removeData] User not found:", email);
+      process.env.NODE_ENV === "development" &&
+        console.log("[removeData] User not found:", email);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
       };
     }
-    console.log(
-      "[removeData] User found:",
-      email,
-      "Lists count:",
-      foundUser.lists.length
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        "[removeData] User found:",
+        email,
+        "Lists count:",
+        foundUser.lists.length
+      );
 
     // Parse request data
     const data: Data = JSON.parse(event.body);
-    console.log("[removeData] Request data:", data);
+    process.env.NODE_ENV === "development" &&
+      console.log("[removeData] Request data:", data);
 
     // Validate listId in request
     if (!data.listId) {
-      console.log("[removeData] No list ID provided");
+      process.env.NODE_ENV === "development" &&
+        console.log("[removeData] No list ID provided");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "No list ID provided" }),
       };
     }
-    console.log("[removeData] Removing list with ID:", data.listId);
+    process.env.NODE_ENV === "development" &&
+      console.log("[removeData] Removing list with ID:", data.listId);
 
     // Find list index
     const listIndex = foundUser.lists.findIndex(
@@ -75,9 +84,14 @@ const handler: Handler = async (event, context) => {
 
     if (listIndex !== -1) {
       // List found, check version
-      console.log("[removeData] List found at index:", listIndex);
+      process.env.NODE_ENV === "development" &&
+        console.log("[removeData] List found at index:", listIndex);
       if (foundUser.lists[listIndex].version !== data.version) {
-        console.log("[removeData] Version mismatch for list ID:", data.listId);
+        process.env.NODE_ENV === "development" &&
+          console.log(
+            "[removeData] Version mismatch for list ID:",
+            data.listId
+          );
         return {
           statusCode: 409,
           body: JSON.stringify({
@@ -92,7 +106,8 @@ const handler: Handler = async (event, context) => {
       }
 
       // Remove list and save
-      console.log("[removeData] Versions match. Proceeding with removal.");
+      process.env.NODE_ENV === "development" &&
+        console.log("[removeData] Versions match. Proceeding with removal.");
       foundUser.lists.splice(listIndex, 1);
       const savedUser = await foundUser.save();
       if (!savedUser) {
@@ -102,10 +117,11 @@ const handler: Handler = async (event, context) => {
           body: JSON.stringify({ message: "Failed to save user data." }),
         };
       }
-      console.log(
-        "[removeData] List removed and data saved successfully for user:",
-        email
-      );
+      process.env.NODE_ENV === "development" &&
+        console.log(
+          "[removeData] List removed and data saved successfully for user:",
+          email
+        );
 
       // Publish update via Ably
       try {
@@ -130,7 +146,8 @@ const handler: Handler = async (event, context) => {
       };
     } else {
       // List not found
-      console.log("[removeData] List not found:", data.listId);
+      process.env.NODE_ENV === "development" &&
+        console.log("[removeData] List not found:", data.listId);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "List not found" }),

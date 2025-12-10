@@ -7,14 +7,16 @@ import { publishAblyUpdate } from "./config/ably";
 
 const handler: Handler = async (event, context) => {
   // Entry log
-  console.log("[updateData] Function invoked");
+  process.env.NODE_ENV === "development" &&
+    console.log("[updateData] Function invoked");
 
   // Connect to database
   await connectToDB();
 
   // Only allow PUT method
   if (event.httpMethod !== "PUT") {
-    console.log("[updateData] Method not allowed:", event.httpMethod);
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] Method not allowed:", event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: "Method Not Allowed" }),
@@ -23,7 +25,8 @@ const handler: Handler = async (event, context) => {
 
   // Check for authentication and request body
   if (!context.clientContext || !context.clientContext.user || !event.body) {
-    console.log("[updateData] Unauthorized - Missing client context or body");
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] Unauthorized - Missing client context or body");
     return {
       statusCode: 401,
       body: JSON.stringify({ message: "Unauthorized" }),
@@ -32,7 +35,8 @@ const handler: Handler = async (event, context) => {
 
   // Extract user email
   const { email }: { email: string } = context.clientContext.user;
-  console.log("[updateData] User email:", email);
+  process.env.NODE_ENV === "development" &&
+    console.log("[updateData] User email:", email);
 
   try {
     // Find user in DB
@@ -41,35 +45,41 @@ const handler: Handler = async (event, context) => {
       account: "active",
     })) as UserDoc | null;
     if (!foundUser) {
-      console.log("[updateData] User not found:", email);
+      process.env.NODE_ENV === "development" &&
+        console.log("[updateData] User not found:", email);
       return {
         statusCode: 404,
         body: JSON.stringify({ message: "User not found" }),
       };
     }
-    console.log(
-      "[updateData] User found:",
-      email,
-      "Lists count:",
-      foundUser.lists.length
-    );
+    process.env.NODE_ENV === "development" &&
+      console.log(
+        "[updateData] User found:",
+        email,
+        "Lists count:",
+        foundUser.lists.length
+      );
 
     // Parse request data
     const data: Data = JSON.parse(event.body);
-    console.log("[updateData] Request data:", data);
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] Request data:", data);
 
     // Validate lists in request
     if (!data.lists) {
-      console.log("[updateData] No lists provided in request body");
+      process.env.NODE_ENV === "development" &&
+        console.log("[updateData] No lists provided in request body");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "No lists provided" }),
       };
     }
-    console.log("[updateData] Incoming lists count:", data.lists?.length);
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] Incoming lists count:", data.lists?.length);
 
     if (!Array.isArray(data.lists)) {
-      console.log("[updateData] Invalid lists data");
+      process.env.NODE_ENV === "development" &&
+        console.log("[updateData] Invalid lists data");
       return {
         statusCode: 400,
         body: JSON.stringify({ message: "No lists provided" }),
@@ -80,10 +90,11 @@ const handler: Handler = async (event, context) => {
     for (const incomingList of data.lists) {
       const dbList = foundUser.lists.find((l) => l.id === incomingList.id);
       if (dbList && dbList.version !== incomingList.version) {
-        console.log(
-          "[updateData] Version mismatch detected for list ID:",
-          incomingList.id
-        );
+        process.env.NODE_ENV === "development" &&
+          console.log(
+            "[updateData] Version mismatch detected for list ID:",
+            incomingList.id
+          );
         return {
           statusCode: 409,
           body: JSON.stringify({
@@ -98,7 +109,8 @@ const handler: Handler = async (event, context) => {
       }
     }
 
-    console.log("[updateData] All versions match. Proceeding with update.");
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] All versions match. Proceeding with update.");
 
     // Update or add lists
     data.lists.forEach((incomingList) => {
@@ -112,20 +124,26 @@ const handler: Handler = async (event, context) => {
           JSON.stringify(dbList.taskList) !==
             JSON.stringify(incomingList.taskList);
         if (changed) {
-          console.log("[updateData] Updating existing list:", incomingList.id);
+          process.env.NODE_ENV === "development" &&
+            console.log(
+              "[updateData] Updating existing list:",
+              incomingList.id
+            );
           dbList.name = incomingList.name;
           dbList.date = incomingList.date;
           dbList.taskList = incomingList.taskList;
           dbList.version = (incomingList.version || 0) + 1;
         } else {
-          console.log(
-            "[updateData] No changes detected for list ID:",
-            incomingList.id
-          );
+          process.env.NODE_ENV === "development" &&
+            console.log(
+              "[updateData] No changes detected for list ID:",
+              incomingList.id
+            );
         }
       } else {
         // Add new list
-        console.log("[updateData] Adding new list:", incomingList.id);
+        process.env.NODE_ENV === "development" &&
+          console.log("[updateData] Adding new list:", incomingList.id);
         foundUser.lists.push({ ...incomingList, version: 0 });
       }
     });
@@ -147,7 +165,8 @@ const handler: Handler = async (event, context) => {
         body: JSON.stringify({ message: "Failed to save user data." }),
       };
     }
-    console.log("[updateData] Data updated successfully for user:", email);
+    process.env.NODE_ENV === "development" &&
+      console.log("[updateData] Data updated successfully for user:", email);
 
     // Publish update via Ably
     try {

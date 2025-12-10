@@ -8,6 +8,7 @@ import {
 import { openModal } from "../Modal/modalSlice";
 import { auth } from "../api/auth";
 import { getTokenExpiresIn } from "../utils/tokenUtils";
+import { getAutoRefreshSettingFromLocalStorage } from "../utils/localStorage";
 
 /**
  * Hook który monitoruje ważność tokena bezpośrednio z auth.currentUser()
@@ -19,6 +20,7 @@ export const useTokenValidation = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const hasReceivedValidTokenRef = useRef(false);
   const validationIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isRefreshingRef = useRef(false);
 
   useEffect(() => {
     if (!loggedUserEmail) {
@@ -45,20 +47,70 @@ export const useTokenValidation = () => {
         hasReceivedValidTokenRef.current = true;
       }
 
-      // Wyloguj tylko jeśli:
-      // 1. Już otrzymaliśmy raz ważny token
-      // 2. Token teraz wygasł (<= 0)
+      // Nie wylogowujemy przy wygaśnięciu access tokena
+      // Wylogowanie nastąpi tylko gdy refresh token wylegnie/stanie się nieważny
+      // (błąd w user.jwt() w getUserToken)
       if (hasReceivedValidTokenRef.current && tokenRemainingMs <= 0) {
-        dispatch(setLoggedUser(null));
-        dispatch(setAccountMode("login"));
-        dispatch(
-          openModal({
-            title: { key: "modal.logout.title" },
-            message: { key: "modal.logout.message.success" },
-            type: "info",
-          })
-        );
-        hasReceivedValidTokenRef.current = false;
+        const autoRefreshEnabled = getAutoRefreshSettingFromLocalStorage();
+
+        if (autoRefreshEnabled) {
+          // Automatyczne odświeżenie tokena
+          if (process.env.NODE_ENV === "development") {
+            process.env.NODE_ENV === "development" &&
+              console.log(
+                "[useTokenValidation] Access token wygasł lokalnie - próbuję odświeżyć token (auto-refresh włączony)"
+              );
+          }
+
+          // Odśwież token tylko raz na cykl, by uniknąć spamu
+          if (!isRefreshingRef.current) {
+            isRefreshingRef.current = true;
+            user
+              .jwt()
+              .catch((error) => {
+                console.error(
+                  "[useTokenValidation] Błąd przy automatycznym odświeżeniu tokena:",
+                  error
+                );
+                // W razie błędu getUserToken i tak zwróci null i wywoła ścieżkę onError/modal
+              })
+              .finally(() => {
+                isRefreshingRef.current = false;
+              });
+          }
+        } else {
+          // Strict mode - wylogowanie na wygaśnięcie tokena
+          if (process.env.NODE_ENV === "development") {
+            process.env.NODE_ENV === "development" &&
+              console.log(
+                "[useTokenValidation] Access token wygasł lokalnie - wylogowuję (auto-refresh wyłączony)"
+              );
+          }
+
+          if (!isRefreshingRef.current) {
+            isRefreshingRef.current = true;
+            user
+              .logout()
+              .catch((error) => {
+                console.error(
+                  "[useTokenValidation] Błąd przy wylogowaniu:",
+                  error
+                );
+              })
+              .finally(() => {
+                dispatch(setLoggedUser(null));
+                dispatch(setAccountMode("login"));
+                dispatch(
+                  openModal({
+                    title: { key: "modal.logout.title" },
+                    message: { key: "modal.logout.message.success" },
+                    type: "info",
+                  })
+                );
+                isRefreshingRef.current = false;
+              });
+          }
+        }
       }
     };
 

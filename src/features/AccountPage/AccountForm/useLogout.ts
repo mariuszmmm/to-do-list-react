@@ -24,6 +24,7 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       process.env.NODE_ENV === "development" &&
+        process.env.NODE_ENV === "development" &&
         console.log("Logout successful");
       dispatch(setLoggedUser(null));
       dispatch(
