@@ -1,5 +1,5 @@
-import React from "react";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { HashRouter, Routes, Route, Navigate, } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import Navigation from "./Navigation";
@@ -18,7 +18,6 @@ import { Modal } from "./Modal";
 import { TokenManager } from "./components/TokenManager";
 import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";
-import { GoogleOAuthHandler } from "./components/GoogleOAuthHandler";
 
 import { refreshData } from "./utils/refreshData";
 import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
@@ -29,8 +28,9 @@ import {
   useDataFetchingError,
   useSaveListMutation,
 } from "./hooks";
+import { useGoogleOAuthHandler } from "./hooks/useGoogleOAuthHandler";
 
-const AppContent = () => {
+const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const { data, isLoading, isError } = useQuery<ListsData>({
     queryKey: ["listsData"],
@@ -42,22 +42,22 @@ const AppContent = () => {
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
+  useGoogleOAuthHandler();
   useDataFetchingError({ loggedUserEmail, isError });
 
   process.env.NODE_ENV === "development" && console.log("Rendering App component...");
 
   return (
-    <>
-      <TokenManager />
-      <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
-      <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
-      <GoogleOAuthHandler />
+    <HashRouter>
       <Navigation
         listsData={safeData}
         isLoading={isLoading}
         isError={isError}
         authRoutes={authRoutes}
       />
+      <TokenManager />
+      <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
+      <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
       <Container>
         <CurrentDate authRoutes={authRoutes} />
         <Routes>
@@ -82,27 +82,13 @@ const AppContent = () => {
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="*" element={<Navigate to="/tasks" />} />
+          <Route
+            path="*"
+            element={window.location.hash === "#/account" ? null : <Navigate to="/tasks" />}
+          />
         </Routes>
       </Container>
       <Modal />
-    </>
-  );
-};
-
-const App = () => {
-  if (process.env.NODE_ENV === "development") {
-    return (
-      <React.StrictMode>
-        <HashRouter>
-          <AppContent />
-        </HashRouter>
-      </React.StrictMode>
-    );
-  }
-  return (
-    <HashRouter>
-      <AppContent />
     </HashRouter>
   );
 };

@@ -26,7 +26,9 @@ import {
 } from "../../utils/localStorage";
 
 const AccountPage = () => {
+  console.log("[AccountPage] Rendering AccountPage component...");
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  console.log("[AccountPage] loggedUserEmail:", loggedUserEmail);
   const isAdmin = useAppSelector(selectIsAdmin);
   const userDevices = useAppSelector(selectUserDevicesCount);
   const totalUsersCount = useAppSelector(selectTotalUsersCount);
