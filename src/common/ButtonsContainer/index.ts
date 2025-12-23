@@ -25,7 +25,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
     css`
       flex-direction: column;
       justify-content: left;
-      margin-top: 10px;
+      margin-top: 15px;
     `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {

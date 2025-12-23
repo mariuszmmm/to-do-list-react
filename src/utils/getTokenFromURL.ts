@@ -3,7 +3,8 @@ import {
   saveRecoveryTokenFromSessionStorage,
 } from "./sessionStorage";
 
-export const getTokenFromURL = (url: string) => {
+export const handleAuthTokensFromUrl = () => {
+  const url = window.location.href;
   const [, rawHash = ""] = url.split("#");
   const normalizedHash = rawHash.replace(/^\/?/, "");
   if (!normalizedHash) return;

@@ -18,6 +18,7 @@ import {
 } from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
+import i18n from "../../utils/i18n";
 
 interface TaskState {
   tasks: Task[];
@@ -40,7 +41,7 @@ interface TaskState {
 
 const getNewTaskListMetaData = () => ({
   id: nanoid(8),
-  name: t("tasksPage.tasks.defaultListName") || "", // czasem za późno wczytuje tłumaczenia
+  name: i18n.t("tasksPage.tasks.defaultListName") || "________",
   date: initTime,
   updatedAt: initTime,
 });

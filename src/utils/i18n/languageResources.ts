@@ -9,9 +9,9 @@ export const resources = {
 };
 
 export const langCodes: Record<SupportedLanguages, string> = {
-  pl: "pl-Pl",
-  en: "en-US",
-  de: "de-DE",
+  pl: "pl",
+  en: "en",
+  de: "de",
 };
 
 export type SupportedLanguages = keyof typeof resources;

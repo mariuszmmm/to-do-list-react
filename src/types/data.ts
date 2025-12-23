@@ -36,3 +36,33 @@ export type ListsData = {
   conflict?: boolean;
   deletedTasksIds?: string[];
 };
+
+export type ApiResponse<T> = {
+  success: boolean;
+  status: number;
+  data?: T | null;
+  message: string;
+};
+
+export type BackupData = {
+  version: string;
+  timestamp: string;
+  createdBy: string;
+  fileName: string;
+  backupType: BackupType;
+  user?: string;
+  lists?: List[];
+  users?: Array<{
+    email: string;
+    account: string;
+    lists: List[];
+    listsCount: number;
+    tasksCount: number;
+  }>;
+  totalUsers?: number;
+  totalLists: number;
+  totalTasks: number;
+};
+
+export type BackupType = "all-users-backup" | "user-lists-backup";
+export type BackupFile = { id: string; name: string; modifiedTime?: string };

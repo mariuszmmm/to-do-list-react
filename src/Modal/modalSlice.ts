@@ -64,5 +64,6 @@ export const { openModal, closeModal, confirm, cancel } = modalSlice.actions;
 export const selectModalState = (state: RootState) => state.modal;
 export const selectModalIsOpen = (state: RootState) => state.modal.isOpen;
 export const selectModalConfirmed = (state: RootState) => state.modal.confirmed;
+export const selectModalType = (state: RootState) => state.modal.type;
 
 export default modalSlice.reducer;

@@ -18,6 +18,7 @@ import { InputButton } from "../../../../common/InputButton";
 import { useSpeechToText } from "../../../../hooks";
 import { FormButtonWrapper } from "../../../../common/FormButtonWrapper";
 import { TextArea } from "../../../../common/TextArea";
+import { clearInputAutoFocusFlag } from "../../../../utils/setFirstLoadFlagIfRoot";
 
 export const TaskForm = () => {
   const tasks = useAppSelector(selectTasks);
@@ -25,6 +26,7 @@ export const TaskForm = () => {
   const editedTask = useAppSelector(selectEditedTask);
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
+  const firstLoad = useRef(sessionStorage.getItem('inputAutoFocusFirstLoad'));
   const inputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -112,6 +114,10 @@ export const TaskForm = () => {
     }, 1);
   }, [text]);
 
+  useEffect(() => {
+    clearInputAutoFocusFlag();
+  }, [])
+
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
       <InputWrapper>
@@ -136,6 +142,7 @@ export const TaskForm = () => {
                 setTaskContent(value);
               }
             }}
+            autoFocus={firstLoad.current === 'true'}
             ref={inputRef}
           />
         )}

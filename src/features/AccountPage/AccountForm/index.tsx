@@ -1,7 +1,7 @@
 import { FormEventHandler, useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useValidation } from "../../../hooks/useValidation";
-import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
+import { useWaitingForConfirmation } from "./hooks/useWaitingForConfirmation";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
@@ -16,19 +16,19 @@ import {
   setAccountMode,
 } from "../accountSlice";
 import { useTranslation } from "react-i18next";
-import { useLogin } from "./useLogin";
-import { useLogout } from "./useLogout";
+import { useLogin } from "./hooks/useLogin";
+import { useLogout } from "./hooks/useLogout";
 import {
   closeModal,
   openModal,
   selectModalConfirmed,
   selectModalState,
 } from "../../../Modal/modalSlice";
-import { usePasswordChange } from "./usePasswordChange";
-import { useAccountRecovery } from "./useAccountRecovery";
-import { useAccountDelete } from "./useAccountDelete";
+import { usePasswordChange } from "./hooks/usePasswordChange";
+import { useAccountRecovery } from "./hooks/useAccountRecovery";
+import { useAccountDelete } from "./hooks/useAccountDelete";
 import { clearStorage } from "../../tasks/tasksSlice";
-import { useAccountRegister } from "./useAccountRegister";
+import { useAccountRegister } from "./hooks/useAccountRegister";
 import { InputWrapper } from "../../../common/InputWrapper";
 
 export const AccountForm = () => {

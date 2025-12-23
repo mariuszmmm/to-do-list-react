@@ -1,376 +1,373 @@
-// API for backup and restore operations with Google Drive
+import axios from "axios";
+import { BackupData, BackupFile } from "../types";
+import { refreshGoogleAccessToken } from "../utils/refreshGoogleAccessToken";
 
-export interface BackupData {
-  version: string;
-  timestamp: string;
-  email: string;
-  lists: any[];
-  totalLists: number;
-  totalTasks: number;
-}
-
-// Download backup as JSON file
-export const downloadBackupApi = async (
-  token: string
-): Promise<BackupData | null> => {
-  try {
-    const response = await fetch("/backupData", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to download backup: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error downloading backup", error);
-    return null;
-  }
-};
-
-// Save backup to local file
-export const saveBackupToFile = (backupData: any) => {
-  try {
-    const dataStr = JSON.stringify(backupData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement("a");
-    link.href = url;
-
-    // Create filename with date and time: backup-YYYY-MM-DD_HH-MM-SS.json
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    link.download = `backup-${year}-${month}-${day}_${hours}-${minutes}-${seconds}.json`; // Prevent navigation/reload
-    link.style.display = "none";
-    link.setAttribute("target", "_self");
-
-    document.body.appendChild(link);
-
-    // Use timeout to ensure browser doesn't navigate
-    setTimeout(() => {
-      link.click();
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }, 100);
-    }, 0);
-
-    return true;
-  } catch (error) {
-    console.error("Error saving backup to file", error);
-    return false;
-  }
-};
-
-// Upload backup to Google Drive
-export const uploadBackupToGoogleDriveApi = async (
-  token: string,
-  backupData: BackupData,
-  accessToken: string
-): Promise<{ success: boolean; fileId?: string; message: string }> => {
-  try {
-    const response = await fetch("/uploadToGoogleDrive", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        backupData,
-        accessToken,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message:
-          errorData.message || `Failed to upload: ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-    return {
-      success: true,
-      fileId: data.fileId,
-      message: data.message || "Backup uploaded successfully",
-    };
-  } catch (error) {
-    console.error("Error uploading backup to Google Drive", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-};
-
-// Restore backup from Google Drive
-export const restoreBackupFromGoogleDriveApi = async (
-  token: string,
-  fileId: string,
-  accessToken: string
-): Promise<{ success: boolean; listsCount?: number; message: string }> => {
-  try {
-    const response = await fetch("/restoreFromGoogleDrive", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: JSON.stringify({
-        fileId,
-        accessToken,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message:
-          errorData.message || `Failed to restore: ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-    return {
-      success: true,
-      listsCount: data.listsCount,
-      message: data.message || "Backup restored successfully",
-    };
-  } catch (error) {
-    console.error("Error restoring backup from Google Drive", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-};
-
-// Restore backup from local file
-export const restoreBackupFromFileApi = async (
-  token: string,
-  backupData: any
-): Promise<{ success: boolean; listsCount?: number; message: string }> => {
-  try {
-    const response = await fetch("/restoreFromFile", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ backupData }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message:
-          errorData.message || `Failed to restore: ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-    return {
-      success: true,
-      listsCount: data.listsCount,
-      message: data.message || "Backup restored successfully",
-    };
-  } catch (error) {
-    console.error("Error restoring backup from file", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-};
-
-// Get Google OAuth URL for authorization
-export const getGoogleOAuthUrl = (): string => {
-  const clientId = process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID;
-  const redirectUri = process.env.REACT_APP_GOOGLE_DRIVE_REDIRECT_URI;
-  const scope = "https://www.googleapis.com/auth/drive.file";
-
-  if (!clientId || !redirectUri) {
-    console.warn("Missing Google Drive configuration");
-    return "";
-  }
-
-  const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    response_type: "code",
-    scope: scope,
-    access_type: "offline",
-    prompt: "consent",
-  });
-
-  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-};
-
-// Exchange authorization code for access token (backend should handle this)
-export const exchangeCodeForTokenApi = async (
-  code: string
-): Promise<{ success: boolean; accessToken?: string; message: string }> => {
-  try {
-    const response = await fetch("/google-oauth-callback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return {
-        success: false,
-        message:
-          errorData.message ||
-          `Failed to exchange code: ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-    return {
-      success: true,
-      accessToken: data.accessToken,
-      message: "Authorization successful",
-    };
-  } catch (error) {
-    console.error("Error exchanging code for token", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-};
-
-// List backup files from Google Drive
-export const listGoogleDriveBackupsApi = async (
-  accessToken: string
-): Promise<{
+type ApiResponse<T = undefined> = {
   success: boolean;
-  files?: Array<{ id: string; name: string; modifiedTime: string }>;
+  statusCode: number;
   message: string;
-}> => {
+  data?: T;
+};
+
+const makeErrorResponse = <T>(error: any): ApiResponse<T> => {
+  const msg =
+    error?.response?.data?.message ||
+    error?.message ||
+    "Unknown error occurred";
+  return {
+    success: false,
+    statusCode: error?.response?.status || 500,
+    message: msg,
+  };
+};
+
+export const downloadUserListsApi = async (
+  token: string
+): Promise<ApiResponse<BackupData>> => {
   try {
-    // First, find the backup folder ID
-    const folderResponse = await fetch(
-      "https://www.googleapis.com/drive/v3/files?q=name='to-do-list-backup' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id)",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+    const response = await axios.get("/backup-downloadUserLists", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[downloadUserListsApi] response:", response);
+    }
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error downloading user lists", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const downloadAllUsersApi = async (
+  token: string
+): Promise<ApiResponse<BackupData>> => {
+  try {
+    const response = await axios.get("/backup-downloadAllUsers", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[downloadAllUsersApi] response:", response);
+    }
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error downloading all users", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const restoreUserListsApi = async (
+  token: string,
+  backupData: BackupData
+): Promise<ApiResponse<{ listsCount: number }>> => {
+  try {
+    const response = await axios.post(
+      "/backup-restoreUserLists",
+      { backupData },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    if (!folderResponse.ok) {
-      return {
-        success: false,
-        message: `Failed to find folder: ${folderResponse.statusText}`,
-      };
+    if (process.env.NODE_ENV === "development") {
+      console.log("[restoreUserListsApi] response:", response);
     }
 
-    const folderData = await folderResponse.json();
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error restoring user lists", error);
+    return makeErrorResponse(error);
+  }
+};
 
-    // If folder doesn't exist, return empty list
-    if (!folderData.files || folderData.files.length === 0) {
+export const restoreAllUsersApi = async (
+  token: string,
+  backupData: BackupData
+): Promise<ApiResponse<{ restored: number; failed: number }>> => {
+  try {
+    const response = await axios.post(
+      "/backup-restoreAllUsers",
+      { backupData },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[restoreAllUsersApi] response:", response);
+    }
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error restoring all users", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const uploadAllUsersToGoogleDriveApi = async (
+  token: string,
+  accessToken: string
+): Promise<ApiResponse> => {
+  try {
+    let currentAccessToken = accessToken;
+    let response = await axios.post(
+      "/backup-uploadAllUsersToGoogleDrive",
+      { accessToken: currentAccessToken },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[uploadAllUsersToGoogleDriveApi] response:", response);
+    }
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      if (error.response?.data?.source !== "google-drive")
+        throw new Error(error.response?.data?.message);
+
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[uploadAllUsersToGoogleDriveApi] Token expired, refreshing..."
+        );
+      }
+
+      const newAccessToken = await refreshGoogleAccessToken();
+      if (!newAccessToken)
+        throw new Error(
+          "Google Drive authorization expired. Please authorize again."
+        );
+
+      let retryResponse = await axios.post(
+        "/backup-uploadAllUsersToGoogleDrive",
+        { accessToken: newAccessToken },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       return {
         success: true,
-        files: [],
-        message: "Backup folder not found",
+        statusCode: retryResponse.status,
+        message: retryResponse.statusText,
       };
     }
 
-    const folderId = folderData.files[0].id;
-
-    // List files in the backup folder
-    const response = await fetch(
-      `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and name contains 'backup-' and mimeType='application/json' and trashed=false&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return {
-        success: false,
-        message: `Failed to list files: ${response.statusText}`,
-      };
-    }
-
-    const data = await response.json();
-    return {
-      success: true,
-      files: data.files || [],
-      message: "Files listed successfully",
-    };
-  } catch (error) {
-    console.error("Error listing Google Drive files", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unknown error occurred",
-    };
+    console.error("Error uploading backup to Google Drive", error);
+    return makeErrorResponse(error);
   }
 };
 
-// Delete backup from Google Drive
+export const fetchGoogleDriveBackupListApi = async (
+  accessToken: string
+): Promise<ApiResponse<{ files?: BackupFile[] }>> => {
+  try {
+    let currentAccessToken = accessToken;
+    let folderResponse = await axios.get(
+      "https://www.googleapis.com/drive/v3/files?q=name='to-do-list-backup' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id)",
+      { headers: { Authorization: `Bearer ${currentAccessToken}` } }
+    );
+
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "[fetchGoogleDriveBackupListApi] folderResponse:",
+        folderResponse
+      );
+    }
+    if (!folderResponse.data?.files || folderResponse.data.files.length === 0) {
+      return {
+        success: false,
+        statusCode: folderResponse.status,
+        message: "Backup folder not found in Google Drive",
+      };
+    }
+    const folderId = folderResponse.data.files[0].id;
+
+    const response = await axios.get(
+      `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and name contains 'backup-' and mimeType='application/json' and trashed=false&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)`,
+      { headers: { Authorization: `Bearer ${currentAccessToken}` } }
+    );
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[fetchGoogleDriveBackupListApi] response:", response);
+    }
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[fetchGoogleDriveBackupListApi ] Token expired, refreshing..."
+        );
+      }
+
+      const newAccessToken = await refreshGoogleAccessToken();
+      if (!newAccessToken)
+        throw new Error(
+          "Google Drive authorization expired. Please authorize again."
+        );
+
+      let retryFolderResponse = await axios.get(
+        "https://www.googleapis.com/drive/v3/files?q=name='to-do-list-backup' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id)",
+        { headers: { Authorization: `Bearer ${newAccessToken}` } }
+      );
+      if (
+        !retryFolderResponse.data?.files ||
+        retryFolderResponse.data.files.length === 0
+      ) {
+        return {
+          success: false,
+          statusCode: retryFolderResponse.status,
+          message: "Backup folder not found in Google Drive",
+        };
+      }
+      const folderId = retryFolderResponse.data.files[0].id;
+
+      const response = await axios.get(
+        `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and name contains 'backup-' and mimeType='application/json' and trashed=false&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime)`,
+        { headers: { Authorization: `Bearer ${newAccessToken}` } }
+      );
+      if (process.env.NODE_ENV === "development") {
+        console.log("[fetchGoogleDriveBackupListApi] response:", response);
+      }
+
+      return {
+        success: true,
+        statusCode: response.status,
+        message: response.statusText,
+        data: response.data,
+      };
+    }
+    console.error("Error listing Google Drive files", error);
+    return makeErrorResponse(error);
+  }
+};
+
 export const deleteBackupFromGoogleDriveApi = async (
   accessToken: string,
   fileId: string
-): Promise<{ success: boolean; message: string }> => {
+): Promise<ApiResponse> => {
   try {
-    process.env.NODE_ENV === "development" &&
-      console.log("[Delete Backup] Starting delete for fileId:", fileId);
-
-    const response = await fetch(
+    let currentAccessToken = accessToken;
+    let response = await axios.delete(
       `https://www.googleapis.com/drive/v3/files/${fileId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${currentAccessToken}` } }
     );
+    if (process.env.NODE_ENV === "development") {
+      console.log("[deleteBackupFromGoogleDriveApi] response:", response);
+    }
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+    };
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      console.log(
+        "[deleteBackupFromGoogleDriveApi] Token expired, refreshing..."
+      );
+      const newAccessToken = await refreshGoogleAccessToken();
+      if (!newAccessToken) {
+        throw new Error(
+          "Google Drive authorization expired. Please authorize again."
+        );
+      }
+      let retryResponse = await axios.delete(
+        `https://www.googleapis.com/drive/v3/files/${fileId}`,
+        { headers: { Authorization: `Bearer ${newAccessToken}` } }
+      );
 
-    process.env.NODE_ENV === "development" &&
-      console.log("[Delete Backup] Response status:", response.status);
-
-    // 204 No Content is success for DELETE requests
-    if (response.status === 204 || response.ok) {
-      process.env.NODE_ENV === "development" &&
-        console.log("[Delete Backup] File deleted successfully");
       return {
         success: true,
-        message: "Backup deleted successfully",
+        statusCode: retryResponse.status,
+        message: retryResponse.statusText,
       };
     }
 
-    const errorText = await response.text();
-    console.error("[Delete Backup] Error response:", errorText);
+    console.error("Error deleting backup from Google Drive", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const restoreSelectedBackupFromGoogleDriveApi = async (
+  token: string,
+  fileId: string,
+  accessToken: string
+): Promise<ApiResponse<{ restored: number; failed: number }>> => {
+  try {
+    let currentAccessToken = accessToken;
+    let response = await axios.post(
+      "/backup-restoreBackupFromGoogleDrive",
+      { fileId, accessToken: currentAccessToken },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (process.env.NODE_ENV === "development") {
+      console.log("[restoreBackupFromGoogleDriveApi] response:", response);
+    }
 
     return {
-      success: false,
-      message: `Failed to delete backup: ${response.statusText}`,
+      success: true,
+      statusCode: response.status,
+      message: response.statusText,
+      data: response.data,
     };
-  } catch (error) {
-    console.error("Error deleting backup from Google Drive", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Failed to delete backup",
-    };
+  } catch (error: any) {
+    if (error?.response?.status === 401) {
+      if (error.response?.data?.source !== "google-drive")
+        throw new Error(error.response?.data?.message);
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[restoreBackupFromGoogleDriveApi] Token expired, refreshing..."
+        );
+      }
+
+      const newAccessToken = await refreshGoogleAccessToken();
+      if (!newAccessToken) {
+        throw new Error(
+          "Google Drive authorization expired. Please authorize again."
+        );
+      }
+
+      let retryResponse = await axios.post(
+        "/backup-restoreBackupFromGoogleDrive",
+        { fileId, accessToken: newAccessToken },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      return {
+        success: true,
+        statusCode: retryResponse.status,
+        message: retryResponse.statusText,
+        data: retryResponse.data,
+      };
+    }
+    console.error("[restoreBackupFromGoogleDriveApi]", error);
+    return makeErrorResponse(error);
   }
 };

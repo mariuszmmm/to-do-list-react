@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useWaitingForConfirmation } from "../useWaitingForConfirmation";
+import { useWaitingForConfirmation } from "../hooks/useWaitingForConfirmation";
 
 // Mock Redux
 jest.mock("../../../../hooks/redux", () => ({

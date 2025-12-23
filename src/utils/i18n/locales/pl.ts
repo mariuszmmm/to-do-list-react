@@ -165,6 +165,10 @@ const langPl = {
       resetPassword: "Zresetuj hasło",
       cancel: "Anuluj",
     },
+    toggleButtons: {
+      show: "Rozwiń sekcję",
+      hide: "Zwiń sekcję",
+    },
     deviceCount: {
       device: "Jesteś zalogowany na {{count}} urządzeniu",
       device_few: "Jesteś zalogowany na {{count}} urządzeniach",
@@ -223,60 +227,95 @@ const langPl = {
       tokenExpired: "Token wygasł",
     },
     autoRefresh: {
-      label: "Automatyczne odświeżanie tokena",
-      enabledDescription:
-        "Token będzie automatycznie odświeżany po wygaśnięciu",
+      label: "Pozostań zalogowany",
+      enabledDescription: "Token będzie automatycznie odświeżany",
       disabledDescription: "Zostaniesz wylogowany po wygaśnięciu tokena",
     },
     backup: {
       title: "Kopia zapasowa i przywracanie",
-      processingAuthorization: "Przetwarzanie autoryzacji...",
-      googleDriveAuthSuccess: "Autoryzacja Google Drive zakończona sukcesem!",
-      restoreFromComputer: "Przywróć z pliku na komputerze",
-      restoreFromComputerTooltip:
-        "Wczytaj kopię zapasową z pliku JSON na komputerze",
-      download: "Pobierz kopię zapasową",
-      downloading: "Pobieranie kopii zapasowej...",
-      downloadTooltip: "Pobierz kopię zapasową na komputer",
-      downloadSuccess: "Kopia zapasowa pobrana pomyślnie!",
-      downloadError: "Błąd podczas pobierania kopii zapasowej",
-      upload: "Prześlij na Google Drive",
-      uploadTooltip: "Prześlij kopię zapasową na Google Drive",
-      uploadSuccess: "Kopia zapasowa przesłana na Google Drive pomyślnie!",
-      uploadError: "Błąd podczas przesyłania kopii zapasowej",
-      restore: "Przywróć z Google Drive",
-      restoreTooltip: "Przywróć dane z kopii zapasowej Google Drive",
-      restoreSuccess:
-        "Kopia zapasowa przywrócona pomyślnie! Przywrócono {{count}} list.",
-      restoreError: "Błąd podczas przywracania kopii zapasowej",
-      authorizeGoogle: "Autoryzuj Google",
-      authorizeGoogleTooltip: "Autoryzuj dostęp do Google Drive",
-      processing: "Przetwarzanie...",
-      authSuccess: "Autoryzacja pomyślna!",
-      authError: "Błąd autoryzacji",
-      uploading: "Przesyłanie kopii zapasowej na Google Drive...",
-      restoring: "Przywracanie kopii zapasowej z Google Drive...",
-      notAuthorized: "Brak autoryzacji do Google Drive",
-      configError: "Brakuje konfiguracji Google Drive",
-      savingError: "Błąd podczas zapisywania kopii zapasowej",
-      enterFileId: "Wpisz ID pliku Google Drive:",
-      cancelled: "Przywracanie anulowane",
-      selectBackup: "Wybierz kopię do przywrócenia",
-      noBackups: "Brak kopii zapasowych na Google Drive",
-      prev: "Wstecz",
-      next: "Dalej",
-      cancel: "Anuluj",
-      deleteBackup: {
-        deleting: "Usuwanie kopii zapasowej",
-        success: "Kopia zapasowa usunięta pomyślnie!",
-        error: "Błąd podczas usuwania kopii zapasowej",
-        tooltip: "Usuń tę kopię zapasową",
-        confirm: "Czy na pewno chcesz usunąć kopię zapasową '{{name}}'?",
+      downloadUserLists: {
+        button: "Pobierz moje listy",
+        tooltip: "Pobierz tylko swoje listy na komputer",
+        downloading: "Pobieranie Twoich list...",
+        success: "Twoje listy zostały pobrane!",
+        error: "Błąd podczas pobierania Twoich list",
       },
-    },
-    toggle: {
-      show: "Rozwiń sekcję",
-      hide: "Zwiń sekcję",
+      downloadAllUsers: {
+        button: "Pobierz wszystkich użytkowników",
+        tooltip: "Pobierz listy wszystkich użytkowników na komputer",
+        downloading: "Pobieranie wszystkich list użytkowników...",
+        success: "Listy wszystkich użytkowników zostały pobrane!",
+        error: "Błąd podczas pobierania list wszystkich użytkowników",
+      },
+      restoreUserLists: {
+        button: "Przywróć moje listy",
+        tooltip: "Przywróć tylko swoje listy z pliku na komputerze",
+        processing: "Przetwarzanie Twoich list...",
+        success:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_few:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} listy.",
+        success_many:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_other:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        error: "Błąd podczas przywracania Twoich list",
+      },
+      restoreAllUsers: {
+        button: "Przywróć wszystkich użytkowników",
+        tooltip: "Przywróć wszystkich użytkowników z kopii zapasowej",
+        processing: "Przetwarzanie...",
+        success:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono: {{restored}}/{{total}} użytkowników.\nNieudanych: {{failed}}.",
+        error: "Błąd podczas przywracania wszystkich użytkowników",
+      },
+      authorizeGoogle: {
+        button: "Autoryzuj Google",
+        tooltip: "Autoryzuj dostęp do Google Drive",
+        processing: "Przetwarzanie autoryzacji...",
+        success: "Autoryzacja Google Drive zakończona sukcesem!",
+        error: "Błąd podczas autoryzacji Google Drive",
+      },
+      uploadAllUsersToGoogleDrive: {
+        button: "Prześlij na Google Drive",
+        tooltip: "Prześlij kopię zapasową na Google Drive",
+        uploading: "Przesyłanie kopii zapasowej na Google Drive...",
+        success: "Kopia zapasowa przesłana na Google Drive pomyślnie!",
+        error: "Błąd podczas przesyłania kopii zapasowej",
+        notAuthorized: "Brak autoryzacji do Google Drive",
+      },
+      restoreBackupFromGoogleDrive: {
+        button: "Przywróć z Google Drive",
+        tooltip: "Przywróć kopię zapasową z Google Drive",
+        restoring: "Przywracanie kopii zapasowej z Google Drive...",
+        success:
+          "Kopia zapasowa została przywrócona! Przywrócono {{count}} list.",
+        error: "Błąd podczas przywracania kopii zapasowej",
+        notAuthorized: "Brak autoryzacji do Google Drive",
+      },
+      listGoogleDriveBackups: {
+        selectBackup: "Wybierz kopię do przywrócenia",
+        buttons: {
+          prev: "Wstecz",
+          next: "Dalej",
+          cancel: "Anuluj",
+        },
+        tooltips: {
+          restore: "Przywróć kopię zapasową",
+          delete: "Usuń kopię zapasową z Google Drive",
+        },
+        error: "Błąd podczas pobierania listy kopii zapasowych",
+        errorDelete: "Błąd podczas usuwania kopii zapasowej",
+        noBackups: "Brak kopii zapasowych na Google Drive",
+        notAuthorized: "Brak autoryzacji do Google Drive",
+      },
+      restoreSelectedBackup: {
+        restoring: "Przywracanie kopii zapasowej z Google Drive...",
+        success:
+          "Przywrócono kopię zapasową!\n{{restored}} użytkowników przywrócono, {{failed}} nie udało się ({{total}} łącznie)",
+        error: "Błąd podczas przywracania kopii zapasowej",
+        notAuthorized: "Brak autoryzacji do Google Drive",
+      },
     },
   },
   confirmationPage: {
@@ -444,9 +483,7 @@ const langPl = {
           "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie kopii zapasowej...",
         success: "Kopia zapasowa została usunięta.",
-        error: {
-          default: "Błąd podczas usuwania kopii zapasowej.",
-        },
+        error: "Błąd podczas usuwania kopii zapasowej.",
       },
     },
     listsUpdate: {

@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { auth } from "../../../api/auth";
 import { StyledSpan } from "../../../common/StyledList";
-import { useTranslation } from "react-i18next";
-import { useState, useEffect, useRef } from "react";
+import { useTime } from "../../../context/TimeContext";
 import { useAppSelector } from "../../../hooks/redux";
 import { selectLoggedUserEmail } from "../accountSlice";
 import { formatTokenTime } from "../../../utils/formatTokenTime";
@@ -14,100 +15,79 @@ interface SessionData {
   tokenExpiresAt?: string;
 }
 
-export const SessionInfo = () => {
-  const { t } = useTranslation("translation", {
-    keyPrefix: "accountPage",
-  });
+const logDevBlock = (isOpen: boolean, ...args: unknown[]) => {
+  if (process.env.NODE_ENV === "development" && isOpen) {
+    console.log("\n==================== [SessionInfo] ====================");
+    args.forEach((arg) => {
+      console.log("[SessionInfo]", arg);
+    });
+    console.log("======================================================\n");
+  }
+};
+
+export const SessionInfo = ({
+  isSessionInfoOpen,
+}: {
+  isSessionInfoOpen: boolean;
+}) => {
+  const { t } = useTranslation("translation", { keyPrefix: "accountPage" });
   const [sessionData, setSessionData] = useState<SessionData>({});
   const [remainingMs, setRemainingMs] = useState<number>(0);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { now } = useTime();
 
-  // Aktualizuj dane sesji i uruchom countdown
   useEffect(() => {
-    const updateSessionData = () => {
-      const user = auth.currentUser();
-      if (!user) {
-        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Brak użytkownika (user == null).');
-        setSessionData({});
-        setRemainingMs(0);
-        return;
-      }
+    const user = auth.currentUser();
 
-      process.env.NODE_ENV === "development" && console.log('[SessionInfo] Użytkownik obecny:', user.email, user);
-      if (user.token) {
-        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token:', user.token);
-        if (user.token.expires_at) {
-          process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token wygasa:', new Date(user.token.expires_at).toLocaleString());
-        }
-        if (user.token.refresh_token) {
-          process.env.NODE_ENV === "development" && console.log('[SessionInfo] Refresh token obecny:', user.token.refresh_token);
-        }
-      } else {
-        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Brak tokena w user.token');
-      }
-
-      setSessionData({
-        email: user.email,
-        createdAt: user.created_at
-          ? new Date(user.created_at).toLocaleString()
-          : undefined,
-        confirmedAt: user.confirmed_at
-          ? new Date(user.confirmed_at).toLocaleString()
-          : undefined,
-        tokenExpiresAt: user.token?.expires_at
-          ? new Date(user.token.expires_at).toLocaleString()
-          : undefined,
-      });
-
-      // Ustaw początkową wartość pozostałego czasu
-      const remaining = getTokenExpiresIn(user);
-      setRemainingMs(remaining);
-      process.env.NODE_ENV === "development" && console.log('[SessionInfo] Pozostały czas ważności tokena (ms):', remaining);
-    };
-
-    updateSessionData();
-  }, [loggedUserEmail]);
-
-  // Countdown tokena co 1 sekundę
-  useEffect(() => {
-    if (!loggedUserEmail) {
-      if (countdownIntervalRef.current) {
-        clearInterval(countdownIntervalRef.current);
-        countdownIntervalRef.current = null;
-      }
+    if (!user) {
+      logDevBlock(isSessionInfoOpen, "Brak użytkownika (user == null).");
+      setSessionData({});
       setRemainingMs(0);
       return;
     }
 
-    const updateCountdown = () => {
-      const user = auth.currentUser();
-      if (!user) {
-        setRemainingMs(0);
-        return;
-      }
+    const logBlock: unknown[] = [];
+    logBlock.push(`Użytkownik: ${user.email}`, {
+      createdAt: user.created_at,
+      confirmedAt: user.confirmed_at,
+      token: user.token,
+    });
 
-      const remaining = getTokenExpiresIn(user);
-      setRemainingMs(remaining);
-      if (remaining <= 0) {
-        process.env.NODE_ENV === "development" && console.log('[SessionInfo] Token wygasł!');
-      }
-    };
+    if (user.token) {
+      logBlock.push({
+        Token: {
+          expiresAt: user.token.expires_at
+            ? new Date(user.token.expires_at).toLocaleString()
+            : undefined,
+          refreshToken: !!user.token.refresh_token,
+        }
+      });
+    } else {
+      logBlock.push("Brak tokena w user.token");
+    }
 
-    // Aktualizuj co 1 sekundę
-    countdownIntervalRef.current = setInterval(updateCountdown, 1000);
+    const remaining = getTokenExpiresIn(user, now);
+    logBlock.push(`Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`);
 
-    return () => {
-      if (countdownIntervalRef.current) {
-        clearInterval(countdownIntervalRef.current);
-        countdownIntervalRef.current = null;
-      }
-    };
-  }, [loggedUserEmail]);
+    logDevBlock(isSessionInfoOpen, ...logBlock);
 
-  if (!sessionData.email) {
-    return null;
-  }
+    setSessionData({
+      email: user.email,
+      createdAt: user.created_at
+        ? new Date(user.created_at).toLocaleString()
+        : undefined,
+      confirmedAt: user.confirmed_at
+        ? new Date(user.confirmed_at).toLocaleString()
+        : undefined,
+      tokenExpiresAt: user.token?.expires_at
+        ? new Date(user.token.expires_at).toLocaleString()
+        : undefined,
+    });
+
+    setRemainingMs(remaining);
+  }, [loggedUserEmail, now, isSessionInfoOpen]);
+
+  if (!sessionData.email) return null;
 
   const tokenValid = remainingMs > 0;
   const formattedTime = formatTokenTime(remainingMs);
@@ -123,8 +103,7 @@ export const SessionInfo = () => {
       {sessionData.createdAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.createdAt")}:{" "}
-            <strong>{sessionData.createdAt}</strong>
+            {t("sessionInfo.createdAt")}: <strong>{sessionData.createdAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -133,8 +112,7 @@ export const SessionInfo = () => {
       {sessionData.confirmedAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.confirmedAt")}:{" "}
-            <strong>{sessionData.confirmedAt}</strong>
+            {t("sessionInfo.confirmedAt")}: <strong>{sessionData.confirmedAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -151,25 +129,23 @@ export const SessionInfo = () => {
       {sessionData.tokenExpiresAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.tokenExpiresAt")}:{" "}
-            <strong>{sessionData.tokenExpiresAt}</strong>
+            {t("sessionInfo.tokenExpiresAt")}: <strong>{sessionData.tokenExpiresAt}</strong>
           </StyledSpan>
           <br />
         </>
       )}
 
       <StyledSpan $comment>
-        {t("sessionInfo.tokenExpiresIn")}: {" "}
-        <strong>{formattedTime}</strong>
+        {t("sessionInfo.tokenExpiresIn")}: <strong>{formattedTime}</strong>
       </StyledSpan>
       <br />
 
       <StyledSpan $comment $tokenStatus={tokenValid ? "active" : "expired"}>
-        {t("sessionInfo.tokenStatus")}: {" "}
+        {t("sessionInfo.tokenStatus")}:{" "}
         <strong>
           {tokenValid
-            ? "✔️ " + t("sessionInfo.tokenActive")
-            : "❌ " + t("sessionInfo.tokenExpired")}
+            ? t("sessionInfo.tokenActive")
+            : t("sessionInfo.tokenExpired")}
         </strong>
       </StyledSpan>
     </div>

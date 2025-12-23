@@ -1,4 +1,5 @@
 import i18n from "./utils/i18n";
+import { setInputAutoFocusFlagIfRoot } from "./utils/setFirstLoadFlagIfRoot";
 import { I18nextProvider } from "react-i18next";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -11,10 +12,13 @@ import { Normalize } from "styled-normalize";
 import GlobalStyle from "./theme/GlobalStyle";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
-import { getTokenFromURL } from "./utils/getTokenFromURL";
+import { TimeProvider } from "./context/TimeContext";
+import { handleAuthTokensFromUrl } from "./utils/getTokenFromURL";
+import { handleGoogleOAuthCodeFromUrl } from "./utils/getGoogleOAuthCode";
 
-const currentUrl = window.location.href;
-getTokenFromURL(currentUrl);
+handleAuthTokensFromUrl();
+handleGoogleOAuthCodeFromUrl();
+setInputAutoFocusFlagIfRoot();
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
@@ -27,7 +31,9 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => (
         <GlobalStyle />
         <QueryClientProvider client={queryClient}>
           {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
-          {children}
+          <TimeProvider>
+            {children}
+          </TimeProvider>
         </QueryClientProvider>
       </I18nextProvider>
     </ThemeProvider>
@@ -36,11 +42,11 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => (
 
 root.render(
   process.env.NODE_ENV === "development" ? (
-    // <React.StrictMode>
-    <AppProviders>
-      <App />
-    </AppProviders>
-    // </React.StrictMode>
+    <React.StrictMode>
+      <AppProviders>
+        <App />
+      </AppProviders>
+    </React.StrictMode>
   ) : (
     <AppProviders>
       <App />

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { List, Task } from "../../types";
 import { RootState } from "../../store";
-import { getArchivedListFromLocalStorage } from "../../utils/localStorage";
+import { getArchivedListsFromLocalStorage } from "../../utils/localStorage";
 import { nanoid } from "nanoid";
 
 interface ArchivedListsState {
@@ -14,7 +14,7 @@ interface ArchivedListsState {
 }
 
 const getInitialState = (): ArchivedListsState => ({
-  archivedLists: getArchivedListFromLocalStorage() || [],
+  archivedLists: getArchivedListsFromLocalStorage() || [],
   selectedArchivedListId: null,
   archivedListToLoad: null,
   isArchivedListsSorting: false,
