@@ -1,5 +1,5 @@
 export const confirmUserApi = async (email: string) => {
-  return fetch(`/confirmUser?email=${email}`)
+  return fetch(`/user-confirm?email=${email}`)
     .then((response) => response.json())
     .then((data) => data)
     .catch((error) => {
@@ -8,7 +8,7 @@ export const confirmUserApi = async (email: string) => {
 };
 
 export const deleteUserApi = async (token: string) => {
-  return fetch("/deleteUser", {
+  return fetch("/user-delete", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   })

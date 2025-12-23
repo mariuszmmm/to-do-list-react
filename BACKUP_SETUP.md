@@ -85,7 +85,7 @@ GOOGLE_DRIVE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 1. Admin klika "Authorize Google" jeśli nie jest zalogowany
 2. Zostaje przekierowany na Google login
 3. Po zalogowaniu, aplikacja pobiera dane z `/backupData`
-4. Dane są wysyłane na Google Drive poprzez `/uploadToGoogleDrive`
+4. Dane są wysyłane na Google Drive poprzez `/backup-uploadAllUsersToGoogleDrive`
 5. Backup jest zapisywany w Google Drive usera
 
 ### Przywracanie z Google Drive
@@ -103,12 +103,12 @@ GOOGLE_DRIVE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 - **Zwraca**: Backup JSON z wszystkimi listami i zadaniami
 - **Czy dostępne**: Dla zalogowanych użytkowników
 
-### /uploadToGoogleDrive (POST)
+### /backup-uploadAllUsersToGoogleDrive (POST)
 - **Wymaga**: Authorization header + backupData + accessToken
 - **Zwraca**: File ID i nazwę pliku na Google Drive
 - **Czy dostępne**: Dla zalogowanych użytkowników z Google auth
 
-### /restoreFromGoogleDrive (POST)
+### /backup-restoreBackupFromGoogleDrive (POST)
 - **Wymaga**: Authorization header + fileId + accessToken
 - **Zwraca**: Liczba przywróconych list
 - **Czy dostępne**: Dla zalogowanych użytkowników z Google auth

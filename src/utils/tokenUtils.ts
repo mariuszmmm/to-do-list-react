@@ -44,13 +44,14 @@ export const isTokenValid = (
  * @returns Pozostały czas w milisekundach, lub 0 jeśli wygasł/nieprawidłowy
  */
 export const getTokenExpiresIn = (
-  user: GoTrueUser | null | undefined
+  user: GoTrueUser | null | undefined,
+  now?: Date
 ): number => {
   if (!user?.token?.expires_at) {
     return 0;
   }
-
-  const remaining = user.token.expires_at - Date.now();
+  const nowMs = now ? now.getTime() : Date.now();
+  const remaining = user.token.expires_at - nowMs;
   return remaining > 0 ? remaining : 0;
 };
 

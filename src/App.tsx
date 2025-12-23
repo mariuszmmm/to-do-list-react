@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { HashRouter, Routes, Route, Navigate, } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -28,22 +28,20 @@ import {
   useDataFetchingError,
   useSaveListMutation,
 } from "./hooks";
-import { useGoogleOAuthHandler } from "./hooks/useGoogleOAuthHandler";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const { data, isLoading, isError } = useQuery<ListsData>({
+  const { data, isLoading, isError, refetch } = useQuery<ListsData>({
     queryKey: ["listsData"],
     queryFn: refreshData,
     enabled: !!loggedUserEmail,
-    refetchInterval: 30 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
   const safeData = !!loggedUserEmail ? data : undefined;
   const authRoutes = ["/user-confirmation", "/account-recovery"];
   const saveListMutation = useSaveListMutation();
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
-  useGoogleOAuthHandler();
-  useDataFetchingError({ loggedUserEmail, isError });
+  useDataFetchingError({ isError, isData: !!safeData, refetch });
 
   process.env.NODE_ENV === "development" && console.log("Rendering App component...");
 
@@ -82,9 +80,7 @@ const App = () => {
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route
-            path="*"
-            element={window.location.hash === "#/account" ? null : <Navigate to="/tasks" />}
+          <Route path="*" element={<Navigate to="/tasks" />}
           />
         </Routes>
       </Container>

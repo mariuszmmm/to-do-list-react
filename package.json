@@ -10,6 +10,7 @@
     "@tanstack/react-query": "^5.74.3",
     "@tanstack/react-query-devtools": "^5.74.3",
     "ably": "^2.15.0",
+    "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "eslint-config-react-app": "^7.0.1",
     "gotrue-js": "^0.9.29",
@@ -35,6 +36,7 @@
     "dev": "netlify dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:jest": "jest",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
@@ -69,6 +71,7 @@
     "@types/react-dom": "^19.0.3",
     "@types/react-i18next": "^7.8.3",
     "@types/react-speech-recognition": "^3.9.6",
+    "ts-jest": "^29.4.6",
     "typescript": "^4.9.5"
   }
 }

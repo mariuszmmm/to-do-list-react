@@ -41,7 +41,7 @@ export const getAblyInstance = (): Ably.Realtime => {
           }
 
           const deviceId = getOrCreateDeviceId();
-          const response = await fetch(`/ably-auth?deviceId=${deviceId}`, {
+          const response = await fetch(`/auth-ablyAuth?deviceId=${deviceId}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${userToken}`,

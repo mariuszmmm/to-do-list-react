@@ -70,7 +70,8 @@ export const useAblySubscription = ({
             data
           );
 
-        dispatch(setChangeSource("remote"));
+        !["restore"].includes(data.action) &&
+          dispatch(setChangeSource("remote"));
         queryClient.setQueryData(["listsData"], data);
       }
     });

@@ -2,69 +2,85 @@
   NODE_VERSION = "20"
 
 [functions]
+  directory = "netlify/functions"
   node_bundler = "esbuild"
 
 [[redirects]]
-  from = "/getData"
-  to = "/.netlify/functions/getData"
+  from = "/data-getData"
+  to = "/.netlify/functions/data-getData"
   status = 200
 
 [[redirects]]
-  from = "/addData"
-  to = "/.netlify/functions/addData"
+  from = "/data-addData"
+  to = "/.netlify/functions/data-addData"
   status = 200
 
 [[redirects]]
-  from = "/removeData"
-  to = "/.netlify/functions/removeData"
+  from = "/data-removeData"
+  to = "/.netlify/functions/data-removeData"
   status = 200
 
 [[redirects]]
-  from = "/updateData"
-  to = "/.netlify/functions/updateData"
+  from = "/data-updateData"
+  to = "/.netlify/functions/data-updateData"
   status = 200
 
 [[redirects]]
-  from = "/backupData"
-  to = "/.netlify/functions/backupData"
+  from = "/backup-downloadUserLists"
+  to = "/.netlify/functions/backup-downloadUserLists"
   status = 200
 
 [[redirects]]
-  from = "/uploadToGoogleDrive"
-  to = "/.netlify/functions/uploadToGoogleDrive"
+  from = "/backup-downloadAllUsers"
+  to = "/.netlify/functions/backup-downloadAllUsers"
   status = 200
 
 [[redirects]]
-  from = "/restoreFromGoogleDrive"
-  to = "/.netlify/functions/restoreFromGoogleDrive"
+  from = "/backup-restoreUserLists"
+  to = "/.netlify/functions/backup-restoreUserLists"
   status = 200
 
 [[redirects]]
-  from = "/restoreFromFile"
-  to = "/.netlify/functions/restoreFromFile"
+  from = "/backup-restoreAllUsers"
+  to = "/.netlify/functions/backup-restoreAllUsers"
+  status = 200
+  
+[[redirects]]
+  from = "/backup-uploadAllUsersToGoogleDrive"
+  to = "/.netlify/functions/backup-uploadAllUsersToGoogleDrive"
   status = 200
 
 [[redirects]]
-  from = "/google-oauth-callback"
-  to = "/.netlify/functions/googleOAuthCallback"
+  from = "/backup-restoreBackupFromGoogleDrive"
+  to = "/.netlify/functions/backup-restoreBackupFromGoogleDrive"
   status = 200
 
 [[redirects]]
-  from = "/confirmUser"
-  to = "/.netlify/functions/confirmUser"
+  from = "/auth-googleOAuthCallback"
+  to = "/.netlify/functions/auth-googleOAuthCallback"
+  status = 200
+
+[[redirects]]
+  from = "/user-confirm"
+  to = "/.netlify/functions/user-confirm"
   status = 200
     
 [[redirects]]
-  from = "/deleteUser"
-  to = "/.netlify/functions/deleteUser"
+  from = "/user-delete"
+  to = "/.netlify/functions/user-delete"
   status = 200
 
 [[redirects]]
-  from = "/translateMessage"
-  to = "/.netlify/functions/translateMessage"
+  from = "/translate-translateMessage"
+  to = "/.netlify/functions/translate-translateMessage"
   status = 200
 
 [[redirects]]
-  from = "/ably-auth"
-  to = "/.netlify/functions/ably-auth"
+  from = "/auth-ablyAuth"
+  to = "/.netlify/functions/auth-ablyAuth"
+  status = 200
+
+  [[redirects]]
+  from = "/auth-refreshGoogleToken"
+  to = "/.netlify/functions/auth-refreshGoogleToken"
   status = 200

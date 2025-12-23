@@ -59,7 +59,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
       dispatch(selectList(taskListId))
       return;
     }
-    !selectedListId && dispatch(selectList(lists[0].id));
+    !selectedListId && lists.length > 0 && dispatch(selectList(lists[0].id));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

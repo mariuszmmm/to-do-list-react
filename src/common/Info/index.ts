@@ -7,6 +7,7 @@ interface InfoProps {
 export const Info = styled.p<InfoProps>`
   min-height: 1rem;
   margin: 0;
+  white-space: pre-line;
 
   ${({ $warning }) =>
     $warning &&

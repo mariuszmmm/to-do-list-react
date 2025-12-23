@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { StyledSpan } from "../../common/StyledList";
+import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountExtraButtons } from "./AccountExtraButtons";
-import { BackupButtons } from "./BackupButtons";
+import { BackupManager } from "./BackupManager";
 import { PresenceUsersList } from "./PresenceUsersList";
 import { SessionInfo } from "./SessionInfo";
 import { Settings } from "../../types";
@@ -26,9 +26,7 @@ import {
 } from "../../utils/localStorage";
 
 const AccountPage = () => {
-  console.log("[AccountPage] Rendering AccountPage component...");
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  console.log("[AccountPage] loggedUserEmail:", loggedUserEmail);
   const isAdmin = useAppSelector(selectIsAdmin);
   const userDevices = useAppSelector(selectUserDevicesCount);
   const totalUsersCount = useAppSelector(selectTotalUsersCount);
@@ -59,18 +57,50 @@ const AccountPage = () => {
     saveSettingsInLocalStorage({ ...current, ...partial });
   };
 
+  const toggleSessionInfo = () => {
+    setIsSessionInfoOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isSessionInfoOpen: next });
+      return next;
+    });
+  };
+
+  const toggleActivitySummary = () => {
+    setIsActivitySummaryOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isActivitySummaryOpen: next });
+      return next;
+    });
+  };
+
+  const togglePresenceList = () => {
+    setIsPresenceListOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isPresenceListOpen: next });
+      return next;
+    });
+  };
+
+  const toggleBackup = () => {
+    setIsBackupOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isBackupOpen: next });
+      return next;
+    });
+  };
+
   const renderToggleButton = (isOpen: boolean, onClick: () => void) => (
-    <ToggleButton
+    <CollapseButton
       type="button"
       onClick={(e) => {
         e.stopPropagation();
         onClick();
       }}
-      aria-label={isOpen ? t("toggle.hide") : t("toggle.show")}
-      title={isOpen ? t("toggle.hide") : t("toggle.show")}
+      aria-label={isOpen ? t("toggleButtons.hide") : t("toggleButtons.show")}
+      title={isOpen ? t("toggleButtons.hide") : t("toggleButtons.show")}
     >
-      <ToggleIcon $open={isOpen} aria-hidden />
-    </ToggleButton>
+      <CollapseIcon $open={isOpen} aria-hidden />
+    </CollapseButton>
   );
 
   useEffect(() => {
@@ -92,8 +122,8 @@ const AccountPage = () => {
             <AccountExtraButtons />
             <br />
             {loggedUserEmail &&
-              <StyledSpan $comment>
-                {t("deviceCount.device", { count: userDevices })}
+              <StyledSpan $comment >
+                <strong>{t("deviceCount.device", { count: userDevices })}</strong>
               </StyledSpan>
             }
           </>
@@ -102,54 +132,26 @@ const AccountPage = () => {
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("sessionInfo.title")}
-          extraHeaderContent={renderToggleButton(
-            isSessionInfoOpen,
-            () =>
-              setIsSessionInfoOpen((prev) => {
-                const next = !prev;
-                persistSettings({ isSessionInfoOpen: next });
-                return next;
-              })
-          )}
-          onHeaderClick={() =>
-            setIsSessionInfoOpen((prev) => {
-              const next = !prev;
-              persistSettings({ isSessionInfoOpen: next });
-              return next;
-            })
-          }
+          extraHeaderContent={renderToggleButton(isSessionInfoOpen, toggleSessionInfo)}
+          onHeaderClick={toggleSessionInfo}
           onlyOpenButton={isPresenceListOpen !== undefined}
-          body={<SessionInfo />}
+          body={<SessionInfo isSessionInfoOpen={isSessionInfoOpen} />}
           bodyHidden={!isSessionInfoOpen}
         />
       )}
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.summaryTitle")}
-          extraHeaderContent={renderToggleButton(
-            isActivitySummaryOpen,
-            () =>
-              setIsActivitySummaryOpen((prev) => {
-                const next = !prev;
-                persistSettings({ isActivitySummaryOpen: next });
-                return next;
-              })
-          )}
-          onHeaderClick={() =>
-            setIsActivitySummaryOpen((prev) => {
-              const next = !prev;
-              persistSettings({ isActivitySummaryOpen: next });
-              return next;
-            })
-          }
+          extraHeaderContent={renderToggleButton(isActivitySummaryOpen, toggleActivitySummary)}
+          onHeaderClick={toggleActivitySummary}
           onlyOpenButton={isPresenceListOpen !== undefined}
           body={
             <NameContainer $account>
               <StyledSpan $comment>
-                {t("activeUsers.count", { count: totalUsersCount })}
+                <strong>{t("activeUsers.count", { count: totalUsersCount })}</strong>
               </StyledSpan>
               <StyledSpan $comment>
-                {t("allDevices.device", { count: allDevicesCount })}
+                <strong>{t("allDevices.device", { count: allDevicesCount })}</strong>
               </StyledSpan>
             </NameContainer>
           }
@@ -159,22 +161,8 @@ const AccountPage = () => {
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.label")}
-          extraHeaderContent={renderToggleButton(
-            isPresenceListOpen,
-            () =>
-              setIsPresenceListOpen((prev) => {
-                const next = !prev;
-                persistSettings({ isPresenceListOpen: next });
-                return next;
-              })
-          )}
-          onHeaderClick={() =>
-            setIsPresenceListOpen((prev) => {
-              const next = !prev;
-              persistSettings({ isPresenceListOpen: next });
-              return next;
-            })
-          }
+          extraHeaderContent={renderToggleButton(isPresenceListOpen, togglePresenceList)}
+          onHeaderClick={togglePresenceList}
           onlyOpenButton={isPresenceListOpen !== undefined}
           body={<PresenceUsersList />}
           bodyHidden={!isPresenceListOpen}
@@ -183,24 +171,10 @@ const AccountPage = () => {
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("backup.title")}
-          extraHeaderContent={renderToggleButton(
-            isBackupOpen,
-            () =>
-              setIsBackupOpen((prev) => {
-                const next = !prev;
-                persistSettings({ isBackupOpen: next });
-                return next;
-              })
-          )}
-          onHeaderClick={() =>
-            setIsBackupOpen((prev) => {
-              const next = !prev;
-              persistSettings({ isBackupOpen: next });
-              return next;
-            })
-          }
+          extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}
+          onHeaderClick={toggleBackup}
           onlyOpenButton={isPresenceListOpen !== undefined}
-          body={<BackupButtons />}
+          body={<BackupManager />}
           bodyHidden={!isBackupOpen}
         />
       )}
@@ -209,49 +183,3 @@ const AccountPage = () => {
 };
 
 export default AccountPage;
-
-const ToggleButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  margin-left: 12px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  color: ${({ theme }) => theme.color.teal};
-  font-size: 20px;
-  line-height: 1;
-  transition: color 0.2s ease, filter 0.2s ease;
-
-  &:hover {
-    cursor: pointer;
-    filter: brightness(110%);
-  }
-
-  &:active {
-    filter: brightness(125%);
-  }
-`;
-
-const ToggleIcon = styled.span<{ $open: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  position: relative;
-
-  &::before {
-    content: "";
-    display: block;
-    width: 8px;
-    height: 8px;
-    border: 2px solid currentColor;
-    border-top: 0;
-    border-left: 0;
-    transform: ${({ $open }) => ($open ? "rotate(225deg)" : "rotate(45deg)")};
-    transition: transform 0.2s ease;
-  }
-`;

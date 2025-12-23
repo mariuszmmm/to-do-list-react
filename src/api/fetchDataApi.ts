@@ -1,7 +1,8 @@
 import { List, Version } from "../types";
+import axios from "axios";
 
 export const getDataApi = async (token: string) => {
-  return fetch("/getData", {
+  return fetch("/data-getData", {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -22,23 +23,23 @@ export const addDataApi = async (
   list: List,
   deviceId: string
 ) => {
-  return fetch("/addData", {
-    method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ list, deviceId }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        if (response.status === 409) {
-          return response.json();
-        } else throw new Error(response.statusText);
+  try {
+    const response = await axios.put(
+      "/data-addData",
+      { list, deviceId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        validateStatus: (status) => status < 500,
       }
-      return response.json();
-    })
-    .then((data) => data)
-    .catch((error) => {
-      console.error("Error updating data", error.message);
-    });
+    );
+    if (response.status === 409) {
+      return response.data;
+    }
+    return response.data;
+  } catch (error: any) {
+    console.error("Error updating data", error.message || error);
+    throw error;
+  }
 };
 
 export const removeDataApi = async (
@@ -47,7 +48,7 @@ export const removeDataApi = async (
   listId: string,
   deviceId: string
 ) => {
-  return fetch("/removeData", {
+  return fetch("/data-removeData", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ version, listId, deviceId }),
@@ -71,7 +72,7 @@ export const updateDataApi = async (
   lists: List[],
   deviceId: string
 ) => {
-  return fetch("/updateData", {
+  return fetch("/data-updateData", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ lists, deviceId }),

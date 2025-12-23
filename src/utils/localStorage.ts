@@ -40,23 +40,21 @@ export const getListMetadataFromLocalStorage = ():
 export const saveTasksInLocalStorage = (tasks: Task[]) =>
   localStorage.setItem(tasksKey, JSON.stringify(tasks));
 
-export const getTasksFromLocalStorage = (): Task[] | undefined => {
+export const getTasksFromLocalStorage = (): Task[] => {
   const data = localStorage.getItem(tasksKey);
-  if (!data) return;
+  if (!data) return [];
   const parsed = JSON.parse(data) as Task[];
-
   return parsed;
 };
 
-export const saveArchivedListsInStorage = (lists: List[]) => {
+export const saveArchivedListsInLocalStorage = (lists: List[]) => {
   localStorage.setItem(archivedListsKey, JSON.stringify(lists));
 };
 
-export const getArchivedListFromLocalStorage = (): List[] | undefined => {
+export const getArchivedListsFromLocalStorage = (): List[] => {
   const data = localStorage.getItem(archivedListsKey);
-  if (!data) return;
+  if (!data) return [];
   const parsed = JSON.parse(data) as List[];
-
   return parsed;
 };
 

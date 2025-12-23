@@ -30,7 +30,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
 
   useEffect(() => {
     if (!authRoute) {
-      if (user) {
+      if (user && user.email && !!user.token) {
         dispatch(setAccountMode("logged"));
         dispatch(setLoggedUser({
           email: user.email,

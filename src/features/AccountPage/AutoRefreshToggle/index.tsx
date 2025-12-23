@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { UniversalContainer } from "../../../common/UniversalContainer";
-import styled, { DefaultTheme } from "styled-components";
+import { CheckboxFieldContainer } from "../../../common/CheckboxFieldContainer";
 import {
   getAutoRefreshSettingFromLocalStorage,
   saveAutoRefreshSettingInLocalStorage,
@@ -9,6 +8,9 @@ import { useAppSelector } from "../../../hooks/redux";
 import { selectLoggedUserEmail } from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../common/StyledList";
+import { CheckboxLabel } from "../../../common/CheckboxLabel";
+import { StyledCheckbox } from "../../../common/StyledCheckbox";
+import { FieldDescription } from "../../../common/FieldDescription";
 
 export const AutoRefreshToggle = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -34,54 +36,24 @@ export const AutoRefreshToggle = () => {
   };
 
   return (
-    <UniversalContainer>
-      <ToggleLabel>
-        <CheckboxInput
+    <CheckboxFieldContainer>
+      <CheckboxLabel>
+        <StyledCheckbox
           type="checkbox"
           checked={autoRefreshEnabled}
           onChange={handleToggle}
           aria-label="Toggle automatic token refresh"
+          $isChecked={autoRefreshEnabled}
         />
         <StyledSpan>
           {t("label")}
         </StyledSpan>
-      </ToggleLabel>
-      <ToggleDescription $comment>
+      </CheckboxLabel>
+      <FieldDescription $comment>
         {autoRefreshEnabled
           ? t("enabledDescription")
           : t("disabledDescription")}
-      </ToggleDescription>
-    </UniversalContainer>
+      </FieldDescription>
+    </CheckboxFieldContainer>
   );
 };
-
-// ...usunięto ToggleContainer, używaj UniversalContainer z common
-
-const ToggleLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-  margin-bottom: 4px;
-`;
-
-const CheckboxInput = styled.input`
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: ${({ theme }: { theme: DefaultTheme }) => theme.color.teal};
-    transition: filter 0.25s;  
-  
-  &:hover {
-    outline: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.color.teal};
-    outline-offset: 1px;
-  }
-`;
-
-
-const ToggleDescription = styled(StyledSpan)`
-  font-size: 0.8rem;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.color.empress};
-  margin-left: 30px;
-`;

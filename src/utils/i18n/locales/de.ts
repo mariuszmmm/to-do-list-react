@@ -167,6 +167,10 @@ const langDe: typeof langPl = {
       resetPassword: "Passwort zurücksetzen",
       cancel: "Abbrechen",
     },
+    toggleButtons: {
+      show: "Sektion ausklappen",
+      hide: "Sektion einklappen",
+    },
     deviceCount: {
       device: "Du bist auf {{count}} Gerät angemeldet",
       device_few: "Du bist auf {{count}} Geräten angemeldet",
@@ -225,59 +229,96 @@ const langDe: typeof langPl = {
       tokenExpired: "Token ist abgelaufen",
     },
     autoRefresh: {
-      label: "Automatische Token-Aktualisierung",
-      enabledDescription: "Das Token wird beim Ablauf automatisch erneuert",
+      label: "Angemeldet bleiben",
+      enabledDescription: "Das Token wird automatisch erneuert",
       disabledDescription: "Du wirst abgemeldet, wenn das Token abläuft",
     },
     backup: {
       title: "Sicherung & Wiederherstellung",
-      processingAuthorization: "Autorisierung wird verarbeitet...",
-      googleDriveAuthSuccess: "Google Drive-Autorisierung erfolgreich!",
-      restoreFromComputer: "Wiederherstellen vom Computer",
-      restoreFromComputerTooltip:
-        "Sicherung aus lokaler JSON-Datei wiederherstellen",
-      download: "Sicherung herunterladen",
-      downloading: "Sicherung wird heruntergeladen...",
-      downloadTooltip: "Sicherung auf Ihren Computer herunterladen",
-      downloadSuccess: "Sicherung erfolgreich heruntergeladen!",
-      downloadError: "Fehler beim Herunterladen der Sicherung",
-      upload: "Auf Google Drive hochladen",
-      uploadTooltip: "Sicherung auf Google Drive hochladen",
-      uploadSuccess: "Sicherung erfolgreich auf Google Drive hochgeladen!",
-      uploadError: "Fehler beim Hochladen der Sicherung",
-      restore: "Von Google Drive wiederherstellen",
-      restoreTooltip: "Daten aus Google Drive-Sicherung wiederherstellen",
-      restoreSuccess:
-        "Sicherung erfolgreich wiederhergestellt! {{count}} Listen wiederhergestellt.",
-      restoreError: "Fehler beim Wiederherstellen der Sicherung",
-      authorizeGoogle: "Google autorisieren",
-      authorizeGoogleTooltip: "Google Drive-Zugriff autorisieren",
-      processing: "Wird verarbeitet...",
-      authSuccess: "Autorisierung erfolgreich!",
-      authError: "Autorisierungsfehler",
-      uploading: "Sicherung auf Google Drive wird hochgeladen...",
-      restoring: "Sicherung von Google Drive wird wiederhergestellt...",
-      notAuthorized: "Nicht mit Google Drive autorisiert",
-      configError: "Google Drive-Konfiguration fehlt",
-      savingError: "Fehler beim Speichern der Sicherung",
-      enterFileId: "Google Drive File ID eingeben:",
-      cancelled: "Wiederherstellung abgebrochen",
-      selectBackup: "Wähle ein Backup zum Wiederherstellen",
-      noBackups: "Keine Sicherungen auf Google Drive gefunden",
-      prev: "Zurück",
-      next: "Weiter",
-      cancel: "Abbrechen",
-      deleteBackup: {
-        deleting: "Sicherung wird gelöscht",
-        success: "Sicherung erfolgreich gelöscht!",
-        error: "Fehler beim Löschen der Sicherung",
-        tooltip: "Diese Sicherung löschen",
-        confirm: "Möchtest du die Sicherung '{{name}}' wirklich löschen?",
+      downloadUserLists: {
+        button: "Meine Listen herunterladen",
+        tooltip: "Nur Ihre eigenen Listen auf den Computer herunterladen",
+        downloading: "Ihre Listen werden heruntergeladen...",
+        success: "Ihre Listen wurden heruntergeladen!",
+        error: "Fehler beim Herunterladen Ihrer Listen",
       },
-    },
-    toggle: {
-      show: "Sektion ausklappen",
-      hide: "Sektion einklappen",
+      downloadAllUsers: {
+        button: "Alle Benutzer herunterladen",
+        tooltip: "Listen aller Benutzer auf den Computer herunterladen",
+        downloading: "Alle Benutzerlisten werden heruntergeladen...",
+        success: "Alle Benutzerlisten wurden heruntergeladen!",
+        error: "Fehler beim Herunterladen aller Benutzerlisten",
+      },
+      restoreUserLists: {
+        button: "Meine Listen wiederherstellen",
+        tooltip:
+          "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
+        processing: "Deine Listen werden verarbeitet...",
+        success:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_few:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_many:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_other:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        error: "Fehler beim Wiederherstellen deiner Listen",
+      },
+      restoreAllUsers: {
+        button: "Alle Benutzer wiederherstellen",
+        tooltip: "Alle Benutzer aus dem Backup wiederherstellen",
+        processing: "Wird verarbeitet...",
+        success:
+          "Backup wurde erfolgreich wiederhergestellt!\nWiederhergestellt: {{restored}}/{{total}} Benutzer.\nFehlgeschlagen: {{failed}}.",
+        error: "Fehler beim Wiederherstellen aller Benutzer",
+      },
+      authorizeGoogle: {
+        button: "Google autorisieren",
+        tooltip: "Google Drive-Zugriff autorisieren",
+        processing: "Autorisierung wird verarbeitet...",
+        success: "Google Drive-Autorisierung erfolgreich!",
+        error: "Fehler bei der Google Drive-Autorisierung",
+      },
+      uploadAllUsersToGoogleDrive: {
+        button: "Auf Google Drive hochladen",
+        tooltip: "Backup auf Google Drive hochladen",
+        uploading: "Backup wird auf Google Drive hochgeladen...",
+        success: "Backup erfolgreich auf Google Drive hochgeladen!",
+        error: "Fehler beim Hochladen des Backups",
+        notAuthorized: "Nicht mit Google Drive autorisiert",
+      },
+      restoreBackupFromGoogleDrive: {
+        button: "Von Google Drive wiederherstellen",
+        tooltip: "Backup von Google Drive wiederherstellen",
+        restoring: "Backup wird von Google Drive wiederhergestellt...",
+        success:
+          "Backup wurde wiederhergestellt! {{count}} Listen wurden wiederhergestellt.",
+        error: "Fehler beim Wiederherstellen des Backups",
+        notAuthorized: "Nicht mit Google Drive autorisiert",
+      },
+      listGoogleDriveBackups: {
+        selectBackup: "Backup zum Wiederherstellen auswählen",
+        buttons: {
+          prev: "Zurück",
+          next: "Weiter",
+          cancel: "Abbrechen",
+        },
+        tooltips: {
+          restore: "Backup wiederherstellen",
+          delete: "Backup von Google Drive löschen",
+        },
+        error: "Fehler beim Abrufen der Backup-Liste",
+        errorDelete: "Fehler beim Löschen des Backups",
+        noBackups: "Keine Backup-Dateien auf Google Drive gefunden",
+        notAuthorized: "Nicht mit Google Drive autorisiert",
+      },
+      restoreSelectedBackup: {
+        restoring: "Backup von Google Drive wird wiederhergestellt...",
+        success:
+          "Backup wiederhergestellt!\n{{restored}} Benutzer wiederhergestellt, {{failed}} fehlgeschlagen ({{total}} insgesamt)",
+        error: "Fehler beim Wiederherstellen des Backups",
+        notAuthorized: "Keine Berechtigung für Google Drive",
+      },
     },
   },
   confirmationPage: {
@@ -446,9 +487,7 @@ const langDe: typeof langPl = {
           "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
         loading: "Sicherung wird gelöscht...",
         success: "Die Sicherung wurde gelöscht.",
-        error: {
-          default: "Fehler beim Löschen der Sicherung.",
-        },
+        error: "Fehler beim Löschen der Sicherung.",
       },
     },
     listsUpdate: {
