@@ -7,4 +7,5 @@ export const CheckboxLabel = styled.label`
   cursor: pointer;
   user-select: none;
   margin-bottom: 4px;
+  width: fit-content;
 `;

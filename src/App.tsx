@@ -18,6 +18,7 @@ import { Modal } from "./Modal";
 import { TokenManager } from "./components/TokenManager";
 import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";
+import { SessionManager } from "./components/SessionManager";
 
 import { refreshData } from "./utils/refreshData";
 import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
@@ -47,6 +48,7 @@ const App = () => {
 
   return (
     <HashRouter>
+      <SessionManager authRoutes={authRoutes} />
       <Navigation
         listsData={safeData}
         isLoading={isLoading}

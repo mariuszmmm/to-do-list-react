@@ -23,7 +23,7 @@ const makeErrorResponse = <T>(error: any): ApiResponse<T> => {
 
 export const downloadUserListsApi = async (
   token: string
-): Promise<ApiResponse<BackupData>> => {
+): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
     const response = await axios.get("/backup-downloadUserLists", {
       headers: { Authorization: `Bearer ${token}` },
@@ -36,7 +36,7 @@ export const downloadUserListsApi = async (
     return {
       success: true,
       statusCode: response.status,
-      message: response.statusText,
+      message: response.data.message,
       data: response.data,
     };
   } catch (error: any) {
@@ -47,7 +47,7 @@ export const downloadUserListsApi = async (
 
 export const downloadAllUsersApi = async (
   token: string
-): Promise<ApiResponse<BackupData>> => {
+): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
     const response = await axios.get("/backup-downloadAllUsers", {
       headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +60,7 @@ export const downloadAllUsersApi = async (
     return {
       success: true,
       statusCode: response.status,
-      message: response.statusText,
+      message: response.data.message,
       data: response.data,
     };
   } catch (error: any) {
@@ -87,7 +87,7 @@ export const restoreUserListsApi = async (
     return {
       success: true,
       statusCode: response.status,
-      message: response.statusText,
+      message: response.data.message,
       data: response.data,
     };
   } catch (error: any) {
@@ -114,7 +114,7 @@ export const restoreAllUsersApi = async (
     return {
       success: true,
       statusCode: response.status,
-      message: response.statusText,
+      message: response.data.message,
       data: response.data,
     };
   } catch (error: any) {

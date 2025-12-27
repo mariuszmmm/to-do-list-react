@@ -121,7 +121,7 @@ const AccountPage = () => {
           <>
             <AccountExtraButtons />
             <br />
-            {loggedUserEmail &&
+            {loggedUserEmail && userDevices > 0 &&
               <StyledSpan $comment >
                 <strong>{t("deviceCount.device", { count: userDevices })}</strong>
               </StyledSpan>
@@ -168,7 +168,7 @@ const AccountPage = () => {
           bodyHidden={!isPresenceListOpen}
         />
       )}
-      {loggedUserEmail && isAdmin && (
+      {loggedUserEmail && (
         <Section
           title={t("backup.title")}
           extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}

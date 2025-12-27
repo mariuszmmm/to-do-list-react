@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import UserData from "../models/UserData";
 import { publishAblyUpdate } from "../config/ably";
-import { BackupData, List } from "../../src/types";
+import { BackupData, List, Task } from "../../src/types";
 
 export const restoreAllUsersFromBackupData = async (
   backupData: BackupData
@@ -22,13 +22,22 @@ export const restoreAllUsersFromBackupData = async (
 
       const currentDate = new Date().toISOString();
       const normalizedLists: List[] = userList.map(
-        (list: Partial<List> & { taskList?: any[] }) => ({
+        (list: List & { taskList: Task[] }) => ({
           id: list.id || nanoid(8),
           name: list.name || "Untitled List",
           date: list.date || currentDate,
           updatedAt: list.updatedAt || currentDate,
           version: list.version || 0,
-          taskList: Array.isArray(list.taskList) ? list.taskList : [],
+          taskList: Array.isArray(list.taskList)
+            ? list.taskList.map((task: any) => ({
+                ...task,
+                id: task.id || nanoid(8),
+                content: task.content || "",
+                done: typeof task.done === "boolean" ? task.done : false,
+                date: task.date || currentDate,
+                updatedAt: task.updatedAt || currentDate,
+              }))
+            : [],
         })
       );
 

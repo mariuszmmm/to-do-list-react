@@ -27,7 +27,8 @@ export const handleDownloadAllUsers = async (
       throw new Error(result.message);
     }
 
-    const saved = saveBackupToFile(result.data);
+    const { backupData } = result.data;
+    const saved = saveBackupToFile(backupData);
     if (!saved) {
       throw new Error("Error saving backup file");
     }

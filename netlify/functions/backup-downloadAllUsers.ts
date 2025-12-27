@@ -27,9 +27,13 @@ const handler: Handler = async (event, context) => {
 
     try {
       const { backupData, fileName } = await getAllUsersForBackup(email);
-      return jsonResponse(200, backupData, {
-        "Content-Disposition": `attachment; filename="${fileName}"`,
-      });
+      return jsonResponse(
+        200,
+        { backupData, message: "Download successful" },
+        {
+          "Content-Disposition": `attachment; filename="${fileName}"`,
+        }
+      );
     } catch (err) {
       if (err instanceof Error && err.message === "No user data found") {
         console.warn(`${logPrefix} No user data found`);
