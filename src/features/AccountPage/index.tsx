@@ -113,6 +113,7 @@ const AccountPage = () => {
   return (
     <>
       <Header title={t("title")} />
+
       <Section
         title={loggedUserEmail || t("notLoggedIn")}
         extraHeaderContent={<AccountButtons />}
@@ -129,7 +130,8 @@ const AccountPage = () => {
           </>
         }
       />
-      {loggedUserEmail && isAdmin && (
+
+      {loggedUserEmail && (
         <Section
           title={t("sessionInfo.title")}
           extraHeaderContent={renderToggleButton(isSessionInfoOpen, toggleSessionInfo)}
@@ -139,6 +141,7 @@ const AccountPage = () => {
           bodyHidden={!isSessionInfoOpen}
         />
       )}
+
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.summaryTitle")}
@@ -158,6 +161,7 @@ const AccountPage = () => {
           bodyHidden={!isActivitySummaryOpen}
         />
       )}
+
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.label")}
@@ -168,6 +172,7 @@ const AccountPage = () => {
           bodyHidden={!isPresenceListOpen}
         />
       )}
+
       {loggedUserEmail && (
         <Section
           title={t("backup.title")}
@@ -178,6 +183,7 @@ const AccountPage = () => {
           bodyHidden={!isBackupOpen}
         />
       )}
+
     </>
   );
 };

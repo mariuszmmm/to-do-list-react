@@ -40,7 +40,7 @@ export const SessionInfo = ({
     const user = auth.currentUser();
 
     if (!user) {
-      logDevBlock(isSessionInfoOpen, "Brak użytkownika (user == null).");
+      logDevBlock(isSessionInfoOpen, "Brak użytkownika.");
       setSessionData({});
       setRemainingMs(0);
       return;
