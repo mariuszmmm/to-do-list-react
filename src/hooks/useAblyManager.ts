@@ -255,7 +255,7 @@ export const useAblyManager = () => {
       channels.clear();
       presenceChannelRef.current = null;
     };
-  }, [loggedUserEmail]);
+  }, [loggedUserEmail, isAdmin]);
 
   useEffect(() => {
     if (!loggedUserEmail) {
