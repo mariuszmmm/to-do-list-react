@@ -58,7 +58,6 @@ const handler: Handler = async (event, context) => {
       message: `Restored ${restored} users, ${failed} failed`,
       restored,
       failed,
-      total: restored + failed,
     });
   } catch (error) {
     logError("Error restoring users", error, logPrefix);

@@ -1,16 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux";
 import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
-import { auth } from "../api/auth";
-import {
-  setAccountMode,
-  setLoggedUser,
-} from "../features/AccountPage/accountSlice";
 import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
 import { Loader } from "../common/Loader";
+import { auth } from "../api/auth";
 
 type Props = {
   listsData?: ListsData;
@@ -24,38 +18,8 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
     keyPrefix: "navigation",
   });
   const { pathname } = useLocation();
-  const dispatch = useAppDispatch();
-  const user = auth.currentUser();
   const authRoute = authRoutes.includes(pathname);
-
-  useEffect(() => {
-    if (!authRoute) {
-      if (user && user.email && !!user.token) {
-        dispatch(setAccountMode("logged"));
-        dispatch(setLoggedUser({
-          email: user.email,
-          name: user?.user_metadata?.full_name,
-          roles: user?.app_metadata?.roles,
-        }));
-      } else {
-        dispatch(setAccountMode("login"));
-        dispatch(setLoggedUser(null));
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const handleStorageEvent = (event: StorageEvent) => {
-      if (event.key === "gotrue.user") window.location.reload();
-    };
-
-    if (!authRoutes) window.addEventListener("storage", handleStorageEvent);
-    return () => window.removeEventListener("storage", handleStorageEvent);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const user = auth.currentUser();
 
   return (
     <Nav>

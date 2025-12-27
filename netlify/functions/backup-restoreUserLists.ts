@@ -9,7 +9,7 @@ import {
   checkEventBody,
   checkHttpMethod,
 } from "../utils/validators";
-import { BackupData } from "../../src/types";
+import { BackupData, Task } from "../../src/types";
 import { jsonResponse, logError } from "../utils/response";
 
 const handler: Handler = async (event, context) => {
@@ -91,14 +91,25 @@ const handler: Handler = async (event, context) => {
     }
 
     const currentDate = new Date().toISOString();
-    const normalizedLists: List[] = listsToRestore.map((list) => ({
-      id: list.id || nanoid(8),
-      name: list.name || "Untitled List",
-      date: list.date || currentDate,
-      updatedAt: list.updatedAt || currentDate,
-      version: list.version || 0,
-      taskList: Array.isArray(list.taskList) ? list.taskList : [],
-    }));
+    const normalizedLists: List[] = listsToRestore.map(
+      (list: List & { taskList: Task[] }) => ({
+        id: list.id || nanoid(8),
+        name: list.name || "Untitled List",
+        date: list.date || currentDate,
+        updatedAt: list.updatedAt || currentDate,
+        version: list.version || 0,
+        taskList: Array.isArray(list.taskList)
+          ? list.taskList.map((task: any) => ({
+              ...task,
+              id: task.id || nanoid(8),
+              content: task.content || "",
+              done: typeof task.done === "boolean" ? task.done : false,
+              date: task.date || currentDate,
+              updatedAt: task.updatedAt || currentDate,
+            }))
+          : [],
+      })
+    );
 
     foundUser.lists = normalizedLists;
     await foundUser.save();
@@ -110,6 +121,7 @@ const handler: Handler = async (event, context) => {
     });
 
     return jsonResponse(200, {
+      message: "User lists restored successfully",
       listsCount: normalizedLists.length,
     });
   } catch (error) {

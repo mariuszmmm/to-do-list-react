@@ -37,10 +37,11 @@ export const handleRestoreUserLists = async (
           throw new Error(result.message);
         }
 
+        const { listsCount } = result.data;
         setStatus({
           isLoading: false,
           message: t("restoreUserLists.success", {
-            count: result.data.listsCount,
+            count: listsCount,
           }),
           messageType: "success",
         });

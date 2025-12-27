@@ -30,8 +30,8 @@ export const EditableListName = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!!name) return;
-    dispatch(setListName({ name: t("tasks.defaultListName") }));
+    listNameToEdit && dispatch(setListNameToEdit(null));
+    !name && dispatch(setListName({ name: t("tasks.defaultListName") }));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

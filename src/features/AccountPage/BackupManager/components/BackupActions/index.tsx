@@ -9,8 +9,8 @@ import { handleUploadAllUsersToGoogleDrive } from "../../handlers/handleUploadAl
 import { handleFetchGoogleDriveBackupList } from "../../handlers/handleFetchGoogleDriveBackupList";
 import { handleAuthorizeGoogle } from "../../handlers/handleAuthorizeGoogle";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { selectLoggedUserEmail } from "../../../accountSlice";
+import { useAppSelector } from "../../../../../hooks";
+import { selectIsAdmin } from "../../../accountSlice";
 
 interface BackupActionsProps {
   status: { isLoading: boolean };
@@ -32,26 +32,27 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
   setShowBackupList,
 }) => {
   const { t } = useTranslation("translation", { keyPrefix: "accountPage.backup", });
-  const loggedUserEmail = useSelector(selectLoggedUserEmail);
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   return (
+
     <ButtonsContainer $extra>
-      {loggedUserEmail && (
-        <Button
-          onClick={() => handleDownloadUserLists(t, setStatus)}
-          disabled={status.isLoading}
-          title={t("downloadUserLists.tooltip")}
-        >
-          📥 {t("downloadUserLists.button")}
-        </Button>
-      )}
       <Button
+        onClick={() => handleDownloadUserLists(t, setStatus)}
+        disabled={status.isLoading}
+        title={t("downloadUserLists.tooltip")}
+      >
+        📥 {t("downloadUserLists.button")}
+      </Button>
+
+      {isAdmin && <Button
         onClick={() => handleDownloadAllUsers(t, setStatus)}
         disabled={status.isLoading}
         title={t("downloadAllUsers.tooltip")}
       >
         📥 {t("downloadAllUsers.button")}
-      </Button>
+      </Button>}
+
       <Button
         onClick={() => handleRestoreUserLists(t, setStatus)}
         disabled={status.isLoading}
@@ -59,36 +60,40 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
       >
         📂 {t("restoreUserLists.button")}
       </Button>
-      <Button
+
+      {isAdmin && <Button
         onClick={() => handleRestoreAllUsers(t, setStatus)}
         disabled={status.isLoading}
         title={t("restoreAllUsers.tooltip")}
       >
         📂 {t("restoreAllUsers.button")}
-      </Button>
-      <Button
+      </Button>}
+
+      {isAdmin && <Button
         onClick={() => handleUploadAllUsersToGoogleDrive(googleAccessToken, t, setStatus, setShowGoogleAuth)}
         disabled={status.isLoading || showGoogleAuth}
         title={t("uploadAllUsersToGoogleDrive.tooltip")}
       >
         ☁️ {t("uploadAllUsersToGoogleDrive.button")}
-      </Button>
-      <Button
+      </Button>}
+
+      {isAdmin && <Button
         onClick={() => handleFetchGoogleDriveBackupList(googleAccessToken, t, setStatus, setShowGoogleAuth, setBackupFiles, setShowBackupList)}
         disabled={status.isLoading || showGoogleAuth}
         title={t("restoreBackupFromGoogleDrive.tooltip")}
       >
         ☁️ {t("restoreBackupFromGoogleDrive.button")}
-      </Button>
-      {showGoogleAuth && (
+      </Button>}
+
+      {isAdmin && showGoogleAuth && (
         <Button
           onClick={() => handleAuthorizeGoogle(t, setStatus)}
           disabled={status.isLoading}
           title={t("authorizeGoogle.tooltip")}
         >
           🚀 {t("authorizeGoogle.button")}
-        </Button>
-      )}
+        </Button>)}
+
     </ButtonsContainer>
   );
 }

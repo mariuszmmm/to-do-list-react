@@ -105,14 +105,12 @@ export const selectIsAdmin = (state: RootState) =>
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
 export const selectPresenceUsers = (state: RootState) =>
-  state.account.presenceUsers;
+  selectAccountState(state).presenceUsers;
 export const selectUserDevicesCount = (state: RootState) =>
-  state.account.userDevicesCount;
+  selectAccountState(state).userDevicesCount;
 export const selectTotalUsersCount = (state: RootState) =>
-  state.account.totalUsersCount;
+  selectAccountState(state).totalUsersCount;
 export const selectAllDevicesCount = (state: RootState) =>
-  state.account.allDevicesCount;
-export const selectCurrentUserEmail = (state: RootState) =>
-  state.account.loggedUserEmail;
+  selectAccountState(state).allDevicesCount;
 
 export default accountSlice.reducer;

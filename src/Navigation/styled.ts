@@ -43,14 +43,6 @@ export const NavList = styled.ul<NavListProps>`
     $isLists &&
     css`
       grid-template-columns: 1fr auto auto auto 1fr;
-
-      @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-        grid-template-columns: 1fr auto auto auto auto;
-      }
-
-      @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-        grid-template-columns: 1fr auto auto auto 1fr;
-      }
     `};
 
   li {
