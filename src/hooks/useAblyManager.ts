@@ -1,6 +1,9 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "./redux";
-import { selectLoggedUserEmail } from "../features/AccountPage/accountSlice";
+import {
+  selectIsAdmin,
+  selectLoggedUserEmail,
+} from "../features/AccountPage/accountSlice";
 import {
   getAblyInstance,
   closeAblyConnection,
@@ -35,6 +38,7 @@ export const useAblyManager = () => {
   const channelsRef = useRef<Map<string, any>>(new Map());
   const presenceChannelRef = useRef<any | null>(null);
   const isInitializedRef = useRef<boolean>(false);
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   const onConfirmation = useCallback(
     (email: string, callback: ConfirmationCallback) => {
@@ -65,9 +69,9 @@ export const useAblyManager = () => {
   );
 
   const onPresenceUpdate = useCallback((callback: PresenceUpdateCallback) => {
-    const callbacks = subscriptionsRef.presenceUpdate.get("global") || [];
+    const callbacks = subscriptionsRef.presenceUpdate.get("presence") || [];
     callbacks.push(callback);
-    subscriptionsRef.presenceUpdate.set("global", callbacks);
+    subscriptionsRef.presenceUpdate.set("presence", callbacks);
 
     return () => {
       const idx = callbacks.indexOf(callback);
@@ -99,15 +103,27 @@ export const useAblyManager = () => {
     );
     channelsRef.current.set("confirmation", confirmationChannel);
 
-    // Initialize presence channel
-    const presenceChannel = ably.channels.get("global:presence");
-    presenceChannelRef.current = presenceChannel;
-    channelsRef.current.set("presence", presenceChannel);
+    // Initialize presence channels
+    const presenceSelfChannel = ably.channels.get(
+      `user:${loggedUserEmail}:presence`
+    );
+    const presenceAdminChannel = ably.channels.get("global:presence-admins");
+
+    // For counts: admin uses global, user uses own
+    const presenceCountChannel = isAdmin
+      ? presenceAdminChannel
+      : presenceSelfChannel;
+
+    presenceChannelRef.current = presenceCountChannel;
+    channelsRef.current.set("presence:self", presenceSelfChannel);
+    channelsRef.current.set("presence:admin", presenceAdminChannel);
+    channelsRef.current.set("presence", presenceCountChannel);
 
     const initializeChannels = async () => {
       try {
         await dataChannel.attach();
-        await presenceChannel.attach();
+        await presenceSelfChannel.attach();
+        await presenceAdminChannel.attach();
         await confirmationChannel.attach();
       } catch (err) {
         if (err instanceof Error && err.message.includes("superseded")) {
@@ -139,13 +155,13 @@ export const useAblyManager = () => {
 
       const updatePresenceCount = async () => {
         try {
-          if (presenceChannel.state !== "attached") {
+          if (presenceCountChannel.state !== "attached") {
             return;
           }
 
-          const members = await presenceChannel.presence.get();
+          const members = await presenceCountChannel.presence.get();
           const counts = members.reduce<Record<string, number>>((acc, m) => {
-            const email = (m.clientId || "").split(":")[0];
+            const email = m.data?.email || (m.clientId || "").split(":")[0];
             if (email) acc[email] = (acc[email] || 0) + 1;
             return acc;
           }, {});
@@ -156,7 +172,8 @@ export const useAblyManager = () => {
           const userDevices = counts[loggedUserEmail || ""] || 0;
           const allDevices = members.length;
 
-          const callbacks = subscriptionsRef.presenceUpdate.get("global") || [];
+          const callbacks =
+            subscriptionsRef.presenceUpdate.get("presence") || [];
           callbacks.forEach((cb) =>
             cb({
               users,
@@ -177,14 +194,21 @@ export const useAblyManager = () => {
         await updatePresenceCount();
       };
 
-      presenceChannel.presence.subscribe("enter", handlePresenceEvent);
-      presenceChannel.presence.subscribe("leave", handlePresenceEvent);
-      presenceChannel.presence.subscribe("update", handlePresenceEvent);
+      presenceCountChannel.presence.subscribe("enter", handlePresenceEvent);
+      presenceCountChannel.presence.subscribe("leave", handlePresenceEvent);
+      presenceCountChannel.presence.subscribe("update", handlePresenceEvent);
 
       await updatePresenceCount();
 
       try {
-        await presenceChannel.presence.enter({
+        // Always enter own channel
+        await presenceSelfChannel.presence.enter({
+          email: loggedUserEmail,
+          deviceId: currentDeviceId,
+          status: "available",
+        });
+        // Publish also to admin-global so admin widzi wszystkich
+        await presenceAdminChannel.presence.enter({
           email: loggedUserEmail,
           deviceId: currentDeviceId,
           status: "available",
