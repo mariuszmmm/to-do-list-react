@@ -64,7 +64,6 @@ const ArchivedListsPage = () => {
               lists={archivedLists}
               selectedListId={selectedListId}
               modalIsOpen={modalIsOpen}
-              isListsSorting={isListsSorting}
             />
           </div>
         }

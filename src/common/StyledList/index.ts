@@ -69,6 +69,16 @@ export const StyledListItem = styled.li<StyledListItemProps>`
         ? "1fr"
         : "auto"};
   }
+
+  ${({ $type }) =>
+    $type === "sort" &&
+    css`
+      &:hover {
+        background-color: ${({ theme }) => theme.color.gallery};
+        cursor: grab;
+        opacity: 0.8;
+      }
+    `}
 `;
 
 export const StyledListContent = styled.div<StyledListContentProps>`

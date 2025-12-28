@@ -72,6 +72,9 @@ const archivedListsSlice = createSlice({
       };
       state.archivedLists.push(list);
     },
+    setArchivedListsOrder: (state, { payload }: PayloadAction<List[]>) => {
+      state.archivedLists = payload;
+    },
   },
 });
 
@@ -81,6 +84,7 @@ export const {
   setArchivedListToRemove,
   removeArchivedList,
   addArchivedList,
+  setArchivedListsOrder,
 } = archivedListsSlice.actions;
 
 const selectArchivedListsState = (state: RootState) => state.archivedLists;
