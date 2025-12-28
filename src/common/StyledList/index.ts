@@ -5,11 +5,11 @@ interface StyledListItemProps {
   selected?: boolean;
   hidden?: boolean;
   $sort?: boolean;
-  $type?: "lists" | "tasks" | "tasksView";
+  $type?: "lists" | "tasks" | "tasksView" | "sort";
 }
 
 interface StyledListContentProps {
-  $type?: "lists" | "tasks" | "tasksView";
+  $type?: "lists" | "tasks" | "tasksView" | "sort";
 }
 
 interface StyledTaskProps {
@@ -37,7 +37,7 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   grid-template-columns: ${({ $type }) =>
     $type === "tasks"
       ? "auto 1fr auto auto"
-      : $type === "lists"
+      : $type === "lists" || $type === "sort"
       ? "auto 1fr auto"
       : $type === "tasksView"
       ? "auto 1fr"
@@ -63,9 +63,7 @@ export const StyledListItem = styled.li<StyledListItemProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-template-columns: ${({ $type }) =>
-      $type === "lists"
-        ? "1fr auto auto"
-        : $type === "tasks"
+      $type === "tasks" || $type === "lists" || $type === "sort"
         ? "1fr auto"
         : $type === "tasksView"
         ? "1fr"
@@ -84,7 +82,7 @@ export const StyledListContent = styled.div<StyledListContentProps>`
     grid-row: 1 / 2;
     margin: 0;
     ${({ $type }) =>
-      $type === "lists"
+      $type === "lists" || $type === "sort"
         ? "grid-column: span 2;"
         : $type === "tasks"
         ? "grid-column: span 3;"

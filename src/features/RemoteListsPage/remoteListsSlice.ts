@@ -48,9 +48,9 @@ const remoteListsSlice = createSlice({
     },
     setListToSort: (
       state,
-      { payload: sortedList }: PayloadAction<List[] | null>
+      { payload: sortedLists }: PayloadAction<List[] | null>
     ) => {
-      state.listsToSort = sortedList;
+      state.listsToSort = sortedLists;
     },
     switchListSort: (state) => {
       state.isListsSorting = !state.isListsSorting;

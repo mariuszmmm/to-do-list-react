@@ -18,7 +18,7 @@ import {
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
-  switchTaskSort,
+  switchTasksSort,
   selectIsTasksSorting,
   setTaskListToArchive,
   selectListStatus,
@@ -66,7 +66,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
     !isPending;
 
   return (
-    <ButtonsContainer>
+    <ButtonsContainer >
       {!!listsData && (
         <Button
           onClick={() => {
@@ -74,7 +74,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
             dispatch(setListStatus({ manualSaveTriggered: true }));
           }}
           disabled={
-            !taskListMetaData.name || !!listNameToEdit || isPending
+            !taskListMetaData.name || !!listNameToEdit || isPending || !!editedTaskContent || isTasksSorting
           }
         >
           <span>
@@ -97,38 +97,39 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
               setTaskListToArchive({ name: taskListMetaData.name, tasks }),
             );
         }}
+        disabled={!!editedTaskContent || isTasksSorting}
       >
         {t("tasks.buttons.clear")}
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskDone || areTasksEmpty}
+        disabled={isEveryTaskDone || areTasksEmpty || !!editedTaskContent || isTasksSorting}
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskUndone || areTasksEmpty}
+        disabled={isEveryTaskUndone || areTasksEmpty || !!editedTaskContent || isTasksSorting}
       >
         {t("tasks.buttons.allUndone")}
       </Button>
       <Button
         onClick={() => dispatch(toggleHideDone())}
-        disabled={areTasksEmpty}
+        disabled={areTasksEmpty || !!editedTaskContent || isTasksSorting}
         width={getWidthForToggleHideDoneButton(i18n.language)}
       >
         {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
       </Button>
       <Button
-        onClick={() => dispatch(switchTaskSort())}
-        disabled={tasks.length < 2}
+        onClick={() => dispatch(switchTasksSort())}
+        disabled={tasks.length < 2 || !!editedTaskContent}
         width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>
       <ButtonsContainer $sub>
         <Button
-          disabled={undoTasksStack.length === 0 || !!editedTaskContent}
+          disabled={undoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
           onClick={() => dispatch(undoTasks())}
           title={
             undoTasksStack.length === 0 || !!editedTaskContent
@@ -139,7 +140,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
           <UndoIcon />
         </Button>
         <Button
-          disabled={redoTasksStack.length === 0 || !!editedTaskContent}
+          disabled={redoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
           onClick={() => dispatch(redoTasks())}
           title={
             redoTasksStack.length === 0 || !!editedTaskContent
@@ -151,5 +152,5 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
         </Button>
       </ButtonsContainer>
     </ButtonsContainer>
-  );
+  )
 };

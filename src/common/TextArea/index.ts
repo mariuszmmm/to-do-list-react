@@ -6,4 +6,5 @@ export const TextArea = styled(Input).attrs({ as: "textarea" })`
   min-width: 100%;
   min-height: 200px;
   padding: 10px;
+  padding-right: 2.5rem;
 `;

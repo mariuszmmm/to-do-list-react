@@ -19,8 +19,6 @@ import {
   setListName,
   setTaskListToArchive,
   setTasks,
-  taskMoveDown,
-  taskMoveUp,
   toggleHideDone,
   toggleShowSearch,
   toggleTaskDone,
@@ -204,8 +202,6 @@ export function* tasksSaga() {
       undoTasks.type,
       redoTasks.type,
       setListName.type,
-      taskMoveUp.type,
-      taskMoveDown.type,
     ],
     saveTasksInLocalStorageHandler
   );

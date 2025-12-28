@@ -1,13 +1,11 @@
-import { List } from "../types";
+export const moveListUp = (index: number, listToSort: any[]) => {
+  if (index === 0) return listToSort;
+  if (index < 0 || index >= listToSort.length) return listToSort;
+  const prevList = listToSort[index - 1];
+  const selectedList = listToSort[index];
 
-export const moveListUp = (index: number, listsToSort: List[]) => {
-  if (index === 0) return listsToSort;
-  if (index < 0 || index >= listsToSort.length) return listsToSort;
-  const prevList = listsToSort[index - 1];
-  const selectedList = listsToSort[index];
-
-  if (!selectedList || !prevList) return listsToSort;
-  const newList = listsToSort.map((list, i) => {
+  if (!selectedList || !prevList) return listToSort;
+  const newList = listToSort.map((list, i) => {
     if (i === index - 1) {
       return selectedList;
     }
@@ -20,13 +18,13 @@ export const moveListUp = (index: number, listsToSort: List[]) => {
   return newList;
 };
 
-export const moveListDown = (index: number, listsToSort: List[]) => {
-  if (index < 0 || index >= listsToSort.length - 1) return listsToSort;
-  const selectedList = listsToSort[index];
-  const nextList = listsToSort[index + 1];
+export const moveListDown = (index: number, listToSort: any[]) => {
+  if (index < 0 || index >= listToSort.length - 1) return listToSort;
+  const selectedList = listToSort[index];
+  const nextList = listToSort[index + 1];
 
-  if (!selectedList || !nextList) return listsToSort;
-  const newList = listsToSort.map((list, i) => {
+  if (!selectedList || !nextList) return listToSort;
+  const newList = listToSort.map((list, i) => {
     if (i === index) {
       return nextList;
     }

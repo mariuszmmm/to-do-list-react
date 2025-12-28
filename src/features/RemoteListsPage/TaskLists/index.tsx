@@ -5,7 +5,6 @@ import { ArrowDownIcon, ArrowUpIcon, CircleIcon } from "../../../common/icons";
 import {
   RemoveButton,
   SortButton,
-  SortButtonsContainer,
   ToggleButton,
 } from "../../../common/taskButtons";
 import {
@@ -52,33 +51,24 @@ export const TaskLists = ({
           key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
           onClick={() => !isListsSorting && selectedListId !== list.id && dispatch(selectList(list.id))}
-          $type={"tasks"}
+          $type={isListsSorting ? "sort" : "lists"}
         >
-          {isListsSorting && listsToSort ? (
-            <SortButtonsContainer>
-              <SortButton
-                onClick={() =>
-                  dispatch(setListToSort(moveListUp(index, listsToSort)))
-                }
-                disabled={index === 0}
-              >
-                <ArrowUpIcon />
-              </SortButton>
-              <SortButton
-                onClick={() =>
-                  dispatch(setListToSort(moveListDown(index, listsToSort)))
-                }
-                disabled={index === lists.length - 1}
-              >
-                <ArrowDownIcon />
-              </SortButton>
-            </SortButtonsContainer>
-          ) : (
+          {isListsSorting && listsToSort ?
+            <SortButton
+              onClick={() =>
+                dispatch(setListToSort(moveListUp(index, listsToSort)))
+              }
+              disabled={index === 0}
+            >
+              <ArrowUpIcon />
+            </SortButton>
+            :
             <ToggleButton>
               {selectedListId === list.id ? "✔" : ""}
             </ToggleButton>
-          )}
-          <StyledListContent $type={"tasks"}>
+          }
+
+          <StyledListContent $type={isListsSorting ? "sort" : "lists"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
             <ListMeta>
@@ -92,18 +82,27 @@ export const TaskLists = ({
               </ListMetaText>
             </ListMeta>
           </StyledListContent>
-          {!isListsSorting && !listsToSort && (
+
+          {isListsSorting && listsToSort ?
+            <SortButton
+              onClick={() =>
+                dispatch(setListToSort(moveListDown(index, listsToSort)))
+              }
+              disabled={index === lists.length - 1}
+            >
+              <ArrowDownIcon />
+            </SortButton>
+            :
             <RemoveButton
               onClick={(event) => {
                 event.stopPropagation();
                 dispatch(setListToRemove(list))
-              }
-              }
+              }}
               disabled={modalIsOpen}
             >
               🗑️
             </RemoveButton>
-          )}
+          }
         </StyledListItem>
       ))}
     </StyledList>
