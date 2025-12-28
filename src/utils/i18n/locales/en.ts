@@ -294,9 +294,9 @@ const langEn: typeof langPl = {
       listGoogleDriveBackups: {
         selectBackup: "Select a backup to restore",
         buttons: {
-          prev: "Wstecz",
-          next: "Dalej",
-          cancel: "Anuluj",
+          prev: "Back",
+          next: "Next",
+          cancel: "Cancel",
         },
         tooltips: {
           restore: "Przywróć kopię zapasową",

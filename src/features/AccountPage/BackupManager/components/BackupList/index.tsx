@@ -9,7 +9,7 @@ import {
   BackupActionsContainer,
   BackupItemsContainer,
 } from "../../styled";
-import { PaginationContainer, PaginationButton, PaginationInfo, ArrowIcon } from "../../../../../common/Pagination";
+import { PaginationContainer, PaginationButton, PaginationInfo, ArrowIcon, PaginationLabel } from "../../../../../common/Pagination";
 import { RemoveButton } from "../../../../../common/taskButtons";
 import { useTranslation } from "react-i18next";
 import { handleRestoreBackupFromGoogleDrive } from "../../handlers/handleRestoreBackupFromGoogleDrive";
@@ -104,7 +104,7 @@ export const BackupList: React.FC<BackupListProps> = ({
               disabled={currentPage === 1 || status.isLoading}
             >
               <ArrowIcon $left>➜</ArrowIcon>
-              {t("listGoogleDriveBackups.buttons.prev")}
+              <PaginationLabel>{t("listGoogleDriveBackups.buttons.prev")}</PaginationLabel>
             </PaginationButton>
             <PaginationInfo>
               {currentPage} / {Math.ceil(backupFiles.length / itemsPerPage)}
@@ -123,7 +123,7 @@ export const BackupList: React.FC<BackupListProps> = ({
                 status.isLoading
               }
             >
-              {t("listGoogleDriveBackups.buttons.next")}
+              <PaginationLabel>{t("listGoogleDriveBackups.buttons.next")}</PaginationLabel>
               <ArrowIcon>➜</ArrowIcon>
             </PaginationButton>
           </PaginationContainer>
@@ -141,7 +141,7 @@ export const BackupList: React.FC<BackupListProps> = ({
           }}
           disabled={status.isLoading}
         >
-          ✖ {t("listGoogleDriveBackups.buttons.cancel")}
+          {t("listGoogleDriveBackups.buttons.cancel")}
         </PaginationButton>
       </BackupActionsContainer>
     </BackupListContainer>

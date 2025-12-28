@@ -76,9 +76,6 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
     setMinPreviewHeight(Math.min(maxListHeight, screenHeight - 250));
   }, [lists, isListsSorting, selectedListId]);
 
-
-
-
   useEffect(() => {
     if (!listsData) return;
     if (isListsSorting) {
@@ -91,7 +88,6 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isListsSorting]);
-
 
   useEffect(() => {
     if (!listToRemove) return;

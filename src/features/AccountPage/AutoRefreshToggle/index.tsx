@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { CheckboxFieldContainer } from "../../../common/CheckboxFieldContainer";
 import {
   getAutoRefreshSettingFromLocalStorage,
   saveAutoRefreshSettingInLocalStorage,
@@ -8,9 +7,10 @@ import { useAppSelector } from "../../../hooks/redux";
 import { selectLoggedUserEmail } from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../common/StyledList";
-import { CheckboxLabel } from "../../../common/CheckboxLabel";
+import { CheckboxContainer } from "../../../common/CheckboxContainer";
 import { StyledCheckbox } from "../../../common/StyledCheckbox";
 import { FieldDescription } from "../../../common/FieldDescription";
+import { CheckboxFieldLabel } from "../../../common/CheckboxFieldLabel";
 
 export const AutoRefreshToggle = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -36,8 +36,8 @@ export const AutoRefreshToggle = () => {
   };
 
   return (
-    <CheckboxFieldContainer>
-      <CheckboxLabel>
+    <CheckboxFieldLabel>
+      <CheckboxContainer>
         <StyledCheckbox
           type="checkbox"
           checked={autoRefreshEnabled}
@@ -48,12 +48,13 @@ export const AutoRefreshToggle = () => {
         <StyledSpan>
           {t("label")}
         </StyledSpan>
-      </CheckboxLabel>
+      </CheckboxContainer>
+
       <FieldDescription $comment>
         {autoRefreshEnabled
           ? t("enabledDescription")
           : t("disabledDescription")}
       </FieldDescription>
-    </CheckboxFieldContainer>
+    </CheckboxFieldLabel>
   );
 };

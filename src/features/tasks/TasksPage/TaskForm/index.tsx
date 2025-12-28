@@ -10,6 +10,7 @@ import {
   selectEditedTask,
   selectTasks,
   selectTaskListMetaData,
+  selectIsTasksSorting,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { InputWrapper } from "../../../../common/InputWrapper";
@@ -27,6 +28,7 @@ export const TaskForm = () => {
   const [taskContent, setTaskContent] = useState("");
   const [previousContent, setPreviousContent] = useState("");
   const firstLoad = useRef(sessionStorage.getItem('inputAutoFocusFirstLoad'));
+  const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const inputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
@@ -120,7 +122,7 @@ export const TaskForm = () => {
 
   return (
     <Form onSubmit={onFormSubmit} $singleInput>
-      <InputWrapper>
+      <InputWrapper disabled={isTasksSorting}>
         {editedTask ? (
           <TextArea
             value={taskContent}
@@ -146,25 +148,29 @@ export const TaskForm = () => {
             ref={inputRef}
           />
         )}
-        {!editedTask && (
-          <InputButton
-            type="button"
-            onClick={() => {
-              if (!isListening && inputRef.current) {
-                inputRef.current.focus();
-                start();
-              } else {
-                stop();
-              }
-            }}
-            disabled={!supportSpeech}
-          >
-            <MicrophoneIcon $isActive={isListening} />
-          </InputButton>
-        )}
+        {
+          // !editedTask && 
+          (
+            <InputButton
+              type="button"
+              onClick={() => {
+                if (!isListening) {
+                  inputRef.current && inputRef.current.focus()
+                  textAreaRef.current && textAreaRef.current.focus();
+                  start();
+                } else {
+                  stop();
+                }
+              }}
+              disabled={!supportSpeech}
+              $editedTask={!!editedTask}
+            >
+              <MicrophoneIcon $isActive={isListening} />
+            </InputButton>
+          )}
       </InputWrapper>
       <FormButtonWrapper>
-        <FormButton type="submit" $singleInput disabled={isActive}>
+        <FormButton type="submit" $singleInput disabled={isActive || isTasksSorting}>
           {!!editedTask
             ? t("form.inputButton.saveChanges")
             : t("form.inputButton.addTask")}
@@ -173,7 +179,7 @@ export const TaskForm = () => {
           <FormButton
             type="button"
             $singleInput
-            disabled={isActive}
+            disabled={isActive || isTasksSorting}
             $cancel
             onClick={() => {
               dispatch(setTaskToEdit(null));

@@ -41,10 +41,10 @@ export const TaskLists = ({
           onClick={() =>
             dispatch(selectArchivedList(isListsSorting ? null : list.id))
           }
-          $type={"tasks"}
+          $type={"lists"}
         >
           <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
-          <StyledListContent $type={"tasks"}>
+          <StyledListContent $type={"lists"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
             <ListMeta>

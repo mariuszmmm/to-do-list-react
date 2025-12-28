@@ -30,6 +30,7 @@ interface TaskState {
   taskListMetaData: TaskListMetaData;
   listNameToEdit?: string | null;
   isTasksSorting: boolean;
+  tasksToSort: Task[] | null;
   tasksToArchive?: { name: string; tasks: Task[] } | null;
   listStatus: {
     manualSaveTriggered: boolean;
@@ -56,6 +57,7 @@ const getInitialState = (): TaskState => ({
   taskListMetaData:
     getListMetadataFromLocalStorage() || getNewTaskListMetaData(),
   isTasksSorting: false,
+  tasksToSort: null,
   listStatus: {
     manualSaveTriggered: false,
     isRemoteSaveable: false,
@@ -365,47 +367,13 @@ const tasksSlice = createSlice({
         state.listStatus.isIdenticalToRemote = isIdenticalToRemote;
       }
     },
-    taskMoveUp: (state, { payload: index }) => {
-      let tasks = [...state.tasks];
-      const selectedTask = tasks[index];
-      const prevTask = tasks[index - 1];
-      const time = new Date().toISOString();
-
-      if (!selectedTask || !prevTask) return;
-
-      state.tasks = tasks.map((task, i) => {
-        if (i === index - 1) {
-          return { ...selectedTask, updatedAt: time };
-        }
-        if (i === index) {
-          return { ...prevTask, updatedAt: time };
-        }
-        return task;
-      });
-      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
-      state.changeSource = "local";
+    setTasksToSort: (
+      state,
+      { payload: sortedTasks }: PayloadAction<Task[] | null>
+    ) => {
+      state.tasksToSort = sortedTasks;
     },
-    taskMoveDown: (state, { payload: index }) => {
-      let tasks = [...state.tasks];
-      const selectedTask = tasks[index];
-      const nextTask = tasks[index + 1];
-      const time = new Date().toISOString();
-
-      if (!selectedTask || !nextTask) return;
-
-      state.tasks = tasks.map((task, i) => {
-        if (i === index) {
-          return { ...nextTask, updatedAt: time };
-        }
-        if (i === index + 1) {
-          return { ...selectedTask, updatedAt: time };
-        }
-        return task;
-      });
-      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
-      state.changeSource = "local";
-    },
-    switchTaskSort: (state) => {
+    switchTasksSort: (state) => {
       state.isTasksSorting = !state.isTasksSorting;
     },
     clearStorage: () => {
@@ -436,9 +404,8 @@ export const {
   setListNameToEdit,
   setListName,
   setListStatus,
-  taskMoveUp,
-  taskMoveDown,
-  switchTaskSort,
+  setTasksToSort,
+  switchTasksSort,
   clearStorage,
   setChangeSource,
 } = tasksSlice.actions;
@@ -472,6 +439,8 @@ export const selectTasksToArchive = (state: RootState) =>
   selectTasksState(state).tasksToArchive;
 export const selectListStatus = (state: RootState) =>
   selectTasksState(state).listStatus;
+export const selectTasksToSort = (state: RootState) =>
+  selectTasksState(state).tasksToSort;
 export const selectIsTasksSorting = (state: RootState) =>
   selectTasksState(state).isTasksSorting;
 export const selectActiveTasksByQuery = createSelector(
