@@ -495,7 +495,6 @@ const langEn: typeof langPl = {
     listLoad: {
       title: "Loading list",
       message: {
-        confirm: "Do you want to add tasks to the current list?",
         info: "The list <strong>{{name}}</strong> has been loaded.",
       },
     },

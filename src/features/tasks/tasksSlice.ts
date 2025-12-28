@@ -187,7 +187,10 @@ const tasksSlice = createSlice({
         payload: tasksToArchive,
       }: PayloadAction<{ name: string; tasks: Task[] } | null>
     ) => {
-      state.tasksToArchive = tasksToArchive;
+      const tasks = tasksToArchive?.tasks.filter((task) => !task.deleted) || [];
+      state.tasksToArchive = tasksToArchive
+        ? { name: tasksToArchive.name, tasks }
+        : null;
     },
     clearTaskList: (
       state,

@@ -3,11 +3,13 @@
   "tasks": [
     {
       "content": "Mark task as done",
+      "date": "2024-06-01T10:00:00.000Z",
       "done": false,
       "id": "roXt0YGHyOJj3EP9TfrMY"
     },
     {
       "content": "Finish all tasks",
+      "date": "2024-06-01T10:00:00.000Z",
       "done": false,
       "id": "QyXJv9ZId2xUVaDy6vuIy"
     }

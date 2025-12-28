@@ -26,6 +26,7 @@ import {
   toggleTaskDone,
   undoTasks,
   clearTaskList,
+  selectListStatus,
 } from "./tasksSlice";
 import {
   selectListToLoad,
@@ -85,36 +86,27 @@ function* setListToLoadHandler(
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
+  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
+    yield select(selectListStatus);
 
   let listName = listToLoadData.name;
-  let updatedAt = listToLoadData.date;
-  let tasksToLoad: Task[] = [...listToLoadData.taskList];
+  let updatedAt: string;
+  let tasksToLoad: Task[];
 
   if (isArchived) {
-    yield put(
-      openModal({
-        title: { key: "modal.listLoad.title" },
-        message: { key: "modal.listLoad.message.confirm" },
-        type: "yes/no",
-      })
-    );
-
-    const { confirmed } = yield race({
-      confirmed: take(confirm),
-      cancelled: take(cancel),
-    });
-
-    if (confirmed) {
-      listName = taskListMetaData.name;
-      tasksToLoad.unshift(...tasks);
-    } else {
-      updatedAt = new Date().toISOString();
-      tasksToLoad = [
-        ...tasks.map((task) => ({ ...task, deleted: true })),
-        ...listToLoadData.taskList,
-      ];
-    }
+    updatedAt = new Date().toISOString();
+    tasksToLoad = isRemoteSaveable
+      ? [
+          ...tasks.map((task) => ({ ...task, deleted: true })),
+          ...listToLoadData.taskList,
+        ]
+      : [...listToLoadData.taskList];
+  } else {
+    updatedAt = listToLoadData.date;
+    tasksToLoad = [...listToLoadData.taskList];
   }
+
+  yield archiveTasksHandler();
 
   yield put(
     setTasks({
@@ -162,8 +154,6 @@ function* archiveTasksHandler() {
   const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
     yield select(selectTaskListMetaData);
 
-  if (!tasksToArchive) return;
-
   yield put(
     openModal({
       title: { key: "modal.archiveTasks.title" },
@@ -178,10 +168,17 @@ function* archiveTasksHandler() {
   });
   if (confirmed) {
     yield put(
-      addArchivedList({
-        name: tasksToArchive.name,
-        tasks: tasksToArchive.tasks,
-      })
+      addArchivedList(
+        tasksToArchive
+          ? {
+              name: tasksToArchive.name,
+              tasks: tasksToArchive.tasks,
+            }
+          : {
+              name: taskListMetaData.name,
+              tasks: tasks.filter((task) => !task.deleted),
+            }
+      )
     );
   }
   yield put(clearTaskList({ tasks, taskListMetaData }));

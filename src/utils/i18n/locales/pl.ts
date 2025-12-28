@@ -501,7 +501,6 @@ const langPl = {
     listLoad: {
       title: "Ładowanie listy",
       message: {
-        confirm: "Czy checesz dodać zadania do bieżącej listy?",
         info: "Lista <strong>{{name}}</strong> została załadowana.",
       },
     },
