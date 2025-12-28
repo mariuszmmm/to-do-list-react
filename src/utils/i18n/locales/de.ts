@@ -505,7 +505,6 @@ const langDe: typeof langPl = {
     listLoad: {
       title: "Liste laden",
       message: {
-        confirm: "Möchtest du die Aufgaben zur aktuellen Liste hinzufügen?",
         info: "Die Liste <strong>{{name}}</strong> wurde geladen.",
       },
     },

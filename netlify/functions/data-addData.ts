@@ -118,7 +118,7 @@ const handler: Handler = async (event, context) => {
           },
         });
       }
-      logError(`${logPrefix} Database save error`, dbError, logPrefix);
+      logError(`Database save error`, dbError, logPrefix);
       return jsonResponse(500, {
         message: "Database error during save",
       });
