@@ -1,5 +1,4 @@
 import { auth } from "../api/auth";
-import { saveAutoRefreshSettingInLocalStorage } from "./localStorage";
 
 export const refreshUserToken = async () => {
   const user = auth.currentUser();
@@ -23,7 +22,6 @@ export const refreshUserToken = async () => {
           "[refreshUserToken] Wylogowywanie użytkownika z powodu błędu 401"
         );
       await user?.logout();
-      saveAutoRefreshSettingInLocalStorage(false);
       window.location.reload();
     }
     return null;

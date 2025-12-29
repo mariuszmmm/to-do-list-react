@@ -11,6 +11,8 @@ import {
   setListName,
   selectTasks,
   selectListStatus,
+  selectIsTasksSorting,
+  selectEditedTask,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
@@ -25,6 +27,8 @@ export const EditableListName = () => {
   });
   const [newName, setNewName] = useState(name || t("tasks.defaultListName"));
   const listNameToEdit = useAppSelector(selectListNameToEdit);
+  const isTasksSorting = useAppSelector(selectIsTasksSorting);
+  const editedTask = useAppSelector(selectEditedTask);
   const inpurRef = useRef<HTMLInputElement>(null);
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
@@ -92,7 +96,7 @@ export const EditableListName = () => {
           ref={inpurRef}
         />
       )}
-      <Button $special>
+      <Button $special disabled={isTasksSorting || !!editedTask} type="submit">
         {!listNameToEdit
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}

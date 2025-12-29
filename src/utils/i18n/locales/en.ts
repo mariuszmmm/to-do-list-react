@@ -24,7 +24,7 @@ const langEn: typeof langPl = {
       },
       buttons: {
         fetchExampleTasks: "Fetch example tasks",
-        loadFromArchive: "Load from archive",
+        loadFromArchive: "Restore from archive",
         loading: "Loading...",
         error: "Error loading data",
       },

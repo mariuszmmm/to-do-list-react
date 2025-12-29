@@ -75,7 +75,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
     css`
       &:hover {
         background-color: ${({ theme }) => theme.color.gallery};
-        cursor: grab;
+        &,
+        & * {
+          cursor: grab;
+        }
         opacity: 0.8;
       }
     `}

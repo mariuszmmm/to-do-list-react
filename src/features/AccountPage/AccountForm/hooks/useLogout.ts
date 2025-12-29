@@ -3,7 +3,6 @@ import { auth } from "../../../../api/auth";
 import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setLoggedUser } from "../../accountSlice";
-import { saveAutoRefreshSettingInLocalStorage } from "../../../../utils/localStorage";
 
 export const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +26,6 @@ export const useLogout = () => {
       process.env.NODE_ENV === "development" &&
         process.env.NODE_ENV === "development" &&
         console.log("Logout successful");
-      saveAutoRefreshSettingInLocalStorage(false);
       dispatch(setLoggedUser(null));
       dispatch(
         openModal({

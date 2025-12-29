@@ -1,5 +1,6 @@
 import {
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   DndContext,
   DragEndEvent,
   useSensor,
@@ -26,7 +27,13 @@ export const useDndList = <T>({
   onReorder,
 }: UseDndListParams<T>) => {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 8,
+      },
+    })
   );
 
   const sortableIds = useMemo(() => items.map(getId), [items, getId]);

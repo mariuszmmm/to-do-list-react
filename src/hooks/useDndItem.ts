@@ -30,6 +30,7 @@ export const useDndItem = (id: string, isSorting: boolean) => {
     transition: mergedTransition,
     cursor: isSorting ? "grab" : "default",
     opacity: isDragging ? 0.85 : 1,
+    backgroundColor: isDragging ? "#dcdcdcff" : undefined,
   };
 
   const dragProps: DragProps = { setNodeRef, attributes, listeners, style };

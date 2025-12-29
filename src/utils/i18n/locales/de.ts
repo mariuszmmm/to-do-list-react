@@ -24,7 +24,7 @@ const langDe: typeof langPl = {
       },
       buttons: {
         fetchExampleTasks: "Beispielaufgaben abrufen",
-        loadFromArchive: "Aus dem Archiv laden",
+        loadFromArchive: "Aus Archiv wiederherstellen",
         loading: "Laden...",
         error: "Fehler beim Laden der Daten",
       },
