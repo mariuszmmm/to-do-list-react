@@ -18,7 +18,6 @@ import {
   setListToSort,
   selectIsListsSorting,
   selectList,
-  switchListSort,
 } from "./remoteListsSlice";
 import {
   closeModal,
