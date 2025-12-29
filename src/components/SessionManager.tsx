@@ -6,7 +6,6 @@ import {
   setAccountMode,
   setLoggedUser,
 } from "../features/AccountPage/accountSlice";
-import { saveAutoRefreshSettingInLocalStorage } from "../utils/localStorage";
 
 export type SessionManagerProps = {
   authRoutes: string[];
@@ -40,7 +39,6 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
   useEffect(() => {
     const handleStorageEvent = (event: StorageEvent) => {
       if (event.key === "gotrue.user") {
-        saveAutoRefreshSettingInLocalStorage(false);
         window.location.reload();
       }
     };

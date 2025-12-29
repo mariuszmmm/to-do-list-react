@@ -27,7 +27,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
 import { useDndList } from "../../../../hooks/useDndList";
 import { useDndItem } from "../../../../hooks/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
   StyledList,
   StyledListContent,
@@ -36,6 +36,8 @@ import {
   TaskNumber,
 } from "../../../../common/StyledList";
 import { moveListDown, moveListUp } from "../../../../utils/moveList";
+import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
+import { Task } from "../../../../types";
 
 export const TasksList = () => {
   const query = useQueryParameter(searchQueryParamName);
@@ -49,13 +51,6 @@ export const TasksList = () => {
   const tasksLst = tasksToSort || filteredTasks || tasks;
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
-
-  // DnD list wrapper initialized below when needed
-
-  useEffect(() => {
-    if (!editedTaskContent) return;
-    window.scrollTo(0, 0);
-  }, [editedTaskContent]);
 
   useEffect(() => {
     if (!tasks) return;
@@ -73,76 +68,52 @@ export const TasksList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTasksSorting]);
 
-  const dnd = useDndList({
+  const { withDnd } = useDndList({
     items: tasksLst,
-    isSorting: !!isTasksSorting && !!tasksToSort,
-    getId: (t: any) => t.id,
-    onReorder: (next: any[]) => dispatch(setTasksToSort(next)),
+    isSorting: isTasksSorting && !!tasksToSort,
+    getId: (t) => t.id,
+    onReorder: (next) => dispatch(setTasksToSort(next)),
   });
 
-
-  const SortableTaskRow = ({ task, index }: { task: any; index: number }) => {
+  const SortableTaskRow = ({ task, index }: { task: Task; index: number }) => {
     const { dragProps } = useDndItem(task.id, true);
-    const rowRef = useRef<HTMLLIElement | null>(null);
-    const setRefs = (el: HTMLLIElement | null) => {
-      rowRef.current = el;
+    const { setRefs, animateMove, isAnimating } = useSortableRowAnimation({
+      index,
+      list: tasksToSort,
+      setList: (next: Task[]) => dispatch(setTasksToSort(next)),
+      moveUp: moveListUp,
+      moveDown: moveListDown,
+    });
+    const combinedRef = (el: HTMLLIElement | null) => {
+      setRefs(el);
       dragProps.setNodeRef(el as unknown as HTMLElement | null);
     };
 
-    const keepAnchored = (doMove: () => void, direction: "up" | "down") => {
-      const scrollEl = document.scrollingElement || document.documentElement || (document.body as HTMLElement);
-      const beforeScrollTop = scrollEl.scrollTop;
-      const getFullHeight = (el: HTMLElement | null): number => {
-        if (!el) return 0;
-        const rect = el.getBoundingClientRect();
-        const styles = getComputedStyle(el);
-        const mt = parseFloat(styles.marginTop) || 0;
-        const mb = parseFloat(styles.marginBottom) || 0;
-        return rect.height + mt + mb;
-      };
-      const neighbor = direction === "down"
-        ? (rowRef.current?.nextElementSibling as HTMLElement | null)
-        : (rowRef.current?.previousElementSibling as HTMLElement | null);
-      const amountAbs = getFullHeight(neighbor) || getFullHeight(rowRef.current);
-      doMove();
-      // Apply after React commit + layout
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const amount = direction === "down" ? amountAbs : -amountAbs;
-          if (amount !== 0) {
-            scrollEl.scrollTop = beforeScrollTop + amount;
-          }
-        });
-      });
-    };
     return (
       <StyledListItem
         key={task.id}
-        hidden={task.done && hideDone}
         $edit={editedTaskContent?.id === task.id}
         $type={"sort"}
-        ref={setRefs}
+        ref={combinedRef}
         style={dragProps.style}
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
         <SortButton
-          onClick={() => keepAnchored(() => dispatch(setTasksToSort(moveListUp(index, tasksToSort!))), "up")}
-          disabled={index === 0}
+          onClick={() => animateMove("up")}
+          disabled={index === 0 || isAnimating}
         >
           <ArrowUpIcon />
         </SortButton>
         <StyledListContent $type={"sort"}>
-          {!query ? <TaskNumber>{`${index + 1}. `}</TaskNumber> : ""}
-          <StyledSpan $done={task.done}>
-            <StyledLink to={`/tasks/${task.id}`} disabled={!!editedTaskContent}>
-              {task.content}
-            </StyledLink>
+          <TaskNumber>{`${index + 1}. `}</TaskNumber>
+          <StyledSpan $done={task.done} $noLink>
+            {task.content}
           </StyledSpan>
         </StyledListContent>
         <SortButton
-          onClick={() => keepAnchored(() => dispatch(setTasksToSort(moveListDown(index, tasksToSort!))), "down")}
-          disabled={index === tasksLst.length - 1}
+          onClick={() => animateMove("down")}
+          disabled={index === tasksLst.length - 1 || isAnimating}
         >
           <ArrowDownIcon />
         </SortButton>
@@ -151,9 +122,9 @@ export const TasksList = () => {
   };
 
   if (isTasksSorting && tasksToSort) {
-    return dnd.withDnd(
+    return withDnd(
       <StyledList>
-        {tasksLst.map((task: any, index: number) => (
+        {tasksLst.map((task, index) => (
           <SortableTaskRow key={task.id} task={task} index={index} />
         ))}
       </StyledList>

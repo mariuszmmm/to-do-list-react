@@ -23,7 +23,6 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
   word-break: break-word;
   border-bottom: ${({ $bodyHidden, theme }) =>
     $bodyHidden ? "none" : `1px solid ${theme.color.alto}`};
-  cursor: pointer;
   user-select: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {

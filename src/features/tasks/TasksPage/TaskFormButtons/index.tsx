@@ -13,6 +13,7 @@ import {
 } from "../../../../utils/i18n/languageResources";
 import {
   selectAreTasksEmpty,
+  selectEditedTask,
   selectIsTasksSorting,
   selectTaskListMetaData,
   selectTasks,
@@ -28,6 +29,7 @@ export const TaskFormButtons = () => {
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
+  const editedTask = useAppSelector(selectEditedTask);
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
@@ -71,7 +73,7 @@ export const TaskFormButtons = () => {
     <ButtonsContainer>
       <Button
         onClick={setExampleTasks}
-        disabled={isFetching || isError || !areTasksEmpty || isTasksSorting}
+        disabled={isFetching || isError || !areTasksEmpty || !!editedTask || isTasksSorting}
         $error={isError}
         width={getWidthForFetchExampleTasksButton(i18n.language)}
       >
@@ -82,7 +84,9 @@ export const TaskFormButtons = () => {
             : t("form.buttons.error")}
       </Button>
       <StyledLink to={`/archived-lists`}>
-        <Button disabled={isArchivedTaskListEmpty || isTasksSorting}>Pobierz z archiwum</Button>
+        <Button disabled={isArchivedTaskListEmpty || !!editedTask || isTasksSorting}>
+          {t("form.buttons.loadFromArchive")}
+        </Button>
       </StyledLink>
     </ButtonsContainer>
   );

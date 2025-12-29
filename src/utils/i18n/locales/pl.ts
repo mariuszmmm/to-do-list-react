@@ -22,7 +22,7 @@ const langPl = {
       },
       buttons: {
         fetchExampleTasks: "Pobierz przykładowe zadania",
-        loadFromArchive: "Wczytaj z archiwum",
+        loadFromArchive: "Pobierz z archiwum",
         loading: "Ładowanie...",
         error: "Błąd ładowania danych",
       },
