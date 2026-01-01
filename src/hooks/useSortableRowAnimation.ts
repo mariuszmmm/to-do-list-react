@@ -6,6 +6,10 @@ import {
   animateScroll,
 } from "../common/listAnimation/listMoveAnimation";
 
+/**
+ * Hook for animating sortable list rows with smooth transitions.
+ * Provides refs and animation logic for moving rows up or down.
+ */
 export function useSortableRowAnimation<T = any>({
   index,
   list,
@@ -22,10 +26,14 @@ export function useSortableRowAnimation<T = any>({
   const [isAnimating, setIsAnimating] = useState(false);
   const rowRef = useRef<HTMLLIElement | null>(null);
 
+  // Ref callback for the row element
   const setRefs: RefCallback<HTMLLIElement> = useCallback((el) => {
     rowRef.current = el;
   }, []);
 
+  /**
+   * Animate moving the row up or down with FLIP animation and scroll adjustment.
+   */
   const animateMove = useCallback(
     (direction: "up" | "down") => {
       if (isAnimating || !list) return;

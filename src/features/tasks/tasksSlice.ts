@@ -15,6 +15,7 @@ import {
   Task,
   TaskListData,
   ChangeSource,
+  EditedTask,
 } from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
@@ -22,7 +23,7 @@ import i18n from "../../utils/i18n";
 
 interface TaskState {
   tasks: Task[];
-  editedTask?: { id: string; content: string } | null;
+  editedTask?: EditedTask;
   hideDone: boolean;
   showSearch: boolean;
   undoTasksStack: TaskListData[];

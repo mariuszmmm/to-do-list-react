@@ -14,6 +14,10 @@ interface DataFetchingErrorParams {
   refetch?: () => Promise<QueryObserverResult>;
 }
 
+/**
+ * Hook for handling data fetching errors and displaying error modal with retry logic.
+ * Opens an error modal on fetch error and retries fetching after a delay.
+ */
 export const useDataFetchingError = ({
   isError,
   isData,
@@ -27,6 +31,7 @@ export const useDataFetchingError = ({
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
     if (isError) {
+      // Show error modal and start retry countdown if not already open
       if (!isModalOpen && openModalDelay <= 0) {
         dispatch(
           openModal({
@@ -38,6 +43,7 @@ export const useDataFetchingError = ({
         setOpenModalDelay(10);
       }
       console.log("openModalDelay:", openModalDelay);
+      // Retry fetching data after 20 seconds if refetch is provided
       if (refetch) {
         timer = setTimeout(() => {
           refetch();
@@ -47,6 +53,7 @@ export const useDataFetchingError = ({
         }, 20 * 1000);
       }
     } else if (modalType === "error" && isData) {
+      // Close error modal if data is available again
       dispatch(closeModal());
       setOpenModalDelay(0);
     }

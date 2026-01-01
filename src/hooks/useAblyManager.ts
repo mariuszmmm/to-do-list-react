@@ -30,8 +30,8 @@ const subscriptionsRef = {
 };
 
 /**
- * Centralny hook do zarządzania wszystkimi subskrypcjami Ably
- * Zagwarantuje, że logika Ably jest w jednym miejscu
+ * Central hook for managing all Ably subscriptions and channels.
+ * Handles real-time updates, presence, and confirmation logic for collaborative features.
  */
 export const useAblyManager = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -93,23 +93,23 @@ export const useAblyManager = () => {
     const ably = getAblyInstance();
     const currentDeviceId = getOrCreateDeviceId();
 
-    // Initialize data channel
+    // Initialize data channel for user lists
     const dataChannel = ably.channels.get(`user:${loggedUserEmail}:lists`);
     channelsRef.current.set("data", dataChannel);
 
-    // Initialize confirmation channel
+    // Initialize confirmation channel for user confirmations
     const confirmationChannel = ably.channels.get(
       `user:${loggedUserEmail}:confirmation`
     );
     channelsRef.current.set("confirmation", confirmationChannel);
 
-    // Initialize presence channels
+    // Initialize presence channels for user and admin
     const presenceSelfChannel = ably.channels.get(
       `user:${loggedUserEmail}:presence`
     );
     const presenceAdminChannel = ably.channels.get("global:presence-admins");
 
-    // For counts: admin uses global, user uses own
+    // Admin uses global presence, user uses own presence channel for counts
     const presenceCountChannel = isAdmin
       ? presenceAdminChannel
       : presenceSelfChannel;
@@ -201,13 +201,13 @@ export const useAblyManager = () => {
       await updatePresenceCount();
 
       try {
-        // Always enter own channel
+        // Always enter own presence channel
         await presenceSelfChannel.presence.enter({
           email: loggedUserEmail,
           deviceId: currentDeviceId,
           status: "available",
         });
-        // Publish also to admin-global so admin widzi wszystkich
+        // Also enter global admin channel so admin can see all users
         await presenceAdminChannel.presence.enter({
           email: loggedUserEmail,
           deviceId: currentDeviceId,

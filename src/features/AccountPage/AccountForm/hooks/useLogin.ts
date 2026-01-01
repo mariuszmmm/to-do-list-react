@@ -6,11 +6,16 @@ import { setAccountMode, setLoggedUser } from "../../accountSlice";
 import { translateText } from "../../../../utils/translateText";
 import i18n from "../../../../utils/i18n";
 
+/**
+ * Hook for logging in a user using a mutation with react-query.
+ * Handles API call, modal feedback, and state updates on success or error.
+ */
 export const useLogin = () => {
   const dispatch = useAppDispatch();
   return useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       auth.login(email, password, true),
+    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -20,6 +25,7 @@ export const useLogin = () => {
         })
       );
     },
+    // On success, show success modal, update state, and set logged user
     onSuccess: (response) => {
       process.env.NODE_ENV === "development" &&
         process.env.NODE_ENV === "development" &&
@@ -45,6 +51,7 @@ export const useLogin = () => {
           })
         );
     },
+    // On error, translate error message and show error modal
     onError: async (error: any) => {
       const msg = error.json?.error_description || error.json;
       const translatedText = await translateText(msg, i18n.language);

@@ -6,11 +6,16 @@ import { setAccountMode } from "../../accountSlice";
 import i18n from "../../../../utils/i18n";
 import { translateText } from "../../../../utils/translateText";
 
+/**
+ * Hook for requesting account password recovery using a mutation with react-query.
+ * Handles API call, modal feedback, and state updates on success or error.
+ */
 export const useAccountRecovery = () => {
   const dispatch = useAppDispatch();
   return useMutation({
     mutationFn: ({ email }: { email: string }) =>
       auth.requestPasswordRecovery(email),
+    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -20,6 +25,7 @@ export const useAccountRecovery = () => {
         })
       );
     },
+    // On success, show info modal and switch to login mode
     onSuccess: () => {
       dispatch(
         openModal({
@@ -31,6 +37,7 @@ export const useAccountRecovery = () => {
 
       dispatch(setAccountMode("login"));
     },
+    // On error, translate error message and show error modal
     onError: async (error: any) => {
       const msg = error.json.msg;
       const translatedText = await translateText(msg, i18n.language);

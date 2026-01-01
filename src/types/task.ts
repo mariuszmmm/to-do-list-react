@@ -9,4 +9,6 @@ export type Task = {
   deleted?: boolean;
 };
 
+export type EditedTask = { id: string; content: string } | null;
+
 export type ChangeSource = "local" | "remote" | null;

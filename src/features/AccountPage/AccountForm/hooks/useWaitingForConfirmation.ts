@@ -18,6 +18,10 @@ interface WaitingForConfirmationProps {
   message?: AccountState["message"];
 }
 
+/**
+ * Hook for handling waiting for account confirmation via Ably channel.
+ * Subscribes to confirmation events, logs in user on confirmation, and manages cleanup.
+ */
 export const useWaitingForConfirmation = ({
   email,
   password,
@@ -27,6 +31,7 @@ export const useWaitingForConfirmation = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const channelRef = useRef<any | null>(null);
 
+  // Start waiting for confirmation event via Ably and handle login on confirmation
   const waitingForConfirmation = () => {
     if (!email || !password) return;
 
@@ -59,6 +64,7 @@ export const useWaitingForConfirmation = ({
       const channel = ably.channels.get(`user:${email}:confirmation`);
       channelRef.current = channel;
 
+      // Handle confirmation event: login user and update state
       const handleConfirmation = async (message: any) => {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
@@ -105,6 +111,7 @@ export const useWaitingForConfirmation = ({
 
       channel.subscribe("user-confirmed", handleConfirmation);
 
+      // Set timeout for confirmation waiting (10 minutes)
       timeoutRef.current = setTimeout(async () => {
         if (channelRef.current) {
           channelRef.current.unsubscribe("user-confirmed", handleConfirmation);
@@ -119,6 +126,7 @@ export const useWaitingForConfirmation = ({
       dispatch(setIsWaitingForConfirmation(false));
     }
 
+    // Cleanup function to clear timeout and detach channel
     return async () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);

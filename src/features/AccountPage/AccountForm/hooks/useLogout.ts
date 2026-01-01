@@ -4,6 +4,10 @@ import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setLoggedUser } from "../../accountSlice";
 
+/**
+ * Hook for logging out a user using a mutation with react-query.
+ * Handles API call, modal feedback, and state updates on success or error.
+ */
 export const useLogout = () => {
   const dispatch = useAppDispatch();
   return useMutation({
@@ -13,6 +17,7 @@ export const useLogout = () => {
 
       return await user.logout();
     },
+    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -22,6 +27,7 @@ export const useLogout = () => {
         })
       );
     },
+    // On success, clear user state and show success modal
     onSuccess: () => {
       process.env.NODE_ENV === "development" &&
         process.env.NODE_ENV === "development" &&
@@ -35,6 +41,7 @@ export const useLogout = () => {
         })
       );
     },
+    // On error, show error modal
     onError: async () => {
       dispatch(
         openModal({

@@ -37,9 +37,9 @@ const ArchivedListsPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    !selectedListId && dispatch(selectArchivedList(archivedLists[0].id));
+    !selectedListId && archivedLists.length > 0 && dispatch(selectArchivedList(archivedLists[0].id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedListId]);
 
   useEffect(() => {
     let maxListHeight = 0;

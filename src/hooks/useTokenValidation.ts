@@ -11,6 +11,10 @@ import { auth } from "../api/auth";
 import { getTokenExpiresIn } from "../utils/tokenUtils";
 import { getAutoRefreshSettingFromLocalStorage } from "../utils/localStorage";
 
+/**
+ * Hook for validating and refreshing user authentication token.
+ * Handles auto-refresh or logout when token expires, and updates UI state.
+ */
 export const useTokenValidation = () => {
   const dispatch = useAppDispatch();
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -35,13 +39,14 @@ export const useTokenValidation = () => {
       hasReceivedValidTokenRef.current = true;
     }
 
+    // If token expired and user had a valid token before
     if (hasReceivedValidTokenRef.current && tokenRemainingMs <= 0) {
       const autoRefreshEnabled = getAutoRefreshSettingFromLocalStorage();
 
       if (autoRefreshEnabled) {
         if (process.env.NODE_ENV === "development") {
           console.log(
-            "[useTokenValidation] Access token wygasł lokalnie - próbuję odświeżyć token (auto-refresh włączony)"
+            "[useTokenValidation] Access token expired locally - trying to refresh token (auto-refresh enabled)"
           );
         }
 
@@ -51,7 +56,7 @@ export const useTokenValidation = () => {
             .jwt()
             .catch((error) => {
               console.error(
-                "[useTokenValidation] Błąd przy automatycznym odświeżeniu tokena:",
+                "[useTokenValidation] Error during automatic token refresh:",
                 error
               );
             })
@@ -62,7 +67,7 @@ export const useTokenValidation = () => {
       } else {
         if (process.env.NODE_ENV === "development") {
           console.log(
-            "[useTokenValidation] Access token wygasł lokalnie - wylogowuję (auto-refresh wyłączony)"
+            "[useTokenValidation] Access token expired locally - logging out (auto-refresh disabled)"
           );
         }
 
@@ -71,10 +76,7 @@ export const useTokenValidation = () => {
           user
             .logout()
             .catch((error) => {
-              console.error(
-                "[useTokenValidation] Błąd przy wylogowaniu:",
-                error
-              );
+              console.error("[useTokenValidation] Error during logout:", error);
             })
             .finally(() => {
               dispatch(setLoggedUser(null));
