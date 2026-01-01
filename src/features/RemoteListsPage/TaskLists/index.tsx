@@ -132,11 +132,10 @@ export const TaskLists = ({
       {lists?.map((list, index) => (
         <StyledListItem
           selected={selectedListId === list.id && !isListsSorting}
+          onClick={() => dispatch(selectList(list.id))}
           $type={"lists"}
         >
-          <ToggleButton
-            onClick={() => dispatch(selectList(list.id))}
-          >{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          <ToggleButton >{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           <StyledListContent $type={"lists"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
@@ -160,10 +159,7 @@ export const TaskLists = ({
             </ListMeta>
           </StyledListContent>
           <RemoveButton
-            onClick={(event) => {
-              event.stopPropagation();
-              dispatch(setListToRemove(list))
-            }}
+            onClick={() => dispatch(setListToRemove(list))}
             disabled={modalIsOpen}
           >
             🗑️

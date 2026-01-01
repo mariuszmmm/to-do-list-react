@@ -3,6 +3,10 @@ import { StatusState } from "..";
 import { useEffect, useState } from "react";
 import { exchangeGoogleOAuthCodeApi } from "../../../../api/googleOAuthApi";
 
+/**
+ * Hook for handling Google OAuth authentication and token exchange.
+ * Manages access token, UI state, and error/success feedback.
+ */
 export function useGoogleOAuth({
   setStatus,
   t,
@@ -14,6 +18,7 @@ export function useGoogleOAuth({
     () => sessionStorage.getItem("google_drive_access_token")
   );
   const [showGoogleAuth, setShowGoogleAuth] = useState(!googleAccessToken);
+  // Effect to handle OAuth code exchange and update state
   useEffect(() => {
     const code = sessionStorage.getItem("google_oauth_code");
     if (code) {

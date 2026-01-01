@@ -62,7 +62,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
     !selectedListId && lists.length > 0 && dispatch(selectList(lists[0].id));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedListId]);
 
   useEffect(() => {
     let maxListHeight = 0;

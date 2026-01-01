@@ -5,6 +5,10 @@ import { openModal } from "../Modal/modalSlice";
 import { List } from "../types";
 import { getUserToken } from "../utils/getUserToken";
 
+/**
+ * Hook for updating/sorting lists using a mutation with react-query.
+ * Handles API call, modal feedback, and cache update on success or error.
+ */
 export const useUpdateListsMutation = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -22,8 +26,10 @@ export const useUpdateListsMutation = () => {
         console.error("No token found");
         throw new Error("User token is null");
       }
+      // Call API to update/sort the lists for the user
       return updateDataApi(token, listsToSort, deviceId);
     },
+    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -33,6 +39,7 @@ export const useUpdateListsMutation = () => {
         })
       );
     },
+    // On success, update cache and show success or conflict modal
     onSuccess: async (response) => {
       queryClient.setQueryData(["listsData"], response.data);
       if (response.data.conflict) {
@@ -53,6 +60,7 @@ export const useUpdateListsMutation = () => {
         );
       }
     },
+    // On error, show error modal
     onError: () => {
       dispatch(
         openModal({

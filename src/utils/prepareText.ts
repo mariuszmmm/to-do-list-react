@@ -13,12 +13,12 @@ export const prepareText = (text: string): string => {
   return preparedText;
 };
 
-const trimText = (text: string) => text.trim();
-const removeDoubleSpaces = (text: string) => text.replace(/\s{2,}/g, " ");
+const trimText = (text: string) => text.replace(/^[ \t]+|[ \t]+$/g, "");
+const removeDoubleSpaces = (text: string) => text.replace(/ {2,}/g, " ");
 
 const replaceWordPeriod = (text: string) => {
   if (!text.includes(` ${t("prepareText.period")}`)) return text;
-  return text.replaceAll(` ${t("prepareText.period")}`, ".");
+  return text.replaceAll(` ${t("prepareText.period")}`, ". \n");
 };
 
 const replaceWordComma = (text: string) => {

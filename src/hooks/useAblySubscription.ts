@@ -19,8 +19,8 @@ export interface UseAblySyncParams {
 }
 
 /**
- * Hook do obsługi presence updates i lists sync
- * Używa centralnego AblyManager do wszystkich operacji
+ * Hook for subscribing to Ably presence and list updates for collaborative features.
+ * Integrates with AblyManager and updates local state on real-time events.
  */
 export const useAblySubscription = ({
   userEmail,
@@ -34,7 +34,7 @@ export const useAblySubscription = ({
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
-  // Subscribe do presence updates
+  // Subscribe to presence updates
   useEffect(() => {
     if (!enabled || !userEmail || !onPresenceUpdate) {
       return;
@@ -49,7 +49,7 @@ export const useAblySubscription = ({
     };
   }, [enabled, userEmail, onPresenceUpdate, subscribePresence]);
 
-  // Subscribe do lists updates
+  // Subscribe to list updates
   useEffect(() => {
     if (!enabled || !userEmail) {
       return;

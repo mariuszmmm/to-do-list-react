@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAppSelector } from "../../../hooks/redux";
-import { TaskFormButtons } from "./TaskFormButtons";
+import { AddTasksButtons } from "./AddTasksButtons";
 import { Search } from "./Search";
 import { TasksList } from "./TasksList";
 import { TasksButtons } from "./TasksButtons";
@@ -30,6 +30,11 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (!editedTaskContent) return;
+    window.scrollTo(0, 0);
+  }, [editedTaskContent]);
+
   return (
     <>
       <Header title={t("title")} />
@@ -39,7 +44,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
             ? t("form.title.addTask")
             : t("form.title.editTask")
         }
-        extraHeaderContent={<TaskFormButtons />}
+        extraHeaderContent={<AddTasksButtons />}
         body={<TaskForm />}
       />
       <Section

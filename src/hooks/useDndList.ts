@@ -20,12 +20,17 @@ type UseDndListParams<T> = {
   onReorder: (nextItems: T[]) => void;
 };
 
+/**
+ * Hook for enabling drag-and-drop sorting of a list using dnd-kit.
+ * Provides sensors, sortable ids, drag end handler, and a wrapper for DndContext.
+ */
 export const useDndList = <T>({
   items,
   isSorting,
   getId,
   onReorder,
 }: UseDndListParams<T>) => {
+  // Set up mouse and touch sensors for drag-and-drop
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
     useSensor(TouchSensor, {
@@ -36,8 +41,10 @@ export const useDndList = <T>({
     })
   );
 
+  // Memoized array of sortable item ids
   const sortableIds = useMemo(() => items.map(getId), [items, getId]);
 
+  // Handle the end of a drag event and reorder items if needed
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!isSorting || !over) return;
     const oldIndex = items.findIndex((it) => getId(it) === active.id);
@@ -46,6 +53,9 @@ export const useDndList = <T>({
     onReorder(arrayMove(items, oldIndex, newIndex));
   };
 
+  /**
+   * Wrap children with DndContext and SortableContext for drag-and-drop support.
+   */
   const withDnd = (children: ReactNode) =>
     React.createElement(
       DndContext,

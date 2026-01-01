@@ -23,7 +23,7 @@ import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archive
 import { Task } from "../../../../types";
 import { nanoid } from "nanoid";
 
-export const TaskFormButtons = () => {
+export const AddTasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);

@@ -50,6 +50,10 @@ const areTasksAndMetaDataEqual = (
   return metaDataMatch && tasksMatch;
 };
 
+/**
+ * Hook for synchronizing local and remote task lists, handling save logic, and conflict resolution.
+ * Manages state updates, debounced saves, and Redux integration for collaborative editing.
+ */
 export const useListSyncManager = ({
   listsData,
   saveListMutation,
@@ -67,7 +71,7 @@ export const useListSyncManager = ({
     (payload: { list: List; deviceId: string }) => void
   > | null>(null);
 
-  // Sprawdź status listy przy zmianie danych zdalnych lub lokalnych
+  // Check list status when remote or local data changes
   useEffect(() => {
     if (!listsData) {
       dispatch(
@@ -112,7 +116,7 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData, taskListMetaData, tasks]);
 
-  // Aktualizuj lokalną listę, gdy zmienią się dane zdalne
+  // Update local list when remote data changes
   useEffect(() => {
     if (!listsData || !listStatus.isRemoteSaveable) return;
 
@@ -178,7 +182,7 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData]);
 
-  // Zainicjuj funkcję debounced do zapisu
+  // Initialize debounced save function
   useEffect(() => {
     debouncedMutateRef.current = debounce(
       (payload: { list: List; deviceId: string }) => {
@@ -193,13 +197,13 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Aktualizuj referencje do najnowszych zadań i metadanych
+  // Update refs to latest tasks and metadata
   useEffect(() => {
     pendingTasksRef.current = tasks;
     pendingMetaRef.current = taskListMetaData;
   }, [tasks, taskListMetaData]);
 
-  // Wywołaj zapis, gdy są lokalne zmiany
+  // Trigger save when there are local changes
   useEffect(() => {
     if (
       !listsData ||

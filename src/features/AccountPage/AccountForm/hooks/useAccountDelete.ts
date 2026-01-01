@@ -6,6 +6,10 @@ import { setAccountMode, setLoggedUser } from "../../accountSlice";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { deleteUserApi } from "../../../../api/fetchUserApi";
 
+/**
+ * Hook for deleting a user account using a mutation with react-query.
+ * Handles API call, modal feedback, and state updates on success or error.
+ */
 export const useAccountDelete = () => {
   const dispatch = useAppDispatch();
   return useMutation({
@@ -18,11 +22,13 @@ export const useAccountDelete = () => {
         throw new Error("User is logged out");
       }
 
+      // Call API to delete the user account
       const response = await deleteUserApi(userToken);
       if (response.statusCode !== 204) throw new Error();
 
       return response;
     },
+    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -32,6 +38,7 @@ export const useAccountDelete = () => {
         })
       );
     },
+    // On success, update state, show modals, and transition to data removal
     onSuccess: async () => {
       dispatch(setLoggedUser(null));
       dispatch(setAccountMode("login"));
@@ -55,6 +62,7 @@ export const useAccountDelete = () => {
         })
       );
     },
+    // On error, revert state and show error modal
     onError: async () => {
       dispatch(setAccountMode("logged"));
       dispatch(
