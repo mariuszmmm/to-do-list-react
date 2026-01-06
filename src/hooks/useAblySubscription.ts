@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useAblyManager } from "./useAblyManager";
 import { useQueryClient } from "@tanstack/react-query";
 import { setChangeSource } from "../features/tasks/tasksSlice";
 import { useAppDispatch } from "./redux";
@@ -16,6 +15,11 @@ export interface UseAblySyncParams {
   userEmail: string | null;
   enabled: boolean;
   onPresenceUpdate?: (data: PresenceData) => void;
+  subscribePresence?: (cb: (data: PresenceData) => void) => void | (() => void);
+  subscribeListsUpdate?: (
+    email: string,
+    cb: (data: any) => void
+  ) => void | (() => void);
 }
 
 /**
@@ -26,17 +30,15 @@ export const useAblySubscription = ({
   userEmail,
   enabled,
   onPresenceUpdate,
+  subscribePresence,
+  subscribeListsUpdate,
 }: UseAblySyncParams) => {
-  const {
-    onPresenceUpdate: subscribePresence,
-    onListsUpdate: subscribeListsUpdate,
-  } = useAblyManager();
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
   // Subscribe to presence updates
   useEffect(() => {
-    if (!enabled || !userEmail || !onPresenceUpdate) {
+    if (!enabled || !userEmail || !onPresenceUpdate || !subscribePresence) {
       return;
     }
 
@@ -51,7 +53,7 @@ export const useAblySubscription = ({
 
   // Subscribe to list updates
   useEffect(() => {
-    if (!enabled || !userEmail) {
+    if (!enabled || !userEmail || !subscribeListsUpdate) {
       return;
     }
 
@@ -59,16 +61,7 @@ export const useAblySubscription = ({
 
     const unsubscribe = subscribeListsUpdate(userEmail, (data) => {
       if (data.lists) {
-        process.env.NODE_ENV === "development" &&
-          console.log("id ", data.deviceId, currentDeviceId);
         if (data.deviceId === currentDeviceId) return;
-
-        process.env.NODE_ENV === "development" &&
-          process.env.NODE_ENV === "development" &&
-          console.log(
-            "[useAblySubscription] Received lists update via Ably:",
-            data
-          );
 
         !["restore"].includes(data.action) &&
           dispatch(setChangeSource("remote"));

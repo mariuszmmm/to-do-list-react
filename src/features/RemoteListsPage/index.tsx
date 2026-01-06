@@ -55,12 +55,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (lists.length > 0 && lists.find(({ id }) => id === taskListId)) {
-      dispatch(selectList(taskListId))
-      return;
-    }
     !selectedListId && lists.length > 0 && dispatch(selectList(lists[0].id));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedListId]);
 

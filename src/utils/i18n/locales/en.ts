@@ -74,7 +74,7 @@ const langEn: typeof langPl = {
       no: "No",
     },
     dateCreated: "Date created",
-    dateEdited: "Date modified",
+    dateEdited: "Date edited",
     dateDone: "Date completed",
   },
   archivedListsPage: {

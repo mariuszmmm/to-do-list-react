@@ -6,7 +6,7 @@ export type Task = {
   editedAt?: string;
   updatedAt: string;
   completedAt?: string | null;
-  deleted?: boolean;
+  status?: "new" | "edited" | "updated" | "deleted" | "synced";
 };
 
 export type EditedTask = { id: string; content: string } | null;

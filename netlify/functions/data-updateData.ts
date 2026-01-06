@@ -9,6 +9,7 @@ import {
 } from "../utils/validators";
 import { jsonResponse, logError } from "../utils/response";
 import { Data } from "../../src/types";
+import { mapListsToResponse } from "../utils/mapListsToResponse";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[updateData]";
@@ -109,11 +110,13 @@ const handler: Handler = async (event, context) => {
       return jsonResponse(500, { message: "Failed to save user data." });
     }
 
+    const lists = mapListsToResponse(savedUser.lists);
+
     try {
       await publishAblyUpdate(email, {
         action: "update",
         timestamp: new Date().toISOString(),
-        lists: savedUser.lists,
+        lists,
         deviceId: data.deviceId,
       });
     } catch (ablyError) {
@@ -123,7 +126,7 @@ const handler: Handler = async (event, context) => {
     return jsonResponse(200, {
       message: "Data updated successfully",
       data: {
-        lists: savedUser.lists,
+        lists,
         deviceId: data.deviceId,
       },
     });

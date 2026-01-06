@@ -17,7 +17,8 @@ export async function connectToDB(retries = MAX_RETRIES) {
 
   try {
     console.log("[connectToDB] Connecting to MongoDB...");
-    await mongoose.connect(uri!, { dbName });
+    if (!uri) throw new Error("MongoDB URI is not defined");
+    await mongoose.connect(uri, { dbName });
     console.log("[connectToDB] Connected to MongoDB");
     return mongoose;
   } catch (error) {

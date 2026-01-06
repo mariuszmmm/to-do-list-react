@@ -37,9 +37,9 @@ import {
 } from "../../../../common/StyledList";
 import { moveListDown, moveListUp } from "../../../../utils/moveList";
 import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
-import { Task } from "../../../../types";
+import { ListsData, Task } from "../../../../types";
 
-export const TasksList = () => {
+export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
@@ -54,10 +54,16 @@ export const TasksList = () => {
 
   useEffect(() => {
     if (!tasks) return;
+
     if (isTasksSorting) {
-      dispatch(setTasksToSort(tasks));
+      const addedTasks = tasks.filter(((task) => !tasksToSort?.some((t) => t.id === task.id || t.content === task.content)));
+      const sortedExistingTasks = tasksToSort?.filter((task) => tasks.some((t) => t.id === task.id && t.content === task.content));
+
+      dispatch(setTasksToSort([...(sortedExistingTasks ?? []), ...addedTasks]));
     } else {
       if (!tasksToSort) return;
+      const tasks = tasksToSort.map((task) => ({ ...task, status: "updated" as const }));
+
       dispatch(setTasks({
         taskListMetaData: taskListMetaData,
         tasks: tasksToSort,
@@ -66,7 +72,7 @@ export const TasksList = () => {
       dispatch(setTasksToSort(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTasksSorting]);
+  }, [isTasksSorting, tasks]);
 
   const { withDnd } = useDndList({
     items: tasksLst,

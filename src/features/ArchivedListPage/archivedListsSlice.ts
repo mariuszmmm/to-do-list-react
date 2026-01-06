@@ -60,14 +60,14 @@ const archivedListsSlice = createSlice({
     ) => {
       const time = new Date().toISOString();
       const list = {
-        id: nanoid(8),
+        id: nanoid(),
         name,
         date: time,
         updatedAt: time,
         version: 0,
         taskList: tasks.map((task) => ({
           ...task,
-          id: nanoid(8),
+          id: nanoid(),
         })),
       };
       state.archivedLists.push(list);

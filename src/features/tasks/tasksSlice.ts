@@ -42,7 +42,7 @@ interface TaskState {
 }
 
 const getNewTaskListMetaData = () => ({
-  id: nanoid(8),
+  id: nanoid(),
   name: i18n.t("tasksPage.tasks.defaultListName") || "________",
   date: initTime,
   updatedAt: initTime,
@@ -83,11 +83,12 @@ const tasksSlice = createSlice({
       state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
       state.tasks.push({
-        id: nanoid(8),
+        id: nanoid(),
         content,
         done: false,
         date: time,
         updatedAt: time,
+        status: "new",
       });
       state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
@@ -127,6 +128,7 @@ const tasksSlice = createSlice({
         content,
         editedAt: time,
         updatedAt: time,
+        status: "edited",
       };
       state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.editedTask = null;
@@ -155,6 +157,7 @@ const tasksSlice = createSlice({
         done: !done,
         completedAt: done ? null : time,
         updatedAt: time,
+        status: "updated",
       };
       state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
       state.changeSource = "local";
@@ -177,8 +180,8 @@ const tasksSlice = createSlice({
       isRemoteSaveable
         ? (state.tasks[index] = {
             ...state.tasks[index],
-            deleted: true,
             updatedAt: time,
+            status: "deleted",
           })
         : state.tasks.splice(index, 1);
       state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
@@ -190,7 +193,16 @@ const tasksSlice = createSlice({
         payload: tasksToArchive,
       }: PayloadAction<{ name: string; tasks: Task[] } | null>
     ) => {
-      const tasks = tasksToArchive?.tasks.filter((task) => !task.deleted) || [];
+      const tasks =
+        tasksToArchive?.tasks
+          .filter((task) => task.status !== "deleted")
+          .map((task) => ({
+            id: task.id,
+            content: task.content,
+            done: task.done,
+            date: task.date,
+            updatedAt: task.updatedAt,
+          })) || [];
       state.tasksToArchive = tasksToArchive
         ? { name: tasksToArchive.name, tasks }
         : null;
@@ -205,7 +217,7 @@ const tasksSlice = createSlice({
       state.tasks = [];
       state.editedTask = null;
       state.taskListMetaData = {
-        id: nanoid(8),
+        id: nanoid(),
         name: t("tasksPage.tasks.defaultListName"),
         date: time,
         updatedAt: time,
@@ -368,6 +380,18 @@ const tasksSlice = createSlice({
         state.listStatus.isIdenticalToRemote = isIdenticalToRemote;
       }
     },
+    updateTasksStatus: (
+      state,
+      { payload: { status } }: PayloadAction<{ status: Task["status"] }>
+    ) => {
+      if (!status) return;
+      const allTasks = state.tasks;
+      const isAll = allTasks.every((task) => task.status === status);
+      if (isAll) return;
+
+      const tasksWithStatus = allTasks.map((task) => ({ ...task, status }));
+      state.tasks = tasksWithStatus;
+    },
     setTasksToSort: (
       state,
       { payload: sortedTasks }: PayloadAction<Task[] | null>
@@ -405,6 +429,7 @@ export const {
   setListNameToEdit,
   setListName,
   setListStatus,
+  updateTasksStatus,
   setTasksToSort,
   switchTasksSort,
   clearStorage,
@@ -447,7 +472,7 @@ export const selectIsTasksSorting = (state: RootState) =>
 export const selectActiveTasksByQuery = createSelector(
   [selectTasks, (_: RootState, query: string | null) => query],
   (tasks, query) => {
-    const filtered = tasks.filter((task) => !task.deleted);
+    const filtered = tasks.filter((task) => task.status !== "deleted");
     if (!query) return filtered;
     return filtered.filter((task) =>
       task.content.toUpperCase().includes(query.toUpperCase().trim())

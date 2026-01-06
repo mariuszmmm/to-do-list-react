@@ -1,5 +1,14 @@
 # Copilot Instructions for AI Coding Agents
 
+## ⚠️ CRITICAL RULE - Code Changes
+
+**NEVER modify code without explicit permission from the developer.**
+
+- ✅ Always analyze and propose changes first
+- ✅ Wait for explicit approval ("OK", "do it", "yes", "zgoda", "zrób to", "działaj", "tak")
+- ❌ Never automatically execute code changes
+- ❌ Never assume permission is granted
+
 ## Project Overview
 
 - **Type:** Full-stack to-do list app (React + TypeScript frontend, Netlify Functions backend)

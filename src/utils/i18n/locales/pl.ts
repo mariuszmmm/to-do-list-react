@@ -72,7 +72,7 @@ const langPl = {
       no: "Nie",
     },
     dateCreated: "Data utworzenia",
-    dateEdited: "Data modyfikacji",
+    dateEdited: "Data edycji",
     dateDone: "Data ukończenia",
   },
   archivedListsPage: {
