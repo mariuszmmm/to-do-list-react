@@ -122,7 +122,7 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       </Button>
       <Button
         onClick={() => dispatch(switchTasksSort())}
-        disabled={tasks.length < 2 || !!editedTaskContent}
+        disabled={(tasks.length < 2 && !isTasksSorting) || !!editedTaskContent}
         width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}

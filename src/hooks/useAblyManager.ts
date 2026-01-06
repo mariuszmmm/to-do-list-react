@@ -40,6 +40,8 @@ export const useAblyManager = () => {
   const isInitializedRef = useRef<boolean>(false);
   const isAdmin = useAppSelector(selectIsAdmin);
 
+  //  do zrobienia !!!!!!   (potwierdzanie urzytkowników obecnie przestało działać)
+  // Obecnie onConfirmation jest zdefiniowany, ale nieużywany – stary hook useWaitingForConfirmation tworzy własne połączenie zamiast korzystać z onConfirmation. Można by refaktoryzować i użyć onConfirmation, aby uniknąć wielokrotnego inicjalizowania Ably.
   const onConfirmation = useCallback(
     (email: string, callback: ConfirmationCallback) => {
       const callbacks = subscriptionsRef.confirmation.get(email) || [];
@@ -198,8 +200,6 @@ export const useAblyManager = () => {
       presenceCountChannel.presence.subscribe("leave", handlePresenceEvent);
       presenceCountChannel.presence.subscribe("update", handlePresenceEvent);
 
-      await updatePresenceCount();
-
       try {
         // Always enter own presence channel
         await presenceSelfChannel.presence.enter({
@@ -216,6 +216,9 @@ export const useAblyManager = () => {
       } catch (err) {
         console.error("[AblyManager] Presence enter failed:", err);
       }
+
+      // Update presence count after entering channels
+      await updatePresenceCount();
     };
 
     initializeChannels();

@@ -28,5 +28,5 @@ export const logError = (
   ) {
     errorName = (error as any).name;
   }
-  console.error(`${logPrefix} ${message} (${errorName})`);
+  console.error(`${logPrefix} ${message} (${errorName}) error:`, error);
 };

@@ -6,6 +6,6 @@ export type List = {
   name: string;
   date: string;
   updatedAt: string;
-  version: Version;
   taskList: Task[];
+  version: Version;
 };

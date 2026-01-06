@@ -26,22 +26,17 @@ export const useSaveListMutation = () => {
         console.error("No token found");
         throw new Error("User token is null");
       }
+      console.log("Saving list with ID:", list.id);
 
       // Call API to add or update the list for the user
       return addDataApi(token, list, deviceId);
     },
-    // Log mutation start in development mode
-    onMutate: ({ list }) => {
-      process.env.NODE_ENV === "development" &&
-        process.env.NODE_ENV === "development" &&
-        console.log("Saving list mutation started for list:", list);
-    },
+    // retry: 3, // Ile razy retry
+    // retryDelay: 5000, // Delay między retry
+    networkMode: "online", // Czeka na internet lub 'online'
     // On success, update cache and log in development mode
     onSuccess: async (response: { data: ListsData }) => {
       queryClient.setQueryData(["listsData"], response.data);
-      process.env.NODE_ENV === "development" &&
-        process.env.NODE_ENV === "development" &&
-        console.log("Saving list mutation completed for list:", response.data);
     },
     // On error, show error modal
     onError: () => {

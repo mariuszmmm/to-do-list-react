@@ -4,6 +4,7 @@ import { Data, Task } from "../../src/types";
 import { connectToDB } from "../config/mongoose";
 import { publishAblyUpdate } from "../config/ably";
 import { jsonResponse, logError } from "../utils/response";
+import { mapListsToResponse } from "../utils/mapListsToResponse";
 import {
   checkClientContext,
   checkEventBody,
@@ -85,7 +86,7 @@ const handler: Handler = async (event, context) => {
       }
 
       deletedTasksIds = incomingList.taskList
-        .filter((task: Task) => task.deleted)
+        .filter((task: Task) => task.status === "deleted")
         .map((task: Task) => task.id);
 
       existingList.date = incomingList.date;
@@ -129,12 +130,15 @@ const handler: Handler = async (event, context) => {
     }
     console.log(`${logPrefix} Data updated successfully`);
 
+    const lists = mapListsToResponse(savedUser.lists);
+    const deviceId = data.deviceId;
+
     try {
       await publishAblyUpdate(email, {
         action: "addOrUpdate",
         timestamp: new Date().toISOString(),
-        lists: savedUser.lists,
-        deviceId: data.deviceId,
+        lists,
+        deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
       });
       console.log(`${logPrefix} Ably notification sent successfully`);
@@ -145,8 +149,8 @@ const handler: Handler = async (event, context) => {
     return jsonResponse(200, {
       message: "Data updated successfully",
       data: {
-        lists: savedUser.lists,
-        deviceId: data.deviceId,
+        lists,
+        deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),
       },
     });

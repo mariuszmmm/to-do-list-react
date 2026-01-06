@@ -16,7 +16,6 @@ import {
   selectEditedTask,
   selectIsTasksSorting,
   selectTaskListMetaData,
-  selectTasks,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
@@ -25,7 +24,6 @@ import { nanoid } from "nanoid";
 
 export const AddTasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
-  const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
@@ -51,15 +49,20 @@ export const AddTasksButtons = () => {
     const time = new Date().toISOString();
 
     if (data && isSuccess) {
+      const tasks = data.tasks.map((task) => ({
+        ...task,
+        status: "new" as const,
+      }));
+
       dispatch(
         setTasks({
           taskListMetaData: {
-            id: nanoid(8),
+            id: nanoid(),
             name: data.name,
             date: time,
             updatedAt: time,
           },
-          tasks: data.tasks,
+          tasks,
           stateForUndo: {
             tasks,
             taskListMetaData,

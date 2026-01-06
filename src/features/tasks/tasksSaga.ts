@@ -69,7 +69,7 @@ function* setListToLoadHandler(
       id: "",
       taskList: archivedListToLoad.taskList.map((task) => ({
         ...task,
-        id: nanoid(8),
+        id: nanoid(),
         updatedAt: new Date().toISOString(),
       })),
     };
@@ -95,7 +95,7 @@ function* setListToLoadHandler(
     updatedAt = new Date().toISOString();
     tasksToLoad = isRemoteSaveable
       ? [
-          ...tasks.map((task) => ({ ...task, deleted: true })),
+          ...tasks.map((task) => ({ ...task, status: "deleted" as const })),
           ...listToLoadData.taskList,
         ]
       : [...listToLoadData.taskList];
@@ -174,7 +174,7 @@ function* archiveTasksHandler() {
             }
           : {
               name: taskListMetaData.name,
-              tasks: tasks.filter((task) => !task.deleted),
+              tasks: tasks.filter((task) => task.status !== "deleted"),
             }
       )
     );

@@ -5,7 +5,7 @@ const DEVICE_ID_KEY = "deviceId";
 export const getOrCreateDeviceId = (): string => {
   let id = sessionStorage.getItem(DEVICE_ID_KEY);
   if (!id) {
-    id = nanoid(8);
+    id = nanoid();
     sessionStorage.setItem(DEVICE_ID_KEY, id);
   }
   return id;

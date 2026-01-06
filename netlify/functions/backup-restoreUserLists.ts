@@ -93,7 +93,7 @@ const handler: Handler = async (event, context) => {
     const currentDate = new Date().toISOString();
     const normalizedLists: List[] = listsToRestore.map(
       (list: List & { taskList: Task[] }) => ({
-        id: list.id || nanoid(8),
+        id: list.id || nanoid(),
         name: list.name || "Untitled List",
         date: list.date || currentDate,
         updatedAt: list.updatedAt || currentDate,
@@ -101,7 +101,7 @@ const handler: Handler = async (event, context) => {
         taskList: Array.isArray(list.taskList)
           ? list.taskList.map((task: any) => ({
               ...task,
-              id: task.id || nanoid(8),
+              id: task.id || nanoid(),
               content: task.content || "",
               done: typeof task.done === "boolean" ? task.done : false,
               date: task.date || currentDate,

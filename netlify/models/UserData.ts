@@ -9,8 +9,12 @@ const TaskSchema = new Schema<Task>({
   date: { type: String, required: true },
   editedAt: { type: String, required: false },
   updatedAt: { type: String, required: true },
-  completedAt: { type: String, required: false, default: null },
-  deleted: { type: Boolean, required: false },
+  completedAt: { type: String, required: false },
+  status: {
+    type: String,
+    enum: ["new", "edited", "updated", "deleted", "synced"],
+    required: false,
+  },
 });
 
 const ListSchema = new Schema<List>({

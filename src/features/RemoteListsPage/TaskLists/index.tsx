@@ -131,6 +131,7 @@ export const TaskLists = ({
     <StyledList>
       {lists?.map((list, index) => (
         <StyledListItem
+          key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
           onClick={() => dispatch(selectList(list.id))}
           $type={"lists"}

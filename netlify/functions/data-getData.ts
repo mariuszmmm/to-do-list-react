@@ -3,6 +3,7 @@ import UserData from "../models/UserData";
 import { connectToDB } from "../config/mongoose";
 import { checkClientContext, checkHttpMethod } from "../utils/validators";
 import { jsonResponse, logError } from "../utils/response";
+import { mapListsToResponse } from "../utils/mapListsToResponse";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[getData]";
@@ -31,9 +32,11 @@ const handler: Handler = async (event, context) => {
       });
     }
 
+    const lists = mapListsToResponse(foundUser.lists);
+
     return jsonResponse(200, {
       message: "User data found",
-      data: { lists: foundUser.lists },
+      data: { lists },
     });
   } catch (error) {
     logError("Error fetching user data", error, logPrefix);
