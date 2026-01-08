@@ -3,6 +3,8 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+    color: ${({ theme }) => theme.colors.textPrimary};
   }
 
   *, ::after, ::before {
@@ -17,6 +19,7 @@ const GlobalStyle = createGlobalStyle`
     overflow-y: scroll;
     font-size: 1rem;
     transition: background-color 0.5s ease-in-out;
+    min-height: 100vh;
   }
 `;
 

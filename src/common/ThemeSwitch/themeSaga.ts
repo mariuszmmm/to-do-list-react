@@ -8,6 +8,17 @@ function* saveSettingsInLocalStorageHandler() {
   );
 
   yield call(saveSettingsInLocalStorage, { isDarkTheme });
+
+  // Zaktualizuj meta tag theme-color gdy zmienia się temat
+  yield call(updateThemeColorMeta, isDarkTheme);
+}
+
+function updateThemeColorMeta(isDarkTheme: boolean) {
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeColorMeta) {
+    const color = isDarkTheme ? "#151515ff" : "#007380";
+    themeColorMeta.setAttribute("content", color);
+  }
 }
 
 export function* themeSaga() {

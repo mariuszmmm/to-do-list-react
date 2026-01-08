@@ -1,8 +1,13 @@
 export const translateText = async (text: string, targetLanguage: string) => {
   try {
+    const langCode = targetLanguage.split("-")[0];
+
     const response = await fetch("/translate-translateMessage", {
       method: "POST",
-      body: JSON.stringify({ text, targetLanguage }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text, targetLanguage: langCode }),
     });
     if (!response.ok) {
       throw new Error(response.statusText);
