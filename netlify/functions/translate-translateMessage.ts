@@ -35,7 +35,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       return jsonResponse(400, { message: "Invalid JSON in request body" });
     }
 
-    const { text, targetLanguage } = parsedBody;
+    const { text = "", targetLanguage = "en" } = parsedBody;
 
     const apiRes = await fetch(`${API_URL}?key=${KEY}`, {
       method: "POST",

@@ -258,6 +258,12 @@ export const useListSyncManager = ({
     const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } =
       listStatus;
 
+    console.log("XX ", {
+      a: !listsData,
+      b: !isRemoteSaveable && !manualSaveTriggered,
+      c: isRemoteSaveable && isIdenticalToRemote,
+    });
+
     if (
       !listsData ||
       (!isRemoteSaveable && !manualSaveTriggered) ||
@@ -269,22 +275,25 @@ export const useListSyncManager = ({
       (list) => list.id === taskListMetaData.id
     );
 
-    if (!remoteList) return;
+    // console.log("REMOTE LIST FOUND: ", remoteList);
+    // if (!remoteList) return;
 
-    const isIdentical = areTasksAndMetaDataEqual(
-      remoteList,
-      taskListMetaDataRef.current,
-      tasksRef.current
-    );
+    const isIdentical = remoteList
+      ? areTasksAndMetaDataEqual(
+          remoteList,
+          taskListMetaDataRef.current,
+          tasksRef.current
+        )
+      : false;
 
     if (isIdentical) {
-      console.log("CANCEL SAVE - IDENTICAL");
+      // console.log("CANCEL SAVE - IDENTICAL");
       debouncedMutateRef.current?.cancel();
       dispatch(updateTasksStatus({ status: "synced" }));
       return;
     }
 
-    const version = remoteList.version || 0;
+    const version = remoteList?.version || 0;
 
     process.env.NODE_ENV === "development" &&
       console.log("5 ListSyncManager useEffect for saving changes", {

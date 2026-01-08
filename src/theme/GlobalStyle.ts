@@ -3,6 +3,8 @@ import { createGlobalStyle } from "styled-components";
 const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+    color: ${({ theme }) => theme.colors.textPrimary};
   }
 
   *, ::after, ::before {
