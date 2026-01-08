@@ -10,8 +10,8 @@ interface ButtonProps {
 export const FormButton = styled.button<ButtonProps>`
   padding: 10px;
   background: ${({ $cancel, theme }) =>
-    $cancel ? theme.color.empress : theme.color.teal};
-  color: ${({ theme }) => theme.color.white};
+    $cancel ? theme.colors.button.cancel : theme.colors.button.background};
+  color: ${({ theme }) => theme.colors.button.primaryText};
   border: none;
   min-width: 110px;
   border-radius: 5px;
@@ -45,7 +45,8 @@ export const FormButton = styled.button<ButtonProps>`
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.color.silver};
+    background: ${({ theme }) => theme.colors.button.disabled};
     filter: none;
+    cursor: not-allowed;
   }
 `;

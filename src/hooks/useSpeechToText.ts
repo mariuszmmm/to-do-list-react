@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { prepareText } from "../utils/prepareText";
 import i18n from "../utils/i18n";
-import { langCodes } from "../utils/i18n/languageResources";
+import {
+  defaultLanguage,
+  langCodes,
+  SupportedLanguages,
+} from "../utils/i18n/languageResources";
 
 /**
  * Hook for speech-to-text functionality using the Web Speech API.
@@ -18,6 +22,13 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
   const [isActive, setIsActive] = useState(false);
   const [text, setText] = useState("");
 
+  const getSpeechLang = useCallback(() => {
+    const rawLang = i18n.resolvedLanguage || i18n.language || defaultLanguage;
+    const baseLang = (rawLang.split("-")[0] ||
+      defaultLanguage) as SupportedLanguages;
+    return langCodes[baseLang] || langCodes[defaultLanguage];
+  }, []);
+
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -33,7 +44,7 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
 
     recog.continuous = true;
     recog.interimResults = true;
-    recog.lang = langCodes[i18n.language as keyof typeof langCodes];
+    recog.lang = getSpeechLang();
 
     recog.onstart = () => setIsListening(true);
     recog.onend = () => setIsListening(false);
@@ -77,16 +88,15 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
     recognitionRef.current = recog;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getSpeechLang]);
 
   useEffect(() => {
     if (!recognitionRef.current) return;
     recognitionRef.current.stop();
-    recognitionRef.current.lang =
-      langCodes[i18n.language as keyof typeof langCodes];
+    recognitionRef.current.lang = getSpeechLang();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.language]);
+  }, [getSpeechLang, i18n.language]);
 
   // Start speech recognition with previous text
   const start = useCallback(() => {

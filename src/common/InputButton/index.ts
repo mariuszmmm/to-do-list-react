@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const InputButton = styled.button<{ $editedTask?: boolean }>`
-  color: ${({ theme }) => theme.color.empress};
-  background: transparent;
+  color: ${({ theme }) => theme.colors.button.edit};
+  background: ${({ theme }) => theme.colors.button.transparent};
   border: none;
   position: absolute;
   width: 2.5rem;
@@ -13,6 +13,6 @@ export const InputButton = styled.button<{ $editedTask?: boolean }>`
 
   &:disabled {
     cursor: not-allowed;
-    color: ${({ theme }) => theme.color.silver};
+    color: ${({ theme }) => theme.colors.button.disabled};
   }
 `;

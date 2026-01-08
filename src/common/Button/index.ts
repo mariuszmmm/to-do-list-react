@@ -16,8 +16,8 @@ export const Button = styled.button<ButtonProps>`
   line-height: 16px;
   margin: 3px 0 0 20px;
   padding: 0;
-  background: transparent;
-  color: ${({ theme }) => theme.color.teal};
+  background: ${({ theme }) => theme.colors.button.transparent};
+  color: ${({ theme }) => theme.colors.button.secendaryText};
   border: none;
   transition: filter 0.3s;
   user-select: none;
@@ -58,14 +58,14 @@ export const Button = styled.button<ButtonProps>`
   }
 
   &:disabled {
-    color: ${({ theme }) => theme.color.silver};
+    color: ${({ theme }) => theme.colors.button.disabled};
     filter: brightness(100%);
     cursor: auto;
 
     ${({ $error }) =>
       $error &&
       css`
-        color: ${({ theme }) => theme.color.red};
+        color: ${({ theme }) => theme.colors.status.error};
       `};
   }
 `;

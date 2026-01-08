@@ -3,10 +3,11 @@ export type Task = {
   content: string;
   done: boolean;
   date: string;
-  editedAt?: string;
   updatedAt: string;
+  editedAt?: string;
   completedAt?: string | null;
   status?: "new" | "edited" | "updated" | "deleted" | "synced";
+  deletedAt?: string | null;
 };
 
 export type EditedTask = { id: string; content: string } | null;

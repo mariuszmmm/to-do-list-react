@@ -24,7 +24,7 @@ interface CircleIconProps {
 
 export const MicrophoneIcon = styled(Microphone)<MicrophoneIconProps>`
   width: 1rem;
-  color: ${({ theme, $isActive }) => $isActive && theme.color.forestGreen};
+  color: ${({ theme, $isActive }) => $isActive && theme.colors.button.check};
   ${({ $isActive }) =>
     $isActive &&
     css`
@@ -78,22 +78,22 @@ const circleIconStyles = css`
 
 export const CircleCheckIcon = styled(CircleCheck)`
   ${circleIconStyles}
-  color: ${({ theme }) => theme.color.forestGreen};
+  color: ${({ theme }) => theme.colors.status.success};
 `;
 
 export const CircleInfoIcon = styled(CircleInfo)`
   ${circleIconStyles}
-  color: ${({ theme }) => theme.color.blue};
+  color: ${({ theme }) => theme.colors.status.info};
 `;
 
 export const CircleWarningIcon = styled(CircleWarning)`
   ${circleIconStyles}
-  color: ${({ theme }) => theme.color.crimson};
+  color: ${({ theme }) => theme.colors.status.warning};
 `;
 
 export const CircleLoadingIcon = styled(CircleLoading)`
   ${circleIconStyles}
-  color: ${({ theme }) => theme.color.blue};
+  color: ${({ theme }) => theme.colors.status.pending};
   animation: spin 700ms linear infinite;
 
   @keyframes spin {
@@ -129,11 +129,11 @@ export const CircleIcon = styled(Circle)<CircleIconProps>`
     $isError,
     $isActive,
   }) => {
-    if ($isError) return theme.color.red;
-    if ($isChanged) return theme.color.yellow;
-    if ($isPending) return theme.color.blue;
-    if ($isUpdated || $isActive) return theme.color.forestGreen;
-    return theme.color.black;
+    if ($isError) return theme.colors.status.error;
+    if ($isChanged) return theme.colors.status.changed;
+    if ($isPending) return theme.colors.status.pending;
+    if ($isUpdated || $isActive) return theme.colors.status.success;
+    return theme.colors.status.default;
   }};
 `;
 
@@ -149,4 +149,28 @@ export const ArrowUpIcon = styled(ArrowUp)`
 export const ArrowDownIcon = styled(ArrowUp)`
   ${ArrowIconStyles}
   rotate: 180deg;
+`;
+
+export const DragHandleIcon = styled.div`
+  width: 1.2rem;
+  height: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: grab;
+  padding: 0.2rem;
+
+  &::before,
+  &::after,
+  & > span {
+    content: "";
+    display: block;
+    height: 2px;
+    background: ${({ theme }) => theme.colors.textSecendary};
+    border-radius: 2px;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
 `;

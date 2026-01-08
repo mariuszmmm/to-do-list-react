@@ -306,6 +306,8 @@ const tasksSlice = createSlice({
       if (!undoTasksStack) return;
       state.tasks = undoTasksStack.tasks.map((task) => ({
         ...task,
+        id: nanoid(),
+        status: "updated",
         updatedAt: time,
       }));
       state.taskListMetaData = {

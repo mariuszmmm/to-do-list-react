@@ -29,6 +29,8 @@ import {
   useDataFetchingError,
   useSaveListMutation,
 } from "./hooks";
+import { ThemeSwitch } from "./common/ThemeSwitch";
+import { HeaderControls } from "./common/HeaderControls";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -44,7 +46,7 @@ const App = () => {
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
   useDataFetchingError({ isError, isData: !!safeData, refetch });
 
-  process.env.NODE_ENV === "development" && console.log("Rendering App component...");
+  process.env.NODE_ENV === "development" && console.log("Rendering App component... . data: ", { loggedUserEmail, data, isLoading, isError, localListId });
 
   return (
     <HashRouter>
@@ -59,7 +61,10 @@ const App = () => {
       <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
       <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
       <Container>
-        <CurrentDate authRoutes={authRoutes} />
+        <HeaderControls >
+          <ThemeSwitch />
+          <CurrentDate authRoutes={authRoutes} />
+        </HeaderControls>
         <Routes>
           <Route path="/account-recovery" element={<AccountRecoveryPage />} />
           <Route path="/user-confirmation" element={<UserConfirmationPage />} />

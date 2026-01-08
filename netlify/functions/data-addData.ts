@@ -1,3 +1,4 @@
+import { updateDataApi } from "./../../src/api/fetchDataApi";
 import type { Handler } from "@netlify/functions";
 import UserData, { UserDoc } from "../models/UserData";
 import { Data, Task } from "../../src/types";
@@ -10,6 +11,7 @@ import {
   checkEventBody,
   checkHttpMethod,
 } from "../utils/validators";
+import { now } from "mongoose";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[addData]";
@@ -65,6 +67,7 @@ const handler: Handler = async (event, context) => {
       });
     }
 
+    const now = new Date().toISOString();
     const listIndex = foundUser.lists.findIndex(
       (list) => list.id === data.list?.id
     );
@@ -73,7 +76,15 @@ const handler: Handler = async (event, context) => {
     if (listIndex !== -1) {
       const incomingList = data.list;
       const existingList = foundUser.lists[listIndex];
-
+      console.log("___________________________");
+      console.log(
+        "test",
+        data.list.taskList,
+        incomingList.version,
+        existingList.version,
+        incomingList.version === existingList.version
+      );
+      console.log("___________________________");
       if (incomingList.version !== existingList.version) {
         console.warn(`${logPrefix} Version mismatch detected for list`);
         return jsonResponse(409, {
@@ -89,6 +100,19 @@ const handler: Handler = async (event, context) => {
         .filter((task: Task) => task.status === "deleted")
         .map((task: Task) => task.id);
 
+      console.log("test", deletedTasksIds);
+
+      const deletedTasks: Task[] = incomingList.taskList
+        .filter((task) => task.status === "deleted")
+        .map((task) => ({
+          id: task.id,
+          content: task.content,
+          done: task.done,
+          date: task.date,
+          updatedAt: task.updatedAt,
+          deletedAt: now,
+        }));
+
       existingList.date = incomingList.date;
       existingList.name = incomingList.name;
       existingList.updatedAt = incomingList.updatedAt;
@@ -96,6 +120,10 @@ const handler: Handler = async (event, context) => {
         (task: Task) => !deletedTasksIds.includes(task.id)
       );
       existingList.version = (existingList.version || 0) + 1;
+      existingList.deletedTasks = [
+        ...(existingList.deletedTasks || []),
+        ...deletedTasks,
+      ];
     } else {
       const newList = {
         ...data.list,
@@ -136,7 +164,7 @@ const handler: Handler = async (event, context) => {
     try {
       await publishAblyUpdate(email, {
         action: "addOrUpdate",
-        timestamp: new Date().toISOString(),
+        timestamp: now,
         lists,
         deviceId,
         ...(deletedTasksIds.length ? { deletedTasksIds } : {}),

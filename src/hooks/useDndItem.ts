@@ -25,7 +25,8 @@ export const useDndItem = (id: string, isSorting: boolean) => {
   } = useSortable({ id, disabled: !isSorting });
 
   // Merge background color transition with dnd-kit transition
-  const bgTransition = "background-color 1s";
+  const bgTransition =
+    "background-color 0.5s ease-in-out, border-color 0.5s ease-in-out";
   const mergedTransition = transition
     ? `${transition}, ${bgTransition}`
     : bgTransition;
@@ -35,12 +36,13 @@ export const useDndItem = (id: string, isSorting: boolean) => {
     transform: CSS.Transform.toString(transform),
     transition: mergedTransition,
     cursor: isSorting ? "grab" : "default",
-    opacity: isDragging ? 0.85 : 1,
-    backgroundColor: isDragging ? "#dcdcdcff" : undefined,
+    position: "relative",
+    zIndex: isDragging ? 999 : undefined,
+    opacity: isDragging ? 1 : undefined,
   };
 
   // Props to spread on the draggable element
   const dragProps: DragProps = { setNodeRef, attributes, listeners, style };
 
-  return { dragProps };
+  return { dragProps, isDragging };
 };

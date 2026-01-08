@@ -38,8 +38,8 @@ export const ArrowIcon = styled.span<{ $left?: boolean }>`
 
 export const PaginationInfo = styled.span`
   font-size: 1.1em;
-  color: ${({ theme }) => theme.color.teal};
-  font-weight: 700;
+  color: ${({ theme }) => theme.colors.button.secendaryText};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   min-width: 80px;
   text-align: center;
   letter-spacing: 0.5px;

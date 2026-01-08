@@ -15,6 +15,7 @@ import {
   updateTasksStatus,
 } from "../features/tasks/tasksSlice";
 import { UseMutationResult } from "@tanstack/react-query";
+import { current } from "@reduxjs/toolkit";
 
 interface UseListSyncManagerParams {
   listsData?: ListsData;
@@ -63,6 +64,8 @@ export const useListSyncManager = ({
   const tasks = useAppSelector(selectTasks);
   const listStatus = useAppSelector(selectListStatus);
   const changeSource = useAppSelector(selectChangeSource);
+  const tasksRef = useRef(tasks);
+  const taskListMetaDataRef = useRef(taskListMetaData);
   const dispatch = useAppDispatch();
   const deviceId = getOrCreateDeviceId();
   const { isError } = saveListMutation;
@@ -70,11 +73,28 @@ export const useListSyncManager = ({
     (payload: { list: List; deviceId: string }) => void
   > | null>(null);
 
+  useEffect(() => {
+    tasksRef.current = tasks;
+    taskListMetaDataRef.current = taskListMetaData;
+  }, [tasks, taskListMetaData]);
+
   // Check list status when remote or local data changes
   useEffect(() => {
     const { isRemoteSaveable, isIdenticalToRemote } = listStatus;
 
+    process.env.NODE_ENV === "development" &&
+      console.log("1 ListSyncManager useEffect triggered", {
+        listsData,
+        taskListMetaData,
+        tasks,
+        isError,
+        isRemoteSaveable,
+        isIdenticalToRemote,
+      });
+
     if (!listsData) {
+      if (!isRemoteSaveable && !isIdenticalToRemote) return;
+
       dispatch(
         setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
       );
@@ -100,6 +120,15 @@ export const useListSyncManager = ({
       taskListMetaData,
       tasks
     );
+
+    process.env.NODE_ENV === "development" &&
+      console.log("2 ListSyncManager useEffect after checks", {
+        remoteList,
+        isIdentical,
+        isRemoteSaveable,
+        isIdenticalToRemote,
+      });
+
     if (isError && isRemoteSaveable) {
       dispatch(
         setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
@@ -107,7 +136,7 @@ export const useListSyncManager = ({
     } else {
       if (isRemoteSaveable && isIdenticalToRemote === isIdentical) return;
 
-      if (isIdentical) dispatch(updateTasksStatus({ status: "synced" }));
+      //  if (isIdentical) dispatch(updateTasksStatus({ status: "synced" }));
       dispatch(
         setListStatus({
           isRemoteSaveable: true,
@@ -116,7 +145,7 @@ export const useListSyncManager = ({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listsData, taskListMetaData, tasks, isError, dispatch]);
+  }, [listsData, taskListMetaData, tasks, isError]);
 
   // Update local list when remote data changes
   useEffect(() => {
@@ -133,6 +162,12 @@ export const useListSyncManager = ({
       taskListMetaData,
       tasks
     );
+
+    process.env.NODE_ENV === "development" &&
+      console.log("3 ListSyncManager useEffect for updating local list", {
+        remoteList,
+        isIdentical,
+      });
 
     if (isIdentical) {
       dispatch(updateTasksStatus({ status: "synced" }));
@@ -182,13 +217,27 @@ export const useListSyncManager = ({
         status: task.status !== "deleted" ? "updated" : task.status,
       })
     );
+    process.env.NODE_ENV === "development" &&
+      console.log("4 ListSyncManager updating local tasks", {
+        remoteList,
+        isIdentical,
+        deletedIds,
+        localOnlyTasks,
+        remoteOnlyTasks,
+        sourceMeta,
+        newMeta,
+        newTasks,
+      });
 
     dispatch(
       setTasks({ isLoad: true, taskListMetaData: newMeta, tasks: newTasks })
     );
 
+    tasksRef.current = newTasks;
+    taskListMetaDataRef.current = newMeta;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listsData]);
+  }, [listsData, listStatus.isRemoteSaveable]);
 
   // Initialize debounced save function
   useEffect(() => {
@@ -201,10 +250,12 @@ export const useListSyncManager = ({
     return () => {
       debouncedMutateRef.current && debouncedMutateRef.current.cancel();
     };
-  }, [saveListMutation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Trigger save when there are local changes
   useEffect(() => {
+    console.log("TRIGER SAVE USE EFFECT");
     const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } =
       listStatus;
 
@@ -223,16 +274,29 @@ export const useListSyncManager = ({
 
     const isIdentical = areTasksAndMetaDataEqual(
       remoteList,
-      taskListMetaData,
-      tasks
+      taskListMetaDataRef.current,
+      tasksRef.current
     );
 
     if (isIdentical) {
+      console.log("CANCEL SAVE - IDENTICAL");
+      debouncedMutateRef.current?.cancel();
       dispatch(updateTasksStatus({ status: "synced" }));
       return;
     }
 
     const version = remoteList.version || 0;
+
+    process.env.NODE_ENV === "development" &&
+      console.log("5 ListSyncManager useEffect for saving changes", {
+        remoteList,
+        isIdentical,
+        version,
+        changeSource,
+        isRemoteSaveable,
+        manualSaveTriggered,
+        isIdenticalToRemote,
+      });
 
     if (changeSource === "remote") {
       dispatch(setChangeSource(null));
@@ -241,23 +305,41 @@ export const useListSyncManager = ({
 
     const payload = {
       list: {
-        id: taskListMetaData.id,
-        date: taskListMetaData.date,
-        updatedAt: taskListMetaData.updatedAt,
-        name: taskListMetaData.name,
-        taskList: tasks,
+        id: taskListMetaDataRef.current.id,
+        date: taskListMetaDataRef.current.date,
+        updatedAt: taskListMetaDataRef.current.updatedAt,
+        name: taskListMetaDataRef.current.name,
+        taskList: tasksRef.current,
         version,
       },
       deviceId,
     };
 
+    process.env.NODE_ENV === "development" &&
+      console.log("6 ListSyncManager preparing to save", {
+        payload,
+        taskListMetaDataRef: taskListMetaDataRef.current,
+        tasksRef: tasksRef.current,
+      });
+
     if (manualSaveTriggered) {
+      process.env.NODE_ENV === "development" &&
+        console.log("7a ListSyncManager performing MANUAL save");
       saveListMutation.mutate(payload);
       dispatch(setListStatus({ manualSaveTriggered: false }));
     } else if (debouncedMutateRef.current) {
+      process.env.NODE_ENV === "development" &&
+        console.log("7b ListSyncManager performing DEBOUNCED save");
       debouncedMutateRef.current(payload);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listStatus, taskListMetaData, tasks, listsData, dispatch]);
+  }, [
+    listStatus,
+    // taskListMetaData,
+    // tasks,
+    listsData,
+    taskListMetaDataRef.current,
+    tasksRef.current,
+  ]);
 };

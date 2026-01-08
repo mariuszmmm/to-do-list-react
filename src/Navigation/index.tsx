@@ -5,6 +5,8 @@ import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
 import { Loader } from "../common/Loader";
 import { auth } from "../api/auth";
+import { useAppSelector } from "../hooks";
+import { selectIsDarkTheme } from "../common/ThemeSwitch/themeSlice";
 
 type Props = {
   listsData?: ListsData;
@@ -20,6 +22,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
   const { pathname } = useLocation();
   const authRoute = authRoutes.includes(pathname);
   const user = auth.currentUser();
+  const isDarkTheme = useAppSelector(selectIsDarkTheme);
 
   return (
     <Nav>
@@ -44,7 +47,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
           {!!user && !isError && (
             <li>
               {isLoading ? (
-                <Loader />
+                <Loader isDarkTheme={isDarkTheme} />
               ) : !!listsData ? (
                 <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
               ) : null}

@@ -6,6 +6,7 @@ import archivedListsReducer from "./features/ArchivedListPage/archivedListsSlice
 import remoteListsReducer from "./features/RemoteListsPage/remoteListsSlice";
 import tasksReducer from "./features/tasks/tasksSlice";
 import modalReducer from "./Modal/modalSlice";
+import themeReducer from "./common/ThemeSwitch/themeSlice";
 import rootSaga from "./rootSaga";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -17,6 +18,7 @@ export const store = configureStore({
     remoteLists: remoteListsReducer,
     account: accountReducer,
     modal: modalReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

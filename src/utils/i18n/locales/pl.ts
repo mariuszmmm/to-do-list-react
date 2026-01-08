@@ -204,15 +204,15 @@ const langPl = {
         reset: "Zresetuj hasło",
       },
       inputPlaceholders: {
-        email: "wpisz adres e-mail",
-        password: "wpisz hasło",
-        newPassword: "nowe hasło",
+        email: "Wpisz adres e-mail",
+        password: "Wpisz hasło",
+        newPassword: "Nowe hasło",
       },
       message: {
-        email: "wpisz adres e-mail",
-        emailMessage: "nieprawidłowy adres e-mail",
-        password: "wpisz hasło",
-        passwordMessage: "hasło musi mieć co najmniej 4 znaki.",
+        email: "Wpisz adres e-mail",
+        emailMessage: "Nieprawidłowy adres e-mail",
+        password: "Wpisz hasło",
+        passwordMessage: "Hasło musi mieć co najmniej 4 znaki.",
       },
     },
     sessionInfo: {

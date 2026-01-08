@@ -20,12 +20,3 @@ export const ArrowIcon = styled.span<{ $left?: boolean }>`
   margin: 0 6px;
   transform: ${({ $left }) => ($left ? "rotate(180deg)" : "none")};
 `;
-
-export const PaginationInfo = styled.span`
-  font-size: 1.1em;
-  color: ${({ theme }) => theme.color.teal};
-  font-weight: 700;
-  min-width: 100px;
-  text-align: center;
-  letter-spacing: 0.5px;
-`;
