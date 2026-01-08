@@ -15,7 +15,6 @@ import {
   updateTasksStatus,
 } from "../features/tasks/tasksSlice";
 import { UseMutationResult } from "@tanstack/react-query";
-import { current } from "@reduxjs/toolkit";
 
 interface UseListSyncManagerParams {
   listsData?: ListsData;
