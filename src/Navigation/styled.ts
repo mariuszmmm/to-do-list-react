@@ -17,7 +17,8 @@ interface AccountProps {
 }
 
 export const Nav = styled.nav`
-  background-color: ${({ theme }) => theme.color.teal};
+  background-color: ${({ theme }) => theme.colors.nav.background};
+  transition: background-color 0.5s ease-in-out;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +58,7 @@ export const NavList = styled.ul<NavListProps>`
 
 export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.colors.nav.text};
   height: 50px;
 
   &:hover {
@@ -66,11 +67,11 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   }
 
   &.active {
-    font-weight: 700;
+    font-weight: ${({ theme }) => theme.fontWeight.bold};
     ${({ $inactive }) =>
       $inactive &&
       css`
-        font-weight: 400;
+        font-weight: ${({ theme }) => theme.fontWeight.normal};
       `}
   }
 `;
@@ -78,7 +79,7 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
 export const NavButton = styled.button<ButtonProps>`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.colors.nav.text};
   height: 50px;
 
   &:hover {
@@ -88,7 +89,7 @@ export const NavButton = styled.button<ButtonProps>`
   ${({ $isActive }) =>
     $isActive &&
     css`
-      font-weight: 700;
+      font-weight: ${({ theme }) => theme.fontWeight.bold};
     `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {

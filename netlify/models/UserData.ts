@@ -7,9 +7,10 @@ const TaskSchema = new Schema<Task>({
   content: { type: String, required: true },
   done: { type: Boolean, required: true },
   date: { type: String, required: true },
-  editedAt: { type: String, required: false },
   updatedAt: { type: String, required: true },
+  editedAt: { type: String, required: false },
   completedAt: { type: String, required: false },
+  deletedAt: { type: String, required: false },
   status: {
     type: String,
     enum: ["new", "edited", "updated", "deleted", "synced"],
@@ -24,6 +25,7 @@ const ListSchema = new Schema<List>({
   updatedAt: { type: String, required: true },
   version: { type: Number, required: true, min: 0, default: 0 },
   taskList: { type: [TaskSchema], default: [] },
+  deletedTasks: { type: [TaskSchema], default: [] },
 });
 
 const UserDataSchema = new Schema<UserDoc>({

@@ -8,8 +8,25 @@ const autoRefreshKey = "autoRefreshEnabled" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
-export const saveSettingsInLocalStorage = (settings: Settings) =>
+export const saveSettingsInLocalStorage = (
+  settings: Partial<Settings> | Settings
+) => {
+  const existing = localStorage.getItem(settingsKey);
+
+  if (existing) {
+    try {
+      const parsed = JSON.parse(existing) as Settings;
+      const merged = { ...parsed, ...settings } as Settings;
+      localStorage.setItem(settingsKey, JSON.stringify(merged));
+      return;
+    } catch {
+      localStorage.setItem(settingsKey, JSON.stringify(settings));
+      return;
+    }
+  }
+
   localStorage.setItem(settingsKey, JSON.stringify(settings));
+};
 
 export const getSettingsFromLocalStorage = (): Settings | null => {
   const data = localStorage.getItem(settingsKey);

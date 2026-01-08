@@ -11,8 +11,8 @@ export const BackupItemsContainer = styled.div`
 
 export const BackupListTitle = styled.div`
   font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.color.teal};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.textPrimary};
   margin-bottom: 15px;
   text-align: center;
 `;
@@ -24,16 +24,16 @@ export const BackupItem = styled.div<BackupItemProps>`
   justify-content: space-between;
   padding: 12px 15px;
   margin-bottom: 8px;
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.alto};
+  background-color: ${({ theme }) => theme.colors.backgroundSecendary};
+  border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: 4px;
   opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
   cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.color.gallery};
-    border-color: ${({ theme }) => theme.color.teal};
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+    border-color: ${({ theme }) => theme.colors.border.secendary};
     transform: translateX(2px);
   }
 
@@ -49,8 +49,8 @@ export const BackupFileInfo = styled.div`
 `;
 
 export const BackupFileName = styled.div`
-  font-weight: 600;
-  color: ${({ theme }) => theme.color.black};
+  font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+  color: ${({ theme }) => theme.colors.button.secendaryText};
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@ export const BackupFileName = styled.div`
 
 export const BackupFileDate = styled.div`
   font-size: 0.85em;
-  color: ${({ theme }) => theme.color.empress};
+  color: ${({ theme }) => theme.colors.textSecendary};
   margin-left: 28px;
 `;
 

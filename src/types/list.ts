@@ -8,4 +8,5 @@ export type List = {
   updatedAt: string;
   taskList: Task[];
   version: Version;
+  deletedTasks?: Task[];
 };

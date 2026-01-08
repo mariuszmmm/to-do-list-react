@@ -18,6 +18,7 @@ import {
 import { setArchivedListsOrder } from "../archivedListsSlice";
 import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import { useTranslation } from "react-i18next";
+import { DraggableAttributes } from "@dnd-kit/core";
 
 type Props = {
   lists: List[];
@@ -41,21 +42,22 @@ export const TaskLists = ({
   });
 
   const SortableListRow = ({ list }: { list: List }) => {
-    const { dragProps } = useDndItem(list.id, true);
+    const { dragProps, isDragging } = useDndItem(list.id, true);
     return (
       <StyledListItem
         key={list.id}
         selected={selectedListId === list.id}
         onClick={() => dispatch(selectArchivedList(list.id))}
-        $type={"lists"}
+        $type={"archived"}
         ref={dragProps.setNodeRef}
+        $isDragging={isDragging}
         style={dragProps.style}
-        {...dragProps.attributes}
+        {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
         <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
         <StyledListContent $type={"lists"}>
-          <StyledSpan $ListName>{list.name}</StyledSpan>
+          <StyledSpan $ListName $isDragging={isDragging}>{list.name}</StyledSpan>
           <br />
           <ListMeta>
             <ListMetaText>

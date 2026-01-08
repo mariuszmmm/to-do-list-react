@@ -23,7 +23,7 @@ import {
   setTasksToSort,
   setTasks,
 } from "../../tasksSlice";
-import { ArrowDownIcon, ArrowUpIcon } from "../../../../common/icons";
+import { ArrowDownIcon, ArrowUpIcon, DragHandleIcon } from "../../../../common/icons";
 import { useDndList } from "../../../../hooks/useDndList";
 import { useDndItem } from "../../../../hooks/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
@@ -82,7 +82,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
   });
 
   const SortableTaskRow = ({ task, index }: { task: Task; index: number }) => {
-    const { dragProps } = useDndItem(task.id, true);
+    const { dragProps, isDragging } = useDndItem(task.id, true);
     const { setRefs, animateMove, isAnimating } = useSortableRowAnimation({
       index,
       list: tasksToSort,
@@ -100,29 +100,36 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
         key={task.id}
         $edit={editedTaskContent?.id === task.id}
         $type={"sort"}
+        $isDragging={isDragging}
         ref={combinedRef}
         style={dragProps.style}
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
-        <SortButton
-          onClick={() => animateMove("up")}
-          disabled={index === 0 || isAnimating}
-        >
-          <ArrowUpIcon />
-        </SortButton>
+        <DragHandleIcon >
+          <span />
+        </DragHandleIcon>
+
         <StyledListContent $type={"sort"}>
-          <TaskNumber>{`${index + 1}. `}</TaskNumber>
-          <StyledSpan $done={task.done} $noLink>
+          <TaskNumber $isDragging={isDragging}>{`${index + 1}. `}</TaskNumber>
+          <StyledSpan $done={task.done} $noLink $isDragging={isDragging}>
             {task.content}
           </StyledSpan>
         </StyledListContent>
-        <SortButton
-          onClick={() => animateMove("down")}
-          disabled={index === tasksLst.length - 1 || isAnimating}
-        >
-          <ArrowDownIcon />
-        </SortButton>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <SortButton
+            onClick={() => animateMove("up")}
+            disabled={index === 0 || isAnimating}
+          >
+            <ArrowUpIcon />
+          </SortButton>
+          <SortButton
+            onClick={() => animateMove("down")}
+            disabled={index === tasksLst.length - 1 || isAnimating}
+          >
+            <ArrowDownIcon />
+          </SortButton>
+        </div>
       </StyledListItem>
     );
   };
@@ -155,9 +162,9 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
             {task.done ? "✔" : ""}
           </ToggleButton>
           <StyledListContent $type={"tasks"}>
-            {!query ? <TaskNumber>{`${index + 1}. `}</TaskNumber> : ""}
-            <StyledSpan $done={task.done}>
-              <StyledLink to={`/tasks/${task.id}`} disabled={!!editedTaskContent}>
+            {!query ? <TaskNumber $edit={editedTaskContent?.id === task.id}>{`${index + 1}. `}</TaskNumber> : ""}
+            <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
+              <StyledLink to={`/tasks/${task.id}`} $edit={editedTaskContent?.id === task.id} disabled={!!editedTaskContent}>
                 {task.content}
               </StyledLink>
             </StyledSpan>

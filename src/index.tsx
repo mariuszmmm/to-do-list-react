@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { ThemeProvider } from "styled-components";
-import { theme } from "./theme/theme";
+import { themeDark, themeLight } from "./theme/theme";
 import { Normalize } from "styled-normalize";
 import GlobalStyle from "./theme/GlobalStyle";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,6 +15,8 @@ import App from "./App";
 import { TimeProvider } from "./context/TimeContext";
 import { handleAuthTokensFromUrl } from "./utils/getTokenFromURL";
 import { handleGoogleOAuthCodeFromUrl } from "./utils/getGoogleOAuthCode";
+import { useAppSelector } from "./hooks";
+import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
@@ -23,9 +25,11 @@ setInputAutoFocusFlagIfRoot();
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
 
-const AppProviders = ({ children }: { children: React.ReactNode }) => (
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
+const AppProviders = ({ children }: { children: React.ReactNode }) => {
+  const isDarkTheme = useAppSelector(selectIsDarkTheme);
+
+  return (
+    <ThemeProvider theme={isDarkTheme ? themeDark : themeLight}>
       <I18nextProvider i18n={i18n}>
         <Normalize />
         <GlobalStyle />
@@ -37,19 +41,23 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => (
         </QueryClientProvider>
       </I18nextProvider>
     </ThemeProvider>
-  </Provider>
-);
+  )
+};
 
 root.render(
   process.env.NODE_ENV === "development" ? (
-    <React.StrictMode>
+    // <React.StrictMode>
+    <Provider store={store}>
       <AppProviders>
         <App />
       </AppProviders>
-    </React.StrictMode>
+    </Provider>
+    // </React.StrictMode>
   ) : (
-    <AppProviders>
-      <App />
-    </AppProviders>
+    <Provider store={store}>
+      <AppProviders>
+        <App />
+      </AppProviders>
+    </Provider>
   )
 );

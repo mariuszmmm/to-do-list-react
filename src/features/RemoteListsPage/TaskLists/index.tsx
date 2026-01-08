@@ -1,6 +1,6 @@
 import type { DraggableAttributes } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
-import { ArrowDownIcon, ArrowUpIcon, CircleIcon } from "../../../common/icons";
+import { ArrowDownIcon, ArrowUpIcon, CircleIcon, DragHandleIcon } from "../../../common/icons";
 import {
   StyledList,
   StyledListContent,
@@ -57,7 +57,7 @@ export const TaskLists = ({
   });
 
   const SortableListRow = ({ list, index }: { list: List; index: number }) => {
-    const { dragProps } = useDndItem(list.id, true);
+    const { dragProps, isDragging } = useDndItem(list.id, true);
     const { setRefs, animateMove, isAnimating } = useSortableRowAnimation({
       index,
       list: listsToSort,
@@ -76,17 +76,15 @@ export const TaskLists = ({
         ref={combinedRef}
         style={dragProps.style}
         $type={"sort"}
+        $isDragging={isDragging}
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
-        <SortButton
-          onClick={() => animateMove("up")}
-          disabled={index === 0 || isAnimating}
-        >
-          <ArrowUpIcon />
-        </SortButton>
+        <DragHandleIcon >
+          <span />
+        </DragHandleIcon>
         <StyledListContent $type={"sort"}>
-          <StyledSpan $ListName>{list.name}</StyledSpan>
+          <StyledSpan $ListName $isDragging={isDragging}>{list.name}</StyledSpan>
           <br />
           <ListMeta>
             {list.id === localListId && <CircleIcon $isActive />}
@@ -107,12 +105,20 @@ export const TaskLists = ({
             </ListMetaText>
           </ListMeta>
         </StyledListContent>
-        <SortButton
-          onClick={() => animateMove("down")}
-          disabled={index === sortableLists.length - 1 || isAnimating}
-        >
-          <ArrowDownIcon />
-        </SortButton>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <SortButton
+            onClick={() => animateMove("up")}
+            disabled={index === 0 || isAnimating}
+          >
+            <ArrowUpIcon />
+          </SortButton>
+          <SortButton
+            onClick={() => animateMove("down")}
+            disabled={index === sortableLists.length - 1 || isAnimating}
+          >
+            <ArrowDownIcon />
+          </SortButton>
+        </div>
       </StyledListItem>
     );
   };

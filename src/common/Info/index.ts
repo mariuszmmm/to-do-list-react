@@ -12,6 +12,6 @@ export const Info = styled.p<InfoProps>`
   ${({ $warning }) =>
     $warning &&
     css`
-      color: ${({ theme }) => theme.color.red};
+      color: ${({ theme }) => theme.colors.status.error};
     `};
 `;

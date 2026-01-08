@@ -11,10 +11,12 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Montserrat', sans-serif;
-    background: ${({ theme }) => theme.color.gallery};
+    color: ${({ theme }) => theme.colors.textPrimary};
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     min-width: 300px;
     overflow-y: scroll;
     font-size: 1rem;
+    transition: background-color 0.5s ease-in-out;
   }
 `;
 

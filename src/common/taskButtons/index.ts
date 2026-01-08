@@ -3,7 +3,7 @@ import styled from "styled-components";
 const TaskButton = styled.button`
   border-radius: 3px;
   border: none;
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.colors.button.primaryText};
   width: 30px;
   height: 30px;
   padding: 0;
@@ -32,17 +32,17 @@ const TaskButton = styled.button`
 `;
 
 export const ToggleButton = styled(TaskButton)`
-  background: ${({ theme }) => theme.color.forestGreen};
+  background: ${({ theme }) => theme.colors.button.check};
 `;
 
 export const EditButton = styled(TaskButton)`
-  background: ${({ theme }) => theme.color.empress};
+  background: ${({ theme }) => theme.colors.button.edit};
 `;
 
 export const RemoveButton = styled(TaskButton)`
-  background: ${({ theme }) => theme.color.crimson};
+  background: ${({ theme }) => theme.colors.button.remove};
 `;
 
 export const SortButton = styled(TaskButton)`
-  background: ${({ theme }) => theme.color.blue};
+  background: ${({ theme }) => theme.colors.button.sort};
 `;

@@ -8,9 +8,9 @@ export const CollapseButton = styled.button`
   height: 20px;
   margin-left: 12px;
   padding: 0;
-  background: transparent;
+  background: ${({ theme }) => theme.colors.button.transparent};
   border: none;
-  color: ${({ theme }) => theme.color.teal};
+  color: ${({ theme }) => theme.colors.button.secendaryText};
   font-size: 20px;
   line-height: 1;
   transition: color 0.2s ease, filter 0.2s ease;

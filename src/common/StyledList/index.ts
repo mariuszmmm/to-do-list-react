@@ -5,7 +5,8 @@ interface StyledListItemProps {
   selected?: boolean;
   hidden?: boolean;
   $sort?: boolean;
-  $type?: "lists" | "tasks" | "tasksView" | "sort";
+  $type?: "lists" | "tasks" | "tasksView" | "sort" | "archived";
+  $isDragging?: boolean;
 }
 
 interface StyledListContentProps {
@@ -18,6 +19,8 @@ interface StyledTaskProps {
   $comment?: boolean;
   $noLink?: boolean;
   $tokenStatus?: "active" | "expired";
+  disabled?: boolean;
+  $isDragging?: boolean;
 }
 
 export const StyledList = styled.ul`
@@ -31,28 +34,29 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   grid-gap: 10px;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid ${({ theme }) => theme.color.alto};
-  transition: background-color 0.25s;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
 
   grid-template-columns: ${({ $type }) =>
     $type === "tasks"
       ? "auto 1fr auto auto"
-      : $type === "lists" || $type === "sort"
+      : $type === "lists" || $type === "sort" || $type === "archived"
       ? "auto 1fr auto"
       : $type === "tasksView"
       ? "auto 1fr"
       : "auto"};
 
-  ${({ selected }) =>
+  ${({ selected, $type }) =>
     selected &&
+    $type !== "archived" &&
     css`
-      background-color: ${({ theme }) => theme.color.gallery};
+      background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     `}
 
   ${({ $edit }) =>
     $edit &&
     css`
-      background-color: ${({ theme }) => theme.color.snowyMint};
+      background-color: ${({ theme }) => theme.colors.backgrouncSelected};
     `}
     
   ${({ hidden }) =>
@@ -63,31 +67,47 @@ export const StyledListItem = styled.li<StyledListItemProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-template-columns: ${({ $type }) =>
-      $type === "tasks" || $type === "lists" || $type === "sort"
+      $type === "tasks" ||
+      $type === "lists" ||
+      $type === "sort" ||
+      $type === "archived"
         ? "1fr auto"
         : $type === "tasksView"
         ? "1fr"
         : "auto"};
   }
 
-  ${({ $type }) =>
-    $type === "sort" &&
+  ${({ $type, $isDragging }) =>
+    ($type === "sort" || $type === "archived") &&
     css`
-      &:hover {
-        background-color: ${({ theme }) => theme.color.gallery};
-        &,
+      ${$isDragging &&
+      css`
+        background-color: ${({ theme }) => theme.colors.backgrouncSelected};
+        z-index: 999;
+        opacity: 1;
+        cursor: grabbing;
         & * {
-          cursor: grab;
+          cursor: grabbing;
         }
-        opacity: 0.8;
-      }
+      `}
+
+      ${!$isDragging &&
+      css`
+        &:hover {
+          background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+          cursor: grab;
+
+          & * {
+            cursor: grab;
+          }
+        }
+      `}
     `}
 `;
 
 export const StyledListContent = styled.div<StyledListContentProps>`
   word-break: break-word;
   margin: 0;
-  color: ${({ theme }) => theme.color.teal};
   margin: 0 5px;
   cursor: default;
 
@@ -103,9 +123,22 @@ export const StyledListContent = styled.div<StyledListContentProps>`
   }
 `;
 
-export const TaskNumber = styled.span`
-  font-weight: bold;
-  color: ${({ theme }) => theme.color.black};
+export const TaskNumber = styled.span<{
+  $edit?: boolean;
+  $isDragging?: boolean;
+}>`
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.textPrimary};
+
+  ${({ $edit, $isDragging }) =>
+    ($edit || $isDragging) &&
+    css`
+      color: ${({ theme }) =>
+        $edit || $isDragging
+          ? theme.colors.button.edit
+          : theme.colors.textPrimary};
+      pointer-events: none;
+    `}
 `;
 
 export const StyledSpan = styled.span<StyledTaskProps>`
@@ -116,38 +149,48 @@ export const StyledSpan = styled.span<StyledTaskProps>`
   ${({ $done }) =>
     $done &&
     css`
-      text-decoration: 1px line-through black;
+      text-decoration: 1px line-through
+        ${({ theme }) => theme.colors.textPrimary};
     `};
 
-  ${({ $ListName }) =>
+  ${({ $ListName, $isDragging }) =>
     $ListName &&
     css`
-      font-weight: bold;
-      color: ${({ theme }) => theme.color.black};
+      font-weight: ${({ theme }) => theme.fontWeight.bold};
+      color: ${({ theme }) =>
+        $isDragging ? theme.colors.textSecendary : theme.colors.textPrimary};
     `}
 
-  ${({ $noLink }) =>
+  ${({ $noLink, $isDragging }) =>
     $noLink &&
     css`
-      color: ${({ theme }) => theme.color.black};
+      color: ${({ theme }) =>
+        $isDragging ? theme.colors.textSecendary : theme.colors.textPrimary};
     `}
 
   ${({ $comment }) =>
     $comment &&
     css`
-      color: ${({ theme }) => theme.color.empress};
+      color: ${({ theme }) => theme.colors.textSecendary};
       font-style: italic;
       font-size: 0.85rem;
-      font-weight: normal;
+      font-weight: ${({ theme }) => theme.fontWeight.normal};
     `}
+
+      ${({ disabled }) =>
+    disabled &&
+    css`
+      text-decoration: 1px line-through
+        ${({ theme }) => theme.colors.textSecendary};
+    `};
 
   strong {
     ${({ $tokenStatus, theme }) =>
       $tokenStatus &&
       css`
         color: ${$tokenStatus === "active"
-          ? theme.color.forestGreen
-          : theme.color.red};
+          ? theme.colors.status.success
+          : theme.colors.status.warning};
       `}
   }
 `;

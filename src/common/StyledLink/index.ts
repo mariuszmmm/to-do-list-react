@@ -3,17 +3,19 @@ import { Link } from "react-router-dom";
 
 interface StyledLinkProps {
   disabled?: boolean;
+  $edit?: boolean;
 }
 
 export const StyledLink = styled(Link)<StyledLinkProps>`
-  color: ${({ theme }) => theme.color.teal};
+  color: ${({ theme }) => theme.colors.button.secendaryText};
   text-decoration: none;
   white-space: pre-line;
 
-  ${({ disabled }) =>
+  ${({ disabled, $edit }) =>
     disabled &&
     css`
-      color: ${({ theme }) => theme.color.empress};
+      color: ${({ theme }) =>
+        $edit ? theme.colors.button.edit : theme.colors.button.disabled};
       pointer-events: none;
     `}
 

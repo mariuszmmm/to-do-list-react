@@ -1,15 +1,17 @@
 import { ThreeDots } from "react-loader-spinner";
-import { theme } from "../../theme/theme";
 import { Wrapper } from "./styled";
+import { useTheme } from "styled-components";
 
-export const Loader = ({ loading = true }: { loading?: boolean }) => {
+export const Loader = ({ loading = true, isDarkTheme }: { loading?: boolean, isDarkTheme?: boolean }) => {
+  const theme = useTheme();
+
   return (
     <Wrapper>
       <ThreeDots
         visible={loading}
         width="1rem"
         height="1rem"
-        color={theme.color.white}
+        color={theme.colors.nav.text}
       />
     </Wrapper>
   );

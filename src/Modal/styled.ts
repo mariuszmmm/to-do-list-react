@@ -28,7 +28,7 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalBody = styled.div`
-  background: ${({ theme }) => theme.color.white};
+  background: ${({ theme }) => theme.colors.backgroundSecendary};
   display: flex;
   flex-direction: column;
   border-radius: 5px;
@@ -36,12 +36,12 @@ export const ModalBody = styled.div`
 
 export const ModalHeader = styled.header`
   display: flex;
-  border-bottom: 1px solid ${({ theme }) => theme.color.alto};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
 `;
 
 export const HeaderContent = styled.h1`
   font-size: 20px;
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
   padding: 20px;
   margin: 0;
 `;
@@ -57,13 +57,13 @@ export const ModalButtonContainer = styled.div`
   justify-content: flex-end;
   gap: 10px;
   padding: 15px 20px;
-  border-top: 1px solid ${({ theme }) => theme.color.alto};
+  border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
 `;
 
 const ModalButton = styled.button`
   padding: 10px;
   min-width: 100px;
-  color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.colors.button.primaryText};
   border: none;
   border-radius: 5px;
   transition: filter 0.25s;
@@ -79,26 +79,26 @@ const ModalButton = styled.button`
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.color.silver};
+    background-color: ${({ theme }) => theme.colors.button.disabled};
     filter: none;
     cursor: auto;
   }
 `;
 
 export const ModalConfirmButton = styled(ModalButton)`
-  background-color: ${({ theme }) => theme.color.crimson};
+  background-color: ${({ theme }) => theme.colors.button.remove};
 `;
 
 export const ModalCancelButton = styled(ModalButton)`
-  background-color: ${({ theme }) => theme.color.empress};
+  background-color: ${({ theme }) => theme.colors.button.cancel};
 `;
 
 export const ModalCloseButton = styled(ModalButton)`
-  background-color: ${({ theme }) => theme.color.teal};
+  background-color: ${({ theme }) => theme.colors.button.background};
 `;
 
 export const ModalYesButton = styled(ModalButton)`
-  background-color: ${({ theme }) => theme.color.forestGreen};
+  background-color: ${({ theme }) => theme.colors.button.check};
 `;
 
 export const ModalNoButton = ModalConfirmButton;
