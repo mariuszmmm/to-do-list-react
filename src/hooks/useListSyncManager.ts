@@ -143,6 +143,10 @@ export const useListSyncManager = ({
         })
       );
     }
+
+    taskListMetaDataRef.current = taskListMetaData;
+    tasksRef.current = tasks;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listsData, taskListMetaData, tasks, isError]);
 
@@ -174,6 +178,9 @@ export const useListSyncManager = ({
     }
 
     const deletedIds = listsData.deletedTasksIds ?? [];
+    const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
+    console.log("!!!!!!!!!!!!!!!!!! DELETED TASKS TO PRESERVE:", deletedTasks);
+    console.log("!!!!!!!!!!!!!!!!!! tasks:", tasks);
     const localOnlyTasks = tasks.filter((localTask) => {
       if (localTask.status === "synced") return false;
 
@@ -229,7 +236,12 @@ export const useListSyncManager = ({
       });
 
     dispatch(
-      setTasks({ isLoad: true, taskListMetaData: newMeta, tasks: newTasks })
+      setTasks({
+        isLoad: true,
+        taskListMetaData: newMeta,
+        tasks: newTasks,
+        stateForUndo: { tasks, taskListMetaData },
+      })
     );
 
     tasksRef.current = newTasks;
@@ -254,15 +266,11 @@ export const useListSyncManager = ({
 
   // Trigger save when there are local changes
   useEffect(() => {
-    console.log("TRIGER SAVE USE EFFECT");
+    process.env.NODE_ENV === "development" &&
+      console.log("TRIGER SAVE USE EFFECT");
+    debouncedMutateRef.current?.cancel();
     const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } =
       listStatus;
-
-    console.log("XX ", {
-      a: !listsData,
-      b: !isRemoteSaveable && !manualSaveTriggered,
-      c: isRemoteSaveable && isIdenticalToRemote,
-    });
 
     if (
       !listsData ||
@@ -275,8 +283,9 @@ export const useListSyncManager = ({
       (list) => list.id === taskListMetaData.id
     );
 
-    // console.log("REMOTE LIST FOUND: ", remoteList);
-    // if (!remoteList) return;
+    process.env.NODE_ENV === "development" &&
+      console.log("REMOTE LIST FOUND: ", remoteList);
+    if (!remoteList && !manualSaveTriggered) return;
 
     const isIdentical = remoteList
       ? areTasksAndMetaDataEqual(
@@ -287,8 +296,8 @@ export const useListSyncManager = ({
       : false;
 
     if (isIdentical) {
-      // console.log("CANCEL SAVE - IDENTICAL");
-      debouncedMutateRef.current?.cancel();
+      process.env.NODE_ENV === "development" &&
+        console.log("CANCEL SAVE - IDENTICAL");
       dispatch(updateTasksStatus({ status: "synced" }));
       return;
     }
@@ -344,10 +353,9 @@ export const useListSyncManager = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     listStatus,
-    // taskListMetaData,
-    // tasks,
-    listsData,
-    taskListMetaDataRef.current,
-    tasksRef.current,
+    tasks,
+    taskListMetaData,
+    // taskListMetaDataRef.current,
+    // tasksRef.current,
   ]);
 };

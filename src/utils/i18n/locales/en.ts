@@ -76,6 +76,7 @@ const langEn: typeof langPl = {
     dateCreated: "Date created",
     dateEdited: "Date edited",
     dateDone: "Date completed",
+    backButton: "Back",
   },
   archivedListsPage: {
     title: "Archived lists",

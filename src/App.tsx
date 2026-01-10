@@ -62,8 +62,8 @@ const App = () => {
       <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
       <Container>
         <HeaderControls >
-          <ThemeSwitch />
           <CurrentDate authRoutes={authRoutes} />
+          <ThemeSwitch />
         </HeaderControls>
         <Routes>
           <Route path="/account-recovery" element={<AccountRecoveryPage />} />

@@ -26,7 +26,7 @@ export const useDndItem = (id: string, isSorting: boolean) => {
 
   // Merge background color transition with dnd-kit transition
   const bgTransition =
-    "background-color 0.5s ease-in-out, border-color 0.5s ease-in-out";
+    "background-color 0.3s ease-in-out, border-color 0.5s ease-in-out";
   const mergedTransition = transition
     ? `${transition}, ${bgTransition}`
     : bgTransition;

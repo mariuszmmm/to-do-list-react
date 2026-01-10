@@ -8,6 +8,8 @@ interface SectionProps {
   extraContent?: ReactElement;
   bodyHidden?: boolean;
   onlyOpenButton?: boolean;
+  taskDetails?: boolean;
+  taskList?: boolean;
   onHeaderClick?: () => void;
 }
 
@@ -18,6 +20,8 @@ export const Section = ({
   extraContent,
   bodyHidden,
   onlyOpenButton,
+  taskDetails,
+  taskList,
   onHeaderClick,
 }: SectionProps) => (
   <StyledSection>
@@ -26,12 +30,13 @@ export const Section = ({
         $bodyHidden={bodyHidden}
         $onlyOpenButton={onlyOpenButton}
         onClick={onHeaderClick}
+        $taskDetails={taskDetails}
       >
         {title}
         {extraHeaderContent}
       </SectionHeader>
     )}
-    <SectionBody hidden={bodyHidden}>
+    <SectionBody hidden={bodyHidden} $taskList={taskList}>
       {body}
       {extraContent}
     </SectionBody>

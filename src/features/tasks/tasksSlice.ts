@@ -1,6 +1,7 @@
 import {
   createSelector,
   createSlice,
+  current,
   nanoid,
   PayloadAction,
 } from "@reduxjs/toolkit";
@@ -175,7 +176,7 @@ const tasksSlice = createSlice({
       const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index === -1) return;
       const time = new Date().toISOString();
-      state.undoTasksStack.push(stateForUndo);
+      !isRemoteSaveable && state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
       isRemoteSaveable
         ? (state.tasks[index] = {
@@ -274,7 +275,7 @@ const tasksSlice = createSlice({
         isLoad?: boolean;
         taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        stateForUndo?: TaskListData;
+        stateForUndo: TaskListData;
       }>
     ) => {
       const time = new Date().toISOString();
@@ -304,9 +305,10 @@ const tasksSlice = createSlice({
       });
       const undoTasksStack = state.undoTasksStack.pop();
       if (!undoTasksStack) return;
+      console.log("!!undoTasksStack", current(undoTasksStack));
       state.tasks = undoTasksStack.tasks.map((task) => ({
         ...task,
-        id: nanoid(),
+        // id: nanoid(),
         status: "updated",
         updatedAt: time,
       }));

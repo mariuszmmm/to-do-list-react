@@ -37,6 +37,9 @@ const ArchivedListsPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     !selectedListId && archivedLists.length > 0 && dispatch(selectArchivedList(archivedLists[0].id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedListId]);
@@ -78,6 +81,7 @@ const ArchivedListsPage = () => {
         <>
           <Header title={t("subTitle")} sub />
           <Section
+            taskList
             title={selectedListById.name}
             body={
               <div ref={previewListRef} style={{ minHeight: minPreviewHeight }}>

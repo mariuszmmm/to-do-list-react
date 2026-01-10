@@ -74,6 +74,7 @@ const langPl = {
     dateCreated: "Data utworzenia",
     dateEdited: "Data edycji",
     dateDone: "Data ukończenia",
+    backButton: "Powrót",
   },
   archivedListsPage: {
     title: "Listy zarchiwizowane",

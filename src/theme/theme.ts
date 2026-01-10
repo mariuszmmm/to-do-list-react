@@ -100,7 +100,7 @@ export const themeDark: typeof themeLight = {
       secendaryText: lighten(0.15, colorNames.teal),
       background: darken(0.05, colorNames.teal),
       check: lighten(0.02, colorNames.forestGreen),
-      edit: lighten(0.1, colorNames.empress),
+      edit: lighten(0.02, colorNames.empress),
       sort: lighten(0.1, colorNames.blue),
       remove: darken(0.04, colorNames.crimson),
       cancel: darken(0.03, colorNames.empress),
