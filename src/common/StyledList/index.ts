@@ -35,7 +35,7 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
-  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+  transition: background-color 0.3s ease-in-out, border-color 0.5s ease-in-out;
 
   grid-template-columns: ${({ $type }) =>
     $type === "tasks"

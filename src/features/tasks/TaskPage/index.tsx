@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux";
 import { DateInfo, Name } from "./styled";
 import { Header } from "../../../common/Header";
@@ -7,9 +7,12 @@ import { Section } from "../../../common/Section";
 import { selectTaskById } from "../tasksSlice";
 import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import { useTranslation } from "react-i18next";
+import { FormButton } from "../../../common/FormButton";
+import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
 
 const TaskPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const task = useAppSelector((state) =>
     id ? selectTaskById(state, id) : null,
   );
@@ -25,6 +28,7 @@ const TaskPage = () => {
     <>
       <Header title={t("title")} />
       <Section
+        taskDetails
         title={task ? task.content : t("noContent")}
         body={
           task && (
@@ -49,6 +53,11 @@ const TaskPage = () => {
                   {formatCurrentDate(new Date(task.completedAt), i18n.language)}
                 </DateInfo>
               )}
+              <FormButtonWrapper $taskDetails >
+                <FormButton type="button" width={"200px"} onClick={() => navigate(-1)} $singleInput>
+                  {t("backButton")}
+                </FormButton>
+              </FormButtonWrapper>
             </>
           )
         }

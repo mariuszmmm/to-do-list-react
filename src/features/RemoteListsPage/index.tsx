@@ -55,6 +55,9 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     !selectedListId && lists.length > 0 && dispatch(selectList(lists[0].id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedListId]);
@@ -143,6 +146,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
         <>
           <Header title={t("subTitle")} sub />
           <Section
+            taskList
             title={selectedListById.name}
             body={
               <div ref={previewListRef} style={{ minHeight: minPreviewHeight }}>
