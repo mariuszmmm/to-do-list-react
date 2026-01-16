@@ -31,7 +31,7 @@ import {
 } from "./hooks";
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
-import { TestPage } from "./features/TestPage";
+// import { TestPage } from "./features/TestPage";
 import { TaskImage } from "./features/tasks/TaskImage";
 
 const App = () => {
