@@ -9,16 +9,20 @@ import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
+import { Image, ImagePreview, } from "../../../common/Image";
+import { useTaskImage } from "../../../hooks";
 
 const TaskPage = () => {
-  const { id } = useParams();
+  const { id: taskId } = useParams();
   const navigate = useNavigate();
   const task = useAppSelector((state) =>
-    id ? selectTaskById(state, id) : null,
+    taskId ? selectTaskById(state, taskId) : null,
   );
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "taskPage",
   });
+  const { imageUrl } = task?.image || {};
+  const { imageSrc } = useTaskImage(imageUrl);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,6 +37,15 @@ const TaskPage = () => {
         body={
           task && (
             <>
+              {task.image && <ImagePreview>
+                {imageSrc &&
+                  <Image
+                    src={imageSrc}
+                    alt="preview"
+                    key={imageSrc}
+                  />
+                }
+              </ImagePreview>}
               <DateInfo>
                 <Name>{t("done.title")}:</Name>
                 {task.done ? t("done.yes") : t("done.no")}
@@ -53,7 +66,8 @@ const TaskPage = () => {
                   {formatCurrentDate(new Date(task.completedAt), i18n.language)}
                 </DateInfo>
               )}
-              <FormButtonWrapper $taskDetails >
+
+              <FormButtonWrapper $taskDetails>
                 <FormButton type="button" width={"200px"} onClick={() => navigate(-1)} $singleInput>
                   {t("backButton")}
                 </FormButton>

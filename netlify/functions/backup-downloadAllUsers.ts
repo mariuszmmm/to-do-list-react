@@ -1,12 +1,12 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import { getAllUsersForBackup } from "../utils/getAllUsersForBackup";
+import { getAllUsersForBackup } from "../functions/lib/getAllUsersForBackup";
 import {
   checkClientContext,
   checkHttpMethod,
   checkAdminRole,
-} from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
+} from "../functions/lib/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[downloadAllUsers]";

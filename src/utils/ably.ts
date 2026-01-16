@@ -3,8 +3,14 @@ import { getUserToken } from "./getUserToken";
 import { getOrCreateDeviceId } from "./deviceId";
 
 let ablyInstance: Ably.Realtime | null = null;
+let pendingConfirmationEmail: string | null = null;
 
-// Helper: Pobranie emaila z JWT tokenu
+export const setPendingConfirmationEmail = (email: string | null) => {
+  pendingConfirmationEmail = email;
+};
+
+const getPendingConfirmationEmail = () => pendingConfirmationEmail;
+
 const getEmailFromToken = (token: string): string | null => {
   try {
     const parts = token.split(".");
@@ -22,31 +28,52 @@ export const getAblyInstance = (): Ably.Realtime => {
     ablyInstance = new Ably.Realtime({
       authCallback: async (tokenParams, callback) => {
         try {
+          const deviceId = getOrCreateDeviceId();
           const userToken = await getUserToken();
 
-          if (!userToken) {
+          if (userToken) {
+            const email = getEmailFromToken(userToken);
+
+            if (!email) {
+              callback(
+                "User not authenticated - cannot extract email from token",
+                null
+              );
+              return;
+            }
+
+            const response = await fetch(
+              `/auth-ablyAuth?deviceId=${deviceId}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              callback(errorData.message || response.statusText, null);
+              return;
+            }
+
+            const ablyTokenRequest = await response.json();
+            callback(null, ablyTokenRequest);
+            return;
+          }
+
+          const pendingEmail = getPendingConfirmationEmail();
+
+          if (!pendingEmail) {
             callback("No token available", null);
             return;
           }
 
-          // Pobierz email z JWT tokenu (ponieważ auth.currentUser().email może być undefined)
-          const email = getEmailFromToken(userToken);
-
-          if (!email) {
-            callback(
-              "User not authenticated - cannot extract email from token",
-              null
-            );
-            return;
-          }
-
-          const deviceId = getOrCreateDeviceId();
-          const response = await fetch(`/auth-ablyAuth?deviceId=${deviceId}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          });
+          const response = await fetch(
+            `/auth-ablyAuth?email=${pendingEmail}&deviceId=${deviceId}`,
+            { method: "GET" }
+          );
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -112,11 +139,9 @@ export const safeDetachChannel = async (
       console.warn("[Ably] detach timeout, proceeding: ", err.message);
       return;
     }
-    // Ignoruj błędy gdy detach jest przerywany przez attach (StrictMode cleanup)
     if (err instanceof Error && err.message.includes("superseded")) {
       return;
     }
-    // Ignoruj błędy gdy połączenie jest już zamknięte (logout cleanup)
     if (err instanceof Error && err.message.includes("Connection closed")) {
       return;
     }
@@ -136,13 +161,21 @@ export const safePresenceLeave = async (
       console.warn("[Ably] presence leave timeout, proceeding: ", err.message);
       return;
     }
-    // Ignoruj błędy gdy kanał jest już detached (StrictMode cleanup)
     if (
       err instanceof Error &&
       (err.message.includes("detached") ||
         err.message.includes("Channel operation failed"))
     ) {
       return;
+    }
+    if (err instanceof Error && err.message.includes("Connection closed")) {
+      return;
+    }
+    if (typeof err === "object" && err !== null && "message" in err) {
+      const errorMessage = String(err.message);
+      if (errorMessage.includes("Connection closed")) {
+        return;
+      }
     }
     console.error("[Ably] presence leave error:", err);
   }

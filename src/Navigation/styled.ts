@@ -60,6 +60,7 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.nav.text};
   height: 50px;
+  transition: color 0.2s ease-in-out;
 
   &:hover {
     text-decoration: underline;

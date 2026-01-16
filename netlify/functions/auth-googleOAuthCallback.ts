@@ -1,6 +1,6 @@
 import type { Handler } from "@netlify/functions";
-import { checkEventBody, checkHttpMethod } from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
+import { checkEventBody, checkHttpMethod } from "../functions/lib/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event) => {
   const logPrefix = "[googleOAuthCallback]";

@@ -3,8 +3,8 @@ import {
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
-} from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
+} from "../functions/lib/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[refreshGoogleToken]";

@@ -28,10 +28,6 @@ export const publishConfirmation = async (email: string, data: any) => {
 
     const channel = ably.channels.get(`user:${email}:confirmation`);
     await channel.publish("user-confirmed", data);
-    process.env.NODE_ENV === "development" &&
-      console.log(
-        `[Ably] Published confirmation to user:${email}:confirmation`
-      );
   } catch (error) {
     console.error("Failed to send Ably confirmation:", error);
   }

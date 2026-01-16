@@ -8,9 +8,9 @@ import {
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
-} from "../utils/validators";
+} from "../functions/lib/validators";
 import { BackupData, Task } from "../../src/types";
-import { jsonResponse, logError } from "../utils/response";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[restoreUserLists]";

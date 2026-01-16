@@ -1,14 +1,14 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import { restoreAllUsersFromBackupData } from "../utils/restoreAllUsersFromBackupData";
+import { restoreAllUsersFromBackupData } from "../functions/lib/restoreAllUsersFromBackupData";
 import {
   checkAdminRole,
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
-} from "../utils/validators";
+} from "../functions/lib/validators";
 import { BackupData } from "../../src/types";
-import { jsonResponse, logError } from "../utils/response";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[restoreAllUsers]";

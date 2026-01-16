@@ -1,30 +1,15 @@
-import type { Handler } from "@netlify/functions";
-import UserData from "../models/UserData";
-import { publishAblyUpdate } from "../config/ably";
-import { connectToDB } from "../config/mongoose";
-import {
-  checkClientContext,
-  checkEventBody,
-  checkHttpMethod,
-} from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
-import { Data } from "../../src/types";
-import { mapListsToResponse } from "../utils/mapListsToResponse";
+import { HandlerContext, HandlerEvent } from "@netlify/functions";
+import UserData from "../../models/UserData";
+import { mapListsToResponse } from "../lib/mapListsToResponse";
+import { jsonResponse, logError } from "../lib/response";
+import { Data } from "../../../src/types";
+import { publishAblyUpdate } from "../../config/ably";
 
-const handler: Handler = async (event, context) => {
-  const logPrefix = "[removeData]";
-
-  const methodResponse = checkHttpMethod(event.httpMethod, "DELETE", logPrefix);
-  if (methodResponse) return methodResponse;
-
-  const bodyResponse = checkEventBody(event.body, logPrefix);
-  if (bodyResponse) return bodyResponse;
-
-  const authResponse = checkClientContext(context, logPrefix);
-  if (authResponse) return authResponse;
-
-  await connectToDB();
-
+export const removeData = async (
+  event: HandlerEvent,
+  context: HandlerContext,
+  logPrefix: string
+) => {
   try {
     const email = context.clientContext?.user.email as string;
     const body = event.body as string;
@@ -110,5 +95,3 @@ const handler: Handler = async (event, context) => {
     return jsonResponse(500, { message: "Internal server error" });
   }
 };
-
-export { handler };

@@ -104,7 +104,7 @@ function* setListToLoadHandler(
     tasksToLoad = [...listToLoadData.taskList];
   }
 
-  yield archiveTasksHandler();
+  if (tasks.length > 0) yield archiveTasksHandler();
 
   yield put(
     setTasks({

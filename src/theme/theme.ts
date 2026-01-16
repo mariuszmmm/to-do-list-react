@@ -15,6 +15,8 @@ const colorNames = {
   blue: "#0083e7ff",
   yellow: "#b19900ff",
   transparent: "transparent",
+  orange: "#f6a800f6",
+  test: "#f6a800f6",
 };
 
 const common = {
@@ -51,6 +53,7 @@ export const themeLight = {
       secendaryText: colorNames.teal,
       background: colorNames.teal,
       check: colorNames.forestGreen,
+      image: colorNames.orange,
       edit: colorNames.empress,
       sort: colorNames.blue,
       remove: colorNames.crimson,
@@ -85,7 +88,7 @@ export const themeDark: typeof themeLight = {
     textPrimary: colorNames.silver,
     textSecendary: colorNames.empress,
     backgroundPrimary: colorNames.black,
-    backgroundSecendary: lighten(0.05, colorNames.black),
+    backgroundSecendary: lighten(0.06, colorNames.black),
     backgrouncSelected: darken(0.05, colorNames.snowyMint),
     themeSwitch: {
       icon: colorNames.black,
@@ -93,13 +96,14 @@ export const themeDark: typeof themeLight = {
     },
     nav: {
       text: colorNames.gallery,
-      background: darken(0.1, colorNames.teal),
+      background: darken(0.05, colorNames.teal),
     },
     button: {
       primaryText: colorNames.gallery,
       secendaryText: lighten(0.15, colorNames.teal),
       background: darken(0.05, colorNames.teal),
       check: lighten(0.02, colorNames.forestGreen),
+      image: darken(0.05, colorNames.orange),
       edit: lighten(0.02, colorNames.empress),
       sort: lighten(0.1, colorNames.blue),
       remove: darken(0.04, colorNames.crimson),

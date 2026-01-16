@@ -51,14 +51,14 @@ export const handleDeleteBackup = async (
     setCurrentPage(1);
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[DeleteBackup]", error);
     setShowGoogleAuth(true);
 
-    const msg = typeof error.message === "string" ? error.message : "";
-    const translatedText = msg
-      ? await translateText(msg, i18n.language)
-      : t("listGoogleDriveBackups.errorDelete");
+    const msg = error instanceof Error ? error.message : "";
+    const translatedText =
+      (await translateText(msg, i18n.language)) ||
+      t("listGoogleDriveBackups.errorDelete");
 
     return { success: false, message: translatedText };
   }

@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+export const BackupListContainer = styled.div`
+  margin-top: 20px;
+  padding: 15px;
+  border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
+  background-color: ${({ theme }) => theme.colors.backgroundSecendary};
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+`;
+
 interface BackupItemProps {
   $isLoading?: boolean;
 }
@@ -15,6 +24,7 @@ export const BackupListTitle = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
   margin-bottom: 15px;
   text-align: center;
+  transition: color 0.5s ease-in-out;
 `;
 
 export const BackupItem = styled.div<BackupItemProps>`
@@ -29,7 +39,9 @@ export const BackupItem = styled.div<BackupItemProps>`
   border-radius: 4px;
   opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
   cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
-  transition: all 0.2s ease;
+
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out,
+    transform 0.2s ease-in-out;
 
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};

@@ -1,5 +1,4 @@
 import React from "react";
-import { BackupListContainer } from "../../../../../common/BackupListContainer";
 import {
   BackupListTitle,
   BackupItem,
@@ -8,14 +7,15 @@ import {
   BackupFileInfo,
   BackupActionsContainer,
   BackupItemsContainer,
+  BackupListContainer
 } from "../../styled";
-import { PaginationContainer, PaginationButton, PaginationInfo, ArrowIcon, PaginationLabel } from "../../../../../common/Pagination";
 import { RemoveButton } from "../../../../../common/taskButtons";
 import { useTranslation } from "react-i18next";
 import { handleRestoreBackupFromGoogleDrive } from "../../handlers/handleRestoreBackupFromGoogleDrive";
 import { handleDeleteBackupConfirmation } from "../../handlers/handleDeleteBackupConfirmation";
 import { useAppDispatch } from "../../../../../hooks";
 import { BackupFile } from "../../../../../types";
+import { ArrowIcon, PaginationButton, PaginationContainer, PaginationInfo, PaginationLabel } from "../../../../../common/pagination";
 
 interface BackupListProps {
   backupFiles: Array<BackupFile>;

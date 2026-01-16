@@ -9,7 +9,7 @@ export function checkHttpMethod(
   if (method !== allowedMethod) {
     console.warn(`${logPrefix} Invalid HTTP method: ${method}`);
     return jsonResponse(405, {
-      message: `Invalid HTTP method. Only ${allowedMethod} is allowed.`,
+      message: `Invalid HTTP method.\n Only ${allowedMethod} is allowed.`,
     });
   }
   return null;
@@ -33,7 +33,7 @@ export function checkClientContext(
   if (!context.clientContext?.user) {
     console.warn(`${logPrefix} Unauthorized access attempt`);
     return jsonResponse(401, {
-      message: "Authentication required. Please log in to continue.",
+      message: "Authentication required.\n Please log in to continue.",
       source: "user",
     });
   }
@@ -49,7 +49,7 @@ export function checkAdminRole(
   ) {
     console.warn(`${logPrefix} Admin access denied`);
     return jsonResponse(403, {
-      message: "Insufficient permissions. Administrator access required.",
+      message: "Insufficient permissions.\n Administrator access required.",
     });
   }
   return null;

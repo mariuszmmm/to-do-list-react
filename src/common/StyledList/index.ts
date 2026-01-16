@@ -21,6 +21,7 @@ interface StyledTaskProps {
   $tokenStatus?: "active" | "expired";
   disabled?: boolean;
   $isDragging?: boolean;
+  $edit?: boolean;
 }
 
 export const StyledList = styled.ul`
@@ -35,12 +36,13 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
-  transition: background-color 0.3s ease-in-out, border-color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
 
   grid-template-columns: ${({ $type }) =>
-    $type === "tasks"
-      ? "auto 1fr auto auto"
-      : $type === "lists" || $type === "sort" || $type === "archived"
+    $type === "tasks" ||
+    $type === "lists" ||
+    $type === "sort" ||
+    $type === "archived"
       ? "auto 1fr auto"
       : $type === "tasksView"
       ? "auto 1fr"
@@ -144,7 +146,6 @@ export const TaskNumber = styled.span<{
 export const StyledSpan = styled.span<StyledTaskProps>`
   padding-left: 2px;
   white-space: pre-line;
-  font-style: red;
 
   ${({ $done }) =>
     $done &&
@@ -177,11 +178,10 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       font-weight: ${({ theme }) => theme.fontWeight.normal};
     `}
 
-      ${({ disabled }) =>
+  ${({ disabled }) =>
     disabled &&
     css`
-      text-decoration: 1px line-through
-        ${({ theme }) => theme.colors.textSecendary};
+      text-decoration-color: ${({ theme }) => theme.colors.textSecendary};
     `};
 
   strong {

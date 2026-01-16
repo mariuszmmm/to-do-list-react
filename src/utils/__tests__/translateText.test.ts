@@ -32,18 +32,20 @@ describe("translateText", () => {
     expect(result).toBeNull();
   });
 
-  it("throws error if response is not ok", async () => {
+  it("returns null if response is not ok", async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       statusText: "fail",
     });
-    await expect(translateText("bar", "pl")).rejects.toThrow("fail");
+    const result = await translateText("bar", "pl");
+    expect(result).toBeNull();
   });
 
-  it("logs error and throws if fetch throws", async () => {
+  it("logs error and returns null if fetch throws", async () => {
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
     (fetch as jest.Mock).mockRejectedValueOnce(new Error("network"));
-    await expect(translateText("bar", "pl")).rejects.toThrow("network");
+    const result = await translateText("bar", "pl");
+    expect(result).toBeNull();
     expect(spy).toHaveBeenCalledWith(
       "Error fetching translation",
       expect.any(Error)

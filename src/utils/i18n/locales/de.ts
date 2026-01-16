@@ -78,6 +78,22 @@ const langDe: typeof langPl = {
     dateDone: "Abschlussdatum",
     backButton: "Zurück",
   },
+  taskImagePage: {
+    title: "Aufgabenbild",
+    noTask: "Aufgabe nicht gefunden 😥",
+    messages: {
+      uploading: "Hochladen…",
+      loading: "Laden…",
+      uploadError: "Fehler beim Hochladen des Bildes.",
+      loadError: "Fehler beim Laden des Bildes.",
+    },
+    buttons: {
+      add: "Hinzufügen",
+      change: "Ändern",
+      remove: "Entfernen",
+      back: "Zurück",
+    },
+  },
   archivedListsPage: {
     title: "Archivierte Listen",
     lists: {
@@ -324,12 +340,11 @@ const langDe: typeof langPl = {
   },
   confirmationPage: {
     message: {
-      success:
-        "Die Registrierung war erfolgreich, du kannst die Seite schließen.",
+      success: "Registrierung erfolgreich.",
       error: "Registrierung fehlgeschlagen.",
     },
     closeTab:
-      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückgehen.",
+      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -337,12 +352,11 @@ const langDe: typeof langPl = {
     title: "Passwort ändern",
     subTitle: "Neues Passwort eingeben",
     message: {
-      success:
-        "Konto wurde wiederhergestellt.<br/> Du kannst zum vorher geöffneten Tab zurückkehren.",
+      success: "Konto wurde wiederhergestellt.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
     closeTab:
-      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückgehen.",
+      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -538,6 +552,11 @@ const langDe: typeof langPl = {
       },
       button: "Absenden",
     },
+  },
+  errorMessage: {
+    imageLoadingError: "Fehler beim Laden des Bildes",
+    imageUploadError: "Fehler beim Hochladen des Bildes",
+    imageDeleteError: "Fehler beim Löschen des Bildes",
   },
   prepareText: {
     period: "Punkt",

@@ -1,7 +1,7 @@
 import type { Handler } from "@netlify/functions";
 import Ably from "ably";
-import { jsonResponse, logError } from "../utils/response";
-import { checkHttpMethod } from "../utils/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
+import { checkHttpMethod } from "../functions/lib/validators";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[ably-auth]";
@@ -16,12 +16,8 @@ const handler: Handler = async (event, context) => {
     ? context?.clientContext?.user?.email
     : emailParam;
   const isAdmin =
-    context.clientContext?.user.app_metadata?.roles?.includes("admin") ?? false;
-
-  console.log(
-    `${logPrefix} Email: ${email}, isAdmin: ${isAdmin}, roles:`,
-    context.clientContext?.user?.app_metadata?.roles
-  );
+    context?.clientContext?.user?.app_metadata?.roles?.includes("admin") ??
+    false;
 
   if (!email) {
     console.warn(`${logPrefix} Unauthorized request: missing email`);

@@ -4,6 +4,7 @@ import { StyledLink } from "../../../../common/StyledLink";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
 import {
   EditButton,
+  ImageButton,
   RemoveButton,
   SortButton,
   ToggleButton,
@@ -38,6 +39,8 @@ import {
 import { moveListDown, moveListUp } from "../../../../utils/moveList";
 import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
 import { ListsData, Task } from "../../../../types";
+import { TaskActions } from "../../../../common/TaskActions";
+import { selectLoggedUserEmail } from "../../../AccountPage/accountSlice";
 
 export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) => {
   const query = useQueryParameter(searchQueryParamName);
@@ -50,6 +53,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
   const filteredTasks = useAppSelector(state => selectActiveTasksByQuery(state, query));
   const tasksLst = tasksToSort || filteredTasks || tasks;
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -148,19 +152,21 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
     <StyledList>
       {tasksLst.map((task, index) => (
         <StyledListItem key={task.id} hidden={task.done && hideDone} $edit={editedTaskContent?.id === task.id} $type={"tasks"}>
-          <ToggleButton
-            onClick={() =>
-              dispatch(
-                toggleTaskDone({
-                  taskId: task.id,
-                  stateForUndo: { tasks, taskListMetaData },
-                }),
-              )
-            }
-            disabled={!!editedTaskContent}
-          >
-            {task.done ? "✔" : ""}
-          </ToggleButton>
+          <TaskActions>
+            <ToggleButton
+              onClick={() =>
+                dispatch(
+                  toggleTaskDone({
+                    taskId: task.id,
+                    stateForUndo: { tasks, taskListMetaData },
+                  }),
+                )
+              }
+              disabled={!!editedTaskContent}
+            >
+              {task.done ? "✔" : ""}
+            </ToggleButton>
+          </TaskActions>
           <StyledListContent $type={"tasks"}>
             {!query ? <TaskNumber $edit={editedTaskContent?.id === task.id}>{`${index + 1}. `}</TaskNumber> : ""}
             <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
@@ -169,7 +175,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
               </StyledLink>
             </StyledSpan>
           </StyledListContent>
-          <>
+          <TaskActions>
             <EditButton onClick={() => dispatch(setTaskToEdit(task.id))} disabled={!!editedTaskContent}>
               ✏️
             </EditButton>
@@ -187,9 +193,17 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
             >
               🗑️
             </RemoveButton>
-          </>
+
+            {loggedUserEmail && <ImageButton disabled={!!editedTaskContent || !isRemoteSaveable}>
+              <StyledLink to={`/tasks/image/${task.id}`} disabled={!!editedTaskContent || !isRemoteSaveable}>
+                📷
+              </StyledLink>
+            </ImageButton>}
+
+          </TaskActions>
         </StyledListItem>
-      ))}
-    </StyledList>
+      ))
+      }
+    </StyledList >
   );
 };

@@ -30,6 +30,11 @@ export type Data = {
   updatedAt: string;
 };
 
+export type ImageData = {
+  formData: FormData;
+  deviceId: string;
+};
+
 export type ListsData = {
   lists: List[];
   deviceId: string;

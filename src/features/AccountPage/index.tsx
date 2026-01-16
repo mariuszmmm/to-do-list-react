@@ -6,7 +6,7 @@ import { StyledSpan } from "../../common/StyledList";
 import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
-import { AccountExtraButtons } from "./AccountExtraButtons";
+import { AccountFormActions } from "./AccountFormActions";
 import { BackupManager } from "./BackupManager";
 import { PresenceUsersList } from "./PresenceUsersList";
 import { SessionInfo } from "./SessionInfo";
@@ -24,6 +24,7 @@ import {
   getSettingsFromLocalStorage,
   saveSettingsInLocalStorage,
 } from "../../utils/localStorage";
+
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -120,7 +121,7 @@ const AccountPage = () => {
         body={<AccountForm />}
         extraContent={
           <>
-            <AccountExtraButtons />
+            <AccountFormActions />
             <br />
             {loggedUserEmail && userDevices > 0 &&
               <StyledSpan $comment >

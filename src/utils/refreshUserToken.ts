@@ -3,6 +3,14 @@ import { auth } from "../api/auth";
 export const refreshUserToken = async () => {
   const user = auth.currentUser();
 
+  // Skip logout if user is waiting for email confirmation
+  const waitingForConfirmation = sessionStorage.getItem(
+    "waitingForConfirmation"
+  );
+  if (waitingForConfirmation) {
+    return null;
+  }
+
   try {
     if (!user) {
       throw new Error("No user found");
@@ -16,6 +24,7 @@ export const refreshUserToken = async () => {
     return token;
   } catch (error: any) {
     console.error("[refreshUserToken] Błąd podczas odświeżania tokena:", error);
+
     if (error.status === 401 || error.message === "No user found") {
       process.env.NODE_ENV === "development" &&
         console.log(

@@ -1,4 +1,4 @@
-import { List } from "../../src/types";
+import { List } from "../../../src/types";
 
 export const mapListsToResponse = (lists: List[]): List[] =>
   lists.map((list) => ({
@@ -13,7 +13,8 @@ export const mapListsToResponse = (lists: List[]): List[] =>
       done: task.done,
       date: task.date,
       editedAt: task.editedAt,
-      updatedAt: task.updatedAt,
       completedAt: task.completedAt,
+      image: task.image || null,
+      updatedAt: task.updatedAt,
     })),
   }));
