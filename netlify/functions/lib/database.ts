@@ -1,4 +1,4 @@
-import UserData, { UserDoc } from "../models/UserData";
+import UserData, { UserDoc } from "../../models/UserData";
 import type { HandlerResponse } from "@netlify/functions";
 import { jsonResponse, logError } from "./response";
 

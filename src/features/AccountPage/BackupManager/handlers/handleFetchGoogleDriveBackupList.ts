@@ -48,15 +48,13 @@ export const handleFetchGoogleDriveBackupList = async (
 
     setBackupFiles(files);
     setShowBackupList(true);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[handleFetchGoogleDriveBackupList]", error);
     setShowGoogleAuth(true);
-
-    const msg = typeof error.message === "string" ? error.message : "";
-    const translatedText = msg
-      ? await translateText(msg, i18n.language)
-      : t("listGoogleDriveBackups.error");
-
+    const msg = error instanceof Error ? error.message : "";
+    const translatedText =
+      (await translateText(msg, i18n.language)) ||
+      t("listGoogleDriveBackups.error");
     setStatus({
       isLoading: false,
       message: translatedText,

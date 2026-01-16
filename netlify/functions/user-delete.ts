@@ -1,8 +1,11 @@
 import type { Handler } from "@netlify/functions";
 import UserData from "../models/UserData";
 import { connectToDB } from "../config/mongoose";
-import { jsonResponse, logError } from "../utils/response";
-import { checkClientContext, checkHttpMethod } from "../utils/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
+import {
+  checkClientContext,
+  checkHttpMethod,
+} from "../functions/lib/validators";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[deleteUser]";

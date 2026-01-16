@@ -6,23 +6,13 @@
   node_bundler = "esbuild"
 
 [[redirects]]
-  from = "/data-getData"
-  to = "/.netlify/functions/data-getData"
+  from = "/data"
+  to = "/.netlify/functions/data"
   status = 200
 
 [[redirects]]
-  from = "/data-addData"
-  to = "/.netlify/functions/data-addData"
-  status = 200
-
-[[redirects]]
-  from = "/data-removeData"
-  to = "/.netlify/functions/data-removeData"
-  status = 200
-
-[[redirects]]
-  from = "/data-updateData"
-  to = "/.netlify/functions/data-updateData"
+  from = "/image"
+  to = "/.netlify/functions/image"
   status = 200
 
 [[redirects]]

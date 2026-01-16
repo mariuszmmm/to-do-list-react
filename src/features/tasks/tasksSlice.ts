@@ -412,6 +412,22 @@ const tasksSlice = createSlice({
     setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
       state.changeSource = payload;
     },
+    setImage: (
+      state,
+      {
+        payload: { taskId, image },
+      }: PayloadAction<{
+        taskId: string;
+        image: Task["image"];
+      }>
+    ) => {
+      const index = state.tasks.findIndex((task) => task.id === taskId);
+      if (index === -1) return;
+      state.tasks[index] = {
+        ...state.tasks[index],
+        image,
+      };
+    },
   },
 });
 
@@ -438,6 +454,7 @@ export const {
   switchTasksSort,
   clearStorage,
   setChangeSource,
+  setImage,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;

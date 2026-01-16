@@ -9,6 +9,7 @@ import {
   closeAblyConnection,
   safeDetachChannel,
   safePresenceLeave,
+  setPendingConfirmationEmail,
 } from "../utils/ably";
 import { getOrCreateDeviceId } from "../utils/deviceId";
 
@@ -36,24 +37,92 @@ const subscriptionsRef = {
 export const useAblyManager = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const channelsRef = useRef<Map<string, any>>(new Map());
+  const confirmationHandlersRef = useRef<Map<string, (message: any) => void>>(
+    new Map()
+  );
   const presenceChannelRef = useRef<any | null>(null);
   const isInitializedRef = useRef<boolean>(false);
   const isAdmin = useAppSelector(selectIsAdmin);
 
-  //  do zrobienia !!!!!!   (potwierdzanie urzytkowników obecnie przestało działać)
-  // Obecnie onConfirmation jest zdefiniowany, ale nieużywany – stary hook useWaitingForConfirmation tworzy własne połączenie zamiast korzystać z onConfirmation. Można by refaktoryzować i użyć onConfirmation, aby uniknąć wielokrotnego inicjalizowania Ably.
+  const subscribeToConfirmationChannel = useCallback(async (email: string) => {
+    if (!email) return;
+
+    const channelKey = `confirmation:${email}`;
+    if (channelsRef.current.has(channelKey)) {
+      return;
+    }
+
+    const ably = getAblyInstance();
+    const channel = ably.channels.get(`user:${email}:confirmation`);
+    channelsRef.current.set(channelKey, channel);
+
+    const handleConfirmation = (message: any) => {
+      if (message.data?.type === "user-confirmed") {
+        const callbacks = subscriptionsRef.confirmation.get(email) || [];
+        callbacks.forEach((cb) => cb(message.data));
+      }
+    };
+
+    confirmationHandlersRef.current.set(channelKey, handleConfirmation);
+
+    try {
+      await channel.attach();
+      channel.subscribe("user-confirmed", handleConfirmation);
+    } catch (err) {
+      if (err instanceof Error && err.message.includes("superseded")) {
+        return;
+      }
+      console.error("[AblyManager] Confirmation attach failed:", err);
+    }
+  }, []);
+
+  const cleanupConfirmationChannel = useCallback(async (email: string) => {
+    const channelKey = `confirmation:${email}`;
+    const channel = channelsRef.current.get(channelKey);
+    const handler = confirmationHandlersRef.current.get(channelKey);
+
+    if (channel && handler) {
+      channel.unsubscribe("user-confirmed", handler);
+    }
+
+    if (channel) {
+      await safeDetachChannel(channel, 2000);
+    }
+
+    channelsRef.current.delete(channelKey);
+    confirmationHandlersRef.current.delete(channelKey);
+  }, []);
+
   const onConfirmation = useCallback(
-    (email: string, callback: ConfirmationCallback) => {
+    async (email: string, callback: ConfirmationCallback) => {
+      if (!email) return () => {};
+
       const callbacks = subscriptionsRef.confirmation.get(email) || [];
       callbacks.push(callback);
       subscriptionsRef.confirmation.set(email, callbacks);
 
+      try {
+        await subscribeToConfirmationChannel(email);
+      } catch (err) {
+        console.error("[AblyManager] Confirmation subscribe error:", err);
+      }
+
       return () => {
-        const idx = callbacks.indexOf(callback);
-        if (idx > -1) callbacks.splice(idx, 1);
+        const currentCallbacks = subscriptionsRef.confirmation.get(email) || [];
+        const idx = currentCallbacks.indexOf(callback);
+        if (idx > -1) currentCallbacks.splice(idx, 1);
+
+        if (currentCallbacks.length === 0) {
+          subscriptionsRef.confirmation.delete(email);
+          cleanupConfirmationChannel(email).catch((err) =>
+            console.error("[AblyManager] Confirmation cleanup error:", err)
+          );
+        } else {
+          subscriptionsRef.confirmation.set(email, currentCallbacks);
+        }
       };
     },
-    []
+    [cleanupConfirmationChannel, subscribeToConfirmationChannel]
   );
 
   const onListsUpdate = useCallback(
@@ -99,12 +168,6 @@ export const useAblyManager = () => {
     const dataChannel = ably.channels.get(`user:${loggedUserEmail}:lists`);
     channelsRef.current.set("data", dataChannel);
 
-    // Initialize confirmation channel for user confirmations
-    const confirmationChannel = ably.channels.get(
-      `user:${loggedUserEmail}:confirmation`
-    );
-    channelsRef.current.set("confirmation", confirmationChannel);
-
     // Initialize presence channels for user and admin
     const presenceSelfChannel = ably.channels.get(
       `user:${loggedUserEmail}:presence`
@@ -126,7 +189,7 @@ export const useAblyManager = () => {
         await dataChannel.attach();
         await presenceSelfChannel.attach();
         await presenceAdminChannel.attach();
-        await confirmationChannel.attach();
+        await subscribeToConfirmationChannel(loggedUserEmail);
       } catch (err) {
         if (err instanceof Error && err.message.includes("superseded")) {
           return;
@@ -144,16 +207,6 @@ export const useAblyManager = () => {
       };
 
       dataChannel.subscribe("lists-updated", handleListsMessage);
-
-      const handleConfirmation = (message: any) => {
-        if (message.data?.type === "user-confirmed") {
-          const email = message.data.email;
-          const callbacks = subscriptionsRef.confirmation.get(email) || [];
-          callbacks.forEach((cb) => cb(message.data));
-        }
-      };
-
-      confirmationChannel.subscribe("user-confirmed", handleConfirmation);
 
       const updatePresenceCount = async () => {
         try {
@@ -224,49 +277,54 @@ export const useAblyManager = () => {
     initializeChannels();
 
     const channels = channelsRef.current;
+    const confirmationHandlers = confirmationHandlersRef.current;
 
     return () => {
       isInitializedRef.current = false;
 
       (async () => {
         try {
-          const presenceChannel = channels.get("presence");
-          const confirmationChannel = channels.get("confirmation");
-          const dataChannelCleanup = channels.get("data");
+          for (const [key, channel] of channels) {
+            if (key.startsWith("presence") && channel?.presence) {
+              await safePresenceLeave(
+                channel.presence,
+                { status: "offline" },
+                2000
+              );
+            }
 
-          if (presenceChannel) {
-            await safePresenceLeave(
-              presenceChannel.presence,
-              { status: "offline" },
-              2000
-            );
-            await safeDetachChannel(presenceChannel, 2000);
-          }
+            if (key.startsWith("confirmation:")) {
+              const handler = confirmationHandlers.get(key);
+              if (handler) {
+                channel.unsubscribe("user-confirmed", handler);
+              }
+            }
 
-          if (confirmationChannel) {
-            await safeDetachChannel(confirmationChannel, 2000);
-          }
-
-          if (dataChannelCleanup) {
-            await safeDetachChannel(dataChannelCleanup, 2000);
+            await safeDetachChannel(channel, 2000);
           }
         } catch (err) {
           console.error("[AblyManager] Cleanup error:", err);
+        } finally {
+          channels.clear();
+          confirmationHandlers.clear();
+          presenceChannelRef.current = null;
         }
       })();
-
-      channels.clear();
-      presenceChannelRef.current = null;
     };
-  }, [loggedUserEmail, isAdmin]);
+  }, [loggedUserEmail, isAdmin, subscribeToConfirmationChannel]);
 
   useEffect(() => {
     if (!loggedUserEmail) {
-      closeAblyConnection();
-      isInitializedRef.current = false;
-      subscriptionsRef.confirmation.clear();
-      subscriptionsRef.listsUpdate.clear();
-      subscriptionsRef.presenceUpdate.clear();
+      // Czekaj chwilę aby cleanup useEffect się wykonał
+      const timer = setTimeout(() => {
+        closeAblyConnection();
+        isInitializedRef.current = false;
+        subscriptionsRef.confirmation.clear();
+        subscriptionsRef.listsUpdate.clear();
+        subscriptionsRef.presenceUpdate.clear();
+      }, 100);
+
+      return () => clearTimeout(timer);
     }
   }, [loggedUserEmail]);
 
@@ -274,5 +332,6 @@ export const useAblyManager = () => {
     onConfirmation,
     onListsUpdate,
     onPresenceUpdate,
+    setPendingConfirmationEmail,
   };
 };

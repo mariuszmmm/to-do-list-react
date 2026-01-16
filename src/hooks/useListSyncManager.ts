@@ -44,6 +44,7 @@ const areTasksAndMetaDataEqual = (
       remoteTask.id === localTask.id &&
       remoteTask.content === localTask.content &&
       remoteTask.done === localTask.done &&
+      remoteTask.image === localTask.image &&
       localTask.status !== "deleted"
     );
   });
@@ -177,10 +178,14 @@ export const useListSyncManager = ({
       return;
     }
 
+    const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
     const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
     console.log("!!!!!!!!!!!!!!!!!! DELETED TASKS TO PRESERVE:", deletedTasks);
     console.log("!!!!!!!!!!!!!!!!!! tasks:", tasks);
+    console.log("!!!!!!!!!!!!!!!!!! deviceId:", deviceId);
+    // sprawdzić czy w przypadku wystąpienia jednoczesnego getData i addData , dane nie następuje duplikacja ?
+
     const localOnlyTasks = tasks.filter((localTask) => {
       if (localTask.status === "synced") return false;
 

@@ -76,6 +76,22 @@ const langPl = {
     dateDone: "Data ukończenia",
     backButton: "Powrót",
   },
+  taskImagePage: {
+    title: "Zdjęcie zadania",
+    noTask: "Nie znaleziono zadania 😥",
+    messages: {
+      uploading: "Wgrywanie…",
+      loading: "Ładowanie…",
+      uploadError: "Wystąpił błąd podczas przesyłania obrazu.",
+      loadError: "Błąd ładowania zdjęcia.",
+    },
+    buttons: {
+      add: "Dodaj",
+      change: "Zmień",
+      remove: "Usuń",
+      back: "Powrót",
+    },
+  },
   archivedListsPage: {
     title: "Listy zarchiwizowane",
     lists: {
@@ -321,8 +337,7 @@ const langPl = {
   },
   confirmationPage: {
     message: {
-      success:
-        "Rejestracja udana.<br/> Możesz wrócić do wcześniej otwartej karty.",
+      success: "Rejestracja udana.",
       error: "Rejestracja nieudana.",
     },
     closeTab:
@@ -334,8 +349,7 @@ const langPl = {
     title: "Zmiana hasła",
     subTitle: "Wpisz nowe hasło",
     message: {
-      success:
-        "Konto zostało odzyskane.<br/> Możesz wrócić do wcześniej otwartej karty.",
+      success: "Konto zostało odzyskane.",
       error: "Link wygasł lub został użyty.",
     },
     closeTab:
@@ -534,6 +548,11 @@ const langPl = {
       },
       button: "Wyślij",
     },
+  },
+  errorMessage: {
+    imageLoadingError: "Błąd ładowania obrazu",
+    imageUploadError: "Błąd podczas przesyłania obrazu",
+    imageDeleteError: "Błąd podczas usuwania obrazu",
   },
   prepareText: {
     period: "kropka",

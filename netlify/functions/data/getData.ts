@@ -1,21 +1,9 @@
-import type { Handler } from "@netlify/functions";
-import UserData from "../models/UserData";
-import { connectToDB } from "../config/mongoose";
-import { checkClientContext, checkHttpMethod } from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
-import { mapListsToResponse } from "../utils/mapListsToResponse";
+import { HandlerContext } from "@netlify/functions";
+import UserData from "../../models/UserData";
+import { mapListsToResponse } from "../lib/mapListsToResponse";
+import { jsonResponse, logError } from "../lib/response";
 
-const handler: Handler = async (event, context) => {
-  const logPrefix = "[getData]";
-
-  const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
-  if (methodResponse) return methodResponse;
-
-  const authResponse = checkClientContext(context, logPrefix);
-  if (authResponse) return authResponse;
-
-  await connectToDB();
-
+export const getData = async (context: HandlerContext, logPrefix: string) => {
   try {
     const email = context.clientContext?.user.email as string;
 
@@ -33,6 +21,7 @@ const handler: Handler = async (event, context) => {
     }
 
     const lists = mapListsToResponse(foundUser.lists);
+    // console.log("lists", lists);
 
     return jsonResponse(200, {
       message: "User data found",
@@ -43,5 +32,3 @@ const handler: Handler = async (event, context) => {
     return jsonResponse(500, { message: "Internal server error" });
   }
 };
-
-export { handler };

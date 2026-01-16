@@ -1,7 +1,7 @@
 export const translateText = async (text: string, targetLanguage: string) => {
+  if (!text) throw new Error("No text provided for translation");
+  const langCode = targetLanguage.split("-")[0];
   try {
-    const langCode = targetLanguage.split("-")[0];
-
     const response = await fetch("/translate-translateMessage", {
       method: "POST",
       headers: {
@@ -16,6 +16,6 @@ export const translateText = async (text: string, targetLanguage: string) => {
     return data.translatedText || null;
   } catch (error) {
     console.error("Error fetching translation", error);
-    throw error;
+    return null;
   }
 };

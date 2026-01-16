@@ -31,6 +31,8 @@ import {
 } from "./hooks";
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
+import { TestPage } from "./features/TestPage";
+import { TaskImage } from "./features/tasks/TaskImage";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -61,13 +63,14 @@ const App = () => {
       <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
       <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
       <Container>
-        <HeaderControls >
-          <CurrentDate authRoutes={authRoutes} />
+        <HeaderControls>
           <ThemeSwitch />
+          <CurrentDate authRoutes={authRoutes} />
         </HeaderControls>
         <Routes>
           <Route path="/account-recovery" element={<AccountRecoveryPage />} />
           <Route path="/user-confirmation" element={<UserConfirmationPage />} />
+          <Route path="/tasks/image/:id" element={<TaskImage />} />
           <Route path="/tasks/:id" element={<TaskPage />} />
           <Route
             path="/tasks"
@@ -87,6 +90,7 @@ const App = () => {
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
+          {/* <Route path="/test" element={<TestPage />} /> */}
           <Route path="*" element={<Navigate to="/tasks" />}
           />
         </Routes>

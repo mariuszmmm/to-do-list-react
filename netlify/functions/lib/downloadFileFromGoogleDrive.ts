@@ -1,4 +1,4 @@
-import { BackupData } from "./../../src/types/data";
+import { BackupData } from "../../../src/types/data";
 
 export const downloadFileFromGoogleDrive = async (
   fileId: string,

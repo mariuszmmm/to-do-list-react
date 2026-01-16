@@ -45,12 +45,12 @@ export const handleRestoreUserLists = async (
           }),
           messageType: "success",
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("[restoreUserLists]", error);
-        const msg = typeof error.message === "string" ? error.message : "";
-        const translatedText = msg
-          ? await translateText(msg, i18n.language)
-          : t("restoreUserLists.error");
+        const msg = error instanceof Error ? error.message : "";
+        const translatedText =
+          (await translateText(msg, i18n.language)) ||
+          t("restoreUserLists.error");
         setStatus({
           isLoading: false,
           message: translatedText,

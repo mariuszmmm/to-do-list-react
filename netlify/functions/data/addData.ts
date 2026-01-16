@@ -1,32 +1,15 @@
-import { updateDataApi } from "./../../src/api/fetchDataApi";
-import type { Handler } from "@netlify/functions";
-import UserData, { UserDoc } from "../models/UserData";
-import { Data, Task } from "../../src/types";
-import { connectToDB } from "../config/mongoose";
-import { publishAblyUpdate } from "../config/ably";
-import { jsonResponse, logError } from "../utils/response";
-import { mapListsToResponse } from "../utils/mapListsToResponse";
-import {
-  checkClientContext,
-  checkEventBody,
-  checkHttpMethod,
-} from "../utils/validators";
-import { now } from "mongoose";
+import { HandlerContext, HandlerEvent } from "@netlify/functions";
+import UserData, { UserDoc } from "../../models/UserData";
+import { mapListsToResponse } from "../lib/mapListsToResponse";
+import { jsonResponse, logError } from "../lib/response";
+import { Data, Task } from "../../../src/types";
+import { publishAblyUpdate } from "../../config/ably";
 
-const handler: Handler = async (event, context) => {
-  const logPrefix = "[addData]";
-
-  const methodResponse = checkHttpMethod(event.httpMethod, "PUT", logPrefix);
-  if (methodResponse) return methodResponse;
-
-  const bodyResponse = checkEventBody(event.body, logPrefix);
-  if (bodyResponse) return bodyResponse;
-
-  const authResponse = checkClientContext(context, logPrefix);
-  if (authResponse) return authResponse;
-
-  await connectToDB();
-
+export const addData = async (
+  event: HandlerEvent,
+  context: HandlerContext,
+  logPrefix: string
+) => {
   try {
     const email = context.clientContext?.user.email as string;
     const body = event.body as string;
@@ -76,15 +59,15 @@ const handler: Handler = async (event, context) => {
     if (listIndex !== -1) {
       const incomingList = data.list;
       const existingList = foundUser.lists[listIndex];
-      console.log("___________________________");
-      console.log(
-        "test",
-        data.list.taskList,
-        incomingList.version,
-        existingList.version,
-        incomingList.version === existingList.version
-      );
-      console.log("___________________________");
+      // console.log("___________________________");
+      // console.log(
+      //   "test",
+      //   data.list.taskList,
+      //   incomingList.version,
+      //   existingList.version,
+      //   incomingList.version === existingList.version
+      // );
+      // console.log("___________________________");
       if (incomingList.version !== existingList.version) {
         console.warn(`${logPrefix} Version mismatch detected for list`);
         return jsonResponse(409, {
@@ -100,7 +83,7 @@ const handler: Handler = async (event, context) => {
         .filter((task: Task) => task.status === "deleted")
         .map((task: Task) => task.id);
 
-      console.log("test", deletedTasksIds);
+      console.log("deletedTasksIds", deletedTasksIds);
 
       const deletedTasks: Task[] = incomingList.taskList
         .filter((task) => task.status === "deleted")
@@ -189,5 +172,3 @@ const handler: Handler = async (event, context) => {
     });
   }
 };
-
-export { handler };

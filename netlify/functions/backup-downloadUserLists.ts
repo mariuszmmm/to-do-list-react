@@ -1,9 +1,12 @@
-import { getBackupFileName } from "./../utils/getBackupFileName";
+import { getBackupFileName } from "./../functions/lib/getBackupFileName";
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
-import { checkClientContext, checkHttpMethod } from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
+import {
+  checkClientContext,
+  checkHttpMethod,
+} from "../functions/lib/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
 import { BackupData } from "../../src/types";
 
 const handler: Handler = async (event, context) => {

@@ -1,4 +1,4 @@
-import { BackupType } from "../../src/types/data";
+import { BackupType } from "../../../src/types/data";
 
 export const getBackupFileName = (
   backupType: BackupType,

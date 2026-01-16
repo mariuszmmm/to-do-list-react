@@ -1,7 +1,7 @@
 import { schedule } from "@netlify/functions";
 import UserData from "../models/UserData";
 import { connectToDB } from "../config/mongoose";
-import { jsonResponse, logError } from "../utils/response";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler = schedule("*/30 * * * *", async () => {
   const logPrefix = "[cleanup-deletedTasks-scheduled]";

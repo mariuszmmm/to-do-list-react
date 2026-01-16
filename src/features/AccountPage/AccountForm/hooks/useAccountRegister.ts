@@ -15,7 +15,6 @@ export const useAccountRegister = () => {
   return useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       auth.signup(email, password),
-    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -25,9 +24,18 @@ export const useAccountRegister = () => {
         })
       );
     },
-    // On success, set waiting for confirmation and show info modal
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       dispatch(setIsWaitingForConfirmation(true));
+
+      sessionStorage.setItem(
+        "waitingForConfirmation",
+        JSON.stringify({
+          email: variables.email,
+          password: variables.password,
+          timestamp: Date.now(),
+        })
+      );
+
       dispatch(
         openModal({
           title: { key: "modal.accountRegister.title" },
@@ -36,7 +44,6 @@ export const useAccountRegister = () => {
         })
       );
     },
-    // On error, translate error message and show error modal
     onError: async (error: any) => {
       const msg = error.json.msg;
       const translatedText = await translateText(msg, i18n.language);

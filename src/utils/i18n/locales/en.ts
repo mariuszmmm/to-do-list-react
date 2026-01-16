@@ -78,6 +78,22 @@ const langEn: typeof langPl = {
     dateDone: "Date completed",
     backButton: "Back",
   },
+  taskImagePage: {
+    title: "Task Image",
+    noTask: "Task not found 😥",
+    messages: {
+      uploading: "Uploading…",
+      loading: "Loading…",
+      uploadError: "An error occurred while uploading the image.",
+      loadError: "Image download error.",
+    },
+    buttons: {
+      add: "Add",
+      change: "Change",
+      remove: "Remove",
+      back: "Back",
+    },
+  },
   archivedListsPage: {
     title: "Archived lists",
     lists: {
@@ -319,8 +335,7 @@ const langEn: typeof langPl = {
   },
   confirmationPage: {
     message: {
-      success:
-        "Registration successful.<br/> You can return to the previously opened tab.",
+      success: "Registration successful.",
       error: "Registration failed.",
     },
     closeTab: "You can now close this tab and return to your previous browser.",
@@ -331,8 +346,7 @@ const langEn: typeof langPl = {
     title: "Change password",
     subTitle: "Enter new password",
     message: {
-      success:
-        "Account has been recovered.<br/> You can return to the previously opened tab.",
+      success: "Account has been recovered.",
       error: "Link has expired or has been used.",
     },
     closeTab: "You can now close this tab and return to your previous browser.",
@@ -528,6 +542,11 @@ const langEn: typeof langPl = {
       },
       button: "Send",
     },
+  },
+  errorMessage: {
+    imageLoadingError: "Image loading error",
+    imageUploadError: "Error uploading image",
+    imageDeleteError: "Error deleting image",
   },
   prepareText: {
     period: "period",

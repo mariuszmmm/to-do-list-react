@@ -11,7 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { AutoRefreshToggle } from "../AutoRefreshToggle";
 
-export const AccountExtraButtons = () => {
+export const AccountFormActions = () => {
   const accountMode = useAppSelector(selectAccountMode);
   const message = useAppSelector(selectMessage);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);

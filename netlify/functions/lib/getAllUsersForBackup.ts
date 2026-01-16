@@ -1,6 +1,6 @@
 import { getBackupFileName } from "./getBackupFileName";
-import { BackupData } from "../../src/types";
-import UserData from "../models/UserData";
+import { BackupData } from "../../../src/types";
+import UserData from "../../models/UserData";
 
 export const getAllUsersForBackup = async (email: string) => {
   const allUserData = await UserData.find({ account: "active" });

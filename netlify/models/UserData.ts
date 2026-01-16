@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
-import { List, Task } from "../../src/types";
+import { List, Task, Image } from "../../src/types";
 const { Schema } = mongoose;
+
+const ImageSchema = new Schema<Image>({
+  imageUrl: { type: String, required: false, default: null },
+  publicId: { type: String, required: false, default: null },
+  format: { type: String, required: false, default: null },
+  createdAt: { type: String, required: false, default: null },
+  displayName: { type: String, required: false, default: null },
+  height: { type: Number, required: false, default: null },
+  width: { type: Number, required: false, default: null },
+  originalFilename: { type: String, required: false, default: null },
+});
 
 const TaskSchema = new Schema<Task>({
   id: { type: String, required: true },
@@ -16,6 +27,7 @@ const TaskSchema = new Schema<Task>({
     enum: ["new", "edited", "updated", "deleted", "synced"],
     required: false,
   },
+  image: { type: ImageSchema, required: false, default: null },
 });
 
 const ListSchema = new Schema<List>({

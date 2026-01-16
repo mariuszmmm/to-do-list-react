@@ -49,7 +49,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
       />
       <Section
         title={t("search.title")}
-        body={showSearch && <Search />}
+        body={<Search />}
         extraHeaderContent={<SearchButtons />}
         bodyHidden={!showSearch}
       />

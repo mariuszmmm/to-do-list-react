@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
-import UserData from "../models/UserData";
-import { publishAblyUpdate } from "../config/ably";
-import { BackupData, List, Task } from "../../src/types";
+import UserData from "../../models/UserData";
+import { publishAblyUpdate } from "../../config/ably";
+import { BackupData, List, Task } from "../../../src/types";
 
 export const restoreAllUsersFromBackupData = async (
   backupData: BackupData

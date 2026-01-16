@@ -1,8 +1,8 @@
-import { downloadFileFromGoogleDrive } from "../utils/downloadFileFromGoogleDrive";
+import { downloadFileFromGoogleDrive } from "../functions/lib/downloadFileFromGoogleDrive";
 import type { Handler, HandlerResponse } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import { restoreAllUsersFromBackupData } from "../utils/restoreAllUsersFromBackupData";
-import { jsonResponse, logError } from "../utils/response";
+import { restoreAllUsersFromBackupData } from "../functions/lib/restoreAllUsersFromBackupData";
+import { jsonResponse, logError } from "../functions/lib/response";
 import {
   checkClientContext,
   checkEventBody,
@@ -11,8 +11,8 @@ import {
   parseBackupRequest,
   validateBackupType,
   validateBackupUsers,
-} from "../utils/validators";
-import { findActiveUser } from "../utils/database";
+} from "../functions/lib/validators";
+import { findActiveUser } from "../functions/lib/database";
 import { BackupData } from "../../src/types";
 
 const handler: Handler = async (event, context): Promise<HandlerResponse> => {

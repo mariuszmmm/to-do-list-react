@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from "react";
-import { StyledSection, SectionHeader, SectionBody } from "./styled";
+import { StyledSection, SectionHeader, SectionBody, BodyWrapper } from "./styled";
 
 interface SectionProps {
   title?: string | ReactElement;
@@ -27,7 +27,7 @@ export const Section = ({
   <StyledSection>
     {title && (
       <SectionHeader
-        $bodyHidden={bodyHidden}
+        hidden={bodyHidden}
         $onlyOpenButton={onlyOpenButton}
         onClick={onHeaderClick}
         $taskDetails={taskDetails}
@@ -37,8 +37,12 @@ export const Section = ({
       </SectionHeader>
     )}
     <SectionBody hidden={bodyHidden} $taskList={taskList}>
-      {body}
-      {extraContent}
+      <div>
+        <BodyWrapper $taskList={taskList}>
+          {body}
+          {extraContent}
+        </BodyWrapper>
+      </div>
     </SectionBody>
   </StyledSection>
 );

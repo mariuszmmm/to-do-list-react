@@ -2,6 +2,8 @@ import { FormEventHandler, useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import { useValidation } from "../../../hooks/useValidation";
 import { useWaitingForConfirmation } from "./hooks/useWaitingForConfirmation";
+import { useRestoreWaitingState } from "./hooks/useRestoreWaitingState";
+import { useModalConfirmationHandler } from "./hooks/useModalConfirmationHandler";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
@@ -13,21 +15,18 @@ import {
   selectLoggedUserEmail,
   selectMessage,
   setMessage,
-  setAccountMode,
 } from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { useLogin } from "./hooks/useLogin";
 import { useLogout } from "./hooks/useLogout";
 import {
-  closeModal,
-  openModal,
   selectModalConfirmed,
   selectModalState,
+  openModal,
 } from "../../../Modal/modalSlice";
 import { usePasswordChange } from "./hooks/usePasswordChange";
 import { useAccountRecovery } from "./hooks/useAccountRecovery";
 import { useAccountDelete } from "./hooks/useAccountDelete";
-import { clearStorage } from "../../tasks/tasksSlice";
 import { useAccountRegister } from "./hooks/useAccountRegister";
 import { InputWrapper } from "../../../common/InputWrapper";
 
@@ -72,56 +71,23 @@ export const AccountForm = () => {
   const accountDelete = useAccountDelete();
   const accountRegister = useAccountRegister();
 
+  // Przywróć stan oczekiwania na potwierdzenie po przeładowaniu strony
+  useRestoreWaitingState({ setEmail, setPassword });
+
+  // Obsługa potwierdzeń w modalach
+  useModalConfirmationHandler({
+    confirmed,
+    modalState,
+    accountMode,
+    logout,
+    accountDelete,
+  });
+
   useEffect(() => {
     if (isWaitingForConfirmation) {
       waitingForConfirmation();
     }
   }, [isWaitingForConfirmation, waitingForConfirmation]);
-
-  useEffect(() => {
-    const modalTitleKey = modalState.title?.key;
-    const isAccountConfirmModal =
-      modalState.type === "confirm" &&
-      (modalTitleKey === "modal.logout.title" ||
-        modalTitleKey === "modal.accountDelete.title" ||
-        modalTitleKey === "modal.dataRemoval.title");
-
-    if (!isAccountConfirmModal) return;
-
-    if (confirmed) {
-      if (modalTitleKey === "modal.logout.title" && accountMode === "logged") {
-        logout.mutate();
-      }
-
-      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
-        accountDelete.mutate();
-      }
-
-      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
-        dispatch(clearStorage());
-        dispatch(setAccountMode("login"));
-        dispatch(
-          openModal({
-            title: { key: "modal.dataRemoval.title" },
-            message: { key: "modal.dataRemoval.message.info" },
-            type: "info",
-          }),
-        );
-      }
-    } else if (confirmed === false) {
-      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
-        dispatch(setAccountMode("logged"));
-      }
-
-      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
-        dispatch(setAccountMode("login"));
-      }
-
-      dispatch(closeModal());
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmed, modalState, accountMode]);
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();

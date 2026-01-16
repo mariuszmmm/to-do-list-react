@@ -26,13 +26,17 @@ const TaskButton = styled.button`
   }
 
   &:disabled {
-    cursor: auto;
-    opacity: 0.4;
+    cursor: not-allowed;
+    opacity: 0.3;
   }
 `;
 
 export const ToggleButton = styled(TaskButton)`
   background: ${({ theme }) => theme.colors.button.check};
+`;
+
+export const ImageButton = styled(TaskButton)`
+  background: ${({ theme }) => theme.colors.button.image};
 `;
 
 export const EditButton = styled(TaskButton)`

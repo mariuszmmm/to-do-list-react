@@ -1,15 +1,5 @@
 import styled from "styled-components";
 
-interface SectionHeaderProps {
-  $bodyHidden?: boolean;
-  $onlyOpenButton?: boolean;
-  $taskDetails?: boolean;
-}
-
-interface SectionBodyProps {
-  $taskList?: boolean;
-}
-
 export const StyledSection = styled.section`
   margin: 10px 0;
   background: ${({ theme }) => theme.colors.backgroundSecendary};
@@ -17,6 +7,12 @@ export const StyledSection = styled.section`
   border-radius: 5px;
   transition: background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
 `;
+
+interface SectionHeaderProps {
+  hidden?: boolean;
+  $onlyOpenButton?: boolean;
+  $taskDetails?: boolean;
+}
 
 export const SectionHeader = styled.header<SectionHeaderProps>`
   display: flex;
@@ -29,19 +25,41 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
   word-break: break-word;
   white-space: pre-line;
   line-height: ${({ $taskDetails }) => ($taskDetails ? "1.6" : "1")};
-  transition: border-color 0.5s ease-in-out;
+  transition: color 0.5s ease-in-out, border-color 0.5s ease-in-out;
 
-  border-bottom: ${({ $bodyHidden, theme }) =>
-    $bodyHidden ? "none" : `1px solid ${theme.colors.border.primary}`};
+  border-bottom: ${({ hidden, theme }) =>
+    hidden
+      ? `1px solid transparent`
+      : `1px solid ${theme.colors.border.primary}`};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     flex-direction: ${({ $onlyOpenButton }) =>
       $onlyOpenButton ? "row" : "column"};
-    padding-bottom: 10px;
   }
 `;
 
+interface SectionBodyProps {
+  $taskList?: boolean;
+  hidden?: boolean;
+}
+
 export const SectionBody = styled.div<SectionBodyProps>`
+  display: grid;
+  grid-template-rows: ${({ hidden }) => (hidden ? "0fr" : "1fr")};
+  overflow: hidden;
+  opacity: ${({ hidden }) => (hidden ? "0" : "1")};
+  transition: grid-template-rows 0.3s ease-in-out, opacity 0.5s ease-in-out;
+
+  & > * {
+    min-height: 0;
+  }
+`;
+
+interface BodyWrapperProps {
+  $taskList?: boolean;
+}
+
+export const BodyWrapper = styled.div<BodyWrapperProps>`
   padding: 20px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {

@@ -1,14 +1,14 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import { getAllUsersForBackup } from "../utils/getAllUsersForBackup";
-import { uploadBackupToGoogleDrive } from "../utils/uploadBackupToGoogleDrive";
+import { getAllUsersForBackup } from "../functions/lib/getAllUsersForBackup";
+import { uploadBackupToGoogleDrive } from "../functions/lib/uploadBackupToGoogleDrive";
 import {
   checkAdminRole,
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
-} from "../utils/validators";
-import { jsonResponse, logError } from "../utils/response";
+} from "../functions/lib/validators";
+import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[uploadAllUsersToGoogleDrive]";
