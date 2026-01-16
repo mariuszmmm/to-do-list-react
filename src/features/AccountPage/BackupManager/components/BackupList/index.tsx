@@ -15,7 +15,7 @@ import { handleRestoreBackupFromGoogleDrive } from "../../handlers/handleRestore
 import { handleDeleteBackupConfirmation } from "../../handlers/handleDeleteBackupConfirmation";
 import { useAppDispatch } from "../../../../../hooks";
 import { BackupFile } from "../../../../../types";
-import { ArrowIcon, PaginationButton, PaginationContainer, PaginationInfo, PaginationLabel } from "../../../../../common/pagination";
+import { ArrowIcon, PaginationButton, PaginationContainer, PaginationInfo, PaginationLabel } from "../../../../../common/Pagination";
 
 interface BackupListProps {
   backupFiles: Array<BackupFile>;
