@@ -195,6 +195,14 @@ export const StyledSpan = styled.span<StyledTaskProps>`
   }
 `;
 
+export const AnimatedSpan = styled(StyledSpan)<{ $visible: boolean }>`
+  display: block;
+  overflow: hidden;
+  max-height: ${({ $visible }) => ($visible ? "100px" : "0")};
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+`;
+
 export const ListMeta = styled.div`
   display: flex;
   padding-top: 4px;

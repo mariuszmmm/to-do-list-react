@@ -1,6 +1,6 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
-import { checkEventBody, checkHttpMethod } from "../functions/lib/validators";
-import { jsonResponse, logError } from "../functions/lib/response";
+import { checkEventBody, checkHttpMethod } from "./lib/validators";
+import { jsonResponse, logError } from "./lib/response";
 
 const handler: Handler = async (event: HandlerEvent) => {
   const logPrefix = "[translateMessage]";

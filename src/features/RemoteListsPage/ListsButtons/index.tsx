@@ -28,13 +28,6 @@ export const ListsButtons = ({ lists, selectedListById }: Props) => {
 
   return (
     <ButtonsContainer>
-      <Button
-        onClick={() => dispatch(switchListSort())}
-        disabled={lists.length < 2}
-        width={getWidthForSwitchTaskSortButton(i18n.language)}
-      >
-        {isListsSorting ? t("buttons.notSort") : t("buttons.sort")}
-      </Button>
       <StyledLink to={`/tasks`} disabled={!selectedListId || isListsSorting}>
         <Button
           onClick={() => dispatch(setListToLoad(selectedListById))}
@@ -43,6 +36,13 @@ export const ListsButtons = ({ lists, selectedListById }: Props) => {
           {t("buttons.load")}
         </Button>
       </StyledLink>
+      <Button
+        onClick={() => dispatch(switchListSort())}
+        disabled={lists.length < 2}
+        width={getWidthForSwitchTaskSortButton(i18n.language)}
+      >
+        {isListsSorting ? t("buttons.notSort") : t("buttons.sort")}
+      </Button>
     </ButtonsContainer>
   );
 };

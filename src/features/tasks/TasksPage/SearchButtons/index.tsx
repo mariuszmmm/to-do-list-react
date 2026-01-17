@@ -39,6 +39,7 @@ export const SearchButtons = () => {
           })
         }
         disabled={!query}
+        aria-label="Clear search"
       >
         {t("search.buttons.clear")}
       </Button>

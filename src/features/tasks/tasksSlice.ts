@@ -275,7 +275,7 @@ const tasksSlice = createSlice({
         isLoad?: boolean;
         taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        stateForUndo: TaskListData;
+        stateForUndo?: TaskListData;
       }>
     ) => {
       const time = new Date().toISOString();

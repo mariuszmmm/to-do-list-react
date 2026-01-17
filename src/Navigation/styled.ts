@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { ReactComponent as user } from "../images/user.svg";
+import { ReactComponent as user_1 } from "../images/user_1.svg";
 
 interface NavListProps {
   $isLists: boolean;
@@ -27,7 +28,7 @@ export const Nav = styled.nav`
   position: fixed;
   min-width: 300px;
   width: 100%;
-  z-index: 1;
+  z-index: 10;
 `;
 
 export const NavList = styled.ul<NavListProps>`
@@ -54,12 +55,15 @@ export const NavList = styled.ul<NavListProps>`
     text-align: left;
     margin-left: 20px;
   }
+
+  li:last-child {
+    margin-right: 20px;
+  }
 `;
 
 export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.nav.text};
-  height: 50px;
   transition: color 0.2s ease-in-out;
 
   &:hover {
@@ -81,7 +85,7 @@ export const NavButton = styled.button<ButtonProps>`
   background: none;
   border: none;
   color: ${({ theme }) => theme.colors.nav.text};
-  height: 50px;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;
@@ -99,8 +103,18 @@ export const NavButton = styled.button<ButtonProps>`
 `;
 
 export const Account = styled(user)<AccountProps>`
-  margin-top: 0.1rem;
-  margin-right: 20px;
+  margin-top: 0.2rem;
+  width: 0.9rem;
+  transition: scale 0.1s ease-in-out;
+
+  &:hover {
+    scale: 1.1;
+  }
+`;
+
+export const ActiveAccount = styled(user_1)<AccountProps>`
+  margin-top: 0.2rem;
+  scale: 1.1;
   width: 0.9rem;
 
   ${({ $isActive }) =>

@@ -16,6 +16,7 @@ import {
   selectEditedTask,
   selectIsTasksSorting,
   selectTaskListMetaData,
+  selectTasks,
   setTasks,
 } from "../../tasksSlice";
 import { selectIsArchivedTaskListEmpty } from "../../../ArchivedListPage/archivedListsSlice";
@@ -24,6 +25,7 @@ import { nanoid } from "nanoid";
 
 export const AddTasksButtons = () => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
+  const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isArchivedTaskListEmpty = useAppSelector(selectIsArchivedTaskListEmpty);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
@@ -49,7 +51,7 @@ export const AddTasksButtons = () => {
     const time = new Date().toISOString();
 
     if (data && isSuccess) {
-      const tasks = data.tasks.map((task) => ({
+      const dataTasks = data.tasks.map((task) => ({
         ...task,
         status: "new" as const,
       }));
@@ -62,7 +64,7 @@ export const AddTasksButtons = () => {
             date: time,
             updatedAt: time,
           },
-          tasks,
+          tasks: dataTasks,
           stateForUndo: {
             tasks,
             taskListMetaData,
@@ -74,6 +76,11 @@ export const AddTasksButtons = () => {
 
   return (
     <ButtonsContainer>
+      <StyledLink to={`/archived-lists`}>
+        <Button disabled={isArchivedTaskListEmpty || !!editedTask || isTasksSorting}>
+          {t("form.buttons.loadFromArchive")}
+        </Button>
+      </StyledLink>
       <Button
         onClick={setExampleTasks}
         disabled={isFetching || isError || !areTasksEmpty || !!editedTask || isTasksSorting}
@@ -86,11 +93,6 @@ export const AddTasksButtons = () => {
             ? t("form.buttons.loading")
             : t("form.buttons.error")}
       </Button>
-      <StyledLink to={`/archived-lists`}>
-        <Button disabled={isArchivedTaskListEmpty || !!editedTask || isTasksSorting}>
-          {t("form.buttons.loadFromArchive")}
-        </Button>
-      </StyledLink>
     </ButtonsContainer>
   );
 };

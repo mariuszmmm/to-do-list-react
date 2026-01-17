@@ -2,7 +2,7 @@ export const translateText = async (text: string, targetLanguage: string) => {
   if (!text) throw new Error("No text provided for translation");
   const langCode = targetLanguage.split("-")[0];
   try {
-    const response = await fetch("/translate-translateMessage", {
+    const response = await fetch("/translate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

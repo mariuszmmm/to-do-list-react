@@ -28,6 +28,7 @@ export const ListsButtons = ({ selectedListById }: Props) => {
         <Button
           onClick={() => dispatch(setArchivedListToLoad(selectedListById))}
           disabled={!selectedListId}
+          aria-label="Load archived list"
         >
           {t("buttons.load")}
         </Button>

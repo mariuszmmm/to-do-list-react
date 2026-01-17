@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import { StyledSpan } from "../../common/StyledList";
+import { StyledSpan, AnimatedSpan } from "../../common/StyledList";
 import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
 import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
@@ -122,11 +122,11 @@ const AccountPage = () => {
         extraContent={
           <>
             <AccountFormActions />
-            <br />
-            {loggedUserEmail && userDevices > 0 &&
-              <StyledSpan $comment >
+            {loggedUserEmail &&
+              <AnimatedSpan $comment $visible={userDevices > 0}>
+                <br />
                 <strong>{t("deviceCount.device", { count: userDevices })}</strong>
-              </StyledSpan>
+              </AnimatedSpan>
             }
           </>
         }
