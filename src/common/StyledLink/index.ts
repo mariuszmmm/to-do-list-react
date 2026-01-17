@@ -9,7 +9,7 @@ interface StyledLinkProps {
 export const StyledLink = styled(Link)<StyledLinkProps>`
   color: ${({ theme }) => theme.colors.button.secendaryText};
   text-decoration: none;
-  white-space: pre-line;
+  white-space: pre-wrap;
 
   ${({ disabled, $edit }) =>
     disabled &&

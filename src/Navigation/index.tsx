@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
+import { Nav, NavList, Account, NavButton, ActiveAccount } from "./styled";
+import { AutoMinWidthNavLink } from "./AutoMinWidthNavLink";
 import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
 import { Loader } from "../common/Loader";
@@ -40,26 +41,26 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
             ))}
           </li>
           <li>
-            <StyledNavLink to="/tasks" $inactive={pathname !== "/tasks"}>
+            <AutoMinWidthNavLink to="/tasks" $inactive={pathname !== "/tasks"} text={t("tasksPage")}>
               {t("tasksPage")}
-            </StyledNavLink>
+            </AutoMinWidthNavLink>
           </li>
           {!!user && !isError && (
             <li>
               {isLoading ? (
                 <Loader isDarkTheme={isDarkTheme} />
               ) : !!listsData ? (
-                <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
+                <AutoMinWidthNavLink to="/lists" text={t("lists")}>{t("lists")}</AutoMinWidthNavLink>
               ) : null}
             </li>
           )}
           <li>
-            <StyledNavLink to="/info">{t("info")} </StyledNavLink>
+            <AutoMinWidthNavLink to="/info" text={t("info")}>{t("info")}</AutoMinWidthNavLink>
           </li>
           <li>
-            <StyledNavLink to="/account">
-              <Account $isActive={pathname === "/account"} />
-            </StyledNavLink>
+            <AutoMinWidthNavLink to="/account" text={"Account"}>
+              {pathname === "/account" ? <ActiveAccount /> : <Account />}
+            </AutoMinWidthNavLink>
           </li>
         </NavList>
       )}

@@ -181,9 +181,15 @@ export const useListSyncManager = ({
     const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
     const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
-    console.log("!!!!!!!!!!!!!!!!!! DELETED TASKS TO PRESERVE:", deletedTasks);
-    console.log("!!!!!!!!!!!!!!!!!! tasks:", tasks);
-    console.log("!!!!!!!!!!!!!!!!!! deviceId:", deviceId);
+
+    process.env.NODE_ENV === "development" &&
+      console.log("4 ListSyncManager useEffect for updating local list:", {
+        deletedIds,
+        deviceId,
+        deletedTasks,
+        tasks,
+      });
+
     // sprawdzić czy w przypadku wystąpienia jednoczesnego getData i addData , dane nie następuje duplikacja ?
 
     const localOnlyTasks = tasks.filter((localTask) => {
@@ -229,7 +235,7 @@ export const useListSyncManager = ({
       })
     );
     process.env.NODE_ENV === "development" &&
-      console.log("4 ListSyncManager updating local tasks", {
+      console.log("5 ListSyncManager updating local tasks", {
         remoteList,
         isIdentical,
         deletedIds,
@@ -245,7 +251,6 @@ export const useListSyncManager = ({
         isLoad: true,
         taskListMetaData: newMeta,
         tasks: newTasks,
-        stateForUndo: { tasks, taskListMetaData },
       })
     );
 
@@ -310,7 +315,7 @@ export const useListSyncManager = ({
     const version = remoteList?.version || 0;
 
     process.env.NODE_ENV === "development" &&
-      console.log("5 ListSyncManager useEffect for saving changes", {
+      console.log("6 ListSyncManager useEffect for saving changes", {
         remoteList,
         isIdentical,
         version,
@@ -338,7 +343,7 @@ export const useListSyncManager = ({
     };
 
     process.env.NODE_ENV === "development" &&
-      console.log("6 ListSyncManager preparing to save", {
+      console.log("7 ListSyncManager preparing to save", {
         payload,
         taskListMetaDataRef: taskListMetaDataRef.current,
         tasksRef: tasksRef.current,
@@ -346,12 +351,12 @@ export const useListSyncManager = ({
 
     if (manualSaveTriggered) {
       process.env.NODE_ENV === "development" &&
-        console.log("7a ListSyncManager performing MANUAL save");
+        console.log("8a ListSyncManager performing MANUAL save");
       saveListMutation.mutate(payload);
       dispatch(setListStatus({ manualSaveTriggered: false }));
     } else if (debouncedMutateRef.current) {
       process.env.NODE_ENV === "development" &&
-        console.log("7b ListSyncManager performing DEBOUNCED save");
+        console.log("8b ListSyncManager performing DEBOUNCED save");
       debouncedMutateRef.current(payload);
     }
 

@@ -7,6 +7,6 @@ export const Container = styled.main`
   min-height: 100vh;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    padding: 60px 2% 2%;
+    padding: 70px 2% 2%;
   }
 `;

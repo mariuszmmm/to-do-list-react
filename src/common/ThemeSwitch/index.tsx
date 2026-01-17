@@ -7,7 +7,7 @@ export const ThemeSwitch = () => {
   const isDarkTheme = useAppSelector(selectIsDarkTheme);
 
   return (
-    <Wrapper onClick={() => dispatch(toggleTheme())}>
+    <Wrapper aria-label="Toggle dark mode" onClick={() => dispatch(toggleTheme())}>
       <Switch>
         <IconWrapper $moveToRight={isDarkTheme}>
           <Icon />

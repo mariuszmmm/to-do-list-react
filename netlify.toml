@@ -61,8 +61,8 @@
   status = 200
 
 [[redirects]]
-  from = "/translate-translateMessage"
-  to = "/.netlify/functions/translate-translateMessage"
+  from = "/translate"
+  to = "/.netlify/functions/translate"
   status = 200
 
 [[redirects]]

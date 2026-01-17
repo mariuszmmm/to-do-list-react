@@ -43,6 +43,7 @@ export const TaskForm = () => {
 
         <InputButton
           type="button"
+          aria-label="Toggle Speech Recognition"
           disabled={!speech.supportSpeech}
           onClick={toggleSpeechRecognition}
           $editedTask={!!editedTask}
