@@ -81,17 +81,21 @@ const langDe: typeof langPl = {
   taskImagePage: {
     title: "Aufgabenbild",
     noTask: "Aufgabe nicht gefunden 😥",
-    messages: {
-      uploading: "Hochladen…",
-      loading: "Laden…",
-      uploadError: "Fehler beim Hochladen des Bildes.",
-      loadError: "Fehler beim Laden des Bildes.",
-    },
     buttons: {
       add: "Hinzufügen",
       change: "Ändern",
       remove: "Entfernen",
       back: "Zurück",
+      addFromGallery: "Aus Galerie",
+      takePhoto: "Mit Kamera",
+      cancel: "Abbrechen",
+    },
+    messages: {
+      uploading: "Hochladen…",
+      loading: "Laden…",
+      uploadError: "Fehler beim Hochladen des Bildes.",
+      loadError: "Fehler beim Laden des Bildes.",
+      choosePhotoSource: "Bildquelle wählen:",
     },
   },
   archivedListsPage: {

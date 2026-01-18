@@ -174,7 +174,8 @@ export const AccountForm = () => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onTouchStart={() => setShowPassword(!showPassword)}
+            onPointerDown={e => { e.preventDefault(); setShowPassword(!showPassword); }}
+            type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>

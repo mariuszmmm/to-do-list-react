@@ -8,7 +8,7 @@ interface FormButtonWrapperProps {
 export const FormButtonWrapper = styled.div<FormButtonWrapperProps>`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 
   ${({ $taskDetails }) =>
     $taskDetails &&

@@ -11,6 +11,16 @@ import {
  * Hook for speech-to-text functionality using the Web Speech API.
  * Handles speech recognition, language, interim/final results, and error handling.
  */
+
+// Prosta detekcja Androida
+const isAndroid =
+  typeof navigator !== "undefined" && /android/i.test(navigator.userAgent);
+
+// Rozszerzenie typu SpeechRecognition o _forceStop (lokalnie w tym pliku)
+type SpeechRecognitionWithForceStop = SpeechRecognition & {
+  _forceStop?: boolean;
+};
+
 export const useSpeechToText = ({ prevText }: { prevText: string }) => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [supportSpeech, setSupportSpeech] = useState<boolean | null>(null);
@@ -40,14 +50,24 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
 
     setSupportSpeech(true);
 
-    const recog = new SpeechRecognition();
+    const recog: SpeechRecognitionWithForceStop = new SpeechRecognition();
 
     recog.continuous = true;
     recog.interimResults = true;
     recog.lang = getSpeechLang();
 
     recog.onstart = () => setIsListening(true);
-    recog.onend = () => setIsListening(false);
+    recog.onend = () => {
+      setIsListening(false);
+      // Automatyczne ponawianie na Androidzie, jeśli użytkownik nie zatrzymał ręcznie
+      if (isAndroid && recog._forceStop !== true) {
+        setTimeout(() => {
+          try {
+            recog.start();
+          } catch {}
+        }, 250);
+      }
+    };
     // Handle speech recognition results (interim and final)
     recog.onresult = (event) => {
       const result = event.results[event.resultIndex];
@@ -101,12 +121,21 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
   // Start speech recognition with previous text
   const start = useCallback(() => {
     finalTextRef.current = prevText;
-    recognitionRef.current?.start();
+    if (recognitionRef.current) {
+      // Flaga do ręcznego zatrzymania na Androidzie
+      (recognitionRef.current as SpeechRecognitionWithForceStop)._forceStop =
+        false;
+      recognitionRef.current.start();
+    }
   }, [prevText]);
 
   // Stop speech recognition
   const stop = useCallback(() => {
-    recognitionRef.current?.stop();
+    if (recognitionRef.current) {
+      (recognitionRef.current as SpeechRecognitionWithForceStop)._forceStop =
+        true;
+      recognitionRef.current.stop();
+    }
   }, []);
 
   return {

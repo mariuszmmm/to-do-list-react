@@ -126,8 +126,8 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onTouchStart={() => setShowPassword(true)}
-            onTouchEnd={() => setShowPassword(false)}
+            onPointerDown={e => { e.preventDefault(); setShowPassword(!showPassword); }}
+            type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>

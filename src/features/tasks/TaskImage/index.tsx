@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
 import { FormButton } from "../../../common/FormButton";
@@ -37,9 +37,22 @@ export const TaskImage = () => {
   const dispatch = useAppDispatch();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputCameraRef = useRef<HTMLInputElement>(null);
+  const fileInputGalleryRef = useRef<HTMLInputElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const checkMobile = () => {
+      const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+      if (/android|iphone|ipad|ipod|windows phone/i.test(ua)) {
+        setIsMobile(true);
+      } else {
+        setIsMobile(false);
+      }
+    };
+    checkMobile();
   }, []);
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +85,7 @@ export const TaskImage = () => {
       console.error("Error uploading image:", error);
     } finally {
       e.target.value = "";
+      setPhotoSourceButtonsVisible(false);
     }
   };
 
@@ -115,13 +129,37 @@ export const TaskImage = () => {
                 )}
             </ImagePreview>
 
-            <ImageInput
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
-              disabled={isUploading}
-            />
+            {!isMobile && (
+              <ImageInput
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={onFileChange}
+                disabled={isUploading}
+                style={{ display: "none" }}
+              />
+            )}
+            {isMobile && (
+              <>
+                <ImageInput
+                  ref={fileInputGalleryRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileChange}
+                  disabled={isUploading}
+                  style={{ display: "none" }}
+                />
+                <ImageInput
+                  ref={fileInputCameraRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={onFileChange}
+                  disabled={isUploading}
+                  style={{ display: "none" }}
+                />
+              </>
+            )}
 
             <FormButtonWrapper $taskImage>
               <MessageContainer>
@@ -130,30 +168,70 @@ export const TaskImage = () => {
                 {errorMsg && <Info $warning>{errorMsg}</Info>}
               </MessageContainer>
 
-              {loggedUserEmail && <FormButton
-                type="button"
-                width="200px"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                $singleInput
-              >
-                {!imageUrl ? t('buttons.add') : t('buttons.change')}
-              </FormButton>}
+              {photoSourceButtonsVisible ?
+                <>
+                  <FormButton
+                    type="button"
+                    width="200px"
+                    onClick={() => fileInputGalleryRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {t('buttons.addFromGallery')}
+                  </FormButton>
+                  <FormButton
+                    type="button"
+                    width="200px"
+                    onClick={() => fileInputCameraRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {t('buttons.takePhoto')}
+                  </FormButton>
+                </>
+                :
+                <FormButton
+                  type="button"
+                  width="200px"
+                  onClick={() => {
+                    if (!isMobile) {
+                      fileInputRef.current?.click();
+                    } else {
+                      setPhotoSourceButtonsVisible(true);
+                    }
+                  }}
+                  disabled={isUploading}
+                >
+                  {!imageUrl ? t('buttons.add') : t('buttons.change')}
+                </FormButton>
 
-              {(loggedUserEmail && imageUrl) && <FormButton
-                type="button"
-                width="200px"
-                onClick={onRemoveImage}
-                disabled={isUploading}
-                $singleInput
-              >
-                {t('buttons.remove')}
-              </FormButton>
               }
 
-              <FormButton type="button" width={"200px"} onClick={() => navigate(-1)} $singleInput>
-                {t("buttons.back")}
-              </FormButton>
+              {(loggedUserEmail && imageUrl) &&
+                <FormButton
+                  type="button"
+                  width="200px"
+                  onClick={onRemoveImage}
+                  disabled={isUploading}
+
+                >
+                  {t('buttons.remove')}
+                </FormButton>
+              }
+
+              {photoSourceButtonsVisible ?
+                <FormButton
+                  type="button"
+                  width="200px"
+                  $cancel
+                  onClick={() => setPhotoSourceButtonsVisible(false)}
+                >
+                  {t('buttons.cancel')}
+                </FormButton>
+                :
+                <FormButton type="button" width="200px" onClick={() => navigate(-1)} $cancel
+                >
+                  {t("buttons.back")}
+                </FormButton>
+              }
             </FormButtonWrapper>
           </>
         }

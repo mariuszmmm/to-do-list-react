@@ -81,17 +81,21 @@ const langEn: typeof langPl = {
   taskImagePage: {
     title: "Task Image",
     noTask: "Task not found 😥",
-    messages: {
-      uploading: "Uploading…",
-      loading: "Loading…",
-      uploadError: "An error occurred while uploading the image.",
-      loadError: "Image download error.",
-    },
     buttons: {
       add: "Add",
       change: "Change",
       remove: "Remove",
       back: "Back",
+      addFromGallery: "From gallery",
+      takePhoto: "Take photo",
+      cancel: "Cancel",
+    },
+    messages: {
+      uploading: "Uploading…",
+      loading: "Loading…",
+      uploadError: "An error occurred while uploading the image.",
+      loadError: "Image download error.",
+      choosePhotoSource: "Choose photo source:",
     },
   },
   archivedListsPage: {
