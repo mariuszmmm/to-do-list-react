@@ -84,12 +84,16 @@ const langPl = {
       loading: "Ładowanie…",
       uploadError: "Wystąpił błąd podczas przesyłania obrazu.",
       loadError: "Błąd ładowania zdjęcia.",
+      choosePhotoSource: "Wybierz zrodło obrazu:",
     },
     buttons: {
       add: "Dodaj",
       change: "Zmień",
       remove: "Usuń",
       back: "Powrót",
+      addFromGallery: "Z galerii",
+      takePhoto: "Z aparatu",
+      cancel: "Anuluj",
     },
   },
   archivedListsPage: {
