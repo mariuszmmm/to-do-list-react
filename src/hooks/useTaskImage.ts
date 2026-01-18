@@ -16,6 +16,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -186,9 +187,11 @@ export const useTaskImage = (imageUrl?: string | null) => {
     try {
       if (!publicId) throw new Error("No publicId provided");
 
+      setIsRemoving(true);
+      setErrorMsg(null);
+
       const result = await deleteCloudinaryImage(publicId);
       setImageSrc("");
-      setErrorMsg(null);
       if (result.result === "not found") {
         console.warn("Image not found on Cloudinary");
       }
@@ -203,6 +206,8 @@ export const useTaskImage = (imageUrl?: string | null) => {
         i18n.t("errorMessage.imageDeleteError");
       setErrorMsg(translatedText);
       return null;
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -213,6 +218,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
     uploadProgress,
     downloadProgress,
     isDownloading,
+    isRemoving,
     imageSrc,
     errorMsg,
     resetError,
