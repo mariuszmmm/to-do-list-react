@@ -120,7 +120,13 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
 
   // Start speech recognition with previous text
   const start = useCallback(() => {
-    finalTextRef.current = prevText;
+    // Inicjalizacja tekstu poprzedniego
+    if (!finalTextRef.current) {
+      finalTextRef.current = prevText;
+    } else {
+      finalTextRef.current = finalTextRef.current + " ";
+    }
+
     if (recognitionRef.current) {
       // Flaga do ręcznego zatrzymania na Androidzie
       (recognitionRef.current as SpeechRecognitionWithForceStop)._forceStop =
