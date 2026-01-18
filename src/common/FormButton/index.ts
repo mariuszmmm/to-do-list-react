@@ -46,6 +46,7 @@ export const FormButton = styled.button<ButtonProps>`
 
   &:disabled {
     background: ${({ theme }) => theme.colors.button.disabled};
+    color: ${({ theme }) => theme.colors.textSecendary};
     filter: none;
     cursor: not-allowed;
   }

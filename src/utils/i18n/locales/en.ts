@@ -93,6 +93,7 @@ const langEn: typeof langPl = {
     messages: {
       uploading: "Uploading…",
       loading: "Loading…",
+      removing: "Removing…",
       uploadError: "An error occurred while uploading the image.",
       loadError: "Image download error.",
       choosePhotoSource: "Choose photo source:",

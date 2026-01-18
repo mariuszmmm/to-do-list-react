@@ -93,6 +93,7 @@ const langDe: typeof langPl = {
     messages: {
       uploading: "Hochladen…",
       loading: "Laden…",
+      removing: "Löschen…",
       uploadError: "Fehler beim Hochladen des Bildes.",
       loadError: "Fehler beim Laden des Bildes.",
       choosePhotoSource: "Bildquelle wählen:",

@@ -80,8 +80,9 @@ const langPl = {
     title: "Zdjęcie zadania",
     noTask: "Nie znaleziono zadania 😥",
     messages: {
-      uploading: "Wgrywanie…",
+      uploading: "Przesyłanie…",
       loading: "Ładowanie…",
+      removing: "Usuwanie…",
       uploadError: "Wystąpił błąd podczas przesyłania obrazu.",
       loadError: "Błąd ładowania zdjęcia.",
       choosePhotoSource: "Wybierz zrodło obrazu:",
