@@ -18,6 +18,7 @@ const StyledNavLink = styled(NavLink) <{ $inactive?: boolean; $width?: number }>
   transition: color 0.2s ease-in-out;
   width: ${({ $width }) => ($width ? `${$width}px` : "auto")};
   display: inline-block;
+  text-align: center;
 
   &:hover {
     text-decoration: underline;

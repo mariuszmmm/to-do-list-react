@@ -8,7 +8,7 @@ import axios from "axios";
 import { translateText } from "../utils/translateText";
 import i18n from "../utils/i18n";
 
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export const useTaskImage = (imageUrl?: string | null) => {
@@ -112,7 +112,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
   const uploadImage = async (
     file: File,
     publicId?: string,
-    folder?: string
+    folder?: string,
   ): Promise<UploadResult | null> => {
     try {
       if (!file) {
@@ -124,8 +124,8 @@ export const useTaskImage = (imageUrl?: string | null) => {
         console.error("Unsupported file type:", file.type);
         throw new Error(
           `Unsupported file type.\n Allowed types: ${ALLOWED_TYPES.map((t) =>
-            t.replace("image/", "")
-          ).join(", ")}`
+            t.replace("image/", ""),
+          ).join(", ")}`,
         );
       }
 
@@ -161,7 +161,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       const res = await axios.post<UploadResult>(uploadUrl, formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            (progressEvent.loaded * 100) / (progressEvent.total || 1),
           );
           setUploadProgress(percentCompleted);
         },

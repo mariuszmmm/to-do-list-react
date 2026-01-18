@@ -8,6 +8,7 @@ interface NavListProps {
 }
 interface ButtonProps {
   $isActive?: boolean;
+  width?: string;
 }
 
 interface StyledNavLinkProps {
@@ -85,6 +86,7 @@ export const NavButton = styled.button<ButtonProps>`
   background: none;
   border: none;
   color: ${({ theme }) => theme.colors.nav.text};
+  width: ${({ width }) => width || "auto"};
   cursor: pointer;
 
   &:hover {

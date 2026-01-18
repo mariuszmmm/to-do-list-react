@@ -35,6 +35,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
                 onClick={() => i18n.changeLanguage(lang)}
                 $isActive={i18n.language.split("-")[0] === lang}
                 key={lang}
+                width="34px"
               >
                 {lang.toUpperCase()}
               </NavButton>
@@ -58,7 +59,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
             <AutoMinWidthNavLink to="/info" text={t("info")}>{t("info")}</AutoMinWidthNavLink>
           </li>
           <li>
-            <AutoMinWidthNavLink to="/account" text={"Account"}>
+            <AutoMinWidthNavLink to="/account" text={""}>
               {pathname === "/account" ? <ActiveAccount /> : <Account />}
             </AutoMinWidthNavLink>
           </li>
