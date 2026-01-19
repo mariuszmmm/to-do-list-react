@@ -38,11 +38,12 @@ import {
 } from "../../../../common/StyledList";
 import { moveListDown, moveListUp } from "../../../../utils/moveList";
 import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
-import { ListsData, Task } from "../../../../types";
+import { Task } from "../../../../types";
 import { TaskActions } from "../../../../common/TaskActions";
 import { selectLoggedUserEmail } from "../../../AccountPage/accountSlice";
+import type { TaskFormApi } from "../TaskForm/hooks/useTaskForm";
 
-export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) => {
+export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
@@ -55,6 +56,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
+  const { speech } = taskForm;
 
   useEffect(() => {
     if (!tasks) return;
@@ -98,6 +100,8 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
       setRefs(el);
       dragProps.setNodeRef(el as unknown as HTMLElement | null);
     };
+
+
 
     return (
       <StyledListItem
@@ -162,7 +166,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
                   }),
                 )
               }
-              disabled={!!editedTaskContent}
+              disabled={!!editedTaskContent || speech.isActive}
             >
               {task.done ? "✔" : ""}
             </ToggleButton>
@@ -176,7 +180,7 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
             </StyledSpan>
           </StyledListContent>
           <TaskActions>
-            <EditButton onClick={() => dispatch(setTaskToEdit(task.id))} disabled={!!editedTaskContent}>
+            <EditButton onClick={() => dispatch(setTaskToEdit(task.id))} disabled={!!editedTaskContent || speech.isActive}>
               ✏️
             </EditButton>
             <RemoveButton
@@ -189,13 +193,13 @@ export const TasksList = ({ listsData }: { listsData: ListsData | undefined }) =
                   }),
                 )
               }
-              disabled={!!editedTaskContent}
+              disabled={!!editedTaskContent || speech.isActive}
             >
               🗑️
             </RemoveButton>
 
-            {loggedUserEmail && <ImageButton disabled={!!editedTaskContent || !isRemoteSaveable}>
-              <StyledLink to={`/tasks/image/${task.id}`} disabled={!!editedTaskContent || !isRemoteSaveable}>
+            {loggedUserEmail && <ImageButton disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
+              <StyledLink to={`/tasks/image/${task.id}`} disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
                 📷
               </StyledLink>
             </ImageButton>}

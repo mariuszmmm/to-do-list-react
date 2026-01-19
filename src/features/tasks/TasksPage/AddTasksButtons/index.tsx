@@ -63,6 +63,7 @@ export const AddTasksButtons = () => {
             name: data.name,
             date: time,
             updatedAt: time,
+            synced: false,
           },
           tasks: dataTasks,
           stateForUndo: {

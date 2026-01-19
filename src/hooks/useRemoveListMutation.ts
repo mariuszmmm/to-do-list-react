@@ -38,7 +38,7 @@ export const useRemoveListMutation = () => {
           title: { key: "modal.listRemove.title" },
           message: { key: "modal.listRemove.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
     // On success, update cache and show success or conflict modal
@@ -50,7 +50,7 @@ export const useRemoveListMutation = () => {
             title: { key: "modal.listRemove.title" },
             message: { key: "modal.listRemove.message.error.conflict" },
             type: "error",
-          })
+          }),
         );
       } else {
         dispatch(
@@ -60,7 +60,7 @@ export const useRemoveListMutation = () => {
               key: "modal.listRemove.message.success",
             },
             type: "success",
-          })
+          }),
         );
       }
     },
@@ -71,7 +71,7 @@ export const useRemoveListMutation = () => {
           title: { key: "modal.listRemove.title" },
           message: { key: "modal.listRemove.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });

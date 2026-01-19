@@ -2,7 +2,8 @@ import { Input } from "../../../../../common/Input";
 import { TextArea } from "../../../../../common/TextArea";
 
 interface Props {
-  value: string;
+  inputValue: string;
+  textAreaValue: string;
   name: string;
   edited: boolean;
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -13,7 +14,8 @@ interface Props {
 }
 
 export const TaskInput = ({
-  value,
+  inputValue,
+  textAreaValue,
   name,
   edited,
   inputRef,
@@ -26,7 +28,7 @@ export const TaskInput = ({
     return (
       <TextArea
         ref={textAreaRef}
-        value={value}
+        value={textAreaValue}
         name={name}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
@@ -38,7 +40,7 @@ export const TaskInput = ({
   return (
     <Input
       ref={inputRef}
-      value={value}
+      value={inputValue}
       name={name}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}

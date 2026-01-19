@@ -11,7 +11,7 @@ import {
  * Hook for speech-to-text functionality using the Web Speech API.
  * Handles speech recognition, language, interim/final results, and error handling.
  */
-export const useSpeechToText = ({ prevText }: { prevText: string }) => {
+export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [supportSpeech, setSupportSpeech] = useState<boolean | null>(null);
   const hasCheckedInterim = useRef(false);
@@ -99,14 +99,26 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
   }, [getSpeechLang, i18n.language]);
 
   // Start speech recognition with previous text
-  const start = useCallback(() => {
-    finalTextRef.current = prevText;
-    recognitionRef.current?.start();
-  }, [prevText]);
+  const start = useCallback(
+    (prevText?: string) => {
+      prevText && (finalTextRef.current = prevText);
+      recognitionRef.current?.start();
+    },
+    [recognitionRef],
+  );
 
   // Stop speech recognition
   const stop = useCallback(() => {
     recognitionRef.current?.stop();
+  }, []);
+
+  // Clear speech text and refs
+  const clear = useCallback(() => {
+    setText("");
+    interimTextRef.current = "";
+    finalTextRef.current = "";
+    hasCheckedInterim.current = false;
+    isInterimSupported.current = false;
   }, []);
 
   return {
@@ -117,5 +129,7 @@ export const useSpeechToText = ({ prevText }: { prevText: string }) => {
     supportSpeech,
     start,
     stop,
+    clear,
+    setText,
   };
 };

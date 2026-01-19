@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import {
   addTask,
   saveEditedTask,
@@ -7,11 +7,11 @@ import {
   selectEditedTask,
   selectTasks,
   selectTaskListMetaData,
-} from "../../../tasksSlice";
+} from "../../tasksSlice";
 
-import { clearInputAutoFocusFlag } from "../../../../../utils/setFirstLoadFlagIfRoot";
-import { useSpeechToText } from "../../../../../hooks";
-import { useAutoFocusFlag } from "../../hooks/useAutoFocusFlag";
+import { clearInputAutoFocusFlag } from "../../../../utils/setFirstLoadFlagIfRoot";
+import { useAutoFocusFlag } from "./useAutoFocusFlag";
+import { useSpeechToText } from "../../../../hooks";
 
 /**
  * Hook for managing task form logic: add/edit tasks, speech-to-text, autofocus, and keyboard shortcuts.
@@ -19,17 +19,13 @@ import { useAutoFocusFlag } from "../../hooks/useAutoFocusFlag";
  */
 export const useTaskForm = () => {
   const dispatch = useAppDispatch();
-
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const editedTask = useAppSelector(selectEditedTask);
   const shouldAutoFocus = useAutoFocusFlag("inputAutoFocusFirstLoad");
-
   const [inputValue, setInputValue] = useState("");
   const [textAreaValue, setTextAreaValue] = useState("");
-
   const previousValueRef = useRef("");
-
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,27 +33,6 @@ export const useTaskForm = () => {
     prevText: editedTask?.content ? `${editedTask.content} ` : `${inputValue} `,
   });
 
-  // Autofocus input or textarea depending on edit mode
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-
-  // Przy zmianie trybu edycji zatrzymaj nagrywanie, jeśli jest aktywne
-  useEffect(() => {
-    inputValue && setInputValue("");
-    speech.clear();
-    // if (speech.isListening) {
-    //   speech.stop();
-    //   // speech.clear();
-    // }
-    // if (!editedTask?.id) {
-    //   setValue("");
-    //   //speech.setText("");
-    //   // speech.clear();
-    // }
-    // Nie czyść speech.text automatycznie!
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editedTask?.id]);
-
-  // 1. Toggle speech recognition and focus the correct input
   const toggleSpeechRecognition = useCallback(() => {
     if (speech.isListening) {
       speech.stop();
@@ -67,9 +42,18 @@ export const useTaskForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speech.isListening, editedTask]);
 
-  //  Submit form: add or edit a task, clear value after
+  const handleChange = useCallback(
+    (v: string) => {
+      if (!editedTask) {
+        setInputValue(v.length === 1 ? v.toUpperCase() : v);
+      } else {
+        setTextAreaValue(v);
+      }
+    },
+    [editedTask],
+  );
+
   const submit = useCallback(() => {
-    // const content = value.trim();
     const content = (editedTask ? textAreaValue : inputValue).trim();
     if (content) {
       if (!editedTask) {
@@ -87,10 +71,9 @@ export const useTaskForm = () => {
       } else dispatch(setTaskToEdit(null));
     }
 
-    // setValue("");
     setInputValue("");
     setTextAreaValue("");
-    speech.clear(); // dodane
+    speech.clear();
   }, [
     inputValue,
     textAreaValue,
@@ -101,14 +84,12 @@ export const useTaskForm = () => {
     speech,
   ]);
 
-  // Handle form submit event, stop speech if active
   const onSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       if (speech.isListening) {
         speech.stop();
         inputRef.current?.blur();
-        // speech.stop();
       }
       submit();
       const activeInput = editedTask ? textAreaRef.current : inputRef.current;
@@ -118,9 +99,21 @@ export const useTaskForm = () => {
     [submit, speech, editedTask],
   );
 
-  // 3. Stop speech recognition if edited task changes
+  const onCtrlEnter = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  }, []);
 
-  //////////////////////////////
+  const handleCancel = useCallback(() => {
+    inputValue && setInputValue("");
+    textAreaValue && setTextAreaValue("");
+    editedTask && dispatch(setTaskToEdit(null));
+    speech.clear();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue, textAreaValue, editedTask, dispatch]);
 
   useEffect(() => {
     if (!shouldAutoFocus) return;
@@ -154,33 +147,6 @@ export const useTaskForm = () => {
     }
   }, [speech.text, editedTask]);
 
-  const onCtrlEnter = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && e.ctrlKey) {
-      e.preventDefault();
-      formRef.current?.requestSubmit();
-    }
-  }, []);
-
-  const handleCancel = useCallback(() => {
-    inputValue && setInputValue("");
-    textAreaValue && setTextAreaValue("");
-    editedTask && dispatch(setTaskToEdit(null));
-    speech.clear();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue, textAreaValue, editedTask, dispatch]);
-
-  const handleChange = useCallback(
-    (v: string) => {
-      if (!editedTask) {
-        setInputValue(v.length === 1 ? v.toUpperCase() : v);
-      } else {
-        setTextAreaValue(v);
-      }
-    },
-    [editedTask],
-  );
-
   useEffect(() => {
     if (speech.isListening) {
       speech.stop();
@@ -205,6 +171,3 @@ export const useTaskForm = () => {
     speech,
   };
 };
-
-// Export TaskFormApi type for use in TaskForm and TasksList
-export type TaskFormApi = ReturnType<typeof useTaskForm>;

@@ -12,6 +12,7 @@ export type TaskListMetaData = {
   name: string;
   date: string;
   updatedAt: string;
+  synced: boolean;
 };
 
 export type TaskListData = {

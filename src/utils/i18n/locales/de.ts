@@ -500,6 +500,17 @@ const langDe: typeof langPl = {
         },
       },
     },
+    imageRemove: {
+      title: "Foto löschen",
+      message: {
+        confirm: "Möchtest du das Foto wirklich löschen?",
+        loading: "Foto wird gelöscht...",
+        success: "Das Foto wurde gelöscht.",
+        error: {
+          default: "Fehler beim Löschen des Fotos.",
+        },
+      },
+    },
     deleteBackup: {
       title: "Sicherung löschen",
       message: {

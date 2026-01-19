@@ -47,6 +47,7 @@ const getNewTaskListMetaData = () => ({
   name: i18n.t("tasksPage.tasks.defaultListName") || "________",
   date: initTime,
   updatedAt: initTime,
+  synced: false,
 });
 
 const initTime = new Date().toISOString();
@@ -78,7 +79,7 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         content: string;
         stateForUndo: TaskListData;
-      }>
+      }>,
     ) => {
       const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
@@ -96,7 +97,7 @@ const tasksSlice = createSlice({
     },
     setTaskToEdit: (
       state,
-      { payload: taskId }: PayloadAction<string | null>
+      { payload: taskId }: PayloadAction<string | null>,
     ) => {
       if (!taskId) {
         state.editedTask = null;
@@ -117,7 +118,7 @@ const tasksSlice = createSlice({
         id: string;
         content: string;
         stateForUndo: TaskListData;
-      }>
+      }>,
     ) => {
       const index = state.tasks.findIndex((task) => task.id === id);
       if (index === -1) return;
@@ -145,7 +146,7 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskId: string;
         stateForUndo: TaskListData;
-      }>
+      }>,
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index === -1) return;
@@ -171,7 +172,7 @@ const tasksSlice = createSlice({
         taskId: string;
         stateForUndo: TaskListData;
         isRemoteSaveable?: boolean;
-      }>
+      }>,
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index === -1) return;
@@ -192,7 +193,7 @@ const tasksSlice = createSlice({
       state,
       {
         payload: tasksToArchive,
-      }: PayloadAction<{ name: string; tasks: Task[] } | null>
+      }: PayloadAction<{ name: string; tasks: Task[] } | null>,
     ) => {
       const tasks =
         tasksToArchive?.tasks
@@ -210,7 +211,7 @@ const tasksSlice = createSlice({
     },
     clearTaskList: (
       state,
-      { payload: stateForUndo }: PayloadAction<TaskListData>
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
     ) => {
       const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
@@ -222,6 +223,7 @@ const tasksSlice = createSlice({
         name: t("tasksPage.tasks.defaultListName"),
         date: time,
         updatedAt: time,
+        synced: false,
       };
       state.listNameToEdit = null;
       state.isTasksSorting = false;
@@ -235,7 +237,7 @@ const tasksSlice = createSlice({
     },
     setAllDone: (
       state,
-      { payload: stateForUndo }: PayloadAction<TaskListData>
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
     ) => {
       if (state.tasks.length === 0 || state.tasks.every(({ done }) => done))
         return;
@@ -252,7 +254,7 @@ const tasksSlice = createSlice({
     },
     setAllUndone: (
       state,
-      { payload: stateForUndo }: PayloadAction<TaskListData>
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
     ) => {
       if (state.tasks.length === 0 || state.tasks.every(({ done }) => !done))
         return;
@@ -276,7 +278,7 @@ const tasksSlice = createSlice({
         taskListMetaData: TaskListMetaData;
         tasks: Task[];
         stateForUndo?: TaskListData;
-      }>
+      }>,
     ) => {
       const time = new Date().toISOString();
       if (stateForUndo) {
@@ -338,7 +340,7 @@ const tasksSlice = createSlice({
     },
     setListNameToEdit: (
       state,
-      { payload: listNameToEdit }: PayloadAction<string | null>
+      { payload: listNameToEdit }: PayloadAction<string | null>,
     ) => {
       if (listNameToEdit) {
         state.listNameToEdit = listNameToEdit;
@@ -350,7 +352,7 @@ const tasksSlice = createSlice({
       state,
       {
         payload: { name, stateForUndo },
-      }: PayloadAction<{ name: string; stateForUndo?: TaskListData }>
+      }: PayloadAction<{ name: string; stateForUndo?: TaskListData }>,
     ) => {
       const time = new Date().toISOString();
       if (!!stateForUndo) {
@@ -372,7 +374,7 @@ const tasksSlice = createSlice({
         manualSaveTriggered?: boolean;
         isRemoteSaveable?: boolean;
         isIdenticalToRemote?: boolean;
-      }>
+      }>,
     ) => {
       if (manualSaveTriggered !== undefined) {
         state.listStatus.manualSaveTriggered = manualSaveTriggered;
@@ -386,7 +388,7 @@ const tasksSlice = createSlice({
     },
     updateTasksStatus: (
       state,
-      { payload: { status } }: PayloadAction<{ status: Task["status"] }>
+      { payload: { status } }: PayloadAction<{ status: Task["status"] }>,
     ) => {
       if (!status) return;
       const allTasks = state.tasks;
@@ -398,7 +400,7 @@ const tasksSlice = createSlice({
     },
     setTasksToSort: (
       state,
-      { payload: sortedTasks }: PayloadAction<Task[] | null>
+      { payload: sortedTasks }: PayloadAction<Task[] | null>,
     ) => {
       state.tasksToSort = sortedTasks;
     },
@@ -419,12 +421,14 @@ const tasksSlice = createSlice({
       }: PayloadAction<{
         taskId: string;
         image: Task["image"];
-      }>
+      }>,
     ) => {
       const index = state.tasks.findIndex((task) => task.id === taskId);
       if (index === -1) return;
+      const time = new Date().toISOString();
       state.tasks[index] = {
         ...state.tasks[index],
+        updatedAt: time,
         image,
       };
     },
@@ -496,9 +500,9 @@ export const selectActiveTasksByQuery = createSelector(
     const filtered = tasks.filter((task) => task.status !== "deleted");
     if (!query) return filtered;
     return filtered.filter((task) =>
-      task.content.toUpperCase().includes(query.toUpperCase().trim())
+      task.content.toUpperCase().includes(query.toUpperCase().trim()),
     );
-  }
+  },
 );
 export const selectChangeSource = (state: RootState) =>
   selectTasksState(state).changeSource;

@@ -496,6 +496,17 @@ const langPl = {
         },
       },
     },
+    imageRemove: {
+      title: "Usuwanie zdjęcia",
+      message: {
+        confirm: "Czy na pewno chcesz usunąć zdjęcie?",
+        loading: "Trwa usuwanie...",
+        success: "Zdjecie zostało usunięte.",
+        error: {
+          default: "Błąd podczas usuwania zdjecia.",
+        },
+      },
+    },
     deleteBackup: {
       title: "Usuwanie kopii zapasowej",
       message: {

@@ -1,21 +1,21 @@
 import { useAppSelector } from "../../../../hooks/redux";
 import { Form } from "../../../../common/Form";
-import { selectIsTasksSorting, } from "../../tasksSlice";
+import { selectEditedTask, selectIsTasksSorting, } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { InputWrapper } from "../../../../common/InputWrapper";
 import { MicrophoneIcon } from "../../../../common/icons";
 import { InputButton } from "../../../../common/InputButton";
-import { useTaskForm } from "./hooks/useTaskForm";
 import { TaskFormButtons } from "./TaskFormButtons";
 import { TaskInput } from "./TaskInput";
+import type { TaskFormApi } from "./hooks/useTaskForm";
 
-export const TaskForm = () => {
+export const TaskForm = ({ taskForm }: { taskForm: TaskFormApi }) => {
   const { t } = useTranslation("translation", { keyPrefix: "tasksPage" });
+  const editedTask = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
-
   const {
-    value,
-    editedTask,
+    inputValue,
+    textAreaValue,
     formRef,
     inputRef,
     textAreaRef,
@@ -25,13 +25,14 @@ export const TaskForm = () => {
     onCtrlEnter,
     handleCancel,
     speech,
-  } = useTaskForm();
+  } = taskForm;
 
   return (
     <Form ref={formRef} onSubmit={onSubmit} $singleInput>
       <InputWrapper disabled={isTasksSorting}>
         <TaskInput
-          value={value}
+          inputValue={inputValue}
+          textAreaValue={textAreaValue}
           name="taskName"
           edited={!!editedTask}
           inputRef={inputRef}

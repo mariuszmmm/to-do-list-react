@@ -3,15 +3,24 @@ import { t } from "i18next";
 export const prepareText = (text: string): string => {
   let preparedText = text;
   preparedText = trimText(preparedText);
-  preparedText = removeDoubleSpaces(preparedText);
   preparedText = replaceWordPeriod(preparedText);
   preparedText = replaceWordComma(preparedText);
   preparedText = capitalizeFirstLetter(preparedText);
   preparedText = capitalizeAfterPeriod(preparedText);
   preparedText = addSpaceAfterPunctuation(preparedText);
-
+  preparedText = removeDoubleSpaces(preparedText);
+  preparedText = removeLeadingSpacesAfterNewline(preparedText);
+  preparedText = removeTrailingSpacesBeforeNewline(preparedText);
+  preparedText = removeTrailingSpaces(preparedText);
   return preparedText;
 };
+const removeTrailingSpacesBeforeNewline = (text: string) =>
+  text.replace(/ +\n/g, "\n");
+
+const removeTrailingSpaces = (text: string) => text.replace(/[ \t]+$/g, "");
+
+const removeLeadingSpacesAfterNewline = (text: string) =>
+  text.replace(/\n[ \t]+/g, "\n");
 
 const trimText = (text: string) => text.replace(/^[ \t]+|[ \t]+$/g, "");
 const removeDoubleSpaces = (text: string) => text.replace(/ {2,}/g, " ");
