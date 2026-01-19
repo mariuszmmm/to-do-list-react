@@ -28,7 +28,7 @@ interface UseListSyncManagerParams {
 const areTasksAndMetaDataEqual = (
   remoteList: List,
   localMeta: TaskListMetaData,
-  localTasks: Task[]
+  localTasks: Task[],
 ): boolean => {
   const metaDataMatch =
     remoteList.id === localMeta.id && remoteList.name === localMeta.name;
@@ -96,20 +96,20 @@ export const useListSyncManager = ({
       if (!isRemoteSaveable && !isIdenticalToRemote) return;
 
       dispatch(
-        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
       );
       return;
     }
 
     const remoteList = listsData.lists.find(
-      (list) => list.id === taskListMetaData.id
+      (list) => list.id === taskListMetaData.id,
     );
 
     if (!remoteList) {
       if (!isRemoteSaveable && !isIdenticalToRemote) return;
 
       dispatch(
-        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
       );
 
       return;
@@ -118,7 +118,7 @@ export const useListSyncManager = ({
     const isIdentical = areTasksAndMetaDataEqual(
       remoteList,
       taskListMetaData,
-      tasks
+      tasks,
     );
 
     process.env.NODE_ENV === "development" &&
@@ -131,7 +131,7 @@ export const useListSyncManager = ({
 
     if (isError && isRemoteSaveable) {
       dispatch(
-        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false })
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
       );
     } else {
       if (isRemoteSaveable && isIdenticalToRemote === isIdentical) return;
@@ -141,7 +141,7 @@ export const useListSyncManager = ({
         setListStatus({
           isRemoteSaveable: true,
           isIdenticalToRemote: isIdentical,
-        })
+        }),
       );
     }
 
@@ -157,14 +157,14 @@ export const useListSyncManager = ({
     if (!listsData || !isRemoteSaveable) return;
 
     const remoteList = listsData.lists.find(
-      (list) => list.id === taskListMetaData.id
+      (list) => list.id === taskListMetaData.id,
     );
     if (!remoteList) return;
 
     const isIdentical = areTasksAndMetaDataEqual(
       remoteList,
       taskListMetaData,
-      tasks
+      tasks,
     );
 
     process.env.NODE_ENV === "development" &&
@@ -197,7 +197,7 @@ export const useListSyncManager = ({
 
       const isInDeleted = deletedIds.includes(localTask.id);
       const isInRemote = remoteList.taskList.some(
-        (task) => task.id === localTask.id
+        (task) => task.id === localTask.id,
       );
 
       if (!isInRemote && !isInDeleted) return true;
@@ -227,12 +227,13 @@ export const useListSyncManager = ({
       name: sourceMeta.name,
       date: sourceMeta.date,
       updatedAt: sourceMeta.updatedAt,
+      synced: true,
     };
     const newTasks: Task[] = [...remoteOnlyTasks, ...localOnlyTasks].map(
       (task) => ({
         ...task,
         status: task.status !== "deleted" ? "updated" : task.status,
-      })
+      }),
     );
     process.env.NODE_ENV === "development" &&
       console.log("5 ListSyncManager updating local tasks", {
@@ -251,7 +252,7 @@ export const useListSyncManager = ({
         isLoad: true,
         taskListMetaData: newMeta,
         tasks: newTasks,
-      })
+      }),
     );
 
     tasksRef.current = newTasks;
@@ -266,7 +267,7 @@ export const useListSyncManager = ({
       (payload: { list: List; deviceId: string }) => {
         saveListMutation.mutate(payload);
       },
-      5000
+      5000,
     );
     return () => {
       debouncedMutateRef.current && debouncedMutateRef.current.cancel();
@@ -290,7 +291,7 @@ export const useListSyncManager = ({
       return;
 
     const remoteList = listsData.lists.find(
-      (list) => list.id === taskListMetaData.id
+      (list) => list.id === taskListMetaData.id,
     );
 
     process.env.NODE_ENV === "development" &&
@@ -301,7 +302,7 @@ export const useListSyncManager = ({
       ? areTasksAndMetaDataEqual(
           remoteList,
           taskListMetaDataRef.current,
-          tasksRef.current
+          tasksRef.current,
         )
       : false;
 

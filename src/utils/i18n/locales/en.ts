@@ -490,6 +490,17 @@ const langEn: typeof langPl = {
         },
       },
     },
+    imageRemove: {
+      title: "Deleting foto",
+      message: {
+        confirm: "Are you sure you want to delete the foto?",
+        loading: "Deleting...",
+        success: "The foto has been removed.",
+        error: {
+          default: "An error occurred while deleting the foto.",
+        },
+      },
+    },
     deleteBackup: {
       title: "Deleting backup",
       message: {

@@ -5,7 +5,7 @@ export const InputButton = styled.button<{ $editedTask?: boolean }>`
   background: ${({ theme }) => theme.colors.button.transparent};
   border: none;
   position: absolute;
-  width: 2.5rem;
+  width: 2.6rem;
   height: ${({ $editedTask }) => ($editedTask ? "2.5rem" : "100%")};
   right: 0;
   ${({ $editedTask }) => ($editedTask ? "bottom: 2px;" : "top: 2px; ")}

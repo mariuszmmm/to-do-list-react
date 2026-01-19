@@ -13,6 +13,7 @@ import { selectEditedTask, selectShowSearch, } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { ListsData, List } from "../../../types";
 import { UseMutationResult } from "@tanstack/react-query";
+import { useTaskForm } from "./hooks/useTaskForm";
 
 type Props = {
   listsData?: ListsData;
@@ -25,6 +26,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+  const taskForm = useTaskForm();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -45,7 +47,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
             : t("form.title.editTask")
         }
         extraHeaderContent={<AddTasksButtons />}
-        body={<TaskForm />}
+        body={<TaskForm taskForm={taskForm} />}
       />
       <Section
         title={t("search.title")}
@@ -56,7 +58,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
       <Section
         taskList
         title={<EditableListName />}
-        body={<TasksList listsData={listsData} />}
+        body={<TasksList taskForm={taskForm} />}
         extraHeaderContent={
           <TasksButtons
             listsData={listsData}

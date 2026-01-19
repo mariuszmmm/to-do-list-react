@@ -11,6 +11,7 @@ import { MessageContainer } from "../../../common/MessageContainer";
 import { Image, ImageInput, ImagePlaceholder, ImagePreview, ProgressBarContainer, ProgressBarFill } from "../../../common/Image";
 import { Info } from "../../../common/Info";
 import { selectLoggedUserEmail } from "../../AccountPage/accountSlice";
+import { useTaskImageRemove } from "./useTaskImageRemove";
 
 export const TaskImage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -43,10 +44,11 @@ export const TaskImage = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] = useState(false);
 
+
   useEffect(() => {
     window.scrollTo(0, 0);
     const checkMobile = () => {
-      const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+      const ua = navigator.userAgent;
       if (/android|iphone|ipad|ipod|windows phone/i.test(ua)) {
         setIsMobile(true);
       } else {
@@ -90,20 +92,12 @@ export const TaskImage = () => {
     }
   };
 
-  const onRemoveImage = async () => {
-    resetError();
-
-    try {
-      if (!taskId) throw new Error("Missing taskId");
-      if (!publicId) throw new Error("No publicId provided");
-
-      const result = await removeImage(publicId);
-      if (!result) throw new Error("Image removal failed");
-      dispatch(setImage({ taskId, image: null }))
-    } catch (error: unknown) {
-      console.error("Error removing image from Cloudinary:", error);
-    }
-  }
+  const { setImageRemoving } = useTaskImageRemove({
+    resetError,
+    taskId,
+    publicId,
+    removeImage,
+  });
 
   return (
     <>
@@ -212,7 +206,7 @@ export const TaskImage = () => {
                     <FormButton
                       type="button"
                       width="200px"
-                      onClick={onRemoveImage}
+                      onClick={() => setImageRemoving(true)}
                       disabled={isUploading || isDownloading || isRemoving}
 
                     >

@@ -9,7 +9,7 @@ const autoRefreshKey = "autoRefreshEnabled" as const;
 export const clearLocalStorage = () => localStorage.clear();
 
 export const saveSettingsInLocalStorage = (
-  settings: Partial<Settings> | Settings
+  settings: Partial<Settings> | Settings,
 ) => {
   const existing = localStorage.getItem(settingsKey);
 
@@ -37,8 +37,14 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
 };
 
 export const saveListMetadataInLocalStorage = (
-  taskListMetaData: TaskListMetaData
-) => localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
+  taskListMetaData: TaskListMetaData | null,
+) => {
+  if (!taskListMetaData) {
+    localStorage.removeItem(listMetadataKey);
+    return;
+  }
+  localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
+};
 
 export const getListMetadataFromLocalStorage = ():
   | TaskListMetaData
@@ -54,8 +60,13 @@ export const getListMetadataFromLocalStorage = ():
   return parsed;
 };
 
-export const saveTasksInLocalStorage = (tasks: Task[]) =>
+export const saveTasksInLocalStorage = (tasks: Task[] | null) => {
+  if (!tasks) {
+    localStorage.removeItem(tasksKey);
+    return;
+  }
   localStorage.setItem(tasksKey, JSON.stringify(tasks));
+};
 
 export const getTasksFromLocalStorage = (): Task[] => {
   const data = localStorage.getItem(tasksKey);
@@ -81,7 +92,7 @@ export const getAutoRefreshSettingFromLocalStorage = (): boolean => {
 };
 
 export const saveAutoRefreshSettingInLocalStorage = (
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   localStorage.setItem(autoRefreshKey, JSON.stringify(enabled));
 };
