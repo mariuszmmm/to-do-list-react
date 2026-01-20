@@ -13,10 +13,6 @@ import { clearInputAutoFocusFlag } from "../../../../../utils/setFirstLoadFlagIf
 import { useSpeechToText } from "../../../../../hooks";
 import { useAutoFocusFlag } from "../../hooks/useAutoFocusFlag";
 
-/**
- * Hook for managing task form logic: add/edit tasks, speech-to-text, autofocus, and keyboard shortcuts.
- * Handles form state, input focus, and integration with Redux actions.
- */
 export const useTaskForm = () => {
   const dispatch = useAppDispatch();
 
@@ -37,27 +33,6 @@ export const useTaskForm = () => {
     prevText: editedTask?.content ? `${editedTask.content} ` : `${inputValue} `,
   });
 
-  // Autofocus input or textarea depending on edit mode
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-
-  // Przy zmianie trybu edycji zatrzymaj nagrywanie, jeśli jest aktywne
-  useEffect(() => {
-    inputValue && setInputValue("");
-    speech.clear();
-    // if (speech.isListening) {
-    //   speech.stop();
-    //   // speech.clear();
-    // }
-    // if (!editedTask?.id) {
-    //   setValue("");
-    //   //speech.setText("");
-    //   // speech.clear();
-    // }
-    // Nie czyść speech.text automatycznie!
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editedTask?.id]);
-
-  // 1. Toggle speech recognition and focus the correct input
   const toggleSpeechRecognition = useCallback(() => {
     if (speech.isListening) {
       speech.stop();
@@ -67,9 +42,7 @@ export const useTaskForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [speech.isListening, editedTask]);
 
-  //  Submit form: add or edit a task, clear value after
   const submit = useCallback(() => {
-    // const content = value.trim();
     const content = (editedTask ? textAreaValue : inputValue).trim();
     if (content) {
       if (!editedTask) {
@@ -87,10 +60,9 @@ export const useTaskForm = () => {
       } else dispatch(setTaskToEdit(null));
     }
 
-    // setValue("");
     setInputValue("");
     setTextAreaValue("");
-    speech.clear(); // dodane
+    speech.clear();
   }, [
     inputValue,
     textAreaValue,
@@ -101,14 +73,12 @@ export const useTaskForm = () => {
     speech,
   ]);
 
-  // Handle form submit event, stop speech if active
   const onSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       if (speech.isListening) {
         speech.stop();
         inputRef.current?.blur();
-        // speech.stop();
       }
       submit();
       const activeInput = editedTask ? textAreaRef.current : inputRef.current;
@@ -117,42 +87,6 @@ export const useTaskForm = () => {
 
     [submit, speech, editedTask],
   );
-
-  // 3. Stop speech recognition if edited task changes
-
-  //////////////////////////////
-
-  useEffect(() => {
-    if (!shouldAutoFocus) return;
-    inputRef.current?.focus();
-    clearInputAutoFocusFlag();
-  }, [shouldAutoFocus]);
-
-  useEffect(() => {
-    if (!editedTask && speech.text) {
-      setInputValue(speech.text);
-      inputRef.current?.focus();
-      if (inputRef.current) {
-        requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          inputRef.current!.scrollLeft = inputRef.current!.scrollWidth;
-          inputRef.current!.scrollTop = inputRef.current!.scrollHeight;
-        });
-      }
-    }
-
-    if (editedTask && speech.text) {
-      setTextAreaValue(speech.text);
-      textAreaRef.current?.focus();
-      if (textAreaRef.current) {
-        requestAnimationFrame(() => {
-          textAreaRef.current?.focus();
-          textAreaRef.current!.scrollLeft = textAreaRef.current!.scrollWidth;
-          textAreaRef.current!.scrollTop = textAreaRef.current!.scrollHeight;
-        });
-      }
-    }
-  }, [speech.text, editedTask]);
 
   const onCtrlEnter = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.ctrlKey) {
@@ -190,6 +124,38 @@ export const useTaskForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedTask]);
 
+  useEffect(() => {
+    if (!shouldAutoFocus) return;
+    inputRef.current?.focus();
+    clearInputAutoFocusFlag();
+  }, [shouldAutoFocus]);
+
+  useEffect(() => {
+    if (!editedTask && speech.text) {
+      setInputValue(speech.text);
+      inputRef.current?.focus();
+      if (inputRef.current) {
+        requestAnimationFrame(() => {
+          inputRef.current?.focus();
+          inputRef.current!.scrollLeft = inputRef.current!.scrollWidth;
+          inputRef.current!.scrollTop = inputRef.current!.scrollHeight;
+        });
+      }
+    }
+
+    if (editedTask && speech.text) {
+      setTextAreaValue(speech.text);
+      textAreaRef.current?.focus();
+      if (textAreaRef.current) {
+        requestAnimationFrame(() => {
+          textAreaRef.current?.focus();
+          textAreaRef.current!.scrollLeft = textAreaRef.current!.scrollWidth;
+          textAreaRef.current!.scrollTop = textAreaRef.current!.scrollHeight;
+        });
+      }
+    }
+  }, [speech.text, editedTask]);
+
   return {
     inputValue,
     textAreaValue,
@@ -206,5 +172,4 @@ export const useTaskForm = () => {
   };
 };
 
-// Export TaskFormApi type for use in TaskForm and TasksList
 export type TaskFormApi = ReturnType<typeof useTaskForm>;

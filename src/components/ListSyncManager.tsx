@@ -6,7 +6,11 @@ interface ListSyncManagerProps {
   saveListMutation: any;
 }
 
-export const ListSyncManager = ({ listsData, saveListMutation }: ListSyncManagerProps) => {
+export const ListSyncManager = ({
+  listsData,
+  saveListMutation,
+}: ListSyncManagerProps) => {
   useListSyncManager({ listsData, saveListMutation });
+
   return null;
 };

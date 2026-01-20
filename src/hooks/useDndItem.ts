@@ -10,10 +10,6 @@ type DragProps = {
   listeners?: Record<string, unknown>;
 };
 
-/**
- * Hook for enabling drag-and-drop sorting of items using dnd-kit.
- * Returns drag-and-drop props for sortable list items.
- */
 export const useDndItem = (id: string, isSorting: boolean) => {
   const {
     attributes,
@@ -24,14 +20,12 @@ export const useDndItem = (id: string, isSorting: boolean) => {
     isDragging,
   } = useSortable({ id, disabled: !isSorting });
 
-  // Merge background color transition with dnd-kit transition
   const bgTransition =
     "background-color 0.3s ease-in-out, border-color 0.5s ease-in-out";
   const mergedTransition = transition
     ? `${transition}, ${bgTransition}`
     : bgTransition;
 
-  // Style for the draggable item
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition: mergedTransition,
@@ -41,7 +35,6 @@ export const useDndItem = (id: string, isSorting: boolean) => {
     opacity: isDragging ? 1 : undefined,
   };
 
-  // Props to spread on the draggable element
   const dragProps: DragProps = { setNodeRef, attributes, listeners, style };
 
   return { dragProps, isDragging };

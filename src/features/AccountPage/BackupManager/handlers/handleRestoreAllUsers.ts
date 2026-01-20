@@ -2,12 +2,12 @@ import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { restoreAllUsersApi } from "../../../../api/backupApi";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 
 export const handleRestoreAllUsers = async (
   t: TFunction<"translation", "accountPage.backup">,
-  setStatus: (status: StatusState) => void
+  setStatus: (status: StatusState) => void,
 ) => {
   const input = document.createElement("input");
   input.type = "file";
@@ -48,7 +48,8 @@ export const handleRestoreAllUsers = async (
       console.error("[restoreAllUsers]", error);
       const msg = error instanceof Error ? error.message : "";
       const translatedText =
-        (await translateText(msg, i18n.language)) || t("restoreAllUsers.error");
+        (msg ? await translateText(msg, i18n.language) : null) ||
+        t("restoreAllUsers.error");
       setStatus({
         isLoading: false,
         message: translatedText,

@@ -11,10 +11,6 @@ interface UseValidationProps {
   setMessage: (text: string) => void;
 }
 
-/**
- * Hook for validating email and password fields in forms.
- * Provides validation functions and manages error messages and focus.
- */
 export const useValidation = ({
   email,
   password,
@@ -29,11 +25,8 @@ export const useValidation = ({
 
   useEffect(() => {
     if (message) setMessage("");
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, password]);
 
-  // Validate email field and set error message/focus if invalid
   const emailValidation = () => {
     if (!email) {
       setMessage(t("form.message.email"));
@@ -51,7 +44,6 @@ export const useValidation = ({
     return true;
   };
 
-  // Validate password field and set error message/focus if invalid
   const passwordValidation = () => {
     if (!password) {
       setMessage(t("form.message.password"));

@@ -8,5 +8,6 @@ export const TextArea = styled(Input).attrs({ as: "textarea" })`
   padding: 10px;
   padding-right: 2.5rem;
   scrollbar-width: thin;
-  scrollbar-color: #ccc #f5f5f5;
+  scrollbar-color: ${({ theme }) =>
+    `${theme.colors.themeSwitch.text} ${theme.colors.themeSwitch.icon}`};
 `;

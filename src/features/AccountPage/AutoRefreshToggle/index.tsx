@@ -18,7 +18,7 @@ export const AutoRefreshToggle = () => {
     keyPrefix: "accountPage.autoRefresh",
   });
   const [autoRefreshEnabled, setAutoRefreshEnabledState] = useState(() =>
-    getAutoRefreshSettingFromLocalStorage()
+    getAutoRefreshSettingFromLocalStorage(),
   );
 
   useEffect(() => {
@@ -45,9 +45,7 @@ export const AutoRefreshToggle = () => {
           aria-label="Toggle automatic token refresh"
           $isChecked={autoRefreshEnabled}
         />
-        <StyledSpan>
-          {t("label")}
-        </StyledSpan>
+        <StyledSpan>{t("label")}</StyledSpan>
       </CheckboxContainer>
 
       <FieldDescription $comment>

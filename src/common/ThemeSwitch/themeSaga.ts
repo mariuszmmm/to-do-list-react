@@ -3,13 +3,10 @@ import { selectIsDarkTheme, toggleTheme } from "./themeSlice";
 import { saveSettingsInLocalStorage } from "../../utils/localStorage";
 
 function* saveSettingsInLocalStorageHandler() {
-  const isDarkTheme: ReturnType<typeof selectIsDarkTheme> = yield select(
-    selectIsDarkTheme
-  );
+  const isDarkTheme: ReturnType<typeof selectIsDarkTheme> =
+    yield select(selectIsDarkTheme);
 
   yield call(saveSettingsInLocalStorage, { isDarkTheme });
-
-  // Zaktualizuj meta tag theme-color gdy zmienia się temat
   yield call(updateThemeColorMeta, isDarkTheme);
 }
 

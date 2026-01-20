@@ -573,6 +573,7 @@ const langPl = {
   prepareText: {
     period: "kropka",
     comma: "przecinek",
+    enter: "enter"
   },
 };
 

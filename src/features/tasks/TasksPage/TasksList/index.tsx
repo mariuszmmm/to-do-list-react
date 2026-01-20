@@ -24,7 +24,11 @@ import {
   setTasksToSort,
   setTasks,
 } from "../../tasksSlice";
-import { ArrowDownIcon, ArrowUpIcon, DragHandleIcon } from "../../../../common/icons";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  DragHandleIcon,
+} from "../../../../common/icons";
 import { useDndList } from "../../../../hooks/useDndList";
 import { useDndItem } from "../../../../hooks/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
@@ -51,7 +55,9 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
   const editedTaskContent = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksToSort = useAppSelector(selectTasksToSort);
-  const filteredTasks = useAppSelector(state => selectActiveTasksByQuery(state, query));
+  const filteredTasks = useAppSelector((state) =>
+    selectActiveTasksByQuery(state, query),
+  );
   const tasksLst = tasksToSort || filteredTasks || tasks;
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -62,19 +68,31 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
     if (!tasks) return;
 
     if (isTasksSorting) {
-      const addedTasks = tasks.filter(((task) => !tasksToSort?.some((t) => t.id === task.id || t.content === task.content)));
-      const sortedExistingTasks = tasksToSort?.filter((task) => tasks.some((t) => t.id === task.id && t.content === task.content));
+      const addedTasks = tasks.filter(
+        (task) =>
+          !tasksToSort?.some(
+            (t) => t.id === task.id || t.content === task.content,
+          ),
+      );
+      const sortedExistingTasks = tasksToSort?.filter((task) =>
+        tasks.some((t) => t.id === task.id && t.content === task.content),
+      );
 
       dispatch(setTasksToSort([...(sortedExistingTasks ?? []), ...addedTasks]));
     } else {
       if (!tasksToSort) return;
-      const tasks = tasksToSort.map((task) => ({ ...task, status: "updated" as const }));
+      const tasks = tasksToSort.map((task) => ({
+        ...task,
+        status: "updated" as const,
+      }));
 
-      dispatch(setTasks({
-        taskListMetaData: taskListMetaData,
-        tasks: tasksToSort,
-        stateForUndo: { tasks, taskListMetaData }
-      }))
+      dispatch(
+        setTasks({
+          taskListMetaData: taskListMetaData,
+          tasks: tasksToSort,
+          stateForUndo: { tasks, taskListMetaData },
+        }),
+      );
       dispatch(setTasksToSort(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,8 +119,6 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
       dragProps.setNodeRef(el as unknown as HTMLElement | null);
     };
 
-
-
     return (
       <StyledListItem
         key={task.id}
@@ -114,7 +130,7 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
-        <DragHandleIcon >
+        <DragHandleIcon>
           <span />
         </DragHandleIcon>
 
@@ -124,7 +140,7 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
             {task.content}
           </StyledSpan>
         </StyledListContent>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: "flex", gap: "10px" }}>
           <SortButton
             onClick={() => animateMove("up")}
             disabled={index === 0 || isAnimating}
@@ -148,14 +164,19 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
         {tasksLst.map((task, index) => (
           <SortableTaskRow key={task.id} task={task} index={index} />
         ))}
-      </StyledList>
+      </StyledList>,
     );
   }
 
   return (
     <StyledList>
       {tasksLst.map((task, index) => (
-        <StyledListItem key={task.id} hidden={task.done && hideDone} $edit={editedTaskContent?.id === task.id} $type={"tasks"}>
+        <StyledListItem
+          key={task.id}
+          hidden={task.done && hideDone}
+          $edit={editedTaskContent?.id === task.id}
+          $type={"tasks"}
+        >
           <TaskActions>
             <ToggleButton
               onClick={() =>
@@ -172,15 +193,28 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
             </ToggleButton>
           </TaskActions>
           <StyledListContent $type={"tasks"}>
-            {!query ? <TaskNumber $edit={editedTaskContent?.id === task.id}>{`${index + 1}. `}</TaskNumber> : ""}
+            {!query ? (
+              <TaskNumber
+                $edit={editedTaskContent?.id === task.id}
+              >{`${index + 1}. `}</TaskNumber>
+            ) : (
+              ""
+            )}
             <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
-              <StyledLink to={`/tasks/${task.id}`} $edit={editedTaskContent?.id === task.id} disabled={!!editedTaskContent}>
+              <StyledLink
+                to={`/tasks/${task.id}`}
+                $edit={editedTaskContent?.id === task.id}
+                disabled={!!editedTaskContent}
+              >
                 {task.content}
               </StyledLink>
             </StyledSpan>
           </StyledListContent>
           <TaskActions>
-            <EditButton onClick={() => dispatch(setTaskToEdit(task.id))} disabled={!!editedTaskContent || speech.isActive}>
+            <EditButton
+              onClick={() => dispatch(setTaskToEdit(task.id))}
+              disabled={!!editedTaskContent || speech.isActive}
+            >
               ✏️
             </EditButton>
             <RemoveButton
@@ -198,16 +232,25 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
               🗑️
             </RemoveButton>
 
-            {loggedUserEmail && <ImageButton disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
-              <StyledLink to={`/tasks/image/${task.id}`} disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
-                📷
-              </StyledLink>
-            </ImageButton>}
-
+            {loggedUserEmail && (
+              <ImageButton
+                disabled={
+                  !!editedTaskContent || speech.isActive || !isRemoteSaveable
+                }
+              >
+                <StyledLink
+                  to={`/tasks/image/${task.id}`}
+                  disabled={
+                    !!editedTaskContent || speech.isActive || !isRemoteSaveable
+                  }
+                >
+                  📷
+                </StyledLink>
+              </ImageButton>
+            )}
           </TaskActions>
         </StyledListItem>
-      ))
-      }
-    </StyledList >
+      ))}
+    </StyledList>
   );
 };

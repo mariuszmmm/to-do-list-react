@@ -5,10 +5,6 @@ import { openModal } from "../Modal/modalSlice";
 import { Version } from "../types";
 import { getUserToken } from "../utils/getUserToken";
 
-/**
- * Hook for removing a list using a mutation with react-query.
- * Handles API call, modal feedback, and cache update on success or error.
- */
 export const useRemoveListMutation = () => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -31,7 +27,6 @@ export const useRemoveListMutation = () => {
 
       return removeDataApi(token, version, listId, deviceId);
     },
-    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
@@ -41,7 +36,6 @@ export const useRemoveListMutation = () => {
         }),
       );
     },
-    // On success, update cache and show success or conflict modal
     onSuccess: async (response) => {
       queryClient.setQueryData(["listsData"], response.data);
       if (response.data.conflict) {
@@ -64,7 +58,6 @@ export const useRemoveListMutation = () => {
         );
       }
     },
-    // On error, show error modal
     onError: () => {
       dispatch(
         openModal({

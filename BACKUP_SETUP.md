@@ -1,8 +1,8 @@
-# Google Drive Backup & Restore - Konfiguracja
+# Google Drive Backup & Restore - Setup
 
-## Wymagane zmienne środowiskowe
+## Required Environment Variables
 
-### Frontend (.env.local lub Netlify UI)
+### Frontend (.env.local or Netlify UI)
 
 ```env
 REACT_APP_GOOGLE_DRIVE_CLIENT_ID=YOUR_CLIENT_ID_HERE
@@ -11,7 +11,7 @@ REACT_APP_GOOGLE_DRIVE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 
 ### Backend (Netlify Functions)
 
-Na Netlify dodaj następujące zmienne w ustawieniach projektu:
+Add the following variables in your Netlify project settings:
 
 ```env
 MONGODB_URI=your_mongodb_uri
@@ -21,125 +21,125 @@ GOOGLE_DRIVE_CLIENT_SECRET=YOUR_CLIENT_SECRET_HERE
 GOOGLE_DRIVE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
 ```
 
-## Setup Google OAuth 2.0
+## Google OAuth 2.0 Setup
 
-### 1. Utwórz projekt w Google Cloud Console
+### 1. Create a Project in Google Cloud Console
 
-1. Przejdź na https://console.cloud.google.com/
-2. Zaloguj się na swoje konto Google
-3. Kliknij "Select a Project" → "NEW PROJECT"
-4. Podaj nazwę projektu (np. "To-Do List Backup")
-5. Kliknij "CREATE"
+1. Go to https://console.cloud.google.com/
+2. Log in to your Google account
+3. Click "Select a Project" → "NEW PROJECT"
+4. Enter a project name (e.g., "To-Do List Backup")
+5. Click "CREATE"
 
-### 2. Włącz Google Drive API
+### 2. Enable Google Drive API
 
-1. W Google Cloud Console przejdź do "APIs & Services" → "Library"
-2. Wyszukaj "Google Drive API"
-3. Kliknij na wynik i kliknij "ENABLE"
+1. In Google Cloud Console, go to "APIs & Services" → "Library"
+2. Search for "Google Drive API"
+3. Click the result and click "ENABLE"
 
-### 3. Utwórz OAuth 2.0 Credentials
+### 3. Create OAuth 2.0 Credentials
 
-1. Przejdź do "APIs & Services" → "Credentials"
-2. Kliknij "CREATE CREDENTIALS" → "OAuth client ID"
-3. Jeśli pojawi się dialog o consent screen:
-   - Kliknij "CONFIGURE CONSENT SCREEN"
-   - Wybierz "External" (dla testów)
-   - Wypełnij wymagane pola:
+1. Go to "APIs & Services" → "Credentials"
+2. Click "CREATE CREDENTIALS" → "OAuth client ID"
+3. If prompted for consent screen:
+   - Click "CONFIGURE CONSENT SCREEN"
+   - Choose "External" (for testing)
+   - Fill in required fields:
      - App name: "To-Do List"
-     - User support email: Twój email
-     - Developer contact: Twój email
-   - Pomiń pozostałe kroki i kliknij "SAVE AND CONTINUE" → "SAVE AND CONTINUE" → "BACK TO DASHBOARD"
+     - User support email: your email
+     - Developer contact: your email
+   - Skip the rest and click "SAVE AND CONTINUE" → "SAVE AND CONTINUE" → "BACK TO DASHBOARD"
 
-4. Wróć do Credentials, kliknij "CREATE CREDENTIALS" → "OAuth client ID"
-5. Wybierz "Web application"
-6. Dodaj do "Authorized redirect URIs":
-   - `http://localhost:3000/auth/google/callback` (dla dev)
-   - `https://yourdomain.com/auth/google/callback` (dla produkcji)
-7. Kliknij "CREATE"
-8. Skopiuj Client ID i Client Secret
+4. Return to Credentials, click "CREATE CREDENTIALS" → "OAuth client ID"
+5. Choose "Web application"
+6. Add to "Authorized redirect URIs":
+   - `http://localhost:3000/auth/google/callback` (for dev)
+   - `https://yourdomain.com/auth/google/callback` (for production)
+7. Click "CREATE"
+8. Copy the Client ID and Client Secret
 
-### 4. Dodaj zmienne do Netlify
+### 4. Add Variables to Netlify
 
-1. W dashboard Netlify przejdź do Site settings → Build & deploy → Environment
-2. Dodaj zmienne:
-   - `GOOGLE_DRIVE_CLIENT_ID` = Skopiowany Client ID
-   - `GOOGLE_DRIVE_CLIENT_SECRET` = Skopiowany Client Secret
+1. In the Netlify dashboard, go to Site settings → Build & deploy → Environment
+2. Add variables:
+   - `GOOGLE_DRIVE_CLIENT_ID` = copied Client ID
+   - `GOOGLE_DRIVE_CLIENT_SECRET` = copied Client Secret
    - `GOOGLE_DRIVE_REDIRECT_URI` = `https://yourdomain.com/auth/google/callback`
 
-3. W projekcie .env.local dodaj zmienne frontend:
+3. In your .env.local file, add frontend variables:
    ```env
-   REACT_APP_GOOGLE_DRIVE_CLIENT_ID=Skopiowany_Client_ID
+   REACT_APP_GOOGLE_DRIVE_CLIENT_ID=Copied_Client_ID
    REACT_APP_GOOGLE_DRIVE_REDIRECT_URI=https://yourdomain.com/auth/google/callback
    ```
 
-## Jak działa flow
+## How the Flow Works
 
-### Pobieranie backupu na dysk lokalny
+### Downloading Backup to Local Disk
 
-1. Admin klika przycisk "Download Backup"
-2. Aplikacja pobiera dane z `/backupData`
-3. Dane są zapisywane jako plik JSON na dysk
+1. Admin clicks the "Download Backup" button
+2. The app fetches data from `/backupData`
+3. Data is saved as a JSON file to disk
 
-### Wysyłanie backupu na Google Drive
+### Uploading Backup to Google Drive
 
-1. Admin klika "Authorize Google" jeśli nie jest zalogowany
-2. Zostaje przekierowany na Google login
-3. Po zalogowaniu, aplikacja pobiera dane z `/backupData`
-4. Dane są wysyłane na Google Drive poprzez `/backup-uploadAllUsersToGoogleDrive`
-5. Backup jest zapisywany w Google Drive usera
+1. Admin clicks "Authorize Google" if not logged in
+2. Redirected to Google login
+3. After login, the app fetches data from `/backupData`
+4. Data is sent to Google Drive via `/backup-uploadAllUsersToGoogleDrive`
+5. Backup is saved in the user's Google Drive
 
-### Przywracanie z Google Drive
+### Restoring from Google Drive
 
-1. Admin musi być zalogowany (krok 1-2 powyżej)
-2. Admin klika "Restore from Google Drive"
-3. Podaje File ID backupu (do implementacji: file picker)
-4. System pobiera plik z Google Drive i przywraca dane w MongoDB
-5. Aplikacja przeładowuje się, aby odzwierciedlić zmienne dane
+1. Admin must be logged in (steps 1-2 above)
+2. Admin clicks "Restore from Google Drive"
+3. Enters the backup File ID (file picker to be implemented)
+4. System fetches the file from Google Drive and restores data in MongoDB
+5. The app reloads to reflect the restored data
 
-## Funkcje Netlify
+## Netlify Functions
 
 ### /backupData (GET)
-- **Wymaga**: Authorization header
-- **Zwraca**: Backup JSON z wszystkimi listami i zadaniami
-- **Czy dostępne**: Dla zalogowanych użytkowników
+- **Requires**: Authorization header
+- **Returns**: Backup JSON with all lists and tasks
+- **Available to**: Logged-in users
 
 ### /backup-uploadAllUsersToGoogleDrive (POST)
-- **Wymaga**: Authorization header + backupData + accessToken
-- **Zwraca**: File ID i nazwę pliku na Google Drive
-- **Czy dostępne**: Dla zalogowanych użytkowników z Google auth
+- **Requires**: Authorization header + backupData + accessToken
+- **Returns**: File ID and file name on Google Drive
+- **Available to**: Logged-in users with Google auth
 
 ### /backup-restoreBackupFromGoogleDrive (POST)
-- **Wymaga**: Authorization header + fileId + accessToken
-- **Zwraca**: Liczba przywróconych list
-- **Czy dostępne**: Dla zalogowanych użytkowników z Google auth
+- **Requires**: Authorization header + fileId + accessToken
+- **Returns**: Number of restored lists
+- **Available to**: Logged-in users with Google auth
 
-## Bezpieczeństwo
+## Security
 
-⚠️ **UWAGA**: Obecna implementacja przechowuje access token po stronie klienta w localStorage.
+⚠️ **WARNING**: The current implementation stores the access token on the client side in localStorage.
 
-Dla produkcji rekomenduje się:
-- Przechowywanie refresh token na serwerze
-- Wymiana kodu OAuth na token backend (nie frontend)
-- Dodanie dodatkowych walidacji autoryzacji
-- Szyfrowanie wrażliwych danych
+For production, it is recommended to:
+- Store the refresh token on the server
+- Exchange the OAuth code for a token on the backend (not frontend)
+- Add extra authorization validation
+- Encrypt sensitive data
 
 ## Troubleshooting
 
 **Problem**: "Missing Google Drive configuration"
-- **Rozwiązanie**: Sprawdź czy zmienne `REACT_APP_GOOGLE_DRIVE_CLIENT_ID` i `REACT_APP_GOOGLE_DRIVE_REDIRECT_URI` są ustawione w .env.local
+- **Solution**: Check if `REACT_APP_GOOGLE_DRIVE_CLIENT_ID` and `REACT_APP_GOOGLE_DRIVE_REDIRECT_URI` are set in .env.local
 
 **Problem**: "Redirect URI mismatch"
-- **Rozwiązanie**: Upewnij się że URI w Google Console dokładnie odpowiada `REACT_APP_GOOGLE_DRIVE_REDIRECT_URI`
+- **Solution**: Make sure the URI in Google Console exactly matches `REACT_APP_GOOGLE_DRIVE_REDIRECT_URI`
 
-**Problem**: 401 Unauthorized przy uploading
-- **Rozwiązanie**: Access token może być wygasły. Spróbuj ponownie zalogować się do Google.
+**Problem**: 401 Unauthorized when uploading
+- **Solution**: Access token may be expired. Try logging in to Google again.
 
-## Przyszłe ulepszenia
+## Future Improvements
 
-- [ ] File picker w Google Drive zamiast wpisywania File ID
-- [ ] Lista dostępnych backupów w Google Drive
-- [ ] Automatyczne backupy
-- [ ] Planowanie backupów (codziennie, co tydzień, itp.)
-- [ ] Szyfrowanie backupów
-- [ ] Przywracanie selektywne (wybór których list przywrócić)
-- [ ] Backend token management (nie localStorage)
+- [ ] Google Drive file picker instead of entering File ID
+- [ ] List available backups in Google Drive
+- [ ] Automatic backups
+- [ ] Scheduled backups (daily, weekly, etc.)
+- [ ] Backup encryption
+- [ ] Selective restore (choose which lists to restore)
+- [ ] Backend token management (not localStorage)

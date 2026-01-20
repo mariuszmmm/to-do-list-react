@@ -2,7 +2,7 @@ import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { restoreSelectedBackupFromGoogleDriveApi } from "../../../../api/backupApi";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 
 export const handleRestoreBackupFromGoogleDrive = async (
@@ -11,7 +11,7 @@ export const handleRestoreBackupFromGoogleDrive = async (
   t: TFunction<"translation", "accountPage.backup">,
   setStatus: (status: StatusState) => void,
   setShowBackupList: (show: boolean) => void,
-  setShowGoogleAuth: (show: boolean) => void
+  setShowGoogleAuth: (show: boolean) => void,
 ): Promise<void> => {
   try {
     const token = await getUserToken();
@@ -39,7 +39,7 @@ export const handleRestoreBackupFromGoogleDrive = async (
     const result = await restoreSelectedBackupFromGoogleDriveApi(
       token,
       fileId,
-      googleAccessToken
+      googleAccessToken,
     );
 
     if (!result.success || !result.data) {
@@ -61,7 +61,7 @@ export const handleRestoreBackupFromGoogleDrive = async (
     setShowGoogleAuth(true);
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (await translateText(msg, i18n.language)) ||
+      (msg ? await translateText(msg, i18n.language) : null) ||
       t("restoreSelectedBackup.error");
     setStatus({
       isLoading: false,

@@ -2,7 +2,7 @@ import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 import { BackupFile } from "../../../../types";
 
@@ -12,7 +12,7 @@ export const handleFetchGoogleDriveBackupList = async (
   setStatus: (status: StatusState) => void,
   setShowGoogleAuth: (show: boolean) => void,
   setBackupFiles: (files: BackupFile[]) => void,
-  setShowBackupList: (show: boolean) => void
+  setShowBackupList: (show: boolean) => void,
 ): Promise<void> => {
   try {
     const token = await getUserToken();
@@ -53,7 +53,7 @@ export const handleFetchGoogleDriveBackupList = async (
     setShowGoogleAuth(true);
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (await translateText(msg, i18n.language)) ||
+      (msg ? await translateText(msg, i18n.language) : null) ||
       t("listGoogleDriveBackups.error");
     setStatus({
       isLoading: false,

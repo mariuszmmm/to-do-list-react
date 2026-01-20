@@ -10,5 +10,7 @@ export const CheckboxFieldLabel = styled.label`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
   background-color: ${({ theme }) => theme.colors.backgroundSecendary};
   cursor: pointer;
-  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+  transition:
+    background-color 0.5s ease-in-out,
+    border-color 0.5s ease-in-out;
 `;

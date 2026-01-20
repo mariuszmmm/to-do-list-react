@@ -3,7 +3,13 @@ import { useAppDispatch } from "../hooks";
 import { setPresenceData } from "../features/AccountPage/accountSlice";
 import { useRef } from "react";
 
-export const AblyManager = ({ userEmail, enabled }: { userEmail: string | null, enabled: boolean }) => {
+export const AblyManager = ({
+  userEmail,
+  enabled,
+}: {
+  userEmail: string | null;
+  enabled: boolean;
+}) => {
   const dispatch = useAppDispatch();
   const lastPresenceDataRef = useRef<string | null>(null);
   const { onPresenceUpdate, onListsUpdate } = useAblyManager();
@@ -18,8 +24,8 @@ export const AblyManager = ({ userEmail, enabled }: { userEmail: string | null, 
         lastPresenceDataRef.current = dataString;
         dispatch(setPresenceData(data));
       }
-    }
+    },
   });
+
   return null;
 };
-

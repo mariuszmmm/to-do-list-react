@@ -13,10 +13,6 @@ import { clearInputAutoFocusFlag } from "../../../../utils/setFirstLoadFlagIfRoo
 import { useAutoFocusFlag } from "./useAutoFocusFlag";
 import { useSpeechToText } from "../../../../hooks";
 
-/**
- * Hook for managing task form logic: add/edit tasks, speech-to-text, autofocus, and keyboard shortcuts.
- * Handles form state, input focus, and integration with Redux actions.
- */
 export const useTaskForm = () => {
   const dispatch = useAppDispatch();
   const tasks = useAppSelector(selectTasks);

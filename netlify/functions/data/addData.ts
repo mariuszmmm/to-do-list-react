@@ -59,15 +59,6 @@ export const addData = async (
     if (listIndex !== -1) {
       const incomingList = data.list;
       const existingList = foundUser.lists[listIndex];
-      // console.log("___________________________");
-      // console.log(
-      //   "test",
-      //   data.list.taskList,
-      //   incomingList.version,
-      //   existingList.version,
-      //   incomingList.version === existingList.version
-      // );
-      // console.log("___________________________");
       if (incomingList.version !== existingList.version) {
         console.warn(`${logPrefix} Version mismatch detected for list`);
         return jsonResponse(409, {
@@ -82,8 +73,6 @@ export const addData = async (
       deletedTasksIds = incomingList.taskList
         .filter((task: Task) => task.status === "deleted")
         .map((task: Task) => task.id);
-
-      console.log("deletedTasksIds", deletedTasksIds);
 
       const deletedTasks: Task[] = incomingList.taskList
         .filter((task) => task.status === "deleted")

@@ -307,10 +307,8 @@ const tasksSlice = createSlice({
       });
       const undoTasksStack = state.undoTasksStack.pop();
       if (!undoTasksStack) return;
-      console.log("!!undoTasksStack", current(undoTasksStack));
       state.tasks = undoTasksStack.tasks.map((task) => ({
         ...task,
-        // id: nanoid(),
         status: "updated",
         updatedAt: time,
       }));

@@ -18,11 +18,6 @@ interface WaitingForConfirmationProps {
   message?: AccountState["message"];
 }
 
-/**
- * Hook for handling waiting for account confirmation via Ably channel.
- * Uses shared Ably instance through onConfirmation callback from useAblyManager.
- * Subscribes to confirmation events, logs in user on confirmation, and manages cleanup.
- */
 export const useWaitingForConfirmation = ({
   email,
   password,
@@ -33,44 +28,35 @@ export const useWaitingForConfirmation = ({
   const unsubscribeRef = useRef<(() => void) | undefined>(undefined);
   const { onConfirmation, setPendingConfirmationEmail } = useAblyManager();
 
-  // Start waiting for confirmation event via Ably and handle login on confirmation
   const waitingForConfirmation = useCallback(() => {
     if (!email || !password) return;
 
-    // CRITICAL: Set pending email BEFORE creating Ably connection
-    // so authCallback can use it during first connection
     setPendingConfirmationEmail(email);
 
-    const handleConfirmation = async (data: {
+    const handleConfirmation = async ({
+      type,
+      email: confirmedEmail,
+    }: {
       type: string;
       email: string;
     }) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (message) dispatch(setMessage(""));
       dispatch(setIsWaitingForConfirmation(false));
       setPendingConfirmationEmail(null);
 
       try {
         const response = await auth.login(email, password, true);
-
         sessionStorage.removeItem("waitingForConfirmation");
-
-        // CRITICAL: Close old Ably connection to force reconnection
-        // with new authenticated user token
         closeAblyConnection();
-
         dispatch(setAccountMode("logged"));
         dispatch(
           setLoggedUser({
             email: response.email,
             name: response.user_metadata.full_name,
             roles: response.app_metadata.roles,
-          })
+          }),
         );
-
         dispatch(
           openModal({
             title: { key: "modal.login.title" },
@@ -79,7 +65,7 @@ export const useWaitingForConfirmation = ({
               values: { user: response.email },
             },
             type: "success",
-          })
+          }),
         );
       } catch (err) {
         dispatch(setAccountMode("login"));
@@ -116,9 +102,7 @@ export const useWaitingForConfirmation = ({
     }, 600000);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (unsubscribeRef.current) {
         unsubscribeRef.current();
         unsubscribeRef.current = undefined;

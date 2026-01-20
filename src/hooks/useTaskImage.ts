@@ -5,10 +5,10 @@ import {
 } from "../api/fetchCloudinaryApi";
 import { UploadResult } from "../types";
 import axios from "axios";
-import { translateText } from "../utils/translateText";
+import { translateText } from "../api/translateTextApi";
 import i18n from "../utils/i18n";
 
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_SIZE = 10 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export const useTaskImage = (imageUrl?: string | null) => {
@@ -76,7 +76,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : "";
         const translatedText =
-          (await translateText(msg, i18n.language)) ||
+          (msg ? await translateText(msg, i18n.language) : null) ||
           i18n.t("errorMessage.imageLoadingError");
 
         if (!isCancelled) {
@@ -173,7 +173,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       console.error("Upload error:", error);
       const msg = error instanceof Error ? error.message : "";
       const translatedText =
-        (await translateText(msg, i18n.language)) ||
+        (msg ? await translateText(msg, i18n.language) : null) ||
         i18n.t("errorMessage.imageUploadError");
       setErrorMsg(translatedText);
       return null;
@@ -202,7 +202,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
 
       const msg = error instanceof Error ? error.message : "";
       const translatedText =
-        (await translateText(msg, i18n.language)) ||
+        (msg ? await translateText(msg, i18n.language) : null) ||
         i18n.t("errorMessage.imageDeleteError");
       setErrorMsg(translatedText);
       return null;

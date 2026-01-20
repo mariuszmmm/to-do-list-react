@@ -18,14 +18,10 @@ export interface UseAblySyncParams {
   subscribePresence?: (cb: (data: PresenceData) => void) => void | (() => void);
   subscribeListsUpdate?: (
     email: string,
-    cb: (data: any) => void
+    cb: (data: any) => void,
   ) => void | (() => void);
 }
 
-/**
- * Hook for subscribing to Ably presence and list updates for collaborative features.
- * Integrates with AblyManager and updates local state on real-time events.
- */
 export const useAblySubscription = ({
   userEmail,
   enabled,
@@ -36,7 +32,6 @@ export const useAblySubscription = ({
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
-  // Subscribe to presence updates
   useEffect(() => {
     if (!enabled || !userEmail || !onPresenceUpdate || !subscribePresence) {
       return;
@@ -51,7 +46,6 @@ export const useAblySubscription = ({
     };
   }, [enabled, userEmail, onPresenceUpdate, subscribePresence]);
 
-  // Subscribe to list updates
   useEffect(() => {
     if (!enabled || !userEmail || !subscribeListsUpdate) {
       return;
