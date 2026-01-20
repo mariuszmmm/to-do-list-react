@@ -4,51 +4,44 @@ import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setLoggedUser } from "../../accountSlice";
 
-/**
- * Hook for logging out a user using a mutation with react-query.
- * Handles API call, modal feedback, and state updates on success or error.
- */
 export const useLogout = () => {
   const dispatch = useAppDispatch();
+
   return useMutation({
     mutationFn: async () => {
       const user = auth.currentUser();
       if (!user) throw new Error("No user found");
-
       return await user.logout();
     },
-    // Show loading modal when mutation starts
     onMutate: () => {
       dispatch(
         openModal({
           title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.loading" },
           type: "loading",
-        })
+        }),
       );
     },
-    // On success, clear user state and show success modal
     onSuccess: () => {
-      process.env.NODE_ENV === "development" &&
-        process.env.NODE_ENV === "development" &&
+      if (process.env.NODE_ENV === "development") {
         console.log("Logout successful");
+      }
       dispatch(setLoggedUser(null));
       dispatch(
         openModal({
           title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.success" },
           type: "success",
-        })
+        }),
       );
     },
-    // On error, show error modal
-    onError: async () => {
+    onError: () => {
       dispatch(
         openModal({
           title: { key: "modal.logout.title" },
           message: { key: "modal.logout.message.error.default" },
           type: "error",
-        })
+        }),
       );
     },
   });

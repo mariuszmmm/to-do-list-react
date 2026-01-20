@@ -71,10 +71,8 @@ export const AccountForm = () => {
   const accountDelete = useAccountDelete();
   const accountRegister = useAccountRegister();
 
-  // Przywróć stan oczekiwania na potwierdzenie po przeładowaniu strony
   useRestoreWaitingState({ setEmail, setPassword });
 
-  // Obsługa potwierdzeń w modalach
   useModalConfirmationHandler({
     confirmed,
     modalState,
@@ -174,7 +172,10 @@ export const AccountForm = () => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onPointerDown={e => { e.preventDefault(); setShowPassword(!showPassword); }}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
             type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}

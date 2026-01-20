@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Routes, Route, Navigate, } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import Navigation from "./Navigation";
@@ -31,7 +31,6 @@ import {
 } from "./hooks";
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
-// import { TestPage } from "./features/TestPage";
 import { TaskImage } from "./features/tasks/TaskImage";
 
 const App = () => {
@@ -48,7 +47,14 @@ const App = () => {
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
   useDataFetchingError({ isError, isData: !!safeData, refetch });
 
-  process.env.NODE_ENV === "development" && console.log("Rendering App component... . data: ", { loggedUserEmail, data, isLoading, isError, localListId });
+  process.env.NODE_ENV === "development" &&
+    console.log("Rendering App component... . data: ", {
+      loggedUserEmail,
+      data,
+      isLoading,
+      isError,
+      localListId,
+    });
 
   return (
     <HashRouter>
@@ -61,7 +67,10 @@ const App = () => {
       />
       <TokenManager />
       <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
-      <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
+      <ListSyncManager
+        listsData={safeData}
+        saveListMutation={saveListMutation}
+      />
       <Container>
         <HeaderControls>
           <ThemeSwitch />
@@ -85,14 +94,17 @@ const App = () => {
           {!!safeData && (
             <Route
               path="/lists"
-              element={<RemoteListsPage listsData={safeData} localListId={localListId} />}
+              element={
+                <RemoteListsPage
+                  listsData={safeData}
+                  localListId={localListId}
+                />
+              }
             />
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
-          {/* <Route path="/test" element={<TestPage />} /> */}
-          <Route path="*" element={<Navigate to="/tasks" />}
-          />
+          <Route path="*" element={<Navigate to="/tasks" />} />
         </Routes>
       </Container>
       <Modal />

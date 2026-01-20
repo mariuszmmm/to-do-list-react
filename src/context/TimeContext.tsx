@@ -6,7 +6,9 @@ interface TimeContextValue {
 
 const TimeContext = createContext<TimeContextValue | undefined>(undefined);
 
-export const TimeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const TimeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [now, setNow] = useState<Date>(new Date());
 
   useEffect(() => {
@@ -17,9 +19,7 @@ export const TimeProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <TimeContext.Provider value={{ now }}>
-      {children}
-    </TimeContext.Provider>
+    <TimeContext.Provider value={{ now }}>{children}</TimeContext.Provider>
   );
 };
 
@@ -28,5 +28,6 @@ export const useTime = (): TimeContextValue => {
   if (!context) {
     throw new Error("useTime must be used within a TimeProvider");
   }
+
   return context;
 };

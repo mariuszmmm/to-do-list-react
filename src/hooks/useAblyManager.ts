@@ -13,7 +13,6 @@ import {
 } from "../utils/ably";
 import { getOrCreateDeviceId } from "../utils/deviceId";
 
-// Callback types
 type ConfirmationCallback = (data: { type: string; email: string }) => void;
 type ListsUpdateCallback = (data: any) => void;
 type PresenceUpdateCallback = (data: {
@@ -23,22 +22,17 @@ type PresenceUpdateCallback = (data: {
   allDevices: number;
 }) => void;
 
-// Global subscriptions management
 const subscriptionsRef = {
   confirmation: new Map<string, ConfirmationCallback[]>(),
   listsUpdate: new Map<string, ListsUpdateCallback[]>(),
   presenceUpdate: new Map<string, PresenceUpdateCallback[]>(),
 };
 
-/**
- * Central hook for managing all Ably subscriptions and channels.
- * Handles real-time updates, presence, and confirmation logic for collaborative features.
- */
 export const useAblyManager = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const channelsRef = useRef<Map<string, any>>(new Map());
   const confirmationHandlersRef = useRef<Map<string, (message: any) => void>>(
-    new Map()
+    new Map(),
   );
   const presenceChannelRef = useRef<any | null>(null);
   const isInitializedRef = useRef<boolean>(false);
@@ -115,14 +109,14 @@ export const useAblyManager = () => {
         if (currentCallbacks.length === 0) {
           subscriptionsRef.confirmation.delete(email);
           cleanupConfirmationChannel(email).catch((err) =>
-            console.error("[AblyManager] Confirmation cleanup error:", err)
+            console.error("[AblyManager] Confirmation cleanup error:", err),
           );
         } else {
           subscriptionsRef.confirmation.set(email, currentCallbacks);
         }
       };
     },
-    [cleanupConfirmationChannel, subscribeToConfirmationChannel]
+    [cleanupConfirmationChannel, subscribeToConfirmationChannel],
   );
 
   const onListsUpdate = useCallback(
@@ -136,7 +130,7 @@ export const useAblyManager = () => {
         if (idx > -1) callbacks.splice(idx, 1);
       };
     },
-    []
+    [],
   );
 
   const onPresenceUpdate = useCallback((callback: PresenceUpdateCallback) => {
@@ -164,17 +158,14 @@ export const useAblyManager = () => {
     const ably = getAblyInstance();
     const currentDeviceId = getOrCreateDeviceId();
 
-    // Initialize data channel for user lists
     const dataChannel = ably.channels.get(`user:${loggedUserEmail}:lists`);
     channelsRef.current.set("data", dataChannel);
 
-    // Initialize presence channels for user and admin
     const presenceSelfChannel = ably.channels.get(
-      `user:${loggedUserEmail}:presence`
+      `user:${loggedUserEmail}:presence`,
     );
     const presenceAdminChannel = ably.channels.get("global:presence-admins");
 
-    // Admin uses global presence, user uses own presence channel for counts
     const presenceCountChannel = isAdmin
       ? presenceAdminChannel
       : presenceSelfChannel;
@@ -235,7 +226,7 @@ export const useAblyManager = () => {
               totalUsers,
               userDevices,
               allDevices,
-            })
+            }),
           );
         } catch (err) {
           if (err instanceof Error && err.message.includes("detached")) {
@@ -254,13 +245,11 @@ export const useAblyManager = () => {
       presenceCountChannel.presence.subscribe("update", handlePresenceEvent);
 
       try {
-        // Always enter own presence channel
         await presenceSelfChannel.presence.enter({
           email: loggedUserEmail,
           deviceId: currentDeviceId,
           status: "available",
         });
-        // Also enter global admin channel so admin can see all users
         await presenceAdminChannel.presence.enter({
           email: loggedUserEmail,
           deviceId: currentDeviceId,
@@ -270,7 +259,6 @@ export const useAblyManager = () => {
         console.error("[AblyManager] Presence enter failed:", err);
       }
 
-      // Update presence count after entering channels
       await updatePresenceCount();
     };
 
@@ -289,7 +277,7 @@ export const useAblyManager = () => {
               await safePresenceLeave(
                 channel.presence,
                 { status: "offline" },
-                2000
+                2000,
               );
             }
 
@@ -315,7 +303,6 @@ export const useAblyManager = () => {
 
   useEffect(() => {
     if (!loggedUserEmail) {
-      // Czekaj chwilę aby cleanup useEffect się wykonał
       const timer = setTimeout(() => {
         closeAblyConnection();
         isInitializedRef.current = false;

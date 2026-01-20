@@ -9,10 +9,6 @@ import { handleDeleteBackup } from "../handlers/handleDeleteBackup";
 import { t } from "i18next";
 import { BackupFile } from "../../../../types";
 
-/**
- * Hook for handling backup file deletion confirmation and process.
- * Shows modals, calls delete handler, and manages UI state after confirmation.
- */
 export const useDeleteBackupConfirmation = (
   fileToDelete: BackupFile | null,
   googleAccessToken: string | null,
@@ -20,12 +16,11 @@ export const useDeleteBackupConfirmation = (
   setShowBackupList: (show: boolean) => void,
   setBackupFiles: (files: Array<BackupFile>) => void,
   setCurrentPage: (page: number) => void,
-  setFileToDelete: (file: BackupFile | null) => void
+  setFileToDelete: (file: BackupFile | null) => void,
 ) => {
   const confirmed = useAppSelector(selectModalConfirmed);
   const dispatch = useAppDispatch();
 
-  // Effect to handle backup deletion after user confirmation
   useEffect(() => {
     if (!fileToDelete || !googleAccessToken) return;
 
@@ -35,7 +30,7 @@ export const useDeleteBackupConfirmation = (
           title: { key: "modal.deleteBackup.title" },
           message: { key: "modal.deleteBackup.message.loading" },
           type: "loading",
-        })
+        }),
       );
 
       handleDeleteBackup(
@@ -45,7 +40,7 @@ export const useDeleteBackupConfirmation = (
         setShowGoogleAuth,
         setShowBackupList,
         setBackupFiles,
-        setCurrentPage
+        setCurrentPage,
       ).then(({ success, message }) => {
         dispatch(
           openModal({
@@ -56,7 +51,7 @@ export const useDeleteBackupConfirmation = (
                 : message || "modal.deleteBackup.message.error",
             },
             type: success ? "success" : "error",
-          })
+          }),
         );
         setFileToDelete(null);
       });

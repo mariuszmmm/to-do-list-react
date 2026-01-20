@@ -3,12 +3,12 @@ import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { downloadAllUsersApi } from "../../../../api/backupApi";
 import { saveBackupToFile } from "../../../../utils/saveBackupToFile";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 
 export const handleDownloadAllUsers = async (
   t: TFunction<"translation", "accountPage.backup">,
-  setStatus: (status: StatusState) => void
+  setStatus: (status: StatusState) => void,
 ): Promise<void> => {
   try {
     setStatus({
@@ -42,7 +42,8 @@ export const handleDownloadAllUsers = async (
     console.error("[downloadAllUsers]", error);
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (await translateText(msg, i18n.language)) || t("downloadAllUsers.error");
+      (msg ? await translateText(msg, i18n.language) : null) ||
+      t("downloadAllUsers.error");
     setStatus({
       isLoading: false,
       message: translatedText,

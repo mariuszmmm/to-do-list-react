@@ -2,72 +2,72 @@
 
 ## Minimum Setup Required
 
-Aby włączyć Google Drive backup potrzebujesz: **Google Client ID**.
+To enable Google Drive backup you need: **Google Client ID**.
 
-### Krok 1: Utwórz Client ID w Google Cloud Console (2 min)
+### Step 1: Create Client ID in Google Cloud Console (2 min)
 
-1. Otwórz https://console.cloud.google.com/
-2. Kliknij "Select a Project" → "NEW PROJECT"
-3. Wpisz nazwę (np. "todo-backup"), kliknij "CREATE"
-4. Czekaj aż projekt będzie gotowy
-5. W search bar wpisz "Google Drive API" → kliknij ENABLE
-6. Idź do "Credentials" w lewym menu
-7. Kliknij "CREATE CREDENTIALS" → "OAuth client ID" → "Web application"
-8. W "Authorized redirect URIs" dodaj:
+1. Open https://console.cloud.google.com/
+2. Click "Select a Project" → "NEW PROJECT"
+3. Enter a name (e.g., "todo-backup"), click "CREATE"
+4. Wait for the project to be ready
+5. In the search bar type "Google Drive API" → click ENABLE
+6. Go to "Credentials" in the left menu
+7. Click "CREATE CREDENTIALS" → "OAuth client ID" → "Web application"
+8. In "Authorized redirect URIs" add:
    - `http://localhost:3000/`
-9. Kliknij "CREATE"
-10. **SKOPIUJ Client ID** (duży ciąg znaków)
+9. Click "CREATE"
+10. **COPY the Client ID** (a long string)
 
-### Krok 2: Wklej Client ID do .env (1 min)
+### Step 2: Paste Client ID into .env (1 min)
 
-**Plik**: `d:\dev\to-do-list-react\.env`
+**File**: `d:\dev\to-do-list-react\.env`
 
-Zmień tę linię:
+Change this line:
 ```env
 REACT_APP_GOOGLE_DRIVE_CLIENT_ID=
 ```
 
-Na:
+to:
 ```env
-REACT_APP_GOOGLE_DRIVE_CLIENT_ID=skopiowany_client_id_tutaj
+REACT_APP_GOOGLE_DRIVE_CLIENT_ID=your_copied_client_id_here
 ```
 
-### Krok 3: Restart aplikacji (2 min)
+### Step 3: Restart the app (2 min)
 
 ```bash
-# W terminalu gdzie uruchomiona jest aplikacja:
-# Wciśnij Ctrl+C aby wyłączyć serwer
-# Potem uruchom ponownie:
+# In the terminal where the app is running:
+# Press Ctrl+C to stop the server
+# Then restart:
 npm start
 ```
 
-### Krok 4: Test
+### Step 4: Test
 
-1. Otwórz http://localhost:3000/
-2. Zaloguj się na konto admina
-3. Idź do Account page
-4. Kliknij "Authorize Google Drive"
-5. Zaloguj się do Google
-6. Przyznaj uprawnienia
-7. Powinieneś zobaczyć "Authorization successful"
+1. Open http://localhost:3000/
+2. Log in as admin
+3. Go to Account page
+4. Click "Authorize Google Drive"
+5. Log in to Google
+6. Grant permissions
+7. You should see "Authorization successful"
 
-## Gotowe! 
+## Done!
 
-Teraz możesz:
-- ✅ Pobierać backup na komputer
-- ✅ Wysyłać backup na Google Drive
-- ✅ Przywracać backup z Google Drive
+Now you can:
+- ✅ Download backup to your computer
+- ✅ Upload backup to Google Drive
+- ✅ Restore backup from Google Drive
 
-## Jeśli coś nie działa
+## If something doesn't work
 
-- **"Brakuje konfiguracji Google Drive"** → .env nie ma Client ID
-- **"Failed to authorize"** → Sprawdź czy Client ID jest poprawny
-- **Brak odpowiedzi od Google** → Czekaj, czasami Google Drive API potrzebuje chwili
+- **"Missing Google Drive configuration"** → .env is missing Client ID
+- **"Failed to authorize"** → Check if Client ID is correct
+- **No response from Google** → Wait, sometimes Google Drive API needs a moment
 
-## Deployment na Netlify
+## Deployment on Netlify
 
-Gdy będziesz gotów do deployment:
-1. W Google Cloud Console dodaj do redirect URIs: `https://twoja-domena.netlify.app/`
-2. W Netlify dashboard dodaj env variables (patrz GOOGLE_DRIVE_SETUP.md)
-3. Push do gita
-4. Netlify automatycznie zdeployuje
+When you're ready to deploy:
+1. In Google Cloud Console add to redirect URIs: `https://your-domain.netlify.app/`
+2. In Netlify dashboard add env variables (see GOOGLE_DRIVE_SETUP.md)
+3. Push to git
+4. Netlify will deploy automatically

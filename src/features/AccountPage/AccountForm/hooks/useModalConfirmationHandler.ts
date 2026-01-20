@@ -13,10 +13,6 @@ interface UseModalConfirmationHandlerProps {
   accountDelete: UseMutationResult<any, any, void, unknown>;
 }
 
-/**
- * Hook for handling modal confirmation logic (logout, account delete, data removal).
- * Watches for modal confirmation state and triggers appropriate actions.
- */
 export const useModalConfirmationHandler = ({
   confirmed,
   modalState,
@@ -40,14 +36,12 @@ export const useModalConfirmationHandler = ({
       if (modalTitleKey === "modal.logout.title" && accountMode === "logged") {
         logout.mutate();
       }
-
       if (
         modalTitleKey === "modal.accountDelete.title" &&
         accountMode === "accountDelete"
       ) {
         accountDelete.mutate();
       }
-
       if (
         modalTitleKey === "modal.dataRemoval.title" &&
         accountMode === "dataRemoval"
@@ -59,7 +53,7 @@ export const useModalConfirmationHandler = ({
             title: { key: "modal.dataRemoval.title" },
             message: { key: "modal.dataRemoval.message.info" },
             type: "info",
-          })
+          }),
         );
       }
     } else if (confirmed === false) {
@@ -69,17 +63,14 @@ export const useModalConfirmationHandler = ({
       ) {
         dispatch(setAccountMode("logged"));
       }
-
       if (
         modalTitleKey === "modal.dataRemoval.title" &&
         accountMode === "dataRemoval"
       ) {
         dispatch(setAccountMode("login"));
       }
-
       dispatch(closeModal());
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmed, modalState, accountMode]);
 };

@@ -2,12 +2,12 @@ import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/getUserToken";
 import { restoreUserListsApi } from "../../../../api/backupApi";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 
 export const handleRestoreUserLists = async (
   t: TFunction<"translation", "accountPage.backup">,
-  setStatus: (status: StatusState) => void
+  setStatus: (status: StatusState) => void,
 ) => {
   try {
     const input = document.createElement("input");
@@ -49,7 +49,7 @@ export const handleRestoreUserLists = async (
         console.error("[restoreUserLists]", error);
         const msg = error instanceof Error ? error.message : "";
         const translatedText =
-          (await translateText(msg, i18n.language)) ||
+          (msg ? await translateText(msg, i18n.language) : null) ||
           t("restoreUserLists.error");
         setStatus({
           isLoading: false,

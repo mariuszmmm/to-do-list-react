@@ -48,6 +48,7 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
 
     recog.onstart = () => setIsListening(true);
     recog.onend = () => setIsListening(false);
+    
     // Handle speech recognition results (interim and final)
     recog.onresult = (event) => {
       const result = event.results[event.resultIndex];
@@ -79,7 +80,7 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
       }
     };
 
-    // Handle speech recognition errors
+    // Handle speech recognition errorss
     recog.onerror = async (event) => {
       console.error("Speech recognition error: ", event.error);
       setIsListening(false);

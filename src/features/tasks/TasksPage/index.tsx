@@ -9,7 +9,7 @@ import { EditableListName } from "./EditableListName";
 import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
 import { TaskForm } from "./TaskForm";
-import { selectEditedTask, selectShowSearch, } from "../tasksSlice";
+import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { ListsData, List } from "../../../types";
 import { UseMutationResult } from "@tanstack/react-query";
@@ -17,7 +17,12 @@ import { useTaskForm } from "./hooks/useTaskForm";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List, deviceId: string }, unknown>;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
 };
 
 const TasksPage = ({ listsData, saveListMutation }: Props) => {

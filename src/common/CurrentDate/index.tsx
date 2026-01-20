@@ -5,7 +5,6 @@ import {
   formatCurrentTime,
 } from "../../utils/formatCurrentDate";
 import { StyledDate, DateContainer } from "./styled";
-
 import { useLocation } from "react-router-dom";
 
 export const CurrentDate = ({ authRoutes }: { authRoutes: string[] }) => {

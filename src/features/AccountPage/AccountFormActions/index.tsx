@@ -25,26 +25,29 @@ export const AccountFormActions = () => {
       <ButtonsContainer $extra>
         {!loggedUserEmail
           ? (accountMode === "login" || accountMode === "accountRecovery") && (
-            <Button
-              $special
-              onClick={() =>
-                dispatch(
-                  setAccountMode(
-                    accountMode === "login" ? "accountRecovery" : "login",
-                  ),
-                )
-              }
-            >
-              {accountMode === "login"
-                ? t("buttons.resetPassword")
-                : t("buttons.cancel")}
-            </Button>
-          )
+              <Button
+                $special
+                onClick={() =>
+                  dispatch(
+                    setAccountMode(
+                      accountMode === "login" ? "accountRecovery" : "login",
+                    ),
+                  )
+                }
+              >
+                {accountMode === "login"
+                  ? t("buttons.resetPassword")
+                  : t("buttons.cancel")}
+              </Button>
+            )
           : accountMode === "passwordChange" && (
-            <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
-              {t("buttons.cancel")}
-            </Button>
-          )}
+              <Button
+                $special
+                onClick={() => dispatch(setAccountMode("logged"))}
+              >
+                {t("buttons.cancel")}
+              </Button>
+            )}
 
         {!!message && <Info $warning>{message}</Info>}
       </ButtonsContainer>

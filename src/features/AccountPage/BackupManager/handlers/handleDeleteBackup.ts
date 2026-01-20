@@ -4,7 +4,7 @@ import {
   fetchGoogleDriveBackupListApi,
 } from "../../../../api/backupApi";
 import i18n from "../../../../utils/i18n";
-import { translateText } from "../../../../utils/translateText";
+import { translateText } from "../../../../api/translateTextApi";
 import { BackupFile } from "../../../../types";
 
 export const handleDeleteBackup = async (
@@ -14,7 +14,7 @@ export const handleDeleteBackup = async (
   setShowGoogleAuth: (show: boolean) => void,
   setShowBackupList: (show: boolean) => void,
   setBackupFiles: (files: BackupFile[]) => void,
-  setCurrentPage: (number: number) => void
+  setCurrentPage: (number: number) => void,
 ) => {
   try {
     if (!googleAccessToken) {
@@ -23,7 +23,7 @@ export const handleDeleteBackup = async (
       return {
         success: false,
         message: i18n.t(
-          "accountPage.backup.listGoogleDriveBackups.notAuthorized"
+          "accountPage.backup.listGoogleDriveBackups.notAuthorized",
         ),
       };
     }
@@ -34,7 +34,7 @@ export const handleDeleteBackup = async (
 
     const deleteResult = await deleteBackupFromGoogleDriveApi(
       googleAccessToken,
-      fileId
+      fileId,
     );
 
     if (!deleteResult.success) {
@@ -57,7 +57,7 @@ export const handleDeleteBackup = async (
 
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (await translateText(msg, i18n.language)) ||
+      (msg ? await translateText(msg, i18n.language) : null) ||
       t("listGoogleDriveBackups.errorDelete");
 
     return { success: false, message: translatedText };

@@ -6,7 +6,9 @@ export const BackupListContainer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
   background-color: ${({ theme }) => theme.colors.backgroundSecendary};
-  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+  transition:
+    background-color 0.5s ease-in-out,
+    border-color 0.5s ease-in-out;
 `;
 
 interface BackupItemProps {
@@ -40,7 +42,9 @@ export const BackupItem = styled.div<BackupItemProps>`
   opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
   cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
 
-  transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out,
+  transition:
+    background-color 0.5s ease-in-out,
+    border-color 0.5s ease-in-out,
     transform 0.2s ease-in-out;
 
   &:hover:not(:disabled) {

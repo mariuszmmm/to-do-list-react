@@ -35,29 +35,27 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => {
         <GlobalStyle />
         <QueryClientProvider client={queryClient}>
           {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
-          <TimeProvider>
-            {children}
-          </TimeProvider>
+          <TimeProvider>{children}</TimeProvider>
         </QueryClientProvider>
       </I18nextProvider>
     </ThemeProvider>
-  )
+  );
 };
 
 root.render(
   process.env.NODE_ENV === "development" ? (
-    // <React.StrictMode>
-    <Provider store={store}>
-      <AppProviders>
-        <App />
-      </AppProviders>
-    </Provider>
-    // </React.StrictMode>
+    <React.StrictMode>
+      <Provider store={store}>
+        <AppProviders>
+          <App />
+        </AppProviders>
+      </Provider>
+    </React.StrictMode>
   ) : (
     <Provider store={store}>
       <AppProviders>
         <App />
       </AppProviders>
     </Provider>
-  )
+  ),
 );

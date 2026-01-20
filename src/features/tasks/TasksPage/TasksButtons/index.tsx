@@ -59,7 +59,6 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const { isPending, isError } = saveListMutation;
 
   const isChanged =
-    tasks.length > 0 &&
     listStatus.isRemoteSaveable &&
     !listStatus.isIdenticalToRemote &&
     !isError &&

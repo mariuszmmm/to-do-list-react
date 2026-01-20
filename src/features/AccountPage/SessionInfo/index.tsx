@@ -60,14 +60,16 @@ export const SessionInfo = ({
             ? new Date(user.token.expires_at).toLocaleString()
             : undefined,
           refreshToken: !!user.token.refresh_token,
-        }
+        },
       });
     } else {
       logBlock.push("Brak tokena w user.token");
     }
 
     const remaining = getTokenExpiresIn(user, now);
-    logBlock.push(`Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`);
+    logBlock.push(
+      `Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`,
+    );
 
     logDevBlock(isSessionInfoOpen, ...logBlock);
 
@@ -103,7 +105,8 @@ export const SessionInfo = ({
       {sessionData.createdAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.createdAt")}: <strong>{sessionData.createdAt}</strong>
+            {t("sessionInfo.createdAt")}:{" "}
+            <strong>{sessionData.createdAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -112,7 +115,8 @@ export const SessionInfo = ({
       {sessionData.confirmedAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.confirmedAt")}: <strong>{sessionData.confirmedAt}</strong>
+            {t("sessionInfo.confirmedAt")}:{" "}
+            <strong>{sessionData.confirmedAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -129,7 +133,8 @@ export const SessionInfo = ({
       {sessionData.tokenExpiresAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.tokenExpiresAt")}: <strong>{sessionData.tokenExpiresAt}</strong>
+            {t("sessionInfo.tokenExpiresAt")}:{" "}
+            <strong>{sessionData.tokenExpiresAt}</strong>
           </StyledSpan>
           <br />
         </>

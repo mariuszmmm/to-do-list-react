@@ -7,7 +7,7 @@ import {
   BackupFileInfo,
   BackupActionsContainer,
   BackupItemsContainer,
-  BackupListContainer
+  BackupListContainer,
 } from "../../styled";
 import { RemoveButton } from "../../../../../common/taskButtons";
 import { useTranslation } from "react-i18next";
@@ -15,7 +15,13 @@ import { handleRestoreBackupFromGoogleDrive } from "../../handlers/handleRestore
 import { handleDeleteBackupConfirmation } from "../../handlers/handleDeleteBackupConfirmation";
 import { useAppDispatch } from "../../../../../hooks";
 import { BackupFile } from "../../../../../types";
-import { ArrowIcon, PaginationButton, PaginationContainer, PaginationInfo, PaginationLabel } from "../../../../../common/Pagination";
+import {
+  ArrowIcon,
+  PaginationButton,
+  PaginationContainer,
+  PaginationInfo,
+  PaginationLabel,
+} from "../../../../../common/Pagination";
 
 interface BackupListProps {
   backupFiles: Array<BackupFile>;
@@ -42,41 +48,51 @@ export const BackupList: React.FC<BackupListProps> = ({
   setCurrentPage,
   setFileToDelete,
 }) => {
-  const { t } = useTranslation("translation", { keyPrefix: "accountPage.backup", });
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage.backup",
+  });
   const dispatch = useAppDispatch();
 
   return (
     <BackupListContainer>
-      <BackupListTitle>{t("listGoogleDriveBackups.selectBackup")}</BackupListTitle>
+      <BackupListTitle>
+        {t("listGoogleDriveBackups.selectBackup")}
+      </BackupListTitle>
       <BackupItemsContainer>
         {backupFiles
           .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
           .map((file) => (
             <BackupItem
               key={file.id}
-              onClick={() => !status.isLoading && googleAccessToken && handleRestoreBackupFromGoogleDrive(
-                file.id,
-                googleAccessToken,
-                t,
-                setStatus,
-                setShowBackupList,
-                setShowGoogleAuth
-              )
+              onClick={() =>
+                !status.isLoading &&
+                googleAccessToken &&
+                handleRestoreBackupFromGoogleDrive(
+                  file.id,
+                  googleAccessToken,
+                  t,
+                  setStatus,
+                  setShowBackupList,
+                  setShowGoogleAuth,
+                )
               }
               $isLoading={status.isLoading}
               title={t("listGoogleDriveBackups.tooltips.restore")}
             >
               <BackupFileInfo>
                 <BackupFileName>{file.name}</BackupFileName>
-                {file.modifiedTime && <BackupFileDate>
-                  🕐 {new Date(file.modifiedTime).toLocaleString("pl-PL", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </BackupFileDate>}
+                {file.modifiedTime && (
+                  <BackupFileDate>
+                    🕐{" "}
+                    {new Date(file.modifiedTime).toLocaleString("pl-PL", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </BackupFileDate>
+                )}
               </BackupFileInfo>
               <RemoveButton
                 onClick={(e) => {
@@ -85,7 +101,7 @@ export const BackupList: React.FC<BackupListProps> = ({
                     file.id,
                     file.name,
                     setFileToDelete,
-                    dispatch
+                    dispatch,
                   );
                 }}
                 disabled={status.isLoading}
@@ -104,7 +120,9 @@ export const BackupList: React.FC<BackupListProps> = ({
               disabled={currentPage === 1 || status.isLoading}
             >
               <ArrowIcon $left>➜</ArrowIcon>
-              <PaginationLabel>{t("listGoogleDriveBackups.buttons.prev")}</PaginationLabel>
+              <PaginationLabel>
+                {t("listGoogleDriveBackups.buttons.prev")}
+              </PaginationLabel>
             </PaginationButton>
             <PaginationInfo>
               {currentPage} / {Math.ceil(backupFiles.length / itemsPerPage)}
@@ -114,8 +132,8 @@ export const BackupList: React.FC<BackupListProps> = ({
                 setCurrentPage(
                   Math.min(
                     Math.ceil(backupFiles.length / itemsPerPage),
-                    currentPage + 1
-                  )
+                    currentPage + 1,
+                  ),
                 )
               }
               disabled={
@@ -123,7 +141,9 @@ export const BackupList: React.FC<BackupListProps> = ({
                 status.isLoading
               }
             >
-              <PaginationLabel>{t("listGoogleDriveBackups.buttons.next")}</PaginationLabel>
+              <PaginationLabel>
+                {t("listGoogleDriveBackups.buttons.next")}
+              </PaginationLabel>
               <ArrowIcon>➜</ArrowIcon>
             </PaginationButton>
           </PaginationContainer>
@@ -146,4 +166,4 @@ export const BackupList: React.FC<BackupListProps> = ({
       </BackupActionsContainer>
     </BackupListContainer>
   );
-}
+};

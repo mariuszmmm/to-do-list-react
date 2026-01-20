@@ -11,10 +11,6 @@ import { auth } from "../api/auth";
 import { getTokenExpiresIn } from "../utils/tokenUtils";
 import { getAutoRefreshSettingFromLocalStorage } from "../utils/localStorage";
 
-/**
- * Hook for validating and refreshing user authentication token.
- * Handles auto-refresh or logout when token expires, and updates UI state.
- */
 export const useTokenValidation = () => {
   const dispatch = useAppDispatch();
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -39,14 +35,13 @@ export const useTokenValidation = () => {
       hasReceivedValidTokenRef.current = true;
     }
 
-    // If token expired and user had a valid token before
     if (hasReceivedValidTokenRef.current && tokenRemainingMs <= 0) {
       const autoRefreshEnabled = getAutoRefreshSettingFromLocalStorage();
 
       if (autoRefreshEnabled) {
         if (process.env.NODE_ENV === "development") {
           console.log(
-            "[useTokenValidation] Access token expired locally - trying to refresh token (auto-refresh enabled)"
+            "[useTokenValidation] Access token expired locally - trying to refresh token (auto-refresh enabled)",
           );
         }
 
@@ -57,7 +52,7 @@ export const useTokenValidation = () => {
             .catch((error) => {
               console.error(
                 "[useTokenValidation] Error during automatic token refresh:",
-                error
+                error,
               );
             })
             .finally(() => {
@@ -67,7 +62,7 @@ export const useTokenValidation = () => {
       } else {
         if (process.env.NODE_ENV === "development") {
           console.log(
-            "[useTokenValidation] Access token expired locally - logging out (auto-refresh disabled)"
+            "[useTokenValidation] Access token expired locally - logging out (auto-refresh disabled)",
           );
         }
 
@@ -86,7 +81,7 @@ export const useTokenValidation = () => {
                   title: { key: "modal.logout.title" },
                   message: { key: "modal.logout.message.success" },
                   type: "info",
-                })
+                }),
               );
               isRefreshingRef.current = false;
             });

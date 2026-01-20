@@ -567,6 +567,7 @@ const langEn: typeof langPl = {
   prepareText: {
     period: "period",
     comma: "comma",
+    enter: "enter"
   },
 };
 
