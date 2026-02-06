@@ -2,13 +2,7 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
 import { useQueryParameter } from "../../../../hooks/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import searchQueryParamName from "../../../../utils/searchQueryParamName";
-import {
-  EditButton,
-  ImageButton,
-  RemoveButton,
-  SortButton,
-  ToggleButton,
-} from "../../../../common/taskButtons";
+import { EditButton, ImageButton, RemoveButton, SortButton, ToggleButton } from "../../../../common/taskButtons";
 import {
   selectHideDone,
   toggleTaskDone,
@@ -24,22 +18,12 @@ import {
   setTasksToSort,
   setTasks,
 } from "../../tasksSlice";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  DragHandleIcon,
-} from "../../../../common/icons";
+import { ArrowDownIcon, ArrowUpIcon, DragHandleIcon } from "../../../../common/icons";
 import { useDndList } from "../../../../hooks/useDndList";
 import { useDndItem } from "../../../../hooks/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import { useEffect } from "react";
-import {
-  StyledList,
-  StyledListContent,
-  StyledListItem,
-  StyledSpan,
-  TaskNumber,
-} from "../../../../common/StyledList";
+import { StyledList, StyledListContent, StyledListItem, StyledSpan, TaskNumber } from "../../../../common/StyledList";
 import { moveListDown, moveListUp } from "../../../../utils/moveList";
 import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
 import { Task } from "../../../../types";
@@ -55,9 +39,7 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
   const editedTaskContent = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksToSort = useAppSelector(selectTasksToSort);
-  const filteredTasks = useAppSelector((state) =>
-    selectActiveTasksByQuery(state, query),
-  );
+  const filteredTasks = useAppSelector((state) => selectActiveTasksByQuery(state, query));
   const tasksLst = tasksToSort || filteredTasks || tasks;
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -69,10 +51,7 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
 
     if (isTasksSorting) {
       const addedTasks = tasks.filter(
-        (task) =>
-          !tasksToSort?.some(
-            (t) => t.id === task.id || t.content === task.content,
-          ),
+        (task) => !tasksToSort?.some((t) => t.id === task.id || t.content === task.content),
       );
       const sortedExistingTasks = tasksToSort?.filter((task) =>
         tasks.some((t) => t.id === task.id && t.content === task.content),
@@ -141,16 +120,10 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
           </StyledSpan>
         </StyledListContent>
         <div style={{ display: "flex", gap: "10px" }}>
-          <SortButton
-            onClick={() => animateMove("up")}
-            disabled={index === 0 || isAnimating}
-          >
+          <SortButton onClick={() => animateMove("up")} disabled={index === 0 || isAnimating}>
             <ArrowUpIcon />
           </SortButton>
-          <SortButton
-            onClick={() => animateMove("down")}
-            disabled={index === tasksLst.length - 1 || isAnimating}
-          >
+          <SortButton onClick={() => animateMove("down")} disabled={index === tasksLst.length - 1 || isAnimating}>
             <ArrowDownIcon />
           </SortButton>
         </div>
@@ -193,13 +166,7 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
             </ToggleButton>
           </TaskActions>
           <StyledListContent $type={"tasks"}>
-            {!query ? (
-              <TaskNumber
-                $edit={editedTaskContent?.id === task.id}
-              >{`${index + 1}. `}</TaskNumber>
-            ) : (
-              ""
-            )}
+            {!query ? <TaskNumber $edit={editedTaskContent?.id === task.id}>{`${index + 1}. `}</TaskNumber> : ""}
             <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
               <StyledLink
                 to={`/tasks/${task.id}`}
@@ -233,16 +200,10 @@ export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
             </RemoveButton>
 
             {loggedUserEmail && (
-              <ImageButton
-                disabled={
-                  !!editedTaskContent || speech.isActive || !isRemoteSaveable
-                }
-              >
+              <ImageButton disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
                 <StyledLink
                   to={`/tasks/image/${task.id}`}
-                  disabled={
-                    !!editedTaskContent || speech.isActive || !isRemoteSaveable
-                  }
+                  disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}
                 >
                   📷
                 </StyledLink>

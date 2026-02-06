@@ -44,14 +44,14 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => {
 
 root.render(
   process.env.NODE_ENV === "development" ? (
-    <React.StrictMode>
-      <Provider store={store}>
-        <AppProviders>
-          <App />
-        </AppProviders>
-      </Provider>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <Provider store={store}>
+      <AppProviders>
+        <App />
+      </AppProviders>
+    </Provider>
   ) : (
+    // </React.StrictMode>
     <Provider store={store}>
       <AppProviders>
         <App />

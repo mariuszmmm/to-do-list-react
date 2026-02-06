@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  deleteCloudinaryImage,
-  getCloudinarySignature,
-} from "../api/fetchCloudinaryApi";
+import { deleteCloudinaryImage, getCloudinarySignature } from "../api/fetchCloudinaryApi";
 import { UploadResult } from "../types";
 import axios from "axios";
 import { translateText } from "../api/translateTextApi";
@@ -76,8 +73,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : "";
         const translatedText =
-          (msg ? await translateText(msg, i18n.language) : null) ||
-          i18n.t("errorMessage.imageLoadingError");
+          (msg ? await translateText(msg, i18n.language) : null) || i18n.t("errorMessage.imageLoadingError");
 
         if (!isCancelled) {
           setErrorMsg(translatedText);
@@ -110,11 +106,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
     };
   }, [imageSrc]);
 
-  const uploadImage = async (
-    file: File,
-    publicId?: string,
-    folder?: string,
-  ): Promise<UploadResult | null> => {
+  const uploadImage = async (file: File, publicId?: string, folder?: string): Promise<UploadResult | null> => {
     try {
       if (!file) {
         console.error("No file selected");
@@ -124,9 +116,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       if (!ALLOWED_TYPES.includes(file.type)) {
         console.error("Unsupported file type:", file.type);
         throw new Error(
-          `Unsupported file type.\n Allowed types: ${ALLOWED_TYPES.map((t) =>
-            t.replace("image/", ""),
-          ).join(", ")}`,
+          `Unsupported file type.\n Allowed types: ${ALLOWED_TYPES.map((t) => t.replace("image/", "")).join(", ")}`,
         );
       }
 
@@ -134,8 +124,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
         console.error("File size exceeds limit:", file.size);
         throw new Error(`File size exceeds ${MAX_SIZE / (1024 * 1024)} MB`);
       }
-      const { timestamp, signature, cloudName, apiKey, uploadPreset } =
-        await getCloudinarySignature(publicId, folder);
+      const { timestamp, signature, cloudName, apiKey, uploadPreset } = await getCloudinarySignature(publicId, folder);
 
       if (!timestamp || !signature || !cloudName || !apiKey || !uploadPreset) {
         console.error("Missing Cloudinary configuration");
@@ -161,9 +150,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
 
       const res = await axios.post<UploadResult>(uploadUrl, formData, {
         onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / (progressEvent.total || 1),
-          );
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
           setUploadProgress(percentCompleted);
         },
       });
@@ -173,8 +160,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
       console.error("Upload error:", error);
       const msg = error instanceof Error ? error.message : "";
       const translatedText =
-        (msg ? await translateText(msg, i18n.language) : null) ||
-        i18n.t("errorMessage.imageUploadError");
+        (msg ? await translateText(msg, i18n.language) : null) || i18n.t("errorMessage.imageUploadError");
       setErrorMsg(translatedText);
       return null;
     } finally {
@@ -202,8 +188,7 @@ export const useTaskImage = (imageUrl?: string | null) => {
 
       const msg = error instanceof Error ? error.message : "";
       const translatedText =
-        (msg ? await translateText(msg, i18n.language) : null) ||
-        i18n.t("errorMessage.imageDeleteError");
+        (msg ? await translateText(msg, i18n.language) : null) || i18n.t("errorMessage.imageDeleteError");
       setErrorMsg(translatedText);
       return null;
     } finally {
