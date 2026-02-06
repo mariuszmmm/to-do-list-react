@@ -1,3 +1,4 @@
+# 🟢 Ważne: Wszystkie odpowiedzi AI muszą być zawsze udzielane w języku polskim.
 # Copilot Instructions for AI Coding Agents
 
 ## ⚠️ CRITICAL RULE - Code Changes
