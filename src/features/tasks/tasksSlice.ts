@@ -381,6 +381,7 @@ const tasksSlice = createSlice({
         image: Task["image"];
       }>,
     ) => {
+      console.log("taskId", taskId, "image", image);
       const index = state.tasks.findIndex((task) => task.id === taskId);
       if (index === -1) return;
       const time = new Date().toISOString();

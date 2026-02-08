@@ -30,10 +30,10 @@ export const deleteCloudinaryImage = async (publicId?: string) => {
 
     const body = new URLSearchParams({
       api_key: API_KEY,
-      public_id: publicId,
-      timestamp: String(timestamp),
-      signature,
       invalidate: "true",
+      public_id: publicId,
+      signature,
+      timestamp: String(timestamp),
     });
 
     const destroyUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/destroy`;
@@ -44,11 +44,7 @@ export const deleteCloudinaryImage = async (publicId?: string) => {
       body: JSON.stringify(res.data),
     };
   } catch (error: any) {
-    logError(
-      "Unexpected error in deleteCloudinaryImage handler",
-      error,
-      logPrefix
-    );
+    logError("Unexpected error in deleteCloudinaryImage handler", error, logPrefix);
 
     return {
       statusCode: 500,

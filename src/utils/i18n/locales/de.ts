@@ -86,17 +86,21 @@ const langDe: typeof langPl = {
       change: "Ändern",
       remove: "Entfernen",
       back: "Zurück",
-      addFromGallery: "Aus Galerie",
-      takePhoto: "Mit Kamera",
+      addFromGallery: "Bilder",
+      takePhoto: "Kamera",
       cancel: "Abbrechen",
     },
     messages: {
       uploading: "Hochladen…",
       loading: "Laden…",
       removing: "Löschen…",
-      uploadError: "Fehler beim Hochladen des Bildes.",
-      loadError: "Fehler beim Laden des Bildes.",
-      choosePhotoSource: "Bildquelle wählen:",
+      error: {
+        uploadError: "Fehler beim Hochladen des Bildes.",
+        choosePhotoSource: "Bildquelle wählen:",
+        imageUploadCanceled: "Bild-Upload abgebrochen",
+        imageUploadError: "Fehler beim Hochladen des Bildes",
+        imageDeleteError: "Fehler beim Löschen des Bildes",
+      },
     },
   },
   archivedListsPage: {
@@ -273,17 +277,12 @@ const langDe: typeof langPl = {
       },
       restoreUserLists: {
         button: "Meine Listen wiederherstellen",
-        tooltip:
-          "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
+        tooltip: "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
         processing: "Deine Listen werden verarbeitet...",
-        success:
-          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_few:
-          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_many:
-          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_other:
-          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_few: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_many: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_other: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
         error: "Fehler beim Wiederherstellen deiner Listen",
       },
       restoreAllUsers: {
@@ -313,8 +312,7 @@ const langDe: typeof langPl = {
         button: "Von Google Drive wiederherstellen",
         tooltip: "Backup von Google Drive wiederherstellen",
         restoring: "Backup wird von Google Drive wiederhergestellt...",
-        success:
-          "Backup wurde wiederhergestellt! {{count}} Listen wurden wiederhergestellt.",
+        success: "Backup wurde wiederhergestellt! {{count}} Listen wurden wiederhergestellt.",
         error: "Fehler beim Wiederherstellen des Backups",
         notAuthorized: "Nicht mit Google Drive autorisiert",
       },
@@ -348,8 +346,7 @@ const langDe: typeof langPl = {
       success: "Registrierung erfolgreich.",
       error: "Registrierung fehlgeschlagen.",
     },
-    closeTab:
-      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
+    closeTab: "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -360,8 +357,7 @@ const langDe: typeof langPl = {
       success: "Konto wurde wiederhergestellt.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
-    closeTab:
-      "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
+    closeTab: "Du kannst jetzt diesen Tab schließen und zu deinem vorherigen Browser zurückkehren.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -416,8 +412,7 @@ const langDe: typeof langPl = {
         loading: "Registrierung läuft...",
         info: "Ein Link zur Konto-Registrierung wurde an die angegebene E-Mail-Adresse gesendet.",
         error: {
-          userExists:
-            "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.",
+          userExists: "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.",
           default: "Registrierungsfehler",
         },
       },
@@ -427,8 +422,7 @@ const langDe: typeof langPl = {
       message: {
         loading: "Konto-Wiederherstellung läuft...",
         info: "Ein Link zum Zurücksetzen des Passworts wurde an die angegebene E-Mail-Adresse gesendet.<br/> Wenn du keine Nachricht erhalten hast, versuche es in 15 Minuten erneut.",
-        success:
-          "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
+        success: "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
         error: {
           default: "Fehler bei der Wiederherstellung des Kontos.",
           linkExpired: "Der Link ist abgelaufen oder wurde bereits verwendet.",
@@ -466,13 +460,10 @@ const langDe: typeof langPl = {
     listSave: {
       title: "Liste speichern",
       message: {
-        confirm:
-          "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
+        confirm: "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
-        loading:
-          "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
-        success:
-          "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
+        loading: "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
+        success: "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
         error: {
           conflict:
             "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
@@ -489,8 +480,7 @@ const langDe: typeof langPl = {
     listRemove: {
       title: "Liste löschen",
       message: {
-        confirm:
-          "Möchtest du die Liste <strong>{{name}}</strong> wirklich löschen?",
+        confirm: "Möchtest du die Liste <strong>{{name}}</strong> wirklich löschen?",
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
@@ -514,8 +504,7 @@ const langDe: typeof langPl = {
     deleteBackup: {
       title: "Sicherung löschen",
       message: {
-        confirm:
-          "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
+        confirm: "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
         loading: "Sicherung wird gelöscht...",
         success: "Die Sicherung wurde gelöscht.",
         error: "Fehler beim Löschen der Sicherung.",
@@ -569,15 +558,10 @@ const langDe: typeof langPl = {
       button: "Absenden",
     },
   },
-  errorMessage: {
-    imageLoadingError: "Fehler beim Laden des Bildes",
-    imageUploadError: "Fehler beim Hochladen des Bildes",
-    imageDeleteError: "Fehler beim Löschen des Bildes",
-  },
   prepareText: {
     period: "Punkt",
     comma: "Komma",
-    enter: "Eingabetaste"
+    enter: "Eingabetaste",
   },
 };
 
