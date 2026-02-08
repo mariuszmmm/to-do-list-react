@@ -86,17 +86,21 @@ const langEn: typeof langPl = {
       change: "Change",
       remove: "Remove",
       back: "Back",
-      addFromGallery: "From gallery",
-      takePhoto: "Take photo",
+      addFromGallery: "Gallery",
+      takePhoto: "Camera",
       cancel: "Cancel",
     },
     messages: {
       uploading: "Uploading…",
       loading: "Loading…",
       removing: "Removing…",
-      uploadError: "An error occurred while uploading the image.",
-      loadError: "Image download error.",
-      choosePhotoSource: "Choose photo source:",
+      error: {
+        uploadError: "An error occurred while uploading the image.",
+        choosePhotoSource: "Choose photo source:",
+        imageUploadCanceled: "Image upload canceled",
+        imageUploadError: "Error uploading image",
+        imageDeleteError: "Error deleting image",
+      },
     },
   },
   archivedListsPage: {
@@ -285,8 +289,7 @@ const langEn: typeof langPl = {
         button: "Restore all users",
         tooltip: "Restore all users from backup",
         processing: "Processing...",
-        success:
-          "Backup has been restored!\nRestored: {{restored}}/{{total}} users.\nFailed: {{failed}}.",
+        success: "Backup has been restored!\nRestored: {{restored}}/{{total}} users.\nFailed: {{failed}}.",
         error: "Error while restoring all users",
       },
 
@@ -331,8 +334,7 @@ const langEn: typeof langPl = {
       },
       restoreSelectedBackup: {
         restoring: "Restoring backup from Google Drive...",
-        success:
-          "Backup restored!\n{{restored}} users restored, {{failed}} failed ({{total}} total)",
+        success: "Backup restored!\n{{restored}} users restored, {{failed}} failed ({{total}} total)",
         error: "Error while restoring backup",
         notAuthorized: "Not authorized to Google Drive",
       },
@@ -457,15 +459,12 @@ const langEn: typeof langPl = {
     listSave: {
       title: "Saving list",
       message: {
-        confirm:
-          "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
+        confirm: "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{name}}</strong> to the database...",
-        success:
-          "List <strong>{{name}}</strong> has been saved to the database.",
+        success: "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
-          conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while adding the list to the database.",
         },
       },
@@ -479,13 +478,11 @@ const langEn: typeof langPl = {
     listRemove: {
       title: "Deleting list",
       message: {
-        confirm:
-          "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
+        confirm: "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
-          conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while deleting the list.",
         },
       },
@@ -504,8 +501,7 @@ const langEn: typeof langPl = {
     deleteBackup: {
       title: "Deleting backup",
       message: {
-        confirm:
-          "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
+        confirm: "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
         loading: "Deleting backup...",
         success: "The backup has been deleted.",
         error: "An error occurred while deleting the backup.",
@@ -517,8 +513,7 @@ const langEn: typeof langPl = {
         loading: "Updating list...",
         success: "The list has been updated in the database.",
         error: {
-          conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while updating the list.",
         },
       },
@@ -559,15 +554,10 @@ const langEn: typeof langPl = {
       button: "Send",
     },
   },
-  errorMessage: {
-    imageLoadingError: "Image loading error",
-    imageUploadError: "Error uploading image",
-    imageDeleteError: "Error deleting image",
-  },
   prepareText: {
     period: "period",
     comma: "comma",
-    enter: "enter"
+    enter: "enter",
   },
 };
 

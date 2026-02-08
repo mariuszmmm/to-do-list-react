@@ -46,10 +46,10 @@ export const handleRestoreAllUsers = async (
       });
     } catch (error: unknown) {
       console.error("[restoreAllUsers]", error);
+
       const msg = error instanceof Error ? error.message : "";
-      const translatedText =
-        (msg ? await translateText(msg, i18n.language) : null) ||
-        t("restoreAllUsers.error");
+      console.error("MMM msg:", msg);
+      const translatedText = (msg ? await translateText(msg, i18n.language) : null) || t("restoreAllUsers.error");
       setStatus({
         isLoading: false,
         message: translatedText,

@@ -9,20 +9,17 @@ import { formatCurrentDate } from "../../../utils/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
-import { Image, ImagePreview, } from "../../../common/Image";
+import { Image, ImagePreview } from "../../../common/Image";
 import { useTaskImage } from "../../../hooks";
 
 const TaskPage = () => {
   const { id: taskId } = useParams();
   const navigate = useNavigate();
-  const task = useAppSelector((state) =>
-    taskId ? selectTaskById(state, taskId) : null,
-  );
+  const task = useAppSelector((state) => (taskId ? selectTaskById(state, taskId) : null));
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "taskPage",
   });
   const { imageUrl } = task?.image || {};
-  const { imageSrc } = useTaskImage(imageUrl);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,15 +34,11 @@ const TaskPage = () => {
         body={
           task && (
             <>
-              {task.image && <ImagePreview>
-                {imageSrc &&
-                  <Image
-                    src={imageSrc}
-                    alt="preview"
-                    key={imageSrc}
-                  />
-                }
-              </ImagePreview>}
+              {task.image && imageUrl && (
+                <ImagePreview>
+                  <Image src={imageUrl} alt='preview' key={imageUrl} />
+                </ImagePreview>
+              )}
               <DateInfo>
                 <Name>{t("done.title")}:</Name>
                 {task.done ? t("done.yes") : t("done.no")}
@@ -54,7 +47,7 @@ const TaskPage = () => {
                 <Name>{t("dateCreated")}:</Name>
                 {formatCurrentDate(new Date(task.date), i18n.language)}
               </DateInfo>
-              {task.editedAt && (task.editedAt !== task.date) && (
+              {task.editedAt && task.editedAt !== task.date && (
                 <DateInfo>
                   <Name>{t("dateEdited")}:</Name>
                   {formatCurrentDate(new Date(task.editedAt), i18n.language)}
@@ -68,7 +61,7 @@ const TaskPage = () => {
               )}
 
               <FormButtonWrapper $taskDetails>
-                <FormButton type="button" width={"200px"} onClick={() => navigate(-1)} $singleInput>
+                <FormButton type='button' width={"200px"} onClick={() => navigate(-1)} $singleInput>
                   {t("backButton")}
                 </FormButton>
               </FormButtonWrapper>

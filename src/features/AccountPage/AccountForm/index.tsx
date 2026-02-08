@@ -19,11 +19,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useLogin } from "./hooks/useLogin";
 import { useLogout } from "./hooks/useLogout";
-import {
-  selectModalConfirmed,
-  selectModalState,
-  openModal,
-} from "../../../Modal/modalSlice";
+import { selectModalConfirmed, selectModalState, openModal } from "../../../Modal/modalSlice";
 import { usePasswordChange } from "./hooks/usePasswordChange";
 import { useAccountRecovery } from "./hooks/useAccountRecovery";
 import { useAccountDelete } from "./hooks/useAccountDelete";
@@ -42,9 +38,7 @@ export const AccountForm = () => {
   const confirmed = useAppSelector(selectModalConfirmed);
   const modalState = useAppSelector(selectModalState);
 
-  const isWaitingForConfirmation = useAppSelector(
-    selectIsWaitingForConfirmation,
-  );
+  const isWaitingForConfirmation = useAppSelector(selectIsWaitingForConfirmation);
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
@@ -133,39 +127,32 @@ export const AccountForm = () => {
     <>
       <Form
         onSubmit={onFormSubmit}
-        $singleInput={
-          accountMode === "accountRecovery" || accountMode === "passwordChange"
-        }
+        $singleInput={accountMode === "accountRecovery" || accountMode === "passwordChange"}
         $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
       >
         <Input
           autoFocus
           value={email}
-          type="email"
-          name="login"
+          type='email'
+          name='login'
           placeholder={t("form.inputPlaceholders.email")}
           onChange={({ target }) => setEmail(target.value)}
           ref={emailInputRef}
           hidden={!!loggedUserEmail}
         />
         <InputWrapper
-          hidden={
-            (!!loggedUserEmail || accountMode === "accountRecovery") &&
-            accountMode !== "passwordChange"
-          }
+          hidden={(!!loggedUserEmail || accountMode === "accountRecovery") && accountMode !== "passwordChange"}
         >
           <Input
             value={password}
-            name="password"
+            name='password'
             type={showPassword ? "text" : "password"}
             placeholder={
               accountMode === "passwordChange"
                 ? t("form.inputPlaceholders.newPassword")
                 : t("form.inputPlaceholders.password")
             }
-            autoComplete={
-              accountMode === "passwordChange" ? "new-password" : ""
-            }
+            autoComplete={accountMode === "passwordChange" ? "new-password" : ""}
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
           />
@@ -176,17 +163,14 @@ export const AccountForm = () => {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
-            type="button"
+            type='button'
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>
         </InputWrapper>
         <FormButton
-          type="submit"
-          $singleInput={
-            accountMode === "accountRecovery" ||
-            accountMode === "passwordChange"
-          }
+          type='submit'
+          $singleInput={accountMode === "accountRecovery" || accountMode === "passwordChange"}
           $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
         >
           {accountMode === "accountRegister"

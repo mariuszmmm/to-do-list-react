@@ -79,22 +79,26 @@ const langPl = {
   taskImagePage: {
     title: "Zdjęcie zadania",
     noTask: "Nie znaleziono zadania 😥",
-    messages: {
-      uploading: "Przesyłanie…",
-      loading: "Ładowanie…",
-      removing: "Usuwanie…",
-      uploadError: "Wystąpił błąd podczas przesyłania obrazu.",
-      loadError: "Błąd ładowania zdjęcia.",
-      choosePhotoSource: "Wybierz zrodło obrazu:",
-    },
     buttons: {
       add: "Dodaj",
       change: "Zmień",
       remove: "Usuń",
       back: "Powrót",
-      addFromGallery: "Z galerii",
-      takePhoto: "Z aparatu",
+      addFromGallery: "Zdjęcia",
+      takePhoto: "Aparat",
       cancel: "Anuluj",
+    },
+    messages: {
+      uploading: "Przesyłanie…",
+      loading: "Ładowanie…",
+      removing: "Usuwanie…",
+      error: {
+        uploadError: "Wystąpił błąd podczas przesyłania obrazu.",
+        choosePhotoSource: "Wybierz źródło obrazu:",
+        imageUploadCanceled: "Anulowano przesyłanie obrazu",
+        imageUploadError: "Błąd podczas przesyłania obrazu",
+        imageDeleteError: "Błąd podczas usuwania obrazu",
+      },
     },
   },
   archivedListsPage: {
@@ -273,14 +277,10 @@ const langPl = {
         button: "Przywróć moje listy",
         tooltip: "Przywróć tylko swoje listy z pliku na komputerze",
         processing: "Przetwarzanie Twoich list...",
-        success:
-          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
-        success_few:
-          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} listy.",
-        success_many:
-          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
-        success_other:
-          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_few: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} listy.",
+        success_many: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_other: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
         error: "Błąd podczas przywracania Twoich list",
       },
       restoreAllUsers: {
@@ -310,8 +310,7 @@ const langPl = {
         button: "Przywróć z Google Drive",
         tooltip: "Przywróć kopię zapasową z Google Drive",
         restoring: "Przywracanie kopii zapasowej z Google Drive...",
-        success:
-          "Kopia zapasowa została przywrócona! Przywrócono {{count}} list.",
+        success: "Kopia zapasowa została przywrócona! Przywrócono {{count}} list.",
         error: "Błąd podczas przywracania kopii zapasowej",
         notAuthorized: "Brak autoryzacji do Google Drive",
       },
@@ -345,8 +344,7 @@ const langPl = {
       success: "Rejestracja udana.",
       error: "Rejestracja nieudana.",
     },
-    closeTab:
-      "Możesz teraz zamknąć tę kartę i wrócić do wcześniej otwartej przegladarki.",
+    closeTab: "Możesz teraz zamknąć tę kartę i wrócić do wcześniej otwartej przegladarki.",
     tryAgain: "Spróbuj ponownie później.",
     home: "Strona główna",
   },
@@ -357,8 +355,7 @@ const langPl = {
       success: "Konto zostało odzyskane.",
       error: "Link wygasł lub został użyty.",
     },
-    closeTab:
-      "Możesz teraz zamknąć tę kartę i wrócić do wcześniej otwartej przegladarki.",
+    closeTab: "Możesz teraz zamknąć tę kartę i wrócić do wcześniej otwartej przegladarki.",
     tryAgain: "Spróbuj ponownie później.",
     home: "Strona główna",
   },
@@ -413,8 +410,7 @@ const langPl = {
         loading: "Trwa rejestracja...",
         info: "Na podany adres e-mail został wysłany link do rejestracji konta.",
         error: {
-          userExists:
-            "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
+          userExists: "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
           default: "Błąd rejestracji",
         },
       },
@@ -462,13 +458,10 @@ const langPl = {
     listSave: {
       title: "Zapisywanie listy",
       message: {
-        confirm:
-          "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
+        confirm: "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
         cancel: "Zmień nazwę listy i zapisz ponownie.",
-        loading:
-          "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
-        success:
-          "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
+        loading: "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
+        success: "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
         error: {
           conflict:
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
@@ -485,8 +478,7 @@ const langPl = {
     listRemove: {
       title: "Usuwanie listy",
       message: {
-        confirm:
-          "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
+        confirm: "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
@@ -510,8 +502,7 @@ const langPl = {
     deleteBackup: {
       title: "Usuwanie kopii zapasowej",
       message: {
-        confirm:
-          "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
+        confirm: "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie kopii zapasowej...",
         success: "Kopia zapasowa została usunięta.",
         error: "Błąd podczas usuwania kopii zapasowej.",
@@ -565,15 +556,10 @@ const langPl = {
       button: "Wyślij",
     },
   },
-  errorMessage: {
-    imageLoadingError: "Błąd ładowania obrazu",
-    imageUploadError: "Błąd podczas przesyłania obrazu",
-    imageDeleteError: "Błąd podczas usuwania obrazu",
-  },
   prepareText: {
     period: "kropka",
     comma: "przecinek",
-    enter: "enter"
+    enter: "enter",
   },
 };
 

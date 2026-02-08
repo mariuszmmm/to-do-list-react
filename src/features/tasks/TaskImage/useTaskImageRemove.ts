@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { setImage } from "../tasksSlice";
-import {
-  closeModal,
-  openModal,
-  selectModalConfirmed,
-} from "../../../Modal/modalSlice";
+import { closeModal, openModal, selectModalConfirmed } from "../../../Modal/modalSlice";
 
 interface UseTaskImageRemoveProps {
   resetError: () => void;
   taskId?: string;
   publicId?: string;
-  removeImage: (publicId: string) => Promise<unknown>;
+  removeImage: (publicId: string, taskId: string) => Promise<unknown>;
+  localPreviewUrlRef: React.RefObject<string | null>;
+  imageUrl: string;
 }
 
 export const useTaskImageRemove = ({
@@ -19,6 +17,8 @@ export const useTaskImageRemove = ({
   taskId,
   publicId,
   removeImage,
+  localPreviewUrlRef,
+  imageUrl,
 }: UseTaskImageRemoveProps): {
   setImageRemoving: React.Dispatch<React.SetStateAction<boolean>>;
 } => {
@@ -37,9 +37,9 @@ export const useTaskImageRemove = ({
           if (!taskId) throw new Error("Missing taskId");
           if (!publicId) throw new Error("No publicId provided");
 
-          const result = await removeImage(publicId);
+          const result = await removeImage(publicId, taskId);
           if (!result) throw new Error("Image removal failed");
-
+          // localPreviewUrlRef.current = "";
           dispatch(setImage({ taskId, image: null }));
         } catch (error: unknown) {
           console.error("Error removing image from Cloudinary:", error);

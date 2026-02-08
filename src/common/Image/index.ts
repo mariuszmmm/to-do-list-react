@@ -10,7 +10,7 @@ export const Image = styled.img`
 `;
 
 interface ImagePlaceholderProps {
-  $imageSrc: string;
+  $imageSrc?: string;
 }
 
 export const ImagePlaceholder = styled(Placeholder)<ImagePlaceholderProps>`
@@ -73,8 +73,7 @@ interface ProgressBarFillProps {
 
 export const ProgressBarFill = styled.div<ProgressBarFillProps>`
   height: 100%;
-  background-color: ${({ $isDownloading }) =>
-    $isDownloading ? "#150ed7" : "#4CAF50"};
+  background-color: ${({ $isDownloading }) => ($isDownloading ? "#150ed7" : "#4CAF50")};
   width: ${({ $width }) => $width}%;
   transition: width 0.1s ease;
 `;
