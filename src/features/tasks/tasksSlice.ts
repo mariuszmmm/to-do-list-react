@@ -1,4 +1,4 @@
-import { createSelector, createSlice, current, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import {
   getSettingsFromLocalStorage,
   getTasksFromLocalStorage,
