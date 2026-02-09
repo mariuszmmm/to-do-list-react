@@ -19,9 +19,10 @@ import {
 import { Info } from "../../../common/Info";
 import { selectLoggedUserEmail } from "../../AccountPage/accountSlice";
 import { useImagePreview } from "../../../hooks/media/cloudinary/useImagePreview";
-import { useRemoveTaskImageWithConfirmation, useIsMobile } from "../../../hooks";
+import { useIsMobile } from "../../../hooks";
 import { useUploadTaskImage } from "./useUploadTaskImage";
 import { useRemoveTaskImage } from "./useRemoveTaskImage";
+import { useConfirmRemoveAction } from "./useConfirmRemoveAction";
 import { getUploadErrorMessage } from "../../../utils/errors/getUploadErrorMessage";
 
 export const TaskImage = () => {
@@ -41,13 +42,21 @@ export const TaskImage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
 
   const { previewUrl, setPreview, clearPreview } = useImagePreview();
-  const { uploadTaskImage, cancelUpload, progress, phase, isUploading, error, reset } = useUploadTaskImage();
+  const { uploadTaskImage, cancelUpload, progress, phase, isUploading, error } = useUploadTaskImage();
   const { mutateAsync: removeImage, isPending: isRemoving } = useRemoveTaskImage();
-  const { handleRemoveImage } = useRemoveTaskImageWithConfirmation({
-    taskId,
-    taskImagePublicId,
-    removeImage,
-    clearPreview,
+
+  const handleConfirmRemove = useCallback(async () => {
+    if (taskImagePublicId && taskId) {
+      await removeImage({ publicId: taskImagePublicId, taskId });
+      clearPreview();
+    }
+  }, [taskImagePublicId, taskId, removeImage, clearPreview]);
+
+  const { trigger: handleRemoveImage, isPending: isConfirmingRemove } = useConfirmRemoveAction({
+    onConfirm: handleConfirmRemove,
+    title: { key: "modal.imageRemove.title" },
+    message: { key: "modal.imageRemove.message.confirm" },
+    confirmButtonLabel: { key: "modal.buttons.deleteButton" },
   });
 
   const onFileChange = useCallback(
@@ -96,7 +105,10 @@ export const TaskImage = () => {
     [onFileChange, isUploading],
   );
 
-  const isButtonDisabled = useMemo(() => isUploading || isRemoving, [isUploading, isRemoving]);
+  const isButtonDisabled = useMemo(
+    () => isUploading || isRemoving || isConfirmingRemove,
+    [isUploading, isRemoving, isConfirmingRemove],
+  );
 
   const imageSrc = useMemo(() => previewUrl || taskImageUrl, [previewUrl, taskImageUrl]);
 
@@ -186,7 +198,12 @@ export const TaskImage = () => {
                     )}
 
                     {taskImageUrl && !photoSourceButtonsVisible && (
-                      <FormButton {...commonButtonProps} onClick={handleRemoveImage} disabled={isButtonDisabled}>
+                      <FormButton
+                        {...commonButtonProps}
+                        onClick={handleRemoveImage}
+                        disabled={isButtonDisabled}
+                        $remove
+                      >
                         {t("buttons.remove")}
                       </FormButton>
                     )}
@@ -195,6 +212,7 @@ export const TaskImage = () => {
                       {...commonButtonProps}
                       onClick={photoSourceButtonsVisible ? handleCancelButton : handleBackButton}
                       disabled={phase === "committing"}
+                      $cancel
                     >
                       {photoSourceButtonsVisible || isUploading ? t("buttons.cancel") : t("buttons.back")}
                     </FormButton>

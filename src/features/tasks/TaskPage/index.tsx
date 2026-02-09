@@ -60,7 +60,7 @@ const TaskPage = () => {
               )}
 
               <FormButtonWrapper $taskDetails>
-                <FormButton type='button' width={"200px"} onClick={() => navigate(-1)} $singleInput>
+                <FormButton type='button' width={"200px"} onClick={() => navigate(-1)} $singleInput $cancel>
                   {t("backButton")}
                 </FormButton>
               </FormButtonWrapper>

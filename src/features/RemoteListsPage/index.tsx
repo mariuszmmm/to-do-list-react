@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux/redux";
 import { useUpdateListsMutation } from "../../hooks/mutations/useUpdateListsMutation";
@@ -19,7 +18,7 @@ import {
   selectIsListsSorting,
   selectList,
 } from "./remoteListsSlice";
-import { closeModal, openModal, selectModalConfirmed, selectModalIsOpen } from "../../Modal/modalSlice";
+import { selectModalIsOpen, selectModalConfirmed, openModal, closeModal } from "../../Modal/modalSlice";
 import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
 

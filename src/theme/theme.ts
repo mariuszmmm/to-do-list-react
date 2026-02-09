@@ -11,7 +11,7 @@ const colorNames = {
   crimson: "#db143c",
   snowyMint: "#c0ffccff",
   forestGreen: "#228c22",
-  red: "#ff0000",
+  red: "#ff3e3e",
   blue: "#0083e7ff",
   yellow: "#b19900ff",
   transparent: "transparent",
@@ -78,8 +78,7 @@ export const themeLight = {
       primary: colorNames.alto,
     },
   },
-  boxShadow:
-    "0 0 50px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.05)" as string,
+  boxShadow: "0 0 50px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.05)" as string,
 } as const;
 
 export const themeDark: typeof themeLight = {

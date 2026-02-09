@@ -12,7 +12,6 @@ export * from "./mutations/useRemoveListMutation";
 export * from "./navigation/useReplaceQueryParameter";
 export * from "./mutations/useSaveListMutation";
 export * from "./media/useSpeechToText";
-export * from "./media/cloudinary/useRemoveTaskImageWithConfirmation";
 export * from "./state/useTokenValidation";
 export * from "./mutations/useUpdateListsMutation";
 export * from "./validation/useValidation";
