@@ -1,12 +1,12 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
-import searchQueryParamName from "../../../../utils/searchQueryParamName";
+import searchQueryParamName from "../../../../utils/navigation/searchQueryParamName";
 import { toggleShowSearch, selectShowSearch, selectIsTasksSorting } from "../../tasksSlice";
-import { useQueryParameter } from "../../../../hooks/useQueryParameter";
-import { useReplaceQueryParameter } from "../../../../hooks/useReplaceQueryParameter";
+import { useQueryParameter } from "../../../../hooks/navigation/useQueryParameter";
+import { useReplaceQueryParameter } from "../../../../hooks/navigation/useReplaceQueryParameter";
 import { useTranslation } from "react-i18next";
-import { getWidthForToggleShowSearchButton } from "../../../../utils/getWidthForDynamicButtons";
+import { getWidthForToggleShowSearchButton } from "../../../../utils/ui/getWidthForDynamicButtons";
 import { useEffect } from "react";
 
 export const SearchButtons = () => {
@@ -52,7 +52,7 @@ export const SearchButtons = () => {
           })
         }
         disabled={!query || isTasksSorting}
-        aria-label="Clear search"
+        aria-label='Clear search'
       >
         {t("search.buttons.clear")}
       </Button>

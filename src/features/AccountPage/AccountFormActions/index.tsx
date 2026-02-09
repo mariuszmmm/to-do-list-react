@@ -1,13 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
 import { Info } from "../../../common/Info";
-import {
-  selectAccountMode,
-  selectLoggedUserEmail,
-  selectMessage,
-  setAccountMode,
-} from "../accountSlice";
+import { selectAccountMode, selectLoggedUserEmail, selectMessage, setAccountMode } from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { AutoRefreshToggle } from "../AutoRefreshToggle";
 
@@ -27,24 +22,13 @@ export const AccountFormActions = () => {
           ? (accountMode === "login" || accountMode === "accountRecovery") && (
               <Button
                 $special
-                onClick={() =>
-                  dispatch(
-                    setAccountMode(
-                      accountMode === "login" ? "accountRecovery" : "login",
-                    ),
-                  )
-                }
+                onClick={() => dispatch(setAccountMode(accountMode === "login" ? "accountRecovery" : "login"))}
               >
-                {accountMode === "login"
-                  ? t("buttons.resetPassword")
-                  : t("buttons.cancel")}
+                {accountMode === "login" ? t("buttons.resetPassword") : t("buttons.cancel")}
               </Button>
             )
           : accountMode === "passwordChange" && (
-              <Button
-                $special
-                onClick={() => dispatch(setAccountMode("logged"))}
-              >
+              <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
                 {t("buttons.cancel")}
               </Button>
             )}

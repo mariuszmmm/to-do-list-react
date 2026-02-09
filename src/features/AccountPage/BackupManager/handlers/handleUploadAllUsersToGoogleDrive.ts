@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
-import { getUserToken } from "../../../../utils/getUserToken";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 import { uploadAllUsersToGoogleDriveApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
@@ -31,10 +31,7 @@ export const handleUploadAllUsersToGoogleDrive = async (
       messageType: "info",
     });
 
-    const result = await uploadAllUsersToGoogleDriveApi(
-      token,
-      googleAccessToken,
-    );
+    const result = await uploadAllUsersToGoogleDriveApi(token, googleAccessToken);
     if (!result.success) throw new Error(result.message);
 
     setStatus({
@@ -48,8 +45,7 @@ export const handleUploadAllUsersToGoogleDrive = async (
 
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) ||
-      t("uploadAllUsersToGoogleDrive.error");
+      (msg ? await translateText(msg, i18n.language) : null) || t("uploadAllUsersToGoogleDrive.error");
 
     setStatus({
       isLoading: false,

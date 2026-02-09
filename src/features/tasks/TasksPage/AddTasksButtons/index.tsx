@@ -3,14 +3,10 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../../../../common/Button";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { StyledLink } from "../../../../common/StyledLink";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { getExampleTasks } from "../../../../api/getExampleTasks";
-import { getWidthForFetchExampleTasksButton } from "../../../../utils/getWidthForDynamicButtons";
-import {
-  defaultLanguage,
-  SupportedLanguages,
-  supportedLanguages,
-} from "../../../../utils/i18n/languageResources";
+import { getWidthForFetchExampleTasksButton } from "../../../../utils/ui/getWidthForDynamicButtons";
+import { defaultLanguage, SupportedLanguages, supportedLanguages } from "../../../../utils/i18n/languageResources";
 import {
   selectAreTasksEmpty,
   selectEditedTask,
@@ -36,11 +32,9 @@ export const AddTasksButtons = () => {
   const dispatch = useAppDispatch();
 
   const lang = i18n.language.split("-")[0];
-  const langForExample = supportedLanguages.includes(lang as SupportedLanguages)
-    ? lang
-    : defaultLanguage;
+  const langForExample = supportedLanguages.includes(lang as SupportedLanguages) ? lang : defaultLanguage;
 
-  const { isError, isFetching, refetch } = useQuery<{ name: string, tasks: Task[] }>({
+  const { isError, isFetching, refetch } = useQuery<{ name: string; tasks: Task[] }>({
     queryKey: ["exampleTasks", langForExample],
     queryFn: () => getExampleTasks(langForExample),
     enabled: false,

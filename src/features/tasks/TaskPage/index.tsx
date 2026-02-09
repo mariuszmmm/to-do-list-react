@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppSelector } from "../../../hooks/redux/redux";
 import { DateInfo, Name } from "./styled";
 import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
 import { selectTaskById } from "../tasksSlice";
-import { formatCurrentDate } from "../../../utils/formatCurrentDate";
+import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
 import { Image, ImagePreview } from "../../../common/Image";
-import { useTaskImage } from "../../../hooks";
 
 const TaskPage = () => {
   const { id: taskId } = useParams();

@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
-import { getUserToken } from "../../../../utils/getUserToken";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 import { restoreSelectedBackupFromGoogleDriveApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
@@ -36,11 +36,7 @@ export const handleRestoreBackupFromGoogleDrive = async (
     });
     setShowBackupList(false);
 
-    const result = await restoreSelectedBackupFromGoogleDriveApi(
-      token,
-      fileId,
-      googleAccessToken,
-    );
+    const result = await restoreSelectedBackupFromGoogleDriveApi(token, fileId, googleAccessToken);
 
     if (!result.success || !result.data) {
       throw new Error(result.message);
@@ -60,9 +56,7 @@ export const handleRestoreBackupFromGoogleDrive = async (
     console.error("[handleRestoreBackupFromGoogleDrive]", error);
     setShowGoogleAuth(true);
     const msg = error instanceof Error ? error.message : "";
-    const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) ||
-      t("restoreSelectedBackup.error");
+    const translatedText = (msg ? await translateText(msg, i18n.language) : null) || t("restoreSelectedBackup.error");
     setStatus({
       isLoading: false,
       message: translatedText,

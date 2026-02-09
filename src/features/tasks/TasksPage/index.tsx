@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppSelector } from "../../../hooks/redux/redux";
 import { AddTasksButtons } from "./AddTasksButtons";
 import { Search } from "./Search";
 import { TasksList } from "./TasksList";
@@ -17,12 +17,7 @@ import { useTaskForm } from "./hooks/useTaskForm";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<
-    { data: ListsData },
-    Error,
-    { list: List; deviceId: string },
-    unknown
-  >;
+  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List; deviceId: string }, unknown>;
 };
 
 const TasksPage = ({ listsData, saveListMutation }: Props) => {
@@ -46,11 +41,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
     <>
       <Header title={t("title")} />
       <Section
-        title={
-          !editedTaskContent
-            ? t("form.title.addTask")
-            : t("form.title.editTask")
-        }
+        title={!editedTaskContent ? t("form.title.addTask") : t("form.title.editTask")}
         extraHeaderContent={<AddTasksButtons />}
         body={<TaskForm taskForm={taskForm} />}
       />
@@ -64,12 +55,7 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
         taskList
         title={<EditableListName />}
         body={<TasksList taskForm={taskForm} />}
-        extraHeaderContent={
-          <TasksButtons
-            listsData={listsData}
-            saveListMutation={saveListMutation}
-          />
-        }
+        extraHeaderContent={<TasksButtons listsData={listsData} saveListMutation={saveListMutation} />}
       />
     </>
   );

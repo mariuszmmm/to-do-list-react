@@ -4,12 +4,12 @@ import {
   getTasksFromLocalStorage,
   getListMetadataFromLocalStorage,
   clearLocalStorage,
-} from "../../utils/localStorage";
+} from "../../utils/storage/localStorage";
 import { TaskListMetaData, Task, TaskListData, ChangeSource, EditedTask } from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
 import i18n from "../../utils/i18n";
-import { getListMetadataFromSessionStorage, getTasksFromSessionStorage } from "../../utils/sessionStorage";
+import { getListMetadataFromSessionStorage, getTasksFromSessionStorage } from "../../utils/storage/sessionStorage";
 
 interface TaskState {
   tasks: Task[];
@@ -381,7 +381,6 @@ const tasksSlice = createSlice({
         image: Task["image"];
       }>,
     ) => {
-      console.log("taskId", taskId, "image", image);
       const index = state.tasks.findIndex((task) => task.id === taskId);
       if (index === -1) return;
       const time = new Date().toISOString();

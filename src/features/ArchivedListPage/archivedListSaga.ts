@@ -8,12 +8,10 @@ import {
   setArchivedListToRemove,
 } from "./archivedListsSlice";
 import { List } from "../../types";
-import { saveArchivedListsInLocalStorage } from "../../utils/localStorage";
+import { saveArchivedListsInLocalStorage } from "../../utils/storage/localStorage";
 
 function* saveListInArchivedStorageHandler() {
-  const lists: ReturnType<typeof selectArchivedLists> = yield select(
-    selectArchivedLists
-  );
+  const lists: ReturnType<typeof selectArchivedLists> = yield select(selectArchivedLists);
 
   yield call(saveArchivedListsInLocalStorage, lists);
 }
@@ -31,7 +29,7 @@ function* handleArchivedListRemove() {
       },
       type: "confirm",
       confirmButton: { key: "modal.buttons.deleteButton" },
-    })
+    }),
   );
 
   const { confirmed } = yield race({
@@ -46,9 +44,6 @@ function* handleArchivedListRemove() {
 }
 
 export function* archivedListSaga() {
-  yield takeEvery(
-    [removeArchivedList.type, addArchivedList.type],
-    saveListInArchivedStorageHandler
-  );
+  yield takeEvery([removeArchivedList.type, addArchivedList.type], saveListInArchivedStorageHandler);
   yield takeEvery(setArchivedListToRemove.type, handleArchivedListRemove);
 }

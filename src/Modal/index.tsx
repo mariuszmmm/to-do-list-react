@@ -1,11 +1,6 @@
 import { Trans } from "react-i18next";
-import {
-  CircleCheckIcon,
-  CircleInfoIcon,
-  CircleLoadingIcon,
-  CircleWarningIcon,
-} from "../common/icons";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { CircleCheckIcon, CircleInfoIcon, CircleLoadingIcon, CircleWarningIcon } from "../common/icons";
+import { useAppDispatch, useAppSelector } from "../hooks/redux/redux";
 import { cancel, closeModal, confirm, selectModalState } from "./modalSlice";
 import {
   ModalBackground,
@@ -23,8 +18,7 @@ import {
 } from "./styled";
 
 export const Modal = () => {
-  const { isOpen, title, message, confirmButton, endButton, type } =
-    useAppSelector(selectModalState);
+  const { isOpen, title, message, confirmButton, endButton, type } = useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
   if (!isOpen) return null;
@@ -47,11 +41,7 @@ export const Modal = () => {
 
           {!!message && (
             <ModalDescription>
-              {typeof message === "string" ? (
-                message
-              ) : (
-                <Trans i18nKey={message.key} values={message.values} />
-              )}
+              {typeof message === "string" ? message : <Trans i18nKey={message.key} values={message.values} />}
             </ModalDescription>
           )}
 
@@ -59,16 +49,10 @@ export const Modal = () => {
             {type === "confirm" && (
               <>
                 <ModalCancelButton onClick={() => dispatch(cancel())}>
-                  <Trans i18nKey="modal.buttons.cancelButton" />
+                  <Trans i18nKey='modal.buttons.cancelButton' />
                 </ModalCancelButton>
                 <ModalConfirmButton onClick={() => dispatch(confirm())}>
-                  <Trans
-                    i18nKey={
-                      confirmButton
-                        ? confirmButton.key
-                        : "modal.buttons.confirmButton"
-                    }
-                  />
+                  <Trans i18nKey={confirmButton ? confirmButton.key : "modal.buttons.confirmButton"} />
                 </ModalConfirmButton>
               </>
             )}
@@ -76,24 +60,17 @@ export const Modal = () => {
             {type === "yes/no" && (
               <>
                 <ModalYesButton onClick={() => dispatch(confirm())}>
-                  <Trans i18nKey="modal.buttons.yesButton" />
+                  <Trans i18nKey='modal.buttons.yesButton' />
                 </ModalYesButton>
                 <ModalNoButton onClick={() => dispatch(cancel())}>
-                  <Trans i18nKey="modal.buttons.noButton" />
+                  <Trans i18nKey='modal.buttons.noButton' />
                 </ModalNoButton>
               </>
             )}
 
             {type !== "yes/no" && type !== "confirm" && (
-              <ModalCloseButton
-                onClick={() => dispatch(closeModal())}
-                disabled={type === "loading"}
-              >
-                <Trans
-                  i18nKey={
-                    endButton ? endButton.key : "modal.buttons.closeButton"
-                  }
-                />
+              <ModalCloseButton onClick={() => dispatch(closeModal())} disabled={type === "loading"}>
+                <Trans i18nKey={endButton ? endButton.key : "modal.buttons.closeButton"} />
               </ModalCloseButton>
             )}
           </ModalButtonContainer>

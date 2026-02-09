@@ -1,6 +1,6 @@
 import { FormEventHandler, useEffect, useRef, useState } from "react";
-import { useValidation } from "../../../hooks/useValidation";
-import { useAppDispatch } from "../../../hooks/redux";
+import { useValidation } from "../../../hooks/validation/useValidation";
+import { useAppDispatch } from "../../../hooks/redux/redux";
 import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";
@@ -9,10 +9,7 @@ import { InputWrapper } from "../../../common/InputWrapper";
 import { InputButton } from "../../../common/InputButton";
 import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import { auth } from "../../../api/auth";
-import {
-  clearSessionStorage,
-  getRecoveryTokenFromSessionStorage,
-} from "../../../utils/sessionStorage";
+import { clearSessionStorage, getRecoveryTokenFromSessionStorage } from "../../../utils/storage/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
 import { useTranslation } from "react-i18next";
 import { RecoveryStatus } from "../../../types";
@@ -117,8 +114,8 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         <InputWrapper>
           <Input
             value={password}
-            name="password"
-            type="password"
+            name='password'
+            type='password'
             placeholder={t("form.inputPlaceholders.newPassword")}
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -126,13 +123,16 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onPointerDown={e => { e.preventDefault(); setShowPassword(!showPassword); }}
-            type="button"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
+            type='button'
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>
         </InputWrapper>
-        <FormButton type="submit" $singleInput>
+        <FormButton type='submit' $singleInput>
           {t("form.buttons.save")}
         </FormButton>
         {!!message && <Info $warning>{message}</Info>}

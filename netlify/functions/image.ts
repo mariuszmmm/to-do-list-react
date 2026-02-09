@@ -14,7 +14,7 @@ const handler: Handler = async (event, context) => {
 
   switch (event.httpMethod) {
     case "GET":
-      return getCloudinarySignature(publicId);
+      return getCloudinarySignature();
     case "POST":
       return moveCloudinaryImageToFolder(publicId, folder);
     case "DELETE":

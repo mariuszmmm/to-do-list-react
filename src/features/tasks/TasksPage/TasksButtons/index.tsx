@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
 import { CircleIcon, RedoIcon, UndoIcon } from "../../../../common/icons";
@@ -30,13 +30,13 @@ import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
   getWidthForToggleHideDoneButton,
-} from "../../../../utils/getWidthForDynamicButtons";
+} from "../../../../utils/ui/getWidthForDynamicButtons";
 import { ListsData, List } from "../../../../types";
 import { UseMutationResult } from "@tanstack/react-query";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List, deviceId: string }, unknown>;
+  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List; deviceId: string }, unknown>;
 };
 
 export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
@@ -58,23 +58,17 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   });
   const { isPending, isError } = saveListMutation;
 
-  const isChanged =
-    listStatus.isRemoteSaveable &&
-    !listStatus.isIdenticalToRemote &&
-    !isError &&
-    !isPending;
+  const isChanged = listStatus.isRemoteSaveable && !listStatus.isIdenticalToRemote && !isError && !isPending;
 
   return (
-    <ButtonsContainer >
+    <ButtonsContainer>
       {!!listsData && (
         <Button
           onClick={() => {
             dispatch(setChangeSource("local"));
             dispatch(setListStatus({ manualSaveTriggered: true }));
           }}
-          disabled={
-            !taskListMetaData.name || !!listNameToEdit || isPending || !!editedTaskContent || isTasksSorting
-          }
+          disabled={!taskListMetaData.name || !!listNameToEdit || isPending || !!editedTaskContent || isTasksSorting}
         >
           <span>
             <CircleIcon
@@ -89,12 +83,9 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       )}
       <Button
         onClick={() => {
-          areTasksEmpty ?
-            dispatch(clearTaskList({ tasks, taskListMetaData }))
-            :
-            dispatch(
-              setTaskListToArchive({ name: taskListMetaData.name, tasks }),
-            );
+          areTasksEmpty
+            ? dispatch(clearTaskList({ tasks, taskListMetaData }))
+            : dispatch(setTaskListToArchive({ name: taskListMetaData.name, tasks }));
         }}
         disabled={!!editedTaskContent || isTasksSorting}
       >
@@ -130,26 +121,18 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
         <Button
           disabled={undoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
           onClick={() => dispatch(undoTasks())}
-          title={
-            undoTasksStack.length === 0 || !!editedTaskContent
-              ? ""
-              : t("tasks.buttons.undo")
-          }
+          title={undoTasksStack.length === 0 || !!editedTaskContent ? "" : t("tasks.buttons.undo")}
         >
           <UndoIcon />
         </Button>
         <Button
           disabled={redoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
           onClick={() => dispatch(redoTasks())}
-          title={
-            redoTasksStack.length === 0 || !!editedTaskContent
-              ? ""
-              : t("tasks.buttons.redo")
-          }
+          title={redoTasksStack.length === 0 || !!editedTaskContent ? "" : t("tasks.buttons.redo")}
         >
           <RedoIcon />
         </Button>
       </ButtonsContainer>
     </ButtonsContainer>
-  )
+  );
 };

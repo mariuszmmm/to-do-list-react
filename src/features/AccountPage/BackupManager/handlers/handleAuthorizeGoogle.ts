@@ -1,10 +1,10 @@
 import { TFunction } from "i18next";
-import { getGoogleOAuthUrl } from "../../../../utils/googleOAuth";
+import { getGoogleOAuthUrl } from "../../../../utils/googleDrive/googleOAuth";
 import { StatusState } from "..";
 
 export function handleAuthorizeGoogle(
   t: TFunction<"translation", "accountPage.backup">,
-  setStatus: (status: StatusState) => void
+  setStatus: (status: StatusState) => void,
 ): void {
   try {
     sessionStorage.setItem("open_backup_after_oauth", "true");

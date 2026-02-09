@@ -1,6 +1,6 @@
-import { useAppSelector } from "../../../../hooks/redux";
+import { useAppSelector } from "../../../../hooks/redux/redux";
 import { Form } from "../../../../common/Form";
-import { selectEditedTask, selectIsTasksSorting, } from "../../tasksSlice";
+import { selectEditedTask, selectIsTasksSorting } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { InputWrapper } from "../../../../common/InputWrapper";
 import { MicrophoneIcon } from "../../../../common/icons";
@@ -33,7 +33,7 @@ export const TaskForm = ({ taskForm }: { taskForm: TaskFormApi }) => {
         <TaskInput
           inputValue={inputValue}
           textAreaValue={textAreaValue}
-          name="taskName"
+          name='taskName'
           edited={!!editedTask}
           inputRef={inputRef}
           textAreaRef={textAreaRef}
@@ -43,8 +43,8 @@ export const TaskForm = ({ taskForm }: { taskForm: TaskFormApi }) => {
         />
 
         <InputButton
-          type="button"
-          aria-label="Toggle Speech Recognition"
+          type='button'
+          aria-label='Toggle Speech Recognition'
           disabled={!speech.supportSpeech}
           onClick={toggleSpeechRecognition}
           $editedTask={!!editedTask}
@@ -56,11 +56,7 @@ export const TaskForm = ({ taskForm }: { taskForm: TaskFormApi }) => {
       <TaskFormButtons
         edited={!!editedTask}
         disabled={speech.isActive || isTasksSorting}
-        submitLabel={
-          editedTask
-            ? t("form.inputButton.saveChanges")
-            : t("form.inputButton.addTask")
-        }
+        submitLabel={editedTask ? t("form.inputButton.saveChanges") : t("form.inputButton.addTask")}
         cancelLabel={t("form.inputButton.cancel")}
         onCancel={handleCancel}
       />

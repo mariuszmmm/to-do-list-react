@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../../hooks/redux/redux";
 import {
   addTask,
   saveEditedTask,
@@ -9,7 +9,7 @@ import {
   selectTaskListMetaData,
 } from "../../../tasksSlice";
 
-import { clearInputAutoFocusFlag } from "../../../../../utils/setFirstLoadFlagIfRoot";
+import { clearInputAutoFocusFlag } from "../../../../../utils/navigation/setFirstLoadFlagIfRoot";
 import { useSpeechToText } from "../../../../../hooks";
 import { useAutoFocusFlag } from "../../hooks/useAutoFocusFlag";
 
@@ -46,9 +46,7 @@ export const useTaskForm = () => {
     const content = (editedTask ? textAreaValue : inputValue).trim();
     if (content) {
       if (!editedTask) {
-        dispatch(
-          addTask({ content, stateForUndo: { tasks, taskListMetaData } }),
-        );
+        dispatch(addTask({ content, stateForUndo: { tasks, taskListMetaData } }));
       } else if (content !== previousValueRef.current) {
         dispatch(
           saveEditedTask({
@@ -63,15 +61,7 @@ export const useTaskForm = () => {
     setInputValue("");
     setTextAreaValue("");
     speech.clear();
-  }, [
-    inputValue,
-    textAreaValue,
-    editedTask,
-    dispatch,
-    tasks,
-    taskListMetaData,
-    speech,
-  ]);
+  }, [inputValue, textAreaValue, editedTask, dispatch, tasks, taskListMetaData, speech]);
 
   const onSubmit = useCallback(
     (e: React.FormEvent) => {

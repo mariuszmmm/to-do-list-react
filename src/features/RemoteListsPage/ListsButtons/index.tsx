@@ -1,16 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { Button } from "../../../common/Button";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { StyledLink } from "../../../common/StyledLink";
 import { List } from "../../../types";
-import { getWidthForSwitchTaskSortButton } from "../../../utils/getWidthForDynamicButtons";
-import {
-  selectIsListsSorting,
-  selectSelectedListId,
-  setListToLoad,
-  switchListSort,
-} from "../remoteListsSlice";
+import { getWidthForSwitchTaskSortButton } from "../../../utils/ui/getWidthForDynamicButtons";
+import { selectIsListsSorting, selectSelectedListId, setListToLoad, switchListSort } from "../remoteListsSlice";
 
 type Props = {
   lists: List[];
@@ -29,10 +24,7 @@ export const ListsButtons = ({ lists, selectedListById }: Props) => {
   return (
     <ButtonsContainer>
       <StyledLink to={`/tasks`} disabled={!selectedListId || isListsSorting}>
-        <Button
-          onClick={() => dispatch(setListToLoad(selectedListById))}
-          disabled={!selectedListId || isListsSorting}
-        >
+        <Button onClick={() => dispatch(setListToLoad(selectedListById))} disabled={!selectedListId || isListsSorting}>
           {t("buttons.load")}
         </Button>
       </StyledLink>

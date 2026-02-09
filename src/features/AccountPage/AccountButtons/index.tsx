@@ -1,11 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useTranslation } from "react-i18next";
 import { openModal } from "../../../Modal/modalSlice";
-import {
-  selectAccountMode,
-  setAccountMode,
-  selectLoggedUserEmail,
-} from "../accountSlice";
+import { selectAccountMode, setAccountMode, selectLoggedUserEmail } from "../accountSlice";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
 export const AccountButtons = () => {
@@ -38,22 +34,14 @@ export const AccountButtons = () => {
           <Button onClick={handleLogin} $selected={accountMode === "login"}>
             {t("buttons.login")}
           </Button>
-          <Button
-            onClick={handleRegister}
-            $selected={accountMode === "accountRegister"}
-          >
+          <Button onClick={handleRegister} $selected={accountMode === "accountRegister"}>
             {t("buttons.register")}
           </Button>
         </>
       ) : (
         <>
-          <Button onClick={handleAccountDelete}>
-            {t("buttons.accountDelete")}
-          </Button>
-          <Button
-            onClick={handlePasswordChange}
-            $selected={accountMode === "passwordChange"}
-          >
+          <Button onClick={handleAccountDelete}>{t("buttons.accountDelete")}</Button>
+          <Button onClick={handlePasswordChange} $selected={accountMode === "passwordChange"}>
             {t("buttons.passwordChange")}
           </Button>
         </>

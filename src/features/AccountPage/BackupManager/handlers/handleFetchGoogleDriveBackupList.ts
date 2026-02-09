@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
-import { getUserToken } from "../../../../utils/getUserToken";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 import { fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
@@ -52,9 +52,7 @@ export const handleFetchGoogleDriveBackupList = async (
     console.error("[handleFetchGoogleDriveBackupList]", error);
     setShowGoogleAuth(true);
     const msg = error instanceof Error ? error.message : "";
-    const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) ||
-      t("listGoogleDriveBackups.error");
+    const translatedText = (msg ? await translateText(msg, i18n.language) : null) || t("listGoogleDriveBackups.error");
     setStatus({
       isLoading: false,
       message: translatedText,

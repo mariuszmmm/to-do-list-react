@@ -9,24 +9,16 @@ import {
   ListMeta,
   ListMetaText,
 } from "../../../common/StyledList";
-import {
-  RemoveButton,
-  SortButton,
-  ToggleButton,
-} from "../../../common/taskButtons";
-import { useAppDispatch } from "../../../hooks/redux";
-import { useDndList } from "../../../hooks/useDndList";
-import { useDndItem } from "../../../hooks/useDndItem";
+import { RemoveButton, SortButton, ToggleButton } from "../../../common/taskButtons";
+import { useAppDispatch } from "../../../hooks/redux/redux";
+import { useDndList } from "../../../hooks/ui/useDndList";
+import { useDndItem } from "../../../hooks/ui/useDndItem";
 import { List } from "../../../types";
-import { formatCurrentDate } from "../../../utils/formatCurrentDate";
-import { moveListDown, moveListUp } from "../../../utils/moveList";
+import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
+import { moveListDown, moveListUp } from "../../../utils/list/moveList";
 import i18n from "../../../utils/i18n";
-import {
-  selectList,
-  setListToRemove,
-  setListToSort,
-} from "../remoteListsSlice";
-import { useSortableRowAnimation } from "../../../hooks/useSortableRowAnimation";
+import { selectList, setListToRemove, setListToSort } from "../remoteListsSlice";
+import { useSortableRowAnimation } from "../../../hooks/ui/useSortableRowAnimation";
 
 type Props = {
   lists: List[];
@@ -37,14 +29,7 @@ type Props = {
   localListId: string;
 };
 
-export const TaskLists = ({
-  lists,
-  selectedListId,
-  modalIsOpen,
-  isListsSorting,
-  listsToSort,
-  localListId,
-}: Props) => {
+export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, listsToSort, localListId }: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const sortableLists = listsToSort ?? lists;
@@ -80,11 +65,13 @@ export const TaskLists = ({
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
-        <DragHandleIcon >
+        <DragHandleIcon>
           <span />
         </DragHandleIcon>
         <StyledListContent $type={"sort"}>
-          <StyledSpan $ListName $isDragging={isDragging}>{list.name}</StyledSpan>
+          <StyledSpan $ListName $isDragging={isDragging}>
+            {list.name}
+          </StyledSpan>
           <br />
           <ListMeta>
             {list.id === localListId && <CircleIcon $isActive />}
@@ -93,7 +80,8 @@ export const TaskLists = ({
                 {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
                 {list.taskList.length > 0 && (
                   <>
-                    <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}&nbsp;)&nbsp;
+                    <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}
+                    &nbsp;)&nbsp;
                   </>
                 )}
                 {list.id === localListId && (
@@ -105,17 +93,11 @@ export const TaskLists = ({
             </ListMetaText>
           </ListMeta>
         </StyledListContent>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <SortButton
-            onClick={() => animateMove("up")}
-            disabled={index === 0 || isAnimating}
-          >
+        <div style={{ display: "flex", gap: "10px" }}>
+          <SortButton onClick={() => animateMove("up")} disabled={index === 0 || isAnimating}>
             <ArrowUpIcon />
           </SortButton>
-          <SortButton
-            onClick={() => animateMove("down")}
-            disabled={index === sortableLists.length - 1 || isAnimating}
-          >
+          <SortButton onClick={() => animateMove("down")} disabled={index === sortableLists.length - 1 || isAnimating}>
             <ArrowDownIcon />
           </SortButton>
         </div>
@@ -129,7 +111,7 @@ export const TaskLists = ({
         {sortableLists.map((list, index) => (
           <SortableListRow key={list.id} list={list} index={index} />
         ))}
-      </StyledList>
+      </StyledList>,
     );
   }
 
@@ -142,7 +124,7 @@ export const TaskLists = ({
           onClick={() => dispatch(selectList(list.id))}
           $type={"lists"}
         >
-          <ToggleButton >{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
           <StyledListContent $type={"lists"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
@@ -153,7 +135,8 @@ export const TaskLists = ({
                   {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
                   {list.taskList.length > 0 && (
                     <>
-                      <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}&nbsp;)&nbsp;
+                      <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}
+                      &nbsp;)&nbsp;
                     </>
                   )}
                   {list.id === localListId && (
@@ -165,10 +148,7 @@ export const TaskLists = ({
               </ListMetaText>
             </ListMeta>
           </StyledListContent>
-          <RemoveButton
-            onClick={() => dispatch(setListToRemove(list))}
-            disabled={modalIsOpen}
-          >
+          <RemoveButton onClick={() => dispatch(setListToRemove(list))} disabled={modalIsOpen}>
             🗑️
           </RemoveButton>
         </StyledListItem>

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useAppDispatch } from "../../../../hooks/redux";
+import { useAppDispatch } from "../../../../hooks/redux/redux";
 import { setIsWaitingForConfirmation } from "../../accountSlice";
 
 interface UseRestoreWaitingStateProps {
@@ -7,10 +7,7 @@ interface UseRestoreWaitingStateProps {
   setPassword: (password: string) => void;
 }
 
-export const useRestoreWaitingState = ({
-  setEmail,
-  setPassword,
-}: UseRestoreWaitingStateProps) => {
+export const useRestoreWaitingState = ({ setEmail, setPassword }: UseRestoreWaitingStateProps) => {
   const dispatch = useAppDispatch();
   const hasRestoredRef = useRef(false);
 
@@ -21,11 +18,7 @@ export const useRestoreWaitingState = ({
     if (!waitingData) return;
 
     try {
-      const {
-        email: savedEmail,
-        password: savedPassword,
-        timestamp,
-      } = JSON.parse(waitingData);
+      const { email: savedEmail, password: savedPassword, timestamp } = JSON.parse(waitingData);
 
       if (Date.now() - timestamp < 600_000) {
         setEmail(savedEmail);
@@ -36,10 +29,7 @@ export const useRestoreWaitingState = ({
         sessionStorage.removeItem("waitingForConfirmation");
       }
     } catch (err) {
-      console.error(
-        "[RestoreWaitingState] Failed to parse waitingForConfirmation:",
-        err,
-      );
+      console.error("[RestoreWaitingState] Failed to parse waitingForConfirmation:", err);
       sessionStorage.removeItem("waitingForConfirmation");
     }
   }, [dispatch, setEmail, setPassword]);
