@@ -10,11 +10,11 @@ const handler: Handler = async (event, context) => {
   const authResponse = checkClientContext(context, logPrefix);
   if (authResponse) return authResponse;
 
-  const { publicId, folder } = event.queryStringParameters || {};
+  const { publicId, folder, taskId } = event.queryStringParameters || {};
 
   switch (event.httpMethod) {
     case "GET":
-      return getCloudinarySignature();
+      return getCloudinarySignature(taskId);
     case "POST":
       return moveCloudinaryImageToFolder(publicId, folder);
     case "DELETE":

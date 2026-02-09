@@ -9,12 +9,12 @@ export const useCloudinaryUpload = () => {
   const lastProgressRef = useRef(0);
   const [progress, setProgress] = useState(0);
 
-  const upload = async (file: File): Promise<UploadResult> => {
+  const upload = async (file: File, taskId?: string): Promise<UploadResult> => {
     setProgress(0);
 
     validateImageFile(file);
 
-    const config = await getCloudinarySignature();
+    const config = await getCloudinarySignature(taskId);
     if (
       !config.apiKey ||
       !config.asset_folder ||

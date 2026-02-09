@@ -6,7 +6,7 @@ import { deleteCloudinaryImage } from "../../../api/cloudinary/deleteImage";
 import { setImage } from "../tasksSlice";
 import { selectLoggedUserEmail } from "../../AccountPage/accountSlice";
 import { UploadError, UploadErrorCode } from "../../../utils/errors/UploadError";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isCanceledError } from "../../../utils/errors/isCanceledError";
 
 type UploadPhase = "idle" | "uploading" | "committing";
@@ -35,12 +35,12 @@ export const useUploadTaskImage = () => {
       let temp;
 
       try {
-        temp = await cloudinary.upload(file);
+        temp = await cloudinary.upload(file, taskId);
       } catch (err) {
         if (isCanceledError(err)) {
           throw new UploadError(UploadErrorCode.UPLOAD_CANCELED);
         }
-        throw err;
+        throw new UploadError(UploadErrorCode.GENERAL_ERROR, "Failed to upload image");
       }
 
       if (!temp?.public_id) {
@@ -55,7 +55,11 @@ export const useUploadTaskImage = () => {
       }
 
       if (cancelRequestedRef.current) {
-        await deleteCloudinaryImage(moved.result.public_id);
+        try {
+          await deleteCloudinaryImage(moved.result.public_id);
+        } catch (err) {
+          console.warn("Failed to cleanup canceled upload:", moved.result.public_id, err);
+        }
         throw new UploadError(UploadErrorCode.CANCELED_AFTER_UPLOAD);
       }
 
@@ -63,7 +67,7 @@ export const useUploadTaskImage = () => {
         try {
           await deleteCloudinaryImage(previousPublicId);
         } catch (err) {
-          console.warn("Failed to cleanup old image:", previousPublicId, err);
+          console.warn("Failed to cleanup old image (will be handled by scheduled cleanup):", previousPublicId, err);
         }
       }
 
@@ -104,6 +108,16 @@ export const useUploadTaskImage = () => {
       cancelRequestedRef.current = true;
     }
   };
+
+  useEffect(() => {
+    if (mutation.error) {
+      const timer = setTimeout(() => {
+        mutation.reset();
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [mutation.error, mutation]);
 
   return {
     uploadTaskImage: mutation.mutateAsync,

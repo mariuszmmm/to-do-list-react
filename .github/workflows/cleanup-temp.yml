@@ -1,0 +1,39 @@
+name: Cleanup Cloudinary Temp Uploads
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Trigger Cloudinary cleanup function
+        run: |
+          NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
+
+          if [ -z "$NETLIFY_URL" ]; then
+            echo "❌ Error: NETLIFY_SITE_URL secret is not set"
+            exit 1
+          fi
+
+          echo "🧹 Starting Cloudinary temp_uploads cleanup..."
+
+          RESPONSE=$(curl -s -X POST \
+            "$NETLIFY_URL/.netlify/functions/cleanup-cloudinary" \
+            -H "Content-Type: application/json")
+
+          echo "Response: $RESPONSE"
+
+          # Check if response contains error
+          if echo "$RESPONSE" | grep -q "error"; then
+            echo "❌ Cleanup failed"
+            exit 1
+          fi
+
+          echo "✅ Cleanup completed successfully"
