@@ -1,9 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useTime } from "../../context/TimeContext";
-import {
-  formatCurrentDay,
-  formatCurrentTime,
-} from "../../utils/formatCurrentDate";
+import { formatCurrentDay, formatCurrentTime } from "../../utils/formatting/formatCurrentDate";
 import { StyledDate, DateContainer } from "./styled";
 import { useLocation } from "react-router-dom";
 

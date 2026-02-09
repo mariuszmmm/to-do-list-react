@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { useQueryParameter } from "../../../../hooks/useQueryParameter";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
+import { useQueryParameter } from "../../../../hooks/navigation/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
-import searchQueryParamName from "../../../../utils/searchQueryParamName";
+import searchQueryParamName from "../../../../utils/navigation/searchQueryParamName";
 import { EditButton, ImageButton, RemoveButton, SortButton, ToggleButton } from "../../../../common/taskButtons";
 import {
   selectHideDone,
@@ -19,13 +19,13 @@ import {
   setTasks,
 } from "../../tasksSlice";
 import { ArrowDownIcon, ArrowUpIcon, DragHandleIcon } from "../../../../common/icons";
-import { useDndList } from "../../../../hooks/useDndList";
-import { useDndItem } from "../../../../hooks/useDndItem";
+import { useDndList } from "../../../../hooks/ui/useDndList";
+import { useDndItem } from "../../../../hooks/ui/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import { useEffect } from "react";
 import { StyledList, StyledListContent, StyledListItem, StyledSpan, TaskNumber } from "../../../../common/StyledList";
-import { moveListDown, moveListUp } from "../../../../utils/moveList";
-import { useSortableRowAnimation } from "../../../../hooks/useSortableRowAnimation";
+import { moveListDown, moveListUp } from "../../../../utils/list/moveList";
+import { useSortableRowAnimation } from "../../../../hooks/ui/useSortableRowAnimation";
 import { Task } from "../../../../types";
 import { TaskActions } from "../../../../common/TaskActions";
 import { selectLoggedUserEmail } from "../../../AccountPage/accountSlice";

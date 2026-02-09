@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppSelector } from "../../hooks/redux/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { StyledSpan, AnimatedSpan } from "../../common/StyledList";
@@ -16,15 +16,11 @@ import {
   selectLoggedUserEmail,
   selectIsAdmin,
   selectTotalUsersCount,
-  selectUserDevicesCount
+  selectUserDevicesCount,
 } from "./accountSlice";
 import { useTranslation } from "react-i18next";
 import { NameContainer } from "../tasks/TasksPage/EditableListName/styled";
-import {
-  getSettingsFromLocalStorage,
-  saveSettingsInLocalStorage,
-} from "../../utils/localStorage";
-
+import { getSettingsFromLocalStorage, saveSettingsInLocalStorage } from "../../utils/storage/localStorage";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -41,13 +37,13 @@ const AccountPage = () => {
     return getSettingsFromLocalStorage()?.isBackupOpen || false;
   });
   const [isSessionInfoOpen, setIsSessionInfoOpen] = useState(
-    () => getSettingsFromLocalStorage()?.isSessionInfoOpen || false
+    () => getSettingsFromLocalStorage()?.isSessionInfoOpen || false,
   );
   const [isActivitySummaryOpen, setIsActivitySummaryOpen] = useState(
-    () => getSettingsFromLocalStorage()?.isActivitySummaryOpen || false
+    () => getSettingsFromLocalStorage()?.isActivitySummaryOpen || false,
   );
   const [isPresenceListOpen, setIsPresenceListOpen] = useState(
-    () => getSettingsFromLocalStorage()?.isPresenceListOpen || false
+    () => getSettingsFromLocalStorage()?.isPresenceListOpen || false,
   );
 
   const persistSettings = (partial: Partial<Settings>) => {
@@ -92,7 +88,7 @@ const AccountPage = () => {
 
   const renderToggleButton = (isOpen: boolean, onClick: () => void) => (
     <CollapseButton
-      type="button"
+      type='button'
       onClick={(e) => {
         e.stopPropagation();
         onClick();
@@ -122,12 +118,12 @@ const AccountPage = () => {
         extraContent={
           <>
             <AccountFormActions />
-            {loggedUserEmail &&
+            {loggedUserEmail && (
               <AnimatedSpan $comment $visible={userDevices > 0}>
                 <br />
                 <strong>{t("deviceCount.device", { count: userDevices })}</strong>
               </AnimatedSpan>
-            }
+            )}
           </>
         }
       />
@@ -184,7 +180,6 @@ const AccountPage = () => {
           bodyHidden={!isBackupOpen}
         />
       )}
-
     </>
   );
 };

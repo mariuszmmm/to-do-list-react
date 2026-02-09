@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
-import { getUserToken } from "../../../../utils/getUserToken";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 import { restoreAllUsersApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";

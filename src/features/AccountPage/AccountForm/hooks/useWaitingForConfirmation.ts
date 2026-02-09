@@ -1,16 +1,11 @@
-import { useAppDispatch } from "../../../../hooks/redux";
+import { useAppDispatch } from "../../../../hooks/redux/redux";
 import { AccountState } from "../../../../types";
-import {
-  setAccountMode,
-  setIsWaitingForConfirmation,
-  setMessage,
-  setLoggedUser,
-} from "../../accountSlice";
+import { setAccountMode, setIsWaitingForConfirmation, setMessage, setLoggedUser } from "../../accountSlice";
 import { useRef, useCallback } from "react";
 import { auth } from "../../../../api/auth";
 import { openModal } from "../../../../Modal/modalSlice";
 import { useAblyManager } from "../../../../hooks";
-import { closeAblyConnection } from "../../../../utils/ably";
+import { closeAblyConnection } from "../../../../utils/sync/ably";
 
 interface WaitingForConfirmationProps {
   email?: string;
@@ -18,11 +13,7 @@ interface WaitingForConfirmationProps {
   message?: AccountState["message"];
 }
 
-export const useWaitingForConfirmation = ({
-  email,
-  password,
-  message,
-}: WaitingForConfirmationProps) => {
+export const useWaitingForConfirmation = ({ email, password, message }: WaitingForConfirmationProps) => {
   const dispatch = useAppDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const unsubscribeRef = useRef<(() => void) | undefined>(undefined);
@@ -33,13 +24,7 @@ export const useWaitingForConfirmation = ({
 
     setPendingConfirmationEmail(email);
 
-    const handleConfirmation = async ({
-      type,
-      email: confirmedEmail,
-    }: {
-      type: string;
-      email: string;
-    }) => {
+    const handleConfirmation = async ({ type, email: confirmedEmail }: { type: string; email: string }) => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (message) dispatch(setMessage(""));
       dispatch(setIsWaitingForConfirmation(false));
@@ -109,14 +94,7 @@ export const useWaitingForConfirmation = ({
       }
       setPendingConfirmationEmail(null);
     };
-  }, [
-    dispatch,
-    email,
-    message,
-    onConfirmation,
-    password,
-    setPendingConfirmationEmail,
-  ]);
+  }, [dispatch, email, message, onConfirmation, password, setPendingConfirmationEmail]);
 
   return { waitingForConfirmation };
 };

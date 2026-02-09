@@ -3,7 +3,7 @@ import { auth } from "../../../../api/auth";
 import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setAccountMode, setLoggedUser } from "../../accountSlice";
-import { getUserToken } from "../../../../utils/getUserToken";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 
 export const usePasswordChange = () => {
   const dispatch = useAppDispatch();

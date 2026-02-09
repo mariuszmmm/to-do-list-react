@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppSelector } from "../../hooks/redux/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { TasksListView } from "../../common/TasksListView";
@@ -28,8 +28,7 @@ const ArchivedListsPage = () => {
   const modalIsOpen = useAppSelector(selectModalIsOpen);
   const isListsSorting = useAppSelector(selectIsArchivedListsSorting);
   const dispatch = useDispatch();
-  const selectedListById =
-    archivedLists.find(({ id }) => id === selectedArchivedListId) || null;
+  const selectedListById = archivedLists.find(({ id }) => id === selectedArchivedListId) || null;
 
   const { t } = useTranslation("translation", {
     keyPrefix: "archivedListsPage",
@@ -63,19 +62,10 @@ const ArchivedListsPage = () => {
         title={isArchivedTaskListEmpty ? t("lists.empty") : t("lists.select")}
         body={
           <div ref={taskListsRef}>
-            <TaskLists
-              lists={archivedLists}
-              selectedListId={selectedListId}
-              modalIsOpen={modalIsOpen}
-            />
+            <TaskLists lists={archivedLists} selectedListId={selectedListId} modalIsOpen={modalIsOpen} />
           </div>
         }
-        extraHeaderContent={
-          <ListsButtons
-            lists={archivedLists}
-            selectedListById={selectedListById}
-          />
-        }
+        extraHeaderContent={<ListsButtons lists={archivedLists} selectedListById={selectedListById} />}
       />
       {selectedListById && (
         <>

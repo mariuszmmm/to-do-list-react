@@ -5,7 +5,7 @@ import {
   saveListMetadataInLocalStorage,
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
-} from "../../utils/localStorage";
+} from "../../utils/storage/localStorage";
 import {
   addTask,
   redoTasks,
@@ -34,7 +34,7 @@ import { addArchivedList, setArchivedListToLoad } from "../ArchivedListPage/arch
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { Task, Version } from "../../types";
 import { nanoid } from "nanoid";
-import { saveListMetadataInSessionStorage, saveTasksInSessionStorage } from "../../utils/sessionStorage";
+import { saveListMetadataInSessionStorage, saveTasksInSessionStorage } from "../../utils/storage/sessionStorage";
 
 function* saveSettingsInLocalStorageHandler() {
   const showSearch: ReturnType<typeof selectShowSearch> = yield select(selectShowSearch);

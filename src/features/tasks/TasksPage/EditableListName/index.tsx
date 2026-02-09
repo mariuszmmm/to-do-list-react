@@ -1,5 +1,5 @@
 import { FormEventHandler, useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
 import { ListName } from "./ListName";
@@ -16,7 +16,7 @@ import {
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../../common/StyledList";
-import { formatCurrentDate } from "../../../../utils/formatCurrentDate";
+import { formatCurrentDate } from "../../../../utils/formatting/formatCurrentDate";
 
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
@@ -56,9 +56,7 @@ export const EditableListName = () => {
 
         setNewName(trimedContent);
       } else {
-        dispatch(
-          setListNameToEdit(name),
-        );
+        dispatch(setListNameToEdit(name));
         setNewName(name);
       }
     } else {
@@ -72,16 +70,18 @@ export const EditableListName = () => {
         <>
           <StyledSpan $comment>
             {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)} `}
-            {tasks.length > 0 && <><strong>•</strong>&nbsp;(&nbsp;{i18n.t('currentTaskCount.tasks', { count: tasks.length })}&nbsp;){" "}</>}
+            {tasks.length > 0 && (
+              <>
+                <strong>•</strong>&nbsp;(&nbsp;{i18n.t("currentTaskCount.tasks", { count: tasks.length })}&nbsp;){" "}
+              </>
+            )}
             <strong>•</strong>&nbsp;{`${isRemoteSaveable ? "online" : "offline"}`}
           </StyledSpan>
-          <ListName>
-            {name}
-          </ListName>
+          <ListName>{name}</ListName>
         </>
       ) : (
         <Input
-          type="text"
+          type='text'
           value={newName}
           placeholder={t("tasks.inputPlaceholder")}
           onChange={({ target }) => {
@@ -96,10 +96,8 @@ export const EditableListName = () => {
           ref={inpurRef}
         />
       )}
-      <Button $special disabled={isTasksSorting || !!editedTask} type="submit">
-        {!listNameToEdit
-          ? t("tasks.buttons.titleButtons.change")
-          : t("tasks.buttons.titleButtons.save")}
+      <Button $special disabled={isTasksSorting || !!editedTask} type='submit'>
+        {!listNameToEdit ? t("tasks.buttons.titleButtons.change") : t("tasks.buttons.titleButtons.save")}
       </Button>
     </NameContainer>
   );

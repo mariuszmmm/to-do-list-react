@@ -1,12 +1,9 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useTranslation } from "react-i18next";
 import { StyledLink } from "../../../common/StyledLink";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
-import {
-  selectSelectedArchivedListId,
-  setArchivedListToLoad,
-} from "../archivedListsSlice";
+import { selectSelectedArchivedListId, setArchivedListToLoad } from "../archivedListsSlice";
 import { List } from "../../../types";
 
 type Props = {
@@ -28,7 +25,7 @@ export const ListsButtons = ({ selectedListById }: Props) => {
         <Button
           onClick={() => dispatch(setArchivedListToLoad(selectedListById))}
           disabled={!selectedListId}
-          aria-label="Load archived list"
+          aria-label='Load archived list'
         >
           {t("buttons.load")}
         </Button>

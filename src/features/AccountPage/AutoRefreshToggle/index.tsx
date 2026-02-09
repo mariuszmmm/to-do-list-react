@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import {
   getAutoRefreshSettingFromLocalStorage,
   saveAutoRefreshSettingInLocalStorage,
-} from "../../../utils/localStorage";
-import { useAppSelector } from "../../../hooks/redux";
+} from "../../../utils/storage/localStorage";
+import { useAppSelector } from "../../../hooks/redux/redux";
 import { selectLoggedUserEmail } from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { StyledSpan } from "../../../common/StyledList";
@@ -17,9 +17,7 @@ export const AutoRefreshToggle = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage.autoRefresh",
   });
-  const [autoRefreshEnabled, setAutoRefreshEnabledState] = useState(() =>
-    getAutoRefreshSettingFromLocalStorage(),
-  );
+  const [autoRefreshEnabled, setAutoRefreshEnabledState] = useState(() => getAutoRefreshSettingFromLocalStorage());
 
   useEffect(() => {
     setAutoRefreshEnabledState(getAutoRefreshSettingFromLocalStorage());
@@ -39,19 +37,17 @@ export const AutoRefreshToggle = () => {
     <CheckboxFieldLabel>
       <CheckboxContainer>
         <StyledCheckbox
-          type="checkbox"
+          type='checkbox'
           checked={autoRefreshEnabled}
           onChange={handleToggle}
-          aria-label="Toggle automatic token refresh"
+          aria-label='Toggle automatic token refresh'
           $isChecked={autoRefreshEnabled}
         />
         <StyledSpan>{t("label")}</StyledSpan>
       </CheckboxContainer>
 
       <FieldDescription $comment>
-        {autoRefreshEnabled
-          ? t("enabledDescription")
-          : t("disabledDescription")}
+        {autoRefreshEnabled ? t("enabledDescription") : t("disabledDescription")}
       </FieldDescription>
     </CheckboxFieldLabel>
   );

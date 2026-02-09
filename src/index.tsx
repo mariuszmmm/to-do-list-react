@@ -1,5 +1,5 @@
 import i18n from "./utils/i18n";
-import { setInputAutoFocusFlagIfRoot } from "./utils/setFirstLoadFlagIfRoot";
+import { setInputAutoFocusFlagIfRoot } from "./utils/navigation/setFirstLoadFlagIfRoot";
 import { I18nextProvider } from "react-i18next";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -13,8 +13,8 @@ import GlobalStyle from "./theme/GlobalStyle";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import { TimeProvider } from "./context/TimeContext";
-import { handleAuthTokensFromUrl } from "./utils/getTokenFromURL";
-import { handleGoogleOAuthCodeFromUrl } from "./utils/getGoogleOAuthCode";
+import { handleAuthTokensFromUrl } from "./utils/auth/getTokenFromURL";
+import { handleGoogleOAuthCodeFromUrl } from "./utils/googleDrive/getGoogleOAuthCode";
 import { useAppSelector } from "./hooks";
 import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 

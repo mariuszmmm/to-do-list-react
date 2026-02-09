@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from "../../hooks/redux";
-import { useUpdateListsMutation } from "../../hooks/useUpdateListsMutation";
-import { useRemoveListMutation } from "../../hooks/useRemoveListMutation";
+import { useAppSelector, useAppDispatch } from "../../hooks/redux/redux";
+import { useUpdateListsMutation } from "../../hooks/mutations/useUpdateListsMutation";
+import { useRemoveListMutation } from "../../hooks/mutations/useRemoveListMutation";
 import { ListsData } from "../../types";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
@@ -19,16 +19,11 @@ import {
   selectIsListsSorting,
   selectList,
 } from "./remoteListsSlice";
-import {
-  closeModal,
-  openModal,
-  selectModalConfirmed,
-  selectModalIsOpen,
-} from "../../Modal/modalSlice";
+import { closeModal, openModal, selectModalConfirmed, selectModalIsOpen } from "../../Modal/modalSlice";
 import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
-import { getOrCreateDeviceId } from "../../utils/deviceId";
+import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
 
-type Props = { listsData: ListsData, localListId: string };
+type Props = { listsData: ListsData; localListId: string };
 
 const RemoteListsPage = ({ listsData, localListId }: Props) => {
   const taskListsRef = useRef<HTMLDivElement>(null);
@@ -44,8 +39,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
   const removeListMutation = useRemoveListMutation();
   const lists = listsToSort || listsData?.lists;
   const areListsEmpty = !listsData || listsData.lists.length === 0;
-  const selectedListById =
-    lists.find(({ id }) => id === selectedListId) || null;
+  const selectedListById = lists.find(({ id }) => id === selectedListId) || null;
   const dispatch = useAppDispatch();
   const { id: taskListId } = useAppSelector(selectTaskListMetaData);
   const deviceId = getOrCreateDeviceId();
@@ -93,7 +87,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
       removeListMutation.mutate({
         version: listToRemove.version,
         listId: listToRemove.id,
-        deviceId
+        deviceId,
       });
 
       if (taskListId === listToRemove.id) dispatch(setListStatus({}));
@@ -138,9 +132,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
             />
           </div>
         }
-        extraHeaderContent={
-          <ListsButtons lists={lists} selectedListById={selectedListById} />
-        }
+        extraHeaderContent={<ListsButtons lists={lists} selectedListById={selectedListById} />}
       />
       {selectedListById && !isListsSorting && (
         <>

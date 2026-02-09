@@ -1,10 +1,6 @@
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import {
-  openModal,
-  closeModal,
-  selectModalConfirmed,
-} from "../../../../Modal/modalSlice";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
+import { openModal, closeModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
 import { handleDeleteBackup } from "../handlers/handleDeleteBackup";
 import { t } from "i18next";
 import { BackupFile } from "../../../../types";
@@ -46,9 +42,7 @@ export const useDeleteBackupConfirmation = (
           openModal({
             title: { key: "modal.deleteBackup.title" },
             message: {
-              key: success
-                ? "modal.deleteBackup.message.success"
-                : message || "modal.deleteBackup.message.error",
+              key: success ? "modal.deleteBackup.message.success" : message || "modal.deleteBackup.message.error",
             },
             type: success ? "success" : "error",
           }),

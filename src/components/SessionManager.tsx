@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux";
+import { useAppDispatch } from "../hooks/redux/redux";
 import { auth } from "../api/auth";
-import {
-  setAccountMode,
-  setLoggedUser,
-} from "../features/AccountPage/accountSlice";
+import { setAccountMode, setLoggedUser } from "../features/AccountPage/accountSlice";
 
 export type SessionManagerProps = {
   authRoutes: string[];
@@ -26,7 +23,7 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
             email: user.email,
             name: user?.user_metadata?.full_name,
             roles: user?.app_metadata?.roles,
-          })
+          }),
         );
       } else {
         dispatch(setAccountMode("login"));

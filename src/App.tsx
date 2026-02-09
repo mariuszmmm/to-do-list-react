@@ -20,15 +20,11 @@ import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";
 import { SessionManager } from "./components/SessionManager";
 
-import { refreshData } from "./utils/refreshData";
+import { refreshData } from "./utils/sync/refreshData";
 import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
 import { ListsData } from "./types";
 import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
-import {
-  useAppSelector,
-  useDataFetchingError,
-  useSaveListMutation,
-} from "./hooks";
+import { useAppSelector, useDataFetchingError, useSaveListMutation } from "./hooks";
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
 import { TaskImage } from "./features/tasks/TaskImage";
@@ -59,52 +55,28 @@ const App = () => {
   return (
     <HashRouter>
       <SessionManager authRoutes={authRoutes} />
-      <Navigation
-        listsData={safeData}
-        isLoading={isLoading}
-        isError={isError}
-        authRoutes={authRoutes}
-      />
+      <Navigation listsData={safeData} isLoading={isLoading} isError={isError} authRoutes={authRoutes} />
       <TokenManager />
       <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
-      <ListSyncManager
-        listsData={safeData}
-        saveListMutation={saveListMutation}
-      />
+      <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
       <Container>
         <HeaderControls>
           <ThemeSwitch />
           <CurrentDate authRoutes={authRoutes} />
         </HeaderControls>
         <Routes>
-          <Route path="/account-recovery" element={<AccountRecoveryPage />} />
-          <Route path="/user-confirmation" element={<UserConfirmationPage />} />
-          <Route path="/tasks/image/:id" element={<TaskImage />} />
-          <Route path="/tasks/:id" element={<TaskPage />} />
-          <Route
-            path="/tasks"
-            element={
-              <TasksPage
-                listsData={safeData}
-                saveListMutation={saveListMutation}
-              />
-            }
-          />
-          <Route path="/archived-lists" element={<ArchivedListsPage />} />
+          <Route path='/account-recovery' element={<AccountRecoveryPage />} />
+          <Route path='/user-confirmation' element={<UserConfirmationPage />} />
+          <Route path='/tasks/image/:id' element={<TaskImage />} />
+          <Route path='/tasks/:id' element={<TaskPage />} />
+          <Route path='/tasks' element={<TasksPage listsData={safeData} saveListMutation={saveListMutation} />} />
+          <Route path='/archived-lists' element={<ArchivedListsPage />} />
           {!!safeData && (
-            <Route
-              path="/lists"
-              element={
-                <RemoteListsPage
-                  listsData={safeData}
-                  localListId={localListId}
-                />
-              }
-            />
+            <Route path='/lists' element={<RemoteListsPage listsData={safeData} localListId={localListId} />} />
           )}
-          <Route path="/info" element={<InfoPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="*" element={<Navigate to="/tasks" />} />
+          <Route path='/info' element={<InfoPage />} />
+          <Route path='/account' element={<AccountPage />} />
+          <Route path='*' element={<Navigate to='/tasks' />} />
         </Routes>
       </Container>
       <Modal />

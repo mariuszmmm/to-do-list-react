@@ -1,7 +1,7 @@
 import { List } from "../../../types";
-import { useAppDispatch } from "../../../hooks/redux";
-import { useDndList } from "../../../hooks/useDndList";
-import { useDndItem } from "../../../hooks/useDndItem";
+import { useAppDispatch } from "../../../hooks/redux/redux";
+import { useDndList } from "../../../hooks/ui/useDndList";
+import { useDndItem } from "../../../hooks/ui/useDndItem";
 import {
   ListMeta,
   ListMetaText,
@@ -11,12 +11,9 @@ import {
   StyledSpan,
 } from "../../../common/StyledList";
 import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
-import {
-  selectArchivedList,
-  setArchivedListToRemove,
-} from "../archivedListsSlice";
+import { selectArchivedList, setArchivedListToRemove } from "../archivedListsSlice";
 import { setArchivedListsOrder } from "../archivedListsSlice";
-import { formatCurrentDate } from "../../../utils/formatCurrentDate";
+import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { DraggableAttributes } from "@dnd-kit/core";
 
@@ -26,11 +23,7 @@ type Props = {
   modalIsOpen: any;
 };
 
-export const TaskLists = ({
-  lists,
-  selectedListId,
-  modalIsOpen,
-}: Props) => {
+export const TaskLists = ({ lists, selectedListId, modalIsOpen }: Props) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation");
 
@@ -57,7 +50,9 @@ export const TaskLists = ({
       >
         <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
         <StyledListContent $type={"lists"}>
-          <StyledSpan $ListName $isDragging={isDragging}>{list.name}</StyledSpan>
+          <StyledSpan $ListName $isDragging={isDragging}>
+            {list.name}
+          </StyledSpan>
           <br />
           <ListMeta>
             <ListMetaText>
@@ -84,6 +79,6 @@ export const TaskLists = ({
       {lists?.map((list) => (
         <SortableListRow key={list.id} list={list} />
       ))}
-    </StyledList>
+    </StyledList>,
   );
 };

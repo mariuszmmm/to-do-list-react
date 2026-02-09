@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppDispatch } from "../../../../hooks/redux";
+import { useAppDispatch } from "../../../../hooks/redux/redux";
 import { setAccountMode } from "../../accountSlice";
 import { clearStorage } from "../../../tasks/tasksSlice";
 import { closeModal, openModal } from "../../../../Modal/modalSlice";
@@ -36,16 +36,10 @@ export const useModalConfirmationHandler = ({
       if (modalTitleKey === "modal.logout.title" && accountMode === "logged") {
         logout.mutate();
       }
-      if (
-        modalTitleKey === "modal.accountDelete.title" &&
-        accountMode === "accountDelete"
-      ) {
+      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
         accountDelete.mutate();
       }
-      if (
-        modalTitleKey === "modal.dataRemoval.title" &&
-        accountMode === "dataRemoval"
-      ) {
+      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
         dispatch(clearStorage());
         dispatch(setAccountMode("login"));
         dispatch(
@@ -57,16 +51,10 @@ export const useModalConfirmationHandler = ({
         );
       }
     } else if (confirmed === false) {
-      if (
-        modalTitleKey === "modal.accountDelete.title" &&
-        accountMode === "accountDelete"
-      ) {
+      if (modalTitleKey === "modal.accountDelete.title" && accountMode === "accountDelete") {
         dispatch(setAccountMode("logged"));
       }
-      if (
-        modalTitleKey === "modal.dataRemoval.title" &&
-        accountMode === "dataRemoval"
-      ) {
+      if (modalTitleKey === "modal.dataRemoval.title" && accountMode === "dataRemoval") {
         dispatch(setAccountMode("login"));
       }
       dispatch(closeModal());
