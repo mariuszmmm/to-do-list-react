@@ -2,7 +2,12 @@ name: Cleanup Cloudinary Temp Uploads
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    # - cron: "0 0 * * 0" # Every Sunday at midnight (weekly)
+    # - cron: "0 0 * * *" # Every day at midnight (daily)
+    - cron: "10 0 * * *" # Every day at 00:10 (daily)
+    # - cron: "20 0 * * *" # Every day at 00:20 (daily)
+    # - cron: "*/5 * * * *" # Every 5 minutes
+
   workflow_dispatch:
 
 jobs:
@@ -25,7 +30,7 @@ jobs:
           echo "🧹 Starting Cloudinary temp_uploads cleanup..."
 
           RESPONSE=$(curl -s -X POST \
-            "$NETLIFY_URL/.netlify/functions/cleanup-cloudinary" \
+            "$NETLIFY_URL/.netlify/functions/cleanup-temp-images" \
             -H "Content-Type: application/json")
 
           echo "Response: $RESPONSE"
