@@ -10,20 +10,23 @@ import {
   StyledListItem,
   StyledSpan,
 } from "../../../common/StyledList";
-import { RemoveButton, ToggleButton } from "../../../common/taskButtons";
-import { selectArchivedList, setArchivedListToRemove } from "../archivedListsSlice";
+import { EditButton, RemoveButton, ToggleButton } from "../../../common/taskButtons";
+import { selectArchivedList, setArchivedListToLoad, setArchivedListToRemove } from "../archivedListsSlice";
 import { setArchivedListsOrder } from "../archivedListsSlice";
 import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { DraggableAttributes } from "@dnd-kit/core";
+import { TaskActions } from "../../../common/TaskActions";
+import { StyledLink } from "../../../common/StyledLink";
 
 type Props = {
   lists: List[];
   selectedListId: string | null;
+  selectedListById: List | null;
   modalIsOpen: any;
 };
 
-export const TaskLists = ({ lists, selectedListId, modalIsOpen }: Props) => {
+export const TaskLists = ({ lists, selectedListId, selectedListById, modalIsOpen }: Props) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation");
 
@@ -67,9 +70,21 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen }: Props) => {
             </ListMetaText>
           </ListMeta>
         </StyledListContent>
-        <RemoveButton onClick={() => dispatch(setArchivedListToRemove(list))} disabled={modalIsOpen}>
-          🗑️
-        </RemoveButton>
+        <TaskActions>
+          <StyledLink to={`/tasks`} disabled={selectedListId !== list.id}>
+            <EditButton
+              onClick={() => dispatch(setArchivedListToLoad(selectedListById))}
+              disabled={selectedListId !== list.id}
+              aria-label='Load archived list'
+              title={t("archivedListsPage.buttons.load")}
+            >
+              ✏️
+            </EditButton>
+          </StyledLink>
+          <RemoveButton onClick={() => dispatch(setArchivedListToRemove(list))} disabled={modalIsOpen}>
+            🗑️
+          </RemoveButton>
+        </TaskActions>
       </StyledListItem>
     );
   };

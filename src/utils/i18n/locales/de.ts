@@ -86,14 +86,20 @@ const langDe: typeof langPl = {
       change: "Ändern",
       remove: "Entfernen",
       back: "Zurück",
-      addFromGallery: "Bilder",
-      takePhoto: "Kamera",
+      uploadFromDevice: "Vom Gerät hochladen",
+      takePicture: "Foto aufnehmen",
       cancel: "Abbrechen",
+      capture: "Aufnehmen",
+      close: "Schließen",
     },
     messages: {
       uploading: "Hochladen…",
       loading: "Laden…",
       removing: "Löschen…",
+      cameraPermissionDenied:
+        "Kamerazugriff wurde verweigert. Erlauben Sie den Kamerazugriff in den Einstellungen Ihres Browsers.",
+      cameraNotFound: "Kameragerät nicht gefunden. Überprüfen Sie die Kameraverbindung.",
+      cameraError: "Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.",
       error: {
         imageUploadError: "Fehler beim Hochladen des Bildes",
         imageDeleteError: "Fehler beim Löschen des Bildes",
@@ -104,7 +110,6 @@ const langDe: typeof langPl = {
         invalidFileType: "Ungültiger Dateityp. Erlaubt: {{allowedTypes}}",
         fileTooLarge: "Datei ist zu groß. Maximale Größe: {{maxSize}} MB",
         uploadCanceled: "Bild-Upload abgebrochen",
-        canceledAfterUpload: "Upload wurde nach dem Laden abgebrochen",
         unknownError: "Unbekannter Fehler",
       },
     },
@@ -531,7 +536,7 @@ const langDe: typeof langPl = {
     listLoad: {
       title: "Liste laden",
       message: {
-        info: "Die Liste <strong>{{name}}</strong> wurde geladen.",
+        info: "Die Liste <strong>{{name}}</strong> wurde zum Bearbeiten geladen.",
       },
     },
     confirmation: {

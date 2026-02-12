@@ -86,14 +86,19 @@ const langEn: typeof langPl = {
       change: "Change",
       remove: "Remove",
       back: "Back",
-      addFromGallery: "Gallery",
-      takePhoto: "Camera",
+      uploadFromDevice: "Upload from device",
+      takePicture: "Take a picture",
       cancel: "Cancel",
+      capture: "Capture",
+      close: "Close",
     },
     messages: {
       uploading: "Uploading…",
       loading: "Loading…",
       removing: "Removing…",
+      cameraPermissionDenied: "Camera access denied. Please allow camera access in your browser settings.",
+      cameraNotFound: "No camera device found. Please check your camera connection.",
+      cameraError: "An error occurred while accessing the camera.",
       error: {
         imageUploadError: "Error uploading image",
         imageDeleteError: "Error deleting image",
@@ -104,7 +109,6 @@ const langEn: typeof langPl = {
         invalidFileType: "Invalid file type. Allowed: {{allowedTypes}}",
         fileTooLarge: "File is too large. Maximum size: {{maxSize}} MB",
         uploadCanceled: "Image upload canceled",
-        canceledAfterUpload: "Upload was canceled after loading",
         unknownError: "Unknown error",
       },
     },
@@ -527,7 +531,7 @@ const langEn: typeof langPl = {
     listLoad: {
       title: "Loading list",
       message: {
-        info: "The list <strong>{{name}}</strong> has been loaded.",
+        info: "The list <strong>{{name}}</strong> has been loaded for editing.",
       },
     },
     confirmation: {

@@ -42,8 +42,9 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         onClick={() => handleDownloadUserLists(t, setStatus)}
         disabled={status.isLoading}
         title={t("downloadUserLists.tooltip")}
+        data-icon='📥'
       >
-        📥 {t("downloadUserLists.button")}
+        {t("downloadUserLists.button")}
       </Button>
 
       {isAdmin && (
@@ -51,8 +52,9 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           onClick={() => handleDownloadAllUsers(t, setStatus)}
           disabled={status.isLoading}
           title={t("downloadAllUsers.tooltip")}
+          data-icon='📥'
         >
-          📥 {t("downloadAllUsers.button")}
+          {t("downloadAllUsers.button")}
         </Button>
       )}
 
@@ -60,8 +62,9 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         onClick={() => handleRestoreUserLists(t, setStatus)}
         disabled={status.isLoading}
         title={t("restoreUserLists.tooltip")}
+        data-icon='📂'
       >
-        📂 {t("restoreUserLists.button")}
+        {t("restoreUserLists.button")}
       </Button>
 
       {isAdmin && (
@@ -69,25 +72,20 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           onClick={() => handleRestoreAllUsers(t, setStatus)}
           disabled={status.isLoading}
           title={t("restoreAllUsers.tooltip")}
+          data-icon='📂'
         >
-          📂 {t("restoreAllUsers.button")}
+          {t("restoreAllUsers.button")}
         </Button>
       )}
 
       {isAdmin && (
         <Button
-          onClick={() =>
-            handleUploadAllUsersToGoogleDrive(
-              googleAccessToken,
-              t,
-              setStatus,
-              setShowGoogleAuth,
-            )
-          }
+          onClick={() => handleUploadAllUsersToGoogleDrive(googleAccessToken, t, setStatus, setShowGoogleAuth)}
           disabled={status.isLoading || showGoogleAuth}
           title={t("uploadAllUsersToGoogleDrive.tooltip")}
+          data-icon='☁️'
         >
-          ☁️ {t("uploadAllUsersToGoogleDrive.button")}
+          {t("uploadAllUsersToGoogleDrive.button")}
         </Button>
       )}
 
@@ -105,8 +103,9 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           }
           disabled={status.isLoading || showGoogleAuth}
           title={t("restoreBackupFromGoogleDrive.tooltip")}
+          data-icon='☁️'
         >
-          ☁️ {t("restoreBackupFromGoogleDrive.button")}
+          {t("restoreBackupFromGoogleDrive.button")}
         </Button>
       )}
 
@@ -115,8 +114,9 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           onClick={() => handleAuthorizeGoogle(t, setStatus)}
           disabled={status.isLoading}
           title={t("authorizeGoogle.tooltip")}
+          data-icon='🚀'
         >
-          🚀 {t("authorizeGoogle.button")}
+          {t("authorizeGoogle.button")}
         </Button>
       )}
     </ButtonsContainer>

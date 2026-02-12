@@ -19,7 +19,7 @@ import {
   selectList,
 } from "./remoteListsSlice";
 import { selectModalIsOpen, selectModalConfirmed, openModal, closeModal } from "../../Modal/modalSlice";
-import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
+import { clearAllTaskImages, selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
 
 type Props = { listsData: ListsData; localListId: string };
@@ -88,8 +88,10 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
         listId: listToRemove.id,
         deviceId,
       });
-
-      if (taskListId === listToRemove.id) dispatch(setListStatus({}));
+      if (taskListId === listToRemove.id) {
+        dispatch(clearAllTaskImages());
+        dispatch(setListStatus({}));
+      }
       dispatch(selectList(null));
       dispatch(setListToRemove(null));
     } else {
@@ -128,10 +130,11 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
               isListsSorting={isListsSorting}
               listsToSort={listsToSort}
               localListId={localListId}
+              selectedListById={selectedListById}
             />
           </div>
         }
-        extraHeaderContent={<ListsButtons lists={lists} selectedListById={selectedListById} />}
+        extraHeaderContent={<ListsButtons lists={lists} />}
       />
       {selectedListById && !isListsSorting && (
         <>

@@ -7,6 +7,7 @@ import {
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
+  parseJsonBody,
 } from "../functions/lib/validators";
 import { jsonResponse, logError } from "../functions/lib/response";
 
@@ -29,14 +30,10 @@ const handler: Handler = async (event, context) => {
 
   try {
     const email = context.clientContext?.user.email as string;
-    const body = event.body as string;
-    let parsedBody: { accessToken?: string };
+    const parsedBody = parseJsonBody<{ accessToken?: string }>(event.body, logPrefix);
 
-    try {
-      parsedBody = JSON.parse(body);
-    } catch (parseError) {
-      console.warn(`${logPrefix} Invalid JSON in request body`);
-      return jsonResponse(400, { message: "Invalid JSON in request body" });
+    if ("statusCode" in parsedBody) {
+      return parsedBody;
     }
 
     const { accessToken } = parsedBody;
@@ -50,17 +47,11 @@ const handler: Handler = async (event, context) => {
     const fileContent = JSON.stringify(backupData);
 
     try {
-      const uploadResponse = await uploadBackupToGoogleDrive(
-        fileName,
-        fileContent,
-        accessToken
-      );
+      const uploadResponse = await uploadBackupToGoogleDrive(fileName, fileContent, accessToken);
 
       if (!uploadResponse.success) {
         if (uploadResponse.statusCode === 401) {
-          console.warn(
-            `${logPrefix} Google Drive authentication failed: ${uploadResponse.message}`
-          );
+          console.warn(`${logPrefix} Google Drive authentication failed: ${uploadResponse.message}`);
           return jsonResponse(401, {
             message: "Google Drive authentication failed",
             source: "google-drive",
@@ -76,18 +67,14 @@ const handler: Handler = async (event, context) => {
       console.warn(
         `${logPrefix} Failed to upload to Google Drive: ${
           driveError instanceof Error ? driveError.message : "Unknown error"
-        }`
+        }`,
       );
       return jsonResponse(500, {
         message: "Failed to upload to Google Drive",
       });
     }
   } catch (error) {
-    logError(
-      "Unexpected error in uploadAllUsersToGoogleDrive handler",
-      error,
-      logPrefix
-    );
+    logError("Unexpected error in uploadAllUsersToGoogleDrive handler", error, logPrefix);
     return jsonResponse(500, {
       message: "Internal server error",
     });

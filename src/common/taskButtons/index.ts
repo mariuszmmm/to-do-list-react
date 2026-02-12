@@ -10,6 +10,7 @@ const TaskButton = styled.button`
   font-size: 20px;
   transition: filter 0.25s;
   user-select: none;
+  cursor: pointer;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 2 / 3;

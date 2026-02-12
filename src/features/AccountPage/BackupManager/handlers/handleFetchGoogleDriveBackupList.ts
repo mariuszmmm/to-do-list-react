@@ -30,7 +30,7 @@ export const handleFetchGoogleDriveBackupList = async (
       return;
     }
 
-    const result = await fetchGoogleDriveBackupListApi(googleAccessToken);
+    const result = await fetchGoogleDriveBackupListApi({ token, googleAccessToken });
 
     if (!result.success || !result.data || !result.data.files) {
       throw new Error(result.message);

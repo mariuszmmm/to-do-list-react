@@ -6,13 +6,20 @@ interface ButtonProps {
   width?: string;
   $cancel?: boolean;
   $remove?: boolean;
+  $image?: boolean;
 }
 
 export const FormButton = styled.button<ButtonProps>`
   padding: 10px;
-  background: ${({ $cancel, $remove, theme }) =>
-    $cancel ? theme.colors.button.cancel : $remove ? theme.colors.button.remove : theme.colors.button.background};
-  color: ${({ theme }) => theme.colors.button.primaryText};
+  background: ${({ $cancel, $remove, $image, theme }) =>
+    $cancel
+      ? theme.colors.button.cancel
+      : $remove
+        ? theme.colors.button.remove
+        : $image
+          ? theme.colors.button.image
+          : theme.colors.button.background};
+  color: ${({ theme, $image }) => ($image ? theme.colors.button.blackText : theme.colors.button.primaryText)};
   border: none;
   min-width: 110px;
   border-radius: 5px;

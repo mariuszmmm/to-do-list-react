@@ -1,9 +1,16 @@
-import axios from "axios";
-import { createHash } from "crypto";
+import cloudinary, { validateCloudinaryConfig } from "../../config/cloudinary";
 import { logError } from "../lib/response";
 
 export const deleteCloudinaryImage = async (publicId?: string) => {
   const logPrefix = "[deleteCloudinaryImage]";
+
+  const configValidation = validateCloudinaryConfig();
+  if (!configValidation.isValid) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: configValidation.error }),
+    };
+  }
 
   if (!publicId) {
     return {
@@ -12,36 +19,14 @@ export const deleteCloudinaryImage = async (publicId?: string) => {
     };
   }
 
-  const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-  const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-  const API_KEY = process.env.CLOUDINARY_API_KEY;
-
-  if (!API_SECRET || !CLOUD_NAME || !API_KEY) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Missing Cloudinary configuration" }),
-    };
-  }
-
   try {
-    const timestamp = Math.floor(Date.now() / 1000);
-    const params = `invalidate=true&public_id=${publicId}&timestamp=${timestamp}${API_SECRET}`;
-    const signature = createHash("sha1").update(params).digest("hex");
-
-    const body = new URLSearchParams({
-      api_key: API_KEY,
-      invalidate: "true",
-      public_id: publicId,
-      signature,
-      timestamp: String(timestamp),
-    });
-
-    const destroyUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/destroy`;
-    const res = await axios.post(destroyUrl, body);
-
+    const result = await cloudinary.uploader.destroy(publicId, { invalidate: true });
+    if (result?.result === "not found") {
+      console.warn(`${logPrefix} Image not found in Cloudinary: ${publicId}`);
+    }
     return {
       statusCode: 200,
-      body: JSON.stringify(res.data),
+      body: JSON.stringify(result),
     };
   } catch (error: any) {
     logError("Unexpected error in deleteCloudinaryImage handler", error, logPrefix);

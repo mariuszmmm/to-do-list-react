@@ -21,7 +21,7 @@ const logDevBlock = (isOpen: boolean, ...args: unknown[]) => {
     args.forEach((arg) => {
       console.log("[SessionInfo]", arg);
     });
-    console.log("======================================================\n");
+    console.log("====================================================\n");
   }
 };
 

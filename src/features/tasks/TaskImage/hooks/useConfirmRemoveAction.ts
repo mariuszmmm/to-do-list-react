@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
-import { closeModal, openModal, selectModalConfirmed } from "../../../Modal/modalSlice";
-import { ModalTranslationKeys } from "../../../@types/i18next";
-import langPl from "../../../utils/i18n/locales/pl";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
+import { closeModal, openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
+import { ModalTranslationKeys } from "../../../../@types/i18next";
+import langPl from "../../../../utils/i18n/locales/pl";
 
 interface UseConfirmRemoveActionProps {
   onConfirm: () => Promise<void> | void;
@@ -45,7 +45,7 @@ export const useConfirmRemoveAction = ({
     handleConfirmation();
   }, [isPending, confirmed, dispatch, onConfirm, onCancel]);
 
-  const trigger = useCallback(() => {
+  const trigger = () => {
     setIsPending(true);
     dispatch(
       openModal({
@@ -55,7 +55,7 @@ export const useConfirmRemoveAction = ({
         confirmButton: confirmButtonLabel,
       }),
     );
-  }, [dispatch, title, message, confirmButtonLabel]);
+  };
 
   return { trigger, isPending };
 };

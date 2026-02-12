@@ -1,58 +1,52 @@
-import { createHash } from "crypto";
+import cloudinary, {
+  validateCloudinaryConfig,
+  api_key,
+  api_secret,
+  cloud_name,
+  upload_preset,
+} from "../../config/cloudinary";
 
-export const getCloudinarySignature = (taskId?: string) => {
-  const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-  const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-  const API_KEY = process.env.CLOUDINARY_API_KEY;
-  const UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
-
-  if (!API_SECRET || !CLOUD_NAME || !API_KEY || !UPLOAD_PRESET) {
+export const getCloudinarySignature = () => {
+  const configValidation = validateCloudinaryConfig();
+  if (!configValidation.isValid) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Missing Cloudinary configuration" }),
+      body: JSON.stringify({ error: configValidation.error }),
+    };
+  }
+
+  if (!upload_preset) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Missing CLOUDINARY_UPLOAD_PRESET" }),
     };
   }
 
   const timestamp = Math.round(Date.now() / 1000);
   const asset_folder = "Todo-list/temp_uploads";
+  const tags = "app-todolist-image,temp";
 
-  const baseParams: Record<string, string> = {
+  const params = {
     asset_folder,
     invalidate: "true",
     overwrite: "true",
+    tags,
     timestamp: String(timestamp),
-    upload_preset: UPLOAD_PRESET,
+    upload_preset,
   };
 
-  // Dodaj taskId do context (metadata)
-  if (taskId) {
-    baseParams.context = `taskId=${taskId}`;
-  }
-
-  const params: Record<string, string | number> = {
-    ...baseParams,
-    // ...(publicId && { public_id: publicId }),
-  };
-
-  const sortedParams = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${params[key]}`)
-    .join("&");
-
-  const signature = createHash("sha1")
-    .update(sortedParams + API_SECRET)
-    .digest("hex");
+  const signature = cloudinary.utils.api_sign_request(params, api_secret!);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      apiKey: API_KEY,
+      api_key,
       asset_folder,
-      cloudName: CLOUD_NAME,
-      timestamp,
+      cloud_name,
       signature,
-      uploadPreset: UPLOAD_PRESET,
-      context: taskId ? `taskId=${taskId}` : undefined,
+      tags,
+      timestamp,
+      upload_preset,
     }),
   };
 };

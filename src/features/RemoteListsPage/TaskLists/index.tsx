@@ -9,7 +9,7 @@ import {
   ListMeta,
   ListMetaText,
 } from "../../../common/StyledList";
-import { RemoveButton, SortButton, ToggleButton } from "../../../common/taskButtons";
+import { EditButton, RemoveButton, SortButton, ToggleButton } from "../../../common/taskButtons";
 import { useAppDispatch } from "../../../hooks/redux/redux";
 import { useDndList } from "../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../hooks/ui/useDndItem";
@@ -17,8 +17,10 @@ import { List } from "../../../types";
 import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { moveListDown, moveListUp } from "../../../utils/list/moveList";
 import i18n from "../../../utils/i18n";
-import { selectList, setListToRemove, setListToSort } from "../remoteListsSlice";
+import { selectList, setListToLoad, setListToRemove, setListToSort } from "../remoteListsSlice";
 import { useSortableRowAnimation } from "../../../hooks/ui/useSortableRowAnimation";
+import { TaskActions } from "../../../common/TaskActions";
+import { StyledLink } from "../../../common/StyledLink";
 
 type Props = {
   lists: List[];
@@ -27,9 +29,18 @@ type Props = {
   isListsSorting: boolean;
   listsToSort: List[] | null;
   localListId: string;
+  selectedListById: List | null;
 };
 
-export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, listsToSort, localListId }: Props) => {
+export const TaskLists = ({
+  lists,
+  selectedListId,
+  selectedListById,
+  modalIsOpen,
+  isListsSorting,
+  listsToSort,
+  localListId,
+}: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const sortableLists = listsToSort ?? lists;
@@ -117,7 +128,7 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, 
 
   return (
     <StyledList>
-      {lists?.map((list, index) => (
+      {lists?.map((list) => (
         <StyledListItem
           key={list.id}
           selected={selectedListId === list.id && !isListsSorting}
@@ -148,9 +159,21 @@ export const TaskLists = ({ lists, selectedListId, modalIsOpen, isListsSorting, 
               </ListMetaText>
             </ListMeta>
           </StyledListContent>
-          <RemoveButton onClick={() => dispatch(setListToRemove(list))} disabled={modalIsOpen}>
-            🗑️
-          </RemoveButton>
+          <TaskActions>
+            <StyledLink to={`/tasks`} disabled={selectedListId !== list.id || isListsSorting}>
+              <EditButton
+                onClick={() => dispatch(setListToLoad(selectedListById))}
+                disabled={selectedListId !== list.id || isListsSorting}
+                title={t("remoteListsPage.buttons.load")}
+              >
+                ✏️
+              </EditButton>
+            </StyledLink>
+
+            <RemoveButton onClick={() => dispatch(setListToRemove(list))} disabled={modalIsOpen}>
+              🗑️
+            </RemoveButton>
+          </TaskActions>
         </StyledListItem>
       ))}
     </StyledList>

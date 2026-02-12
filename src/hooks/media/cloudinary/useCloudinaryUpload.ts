@@ -9,22 +9,11 @@ export const useCloudinaryUpload = () => {
   const lastProgressRef = useRef(0);
   const [progress, setProgress] = useState(0);
 
-  const upload = async (file: File, taskId?: string): Promise<UploadResult> => {
+  const upload = async (file: File): Promise<UploadResult> => {
     setProgress(0);
-
     validateImageFile(file);
 
-    const config = await getCloudinarySignature(taskId);
-    if (
-      !config.apiKey ||
-      !config.asset_folder ||
-      !config.cloudName ||
-      !config.signature ||
-      !config.timestamp ||
-      !config.uploadPreset
-    ) {
-      throw new Error("Missing Cloudinary configuration");
-    }
+    const config = await getCloudinarySignature();
 
     const abortController = new AbortController();
     abortRef.current?.abort();

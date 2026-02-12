@@ -4,7 +4,7 @@ import { jsonResponse } from "./response";
 export function checkHttpMethod(
   method: string | undefined,
   allowedMethod: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
-  logPrefix = "[checkHttpMethod]"
+  logPrefix = "[checkHttpMethod]",
 ): HandlerResponse | null {
   if (method !== allowedMethod) {
     console.warn(`${logPrefix} Invalid HTTP method: ${method}`);
@@ -17,7 +17,7 @@ export function checkHttpMethod(
 
 export function checkEventBody(
   body: string | null | undefined,
-  logPrefix = "[checkEventBody]"
+  logPrefix = "[checkEventBody]",
 ): HandlerResponse | null {
   if (!body) {
     console.warn(`${logPrefix} Missing event body`);
@@ -26,9 +26,23 @@ export function checkEventBody(
   return null;
 }
 
+export function parseJsonBody<T>(body: string | null | undefined, logPrefix = "[parseJsonBody]"): HandlerResponse | T {
+  if (!body) {
+    console.warn(`${logPrefix} Missing event body`);
+    return jsonResponse(400, { message: "Request body is required." });
+  }
+
+  try {
+    return JSON.parse(body) as T;
+  } catch (error) {
+    console.warn(`${logPrefix} Invalid JSON in request body`);
+    return jsonResponse(400, { message: "Invalid JSON in request body" });
+  }
+}
+
 export function checkClientContext(
   context: HandlerContext,
-  logPrefix = "[checkClientContext]"
+  logPrefix = "[checkClientContext]",
 ): HandlerResponse | null {
   if (!context.clientContext?.user) {
     console.warn(`${logPrefix} Unauthorized access attempt`);
@@ -40,13 +54,8 @@ export function checkClientContext(
   return null;
 }
 
-export function checkAdminRole(
-  context: HandlerContext,
-  logPrefix = "[checkAdminRole]"
-): HandlerResponse | null {
-  if (
-    context.clientContext?.user.app_metadata?.roles?.includes("admin") !== true
-  ) {
+export function checkAdminRole(context: HandlerContext, logPrefix = "[checkAdminRole]"): HandlerResponse | null {
+  if (context.clientContext?.user.app_metadata?.roles?.includes("admin") !== true) {
     console.warn(`${logPrefix} Admin access denied`);
     return jsonResponse(403, {
       message: "Insufficient permissions.\n Administrator access required.",
@@ -57,7 +66,7 @@ export function checkAdminRole(
 
 export function parseBackupRequest(
   body: string | null | undefined,
-  logPrefix = "[parseBackupRequest]"
+  logPrefix = "[parseBackupRequest]",
 ): HandlerResponse | { fileId: string; accessToken: string } {
   if (!body) {
     console.warn(`${logPrefix} Empty or missing body for parsing`);
@@ -73,8 +82,7 @@ export function parseBackupRequest(
     if (!fileId || !accessToken) {
       console.warn(`${logPrefix} Missing fileId or accessToken`);
       return jsonResponse(400, {
-        message:
-          "Both 'fileId' and 'accessToken' are required in the request body.",
+        message: "Both 'fileId' and 'accessToken' are required in the request body.",
       });
     }
 
@@ -88,12 +96,10 @@ export function parseBackupRequest(
 export function validateBackupType(
   backupType: string,
   expectedType = "all-users-backup",
-  logPrefix = "[validateBackupType]"
+  logPrefix = "[validateBackupType]",
 ): HandlerResponse | null {
   if (backupType !== expectedType) {
-    console.warn(
-      `${logPrefix} Invalid backup format – expected '${expectedType}'`
-    );
+    console.warn(`${logPrefix} Invalid backup format – expected '${expectedType}'`);
     return jsonResponse(400, {
       message: `Invalid backup type. Expected '${expectedType}'.`,
     });
@@ -101,10 +107,7 @@ export function validateBackupType(
   return null;
 }
 
-export function validateBackupUsers(
-  users: unknown,
-  logPrefix = "[validateBackupUsers]"
-): HandlerResponse | null {
+export function validateBackupUsers(users: unknown, logPrefix = "[validateBackupUsers]"): HandlerResponse | null {
   if (!Array.isArray(users)) {
     console.warn(`${logPrefix} Missing or invalid backupData.users`);
     return jsonResponse(400, {
@@ -114,9 +117,7 @@ export function validateBackupUsers(
   return null;
 }
 
-export function checkWebhookSecret(
-  logPrefix = "[checkWebhookSecret]"
-): HandlerResponse | string {
+export function checkWebhookSecret(logPrefix = "[checkWebhookSecret]"): HandlerResponse | string {
   const SECRET = process.env.WEBHOOK_SECRET;
   if (!SECRET) {
     console.error(`${logPrefix} Missing WEBHOOK_SECRET environment variable`);
@@ -129,7 +130,7 @@ export function checkWebhookSecret(
 
 export function checkWebhookSignature(
   headers: Record<string, string | string[] | undefined>,
-  logPrefix = "[checkWebhookSignature]"
+  logPrefix = "[checkWebhookSignature]",
 ): HandlerResponse | string {
   const signature = headers["x-webhook-signature"];
   if (!signature || typeof signature !== "string") {

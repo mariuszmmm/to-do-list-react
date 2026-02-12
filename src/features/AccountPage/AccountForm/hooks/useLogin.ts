@@ -24,10 +24,6 @@ export const useLogin = () => {
     },
 
     onSuccess: (response) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log("Login successful:", response);
-      }
-
       dispatch(
         openModal({
           title: { key: "modal.login.title" },

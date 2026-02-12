@@ -51,6 +51,7 @@ export const themeLight = {
     button: {
       primaryText: colorNames.white,
       secendaryText: colorNames.teal,
+      blackText: colorNames.black,
       background: colorNames.teal,
       check: colorNames.forestGreen,
       image: colorNames.orange,
@@ -100,6 +101,7 @@ export const themeDark: typeof themeLight = {
     button: {
       primaryText: colorNames.gallery,
       secendaryText: lighten(0.15, colorNames.teal),
+      blackText: colorNames.black,
       background: darken(0.05, colorNames.teal),
       check: lighten(0.02, colorNames.forestGreen),
       image: darken(0.05, colorNames.orange),

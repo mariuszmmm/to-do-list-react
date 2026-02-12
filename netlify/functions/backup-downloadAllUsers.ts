@@ -1,15 +1,12 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import { getAllUsersForBackup } from "../functions/lib/getAllUsersForBackup";
-import {
-  checkClientContext,
-  checkHttpMethod,
-  checkAdminRole,
-} from "../functions/lib/validators";
+import { checkClientContext, checkHttpMethod, checkAdminRole } from "../functions/lib/validators";
 import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[downloadAllUsers]";
+  console.log(`!!!!   ${logPrefix} Handler invoked`, { event, context });
 
   const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
   if (methodResponse) return methodResponse;
@@ -32,7 +29,7 @@ const handler: Handler = async (event, context) => {
         { backupData, message: "Download successful" },
         {
           "Content-Disposition": `attachment; filename="${fileName}"`,
-        }
+        },
       );
     } catch (err) {
       if (err instanceof Error && err.message === "No user data found") {

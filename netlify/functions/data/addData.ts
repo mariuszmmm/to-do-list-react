@@ -5,11 +5,7 @@ import { jsonResponse, logError } from "../lib/response";
 import { Data, Task } from "../../../src/types";
 import { publishAblyUpdate } from "../../config/ably";
 
-export const addData = async (
-  event: HandlerEvent,
-  context: HandlerContext,
-  logPrefix: string
-) => {
+export const addData = async (event: HandlerEvent, context: HandlerContext, logPrefix: string) => {
   try {
     const email = context.clientContext?.user.email as string;
     const body = event.body as string;
@@ -39,11 +35,7 @@ export const addData = async (
         message: "No list provided or invalid list structure",
       });
     }
-    if (
-      !data.list.id ||
-      !data.list.taskList ||
-      !Array.isArray(data.list.taskList)
-    ) {
+    if (!data.list.id || !data.list.taskList || !Array.isArray(data.list.taskList)) {
       console.warn(`${logPrefix} List missing required fields`);
       return jsonResponse(400, {
         message: "List missing required fields (id, taskList)",
@@ -51,9 +43,7 @@ export const addData = async (
     }
 
     const now = new Date().toISOString();
-    const listIndex = foundUser.lists.findIndex(
-      (list) => list.id === data.list?.id
-    );
+    const listIndex = foundUser.lists.findIndex((list) => list.id === data.list?.id);
 
     let deletedTasksIds: string[] = [];
     if (listIndex !== -1) {
@@ -81,21 +71,19 @@ export const addData = async (
           content: task.content,
           done: task.done,
           date: task.date,
+          editedAt: task.editedAt,
+          completedAt: task.completedAt,
           updatedAt: task.updatedAt,
           deletedAt: now,
+          image: task.image,
         }));
 
       existingList.date = incomingList.date;
       existingList.name = incomingList.name;
       existingList.updatedAt = incomingList.updatedAt;
-      existingList.taskList = incomingList.taskList.filter(
-        (task: Task) => !deletedTasksIds.includes(task.id)
-      );
+      existingList.taskList = incomingList.taskList.filter((task: Task) => !deletedTasksIds.includes(task.id));
       existingList.version = (existingList.version || 0) + 1;
-      existingList.deletedTasks = [
-        ...(existingList.deletedTasks || []),
-        ...deletedTasks,
-      ];
+      existingList.deletedTasks = [...(existingList.deletedTasks || []), ...deletedTasks];
     } else {
       const newList = {
         ...data.list,
