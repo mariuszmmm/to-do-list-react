@@ -86,7 +86,7 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
     const isIdentical = areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks);
 
-   if (isError && isRemoteSaveable) {
+    if (isError && isRemoteSaveable) {
       dispatch(setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }));
     } else {
       if (isRemoteSaveable && isIdenticalToRemote === isIdentical) return;
@@ -124,6 +124,12 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
     const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
     const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
+
+    process.env.NODE_ENV === "development" &&
+      console.log("Syncing with remote data...", {
+        deviceId,
+        deletedTasks,
+      });
 
     // sprawdzić czy w przypadku wystąpienia jednoczesnego getData i addData , dane nie następuje duplikacja ?
 
