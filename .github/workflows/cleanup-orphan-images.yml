@@ -1,0 +1,44 @@
+name: Cleanup Orphan Images
+
+on:
+  schedule:
+    # - cron: "0 0 1 * *" # First day of every month at midnight (monthly)
+    # - cron: "0 0 * * *" # Every day at midnight (daily)
+    # - cron: "10 0 * * *" # Every day at 00:10 (daily)
+    - cron: "20 0 * * *" # Every day at 00:20 (daily)
+    # - cron: "*/10 * * * *" # Every 10 minutes (for testing)
+
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Trigger orphan images cleanup function
+        run: |
+          NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
+
+          if [ -z "$NETLIFY_URL" ]; then
+            echo "❌ Error: NETLIFY_SITE_URL secret is not set"
+            exit 1
+          fi
+
+          echo "🧹 Starting orphan images cleanup..."
+
+          RESPONSE=$(curl -s -X POST \
+            "$NETLIFY_URL/.netlify/functions/cleanup-orphan-images" \
+            -H "Content-Type: application/json")
+
+          echo "Response: $RESPONSE"
+
+          # Check if response contains error
+          if echo "$RESPONSE" | grep -q "error"; then
+            echo "❌ Cleanup failed"
+            exit 1
+          fi
+
+          echo "✅ Cleanup completed successfully"
