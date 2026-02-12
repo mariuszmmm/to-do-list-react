@@ -9,6 +9,7 @@ import {
   checkHttpMethod,
   checkWebhookSecret,
   checkWebhookSignature,
+  parseJsonBody,
 } from "../functions/lib/validators";
 import { jsonResponse, logError } from "../functions/lib/response";
 
@@ -33,20 +34,15 @@ const handler: Handler = async (event) => {
     const body = event.body as string;
     const decoded = jwt.verify(signature, SECRET) as any;
     const expectedHash = decoded.sha256;
-    const calculatedHash = crypto
-      .createHash("sha256")
-      .update(body)
-      .digest("hex");
+    const calculatedHash = crypto.createHash("sha256").update(body).digest("hex");
     if (calculatedHash !== expectedHash) {
       return jsonResponse(403, { message: "Signature is invalid" });
     }
 
-    let parsedBody: { user?: { email?: string } };
-    try {
-      parsedBody = JSON.parse(body);
-    } catch (parseError) {
-      console.warn(`${logPrefix} Invalid JSON in request body`);
-      return jsonResponse(400, { message: "Invalid JSON in request body" });
+    const parsedBody = parseJsonBody<{ user?: { email?: string } }>(body, logPrefix);
+
+    if ("statusCode" in parsedBody) {
+      return parsedBody;
     }
 
     const email = parsedBody?.user?.email;

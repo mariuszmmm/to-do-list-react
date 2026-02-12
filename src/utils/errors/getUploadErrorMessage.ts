@@ -25,8 +25,6 @@ export const getUploadErrorMessage = (error: unknown): string => {
         });
       case UploadErrorCode.UPLOAD_CANCELED:
         return i18n.t("taskImagePage.messages.error.uploadCanceled");
-      case UploadErrorCode.CANCELED_AFTER_UPLOAD:
-        return i18n.t("taskImagePage.messages.error.canceledAfterUpload");
       case UploadErrorCode.DELETE_FAILED:
         return i18n.t("taskImagePage.messages.error.imageDeleteError");
       case UploadErrorCode.GENERAL_ERROR:

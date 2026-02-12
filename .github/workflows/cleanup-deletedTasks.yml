@@ -1,0 +1,26 @@
+name: Cleanup Deleted Tasks
+
+on:
+  workflow_dispatch:
+  schedule:
+    # - cron: "*/30 * * * *" # Every 30 minutes (for testing)
+    - cron: "0 0 * * *" # Every day at midnight (daily)
+    # - cron: "10 0 * * *" # Every day at 00:10 (daily)
+    # - cron: "20 0 * * *" # Every day at 00:20 (daily)
+    # - cron: "20 0 * * *" # Every day at 00:20 (daily)
+
+jobs:
+  cleanup-deletedTasks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Netlify cleanup-deletedTasks function
+        run: |
+          NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
+          if [ -z "$NETLIFY_URL" ]; then
+            echo "❌ Error: NETLIFY_SITE_URL secret is not set"
+            exit 1
+          fi
+          echo "⏳ Calling cleanup-deletedTasks..."
+          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/cleanup-deletedTasks" -H "Content-Type: application/json")
+          echo "Response:"
+          echo "$RESPONSE" | jq '.' 2>/dev/null || echo "$RESPONSE"

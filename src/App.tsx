@@ -43,15 +43,6 @@ const App = () => {
   const { id: localListId } = useAppSelector(selectTaskListMetaData);
   useDataFetchingError({ isError, isData: !!safeData, refetch });
 
-  process.env.NODE_ENV === "development" &&
-    console.log("Rendering App component... . data: ", {
-      loggedUserEmail,
-      data,
-      isLoading,
-      isError,
-      localListId,
-    });
-
   return (
     <HashRouter>
       <SessionManager authRoutes={authRoutes} />

@@ -35,12 +35,6 @@ export const useTokenValidation = () => {
       const autoRefreshEnabled = getAutoRefreshSettingFromLocalStorage();
 
       if (autoRefreshEnabled) {
-        if (process.env.NODE_ENV === "development") {
-          console.log(
-            "[useTokenValidation] Access token expired locally - trying to refresh token (auto-refresh enabled)",
-          );
-        }
-
         if (!isRefreshingRef.current) {
           isRefreshingRef.current = true;
           user
@@ -53,10 +47,6 @@ export const useTokenValidation = () => {
             });
         }
       } else {
-        if (process.env.NODE_ENV === "development") {
-          console.log("[useTokenValidation] Access token expired locally - logging out (auto-refresh disabled)");
-        }
-
         if (!isRefreshingRef.current) {
           isRefreshingRef.current = true;
           user

@@ -1,5 +1,5 @@
 import type { Handler, HandlerEvent } from "@netlify/functions";
-import { checkEventBody, checkHttpMethod } from "./lib/validators";
+import { checkEventBody, checkHttpMethod, parseJsonBody } from "./lib/validators";
 import { jsonResponse, logError } from "./lib/response";
 
 const handler: Handler = async (event: HandlerEvent) => {
@@ -15,24 +15,19 @@ const handler: Handler = async (event: HandlerEvent) => {
   const API_URL = process.env.TRANSLATION_API_URL;
 
   if (!KEY) {
-    logError(
-      "Missing translation API key",
-      new Error("Missing environment variable"),
-      logPrefix
-    );
+    logError("Missing translation API key", new Error("Missing environment variable"), logPrefix);
     return jsonResponse(500, { message: "Missing translation API key" });
   }
 
   let response;
   try {
-    const body = event.body as string;
-    let parsedBody: { text?: string; targetLanguage?: string };
+    const parsedBody = parseJsonBody<{
+      text?: string;
+      targetLanguage?: string;
+    }>(event.body, logPrefix);
 
-    try {
-      parsedBody = JSON.parse(body);
-    } catch (parseError) {
-      console.warn(`${logPrefix} Invalid JSON in request body`);
-      return jsonResponse(400, { message: "Invalid JSON in request body" });
+    if ("statusCode" in parsedBody) {
+      return parsedBody;
     }
 
     const { text = "undefined error", targetLanguage = "en" } = parsedBody;
@@ -46,9 +41,7 @@ const handler: Handler = async (event: HandlerEvent) => {
       }),
     });
     if (!apiRes.ok) {
-      console.warn(
-        `${logPrefix} Translation API error: ${apiRes.status} ${apiRes.statusText}`
-      );
+      console.warn(`${logPrefix} Translation API error: ${apiRes.status} ${apiRes.statusText}`);
       throw new Error(apiRes.statusText);
     }
     response = await apiRes.json();

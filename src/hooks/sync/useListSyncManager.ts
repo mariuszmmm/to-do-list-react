@@ -67,16 +67,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
   useEffect(() => {
     const { isRemoteSaveable, isIdenticalToRemote } = listStatus;
 
-    process.env.NODE_ENV === "development" &&
-      console.log("1 ListSyncManager useEffect triggered", {
-        listsData,
-        taskListMetaData,
-        tasks,
-        isError,
-        isRemoteSaveable,
-        isIdenticalToRemote,
-      });
-
     if (!listsData) {
       if (!isRemoteSaveable && !isIdenticalToRemote) return;
 
@@ -96,15 +86,7 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
     const isIdentical = areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks);
 
-    process.env.NODE_ENV === "development" &&
-      console.log("2 ListSyncManager useEffect after checks", {
-        remoteList,
-        isIdentical,
-        isRemoteSaveable,
-        isIdenticalToRemote,
-      });
-
-    if (isError && isRemoteSaveable) {
+   if (isError && isRemoteSaveable) {
       dispatch(setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }));
     } else {
       if (isRemoteSaveable && isIdenticalToRemote === isIdentical) return;
@@ -134,12 +116,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
     const isIdentical = areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks);
 
-    process.env.NODE_ENV === "development" &&
-      console.log("3 ListSyncManager useEffect for updating local list", {
-        remoteList,
-        isIdentical,
-      });
-
     if (isIdentical) {
       dispatch(updateTasksStatus({ status: "synced" }));
       return;
@@ -148,14 +124,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
     const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
     const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
-
-    process.env.NODE_ENV === "development" &&
-      console.log("4 ListSyncManager useEffect for updating local list:", {
-        deletedIds,
-        deviceId,
-        deletedTasks,
-        tasks,
-      });
 
     // sprawdzić czy w przypadku wystąpienia jednoczesnego getData i addData , dane nie następuje duplikacja ?
 
@@ -193,17 +161,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
       ...task,
       status: task.status !== "deleted" ? "updated" : task.status,
     }));
-    process.env.NODE_ENV === "development" &&
-      console.log("5 ListSyncManager updating local tasks", {
-        remoteList,
-        isIdentical,
-        deletedIds,
-        localOnlyTasks,
-        remoteOnlyTasks,
-        sourceMeta,
-        newMeta,
-        newTasks,
-      });
 
     dispatch(
       setTasks({
@@ -232,7 +189,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
   // Trigger save when there are local changes
   useEffect(() => {
-    process.env.NODE_ENV === "development" && console.log("TRIGER SAVE USE EFFECT");
     debouncedMutateRef.current?.cancel();
     const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } = listStatus;
 
@@ -240,7 +196,6 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
     const remoteList = listsData.lists.find((list) => list.id === taskListMetaData.id);
 
-    process.env.NODE_ENV === "development" && console.log("REMOTE LIST FOUND: ", remoteList);
     if (!remoteList && !manualSaveTriggered) return;
 
     const isIdentical = remoteList
@@ -248,23 +203,11 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
       : false;
 
     if (isIdentical) {
-      process.env.NODE_ENV === "development" && console.log("CANCEL SAVE - IDENTICAL");
       dispatch(updateTasksStatus({ status: "synced" }));
       return;
     }
 
     const version = remoteList?.version || 0;
-
-    process.env.NODE_ENV === "development" &&
-      console.log("6 ListSyncManager useEffect for saving changes", {
-        remoteList,
-        isIdentical,
-        version,
-        changeSource,
-        isRemoteSaveable,
-        manualSaveTriggered,
-        isIdenticalToRemote,
-      });
 
     if (changeSource === "remote") {
       dispatch(setChangeSource(null));
@@ -283,19 +226,10 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
       deviceId,
     };
 
-    process.env.NODE_ENV === "development" &&
-      console.log("7 ListSyncManager preparing to save", {
-        payload,
-        taskListMetaDataRef: taskListMetaDataRef.current,
-        tasksRef: tasksRef.current,
-      });
-
     if (manualSaveTriggered) {
-      process.env.NODE_ENV === "development" && console.log("8a ListSyncManager performing MANUAL save");
       saveListMutation.mutate(payload);
       dispatch(setListStatus({ manualSaveTriggered: false }));
     } else if (debouncedMutateRef.current) {
-      process.env.NODE_ENV === "development" && console.log("8b ListSyncManager performing DEBOUNCED save");
       debouncedMutateRef.current(payload);
     }
 

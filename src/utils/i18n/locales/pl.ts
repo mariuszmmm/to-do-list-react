@@ -84,14 +84,20 @@ const langPl = {
       change: "Zmień",
       remove: "Usuń",
       back: "Powrót",
-      addFromGallery: "Zdjęcia",
-      takePhoto: "Aparat",
+      uploadFromDevice: "Prześlij z urządzenia",
+      takePicture: "Zrób zdjęcie",
       cancel: "Anuluj",
+      capture: "Zrób zdjęcie",
+      close: "Zamknij",
     },
     messages: {
       uploading: "Przesyłanie…",
       loading: "Ładowanie…",
       removing: "Usuwanie…",
+      cameraPermissionDenied:
+        "Dostęp do kamery został odmówiony. Zezwól na dostęp do kamery w ustawieniach przeglądarki.",
+      cameraNotFound: "Nie znaleziono urządzenia kamera. Sprawdź połączenie kamerę.",
+      cameraError: "Podczas uzyskiwania dostępu do kamery wystąpił błąd.",
       error: {
         imageUploadError: "Błąd podczas przesyłania obrazu",
         imageDeleteError: "Błąd podczas usuwania obrazu",
@@ -102,7 +108,6 @@ const langPl = {
         invalidFileType: "Nieprawidłowy typ pliku. Dozwolone: {{allowedTypes}}",
         fileTooLarge: "Plik jest za duży. Maksymalny rozmiar: {{maxSize}} MB",
         uploadCanceled: "Anulowano przesyłanie obrazu",
-        canceledAfterUpload: "Przesyłanie zostało anulowane po załadowaniu",
         unknownError: "Nieznany błąd",
       },
     },
@@ -529,7 +534,7 @@ const langPl = {
     listLoad: {
       title: "Ładowanie listy",
       message: {
-        info: "Lista <strong>{{name}}</strong> została załadowana.",
+        info: "Lista <strong>{{name}}</strong> została załadowana do edycji.",
       },
     },
     confirmation: {

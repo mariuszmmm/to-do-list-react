@@ -4,6 +4,10 @@ export const MessageContainer = styled.div`
   min-height: ${({ children }) => (children ? "50px" : "0")};
   margin-bottom: ${({ children }) => (children ? "10px" : "0")};
   display: flex;
-  align-items: center;
-  transition: min-height 0.2s ease, margin-bottom 0.2s ease;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+  transition:
+    min-height 0.2s ease,
+    margin-bottom 0.2s ease;
 `;

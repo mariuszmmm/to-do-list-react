@@ -2,13 +2,13 @@ import axios from "axios";
 import { UploadResult } from "../../types";
 
 interface CloudinaryConfig {
-  apiKey: string;
+  api_key: string;
   asset_folder: string;
-  cloudName: string;
+  cloud_name: string;
   signature: string;
+  tags: string;
   timestamp: string;
-  uploadPreset: string;
-  context?: string;
+  upload_preset: string;
 }
 
 interface UploadOptions {
@@ -21,24 +21,20 @@ export const uploadImageToCloudinary = async (
   config: CloudinaryConfig,
   options?: UploadOptions,
 ): Promise<UploadResult> => {
-  const { apiKey, asset_folder, cloudName, signature, timestamp, uploadPreset, context } = config;
+  const { api_key, asset_folder, cloud_name, signature, tags, timestamp, upload_preset } = config;
 
   const formData = new FormData();
-  formData.append("api_key", apiKey);
+  formData.append("api_key", api_key);
   formData.append("asset_folder", asset_folder);
   formData.append("signature", signature);
   formData.append("timestamp", timestamp);
-  formData.append("upload_preset", uploadPreset);
+  formData.append("upload_preset", upload_preset);
+  formData.append("tags", tags);
   formData.append("file", file);
   formData.append("overwrite", "true");
   formData.append("invalidate", "true");
 
-  // Dodaj context (metadata) jeśli jest dostępny
-  if (context) {
-    formData.append("context", context);
-  }
-
-  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
 
   const res = await axios.post<UploadResult>(uploadUrl, formData, {
     signal: options?.signal,

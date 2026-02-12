@@ -22,6 +22,11 @@ const handler: Handler = async (event) => {
   try {
     const ASSET_FOLDER = "Todo-list/temp_uploads";
 
+    // Calculate threshold: 72 hours ago
+    const now = new Date();
+    const threshold = new Date(now.getTime() - 72 * 60 * 60 * 1000);
+    const thresholdISO = threshold.toISOString().split(".")[0] + "Z"; // Format: 2026-02-09T12:00:00Z
+
     const basicAuth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString("base64");
 
     const searchUrl = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/resources/search`;
@@ -32,7 +37,7 @@ const handler: Handler = async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        expression: `folder:${ASSET_FOLDER}`,
+        expression: `folder:${ASSET_FOLDER} AND created_at<${thresholdISO}`,
         max_results: 500,
       }),
     });

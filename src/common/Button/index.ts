@@ -23,6 +23,15 @@ export const Button = styled.button<ButtonProps>`
   user-select: none;
   white-space: nowrap;
 
+  &[data-icon] {
+    flex-direction: row;
+  }
+
+  &[data-icon]::before {
+    content: attr(data-icon);
+    margin-right: 4px;
+  }
+
   ${({ $special }) =>
     $special &&
     css`
@@ -61,6 +70,12 @@ export const Button = styled.button<ButtonProps>`
     color: ${({ theme }) => theme.colors.button.disabled};
     filter: brightness(100%);
     cursor: auto;
+
+    &[data-icon]::before {
+      opacity: 0.3;
+      margin-right: 4px;
+      filter: grayscale(100%);
+    }
 
     ${({ $error }) =>
       $error &&

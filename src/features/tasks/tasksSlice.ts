@@ -390,6 +390,29 @@ const tasksSlice = createSlice({
         image,
       };
     },
+    clearAllTaskImages: (state) => {
+      const time = new Date().toISOString();
+      state.tasks = state.tasks.map((task) => ({
+        ...task,
+        updatedAt: time,
+        image: null,
+      }));
+
+      state.undoTasksStack = state.undoTasksStack.map((taskListData) => ({
+        ...taskListData,
+        tasks: taskListData.tasks.map((task) => ({
+          ...task,
+          image: null,
+        })),
+      }));
+      state.redoTasksStack = state.redoTasksStack.map((taskListData) => ({
+        ...taskListData,
+        tasks: taskListData.tasks.map((task) => ({
+          ...task,
+          image: null,
+        })),
+      }));
+    },
   },
 });
 
@@ -417,6 +440,7 @@ export const {
   clearStorage,
   setChangeSource,
   setImage,
+  clearAllTaskImages,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;

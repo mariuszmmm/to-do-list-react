@@ -1,32 +1,63 @@
-import { v2 as cloudinary } from "cloudinary";
+import cloudinary, { validateCloudinaryConfig } from "../../config/cloudinary";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+interface MoveImageParams {
+  publicId: string;
+  folder: string;
+  oldPublicId?: string;
+  userEmail?: string;
+  listId?: string;
+  listName?: string;
+  taskId?: string;
+}
 
-export const moveCloudinaryImageToFolder = async (imageId?: string, folder?: string) => {
+export const moveCloudinaryImageToFolder = async ({
+  publicId,
+  oldPublicId,
+  folder,
+  userEmail,
+  listId,
+  listName,
+  taskId,
+}: MoveImageParams) => {
   const logPrefix = "[moveCloudinaryImageToFolder]";
 
-  if (!imageId || !folder) {
+  const configValidation = validateCloudinaryConfig();
+  if (!configValidation.isValid) {
     return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Missing imageId or folder parameters" }),
+      statusCode: 500,
+      body: JSON.stringify({ error: configValidation.error }),
     };
   }
 
-  if (!process.env.CLOUDINARY_API_SECRET || !process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
+  if (!publicId || !folder) {
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Missing Cloudinary configuration" }),
+      statusCode: 400,
+      body: JSON.stringify({ error: "Missing publicId or folder parameters" }),
     };
   }
 
   try {
-    const result = await cloudinary.api.update(imageId, {
+    const contextParts = [
+      userEmail && `userEmail=${userEmail}`,
+      listId && `listId=${listId}`,
+      listName && `listName=${listName}`,
+      taskId && `taskId=${taskId}`,
+    ].filter(Boolean);
+
+    const tags = ["app-todolist-image", "active"];
+    const result = await cloudinary.api.update(publicId, {
       asset_folder: `Todo-list/${folder}`,
+      tags,
+      context: contextParts.join("|"),
     });
+
+    if (oldPublicId) {
+      try {
+        await cloudinary.api.delete_resources([oldPublicId]);
+      } catch (deleteError: any) {
+        console.warn(`${logPrefix} Failed to delete old image:`, oldPublicId, deleteError.message || deleteError);
+      }
+    }
 
     return {
       statusCode: 200,

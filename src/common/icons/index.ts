@@ -121,14 +121,7 @@ export const CircleIcon = styled(Circle)<CircleIconProps>`
     `};
 
   filter: brightness(140%);
-  color: ${({
-    theme,
-    $isPending,
-    $isUpdated,
-    $isChanged,
-    $isError,
-    $isActive,
-  }) => {
+  color: ${({ theme, $isPending, $isUpdated, $isChanged, $isError, $isActive }) => {
     if ($isError) return theme.colors.status.error;
     if ($isChanged) return theme.colors.status.changed;
     if ($isPending) return theme.colors.status.pending;
@@ -140,6 +133,7 @@ export const CircleIcon = styled(Circle)<CircleIconProps>`
 const ArrowIconStyles = css`
   width: 0.6rem;
   scale: 1.5;
+  pointer-events: none;
 `;
 
 export const ArrowUpIcon = styled(ArrowUp)`

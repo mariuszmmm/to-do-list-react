@@ -1,11 +1,9 @@
 import { TFunction } from "i18next";
-import {
-  deleteBackupFromGoogleDriveApi,
-  fetchGoogleDriveBackupListApi,
-} from "../../../../api/backupApi";
+import { deleteBackupFromGoogleDriveApi, fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
 import i18n from "../../../../utils/i18n";
 import { translateText } from "../../../../api/translateTextApi";
 import { BackupFile } from "../../../../types";
+import { getUserToken } from "../../../../utils/auth/getUserToken";
 
 export const handleDeleteBackup = async (
   fileId: string,
@@ -17,31 +15,31 @@ export const handleDeleteBackup = async (
   setCurrentPage: (number: number) => void,
 ) => {
   try {
+    const token = await getUserToken();
+    if (!token) {
+      throw new Error("No user token");
+    }
+
     if (!googleAccessToken) {
       setShowGoogleAuth(true);
       setShowBackupList(false);
       return {
         success: false,
-        message: i18n.t(
-          "accountPage.backup.listGoogleDriveBackups.notAuthorized",
-        ),
+        message: i18n.t("accountPage.backup.listGoogleDriveBackups.notAuthorized"),
       };
     }
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("[DeleteBackup] Calling deleteBackupFromGoogleDriveApi");
-    }
-
-    const deleteResult = await deleteBackupFromGoogleDriveApi(
+    const deleteResult = await deleteBackupFromGoogleDriveApi({
+      token,
       googleAccessToken,
       fileId,
-    );
+    });
 
     if (!deleteResult.success) {
       throw new Error(deleteResult.message);
     }
 
-    const result = await fetchGoogleDriveBackupListApi(googleAccessToken);
+    const result = await fetchGoogleDriveBackupListApi({ token, googleAccessToken });
 
     if (!result.success || !result.data || !result.data.files) {
       throw new Error(result.message);
@@ -57,8 +55,7 @@ export const handleDeleteBackup = async (
 
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) ||
-      t("listGoogleDriveBackups.errorDelete");
+      (msg ? await translateText(msg, i18n.language) : null) || t("listGoogleDriveBackups.errorDelete");
 
     return { success: false, message: translatedText };
   }

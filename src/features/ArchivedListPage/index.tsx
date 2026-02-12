@@ -6,7 +6,6 @@ import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { TasksListView } from "../../common/TasksListView";
 import { TaskLists } from "./TaskLists";
-import { ListsButtons } from "./ListsButtons";
 import {
   selectArchivedList,
   selectArchivedLists,
@@ -62,10 +61,14 @@ const ArchivedListsPage = () => {
         title={isArchivedTaskListEmpty ? t("lists.empty") : t("lists.select")}
         body={
           <div ref={taskListsRef}>
-            <TaskLists lists={archivedLists} selectedListId={selectedListId} modalIsOpen={modalIsOpen} />
+            <TaskLists
+              lists={archivedLists}
+              selectedListId={selectedListId}
+              selectedListById={selectedListById}
+              modalIsOpen={modalIsOpen}
+            />
           </div>
         }
-        extraHeaderContent={<ListsButtons lists={archivedLists} selectedListById={selectedListById} />}
       />
       {selectedListById && (
         <>

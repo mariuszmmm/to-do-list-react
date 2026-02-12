@@ -1,9 +1,5 @@
 import type { Handler } from "@netlify/functions";
-import {
-  checkClientContext,
-  checkEventBody,
-  checkHttpMethod,
-} from "../functions/lib/validators";
+import { checkClientContext, checkEventBody, checkHttpMethod, parseJsonBody } from "../functions/lib/validators";
 import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event, context) => {
@@ -19,14 +15,10 @@ const handler: Handler = async (event, context) => {
   if (authResponse) return authResponse;
 
   try {
-    const body = event.body as string;
-    let parsedBody: { refreshToken?: string };
+    const parsedBody = parseJsonBody<{ refreshToken?: string }>(event.body, logPrefix);
 
-    try {
-      parsedBody = JSON.parse(body);
-    } catch (parseError) {
-      console.warn(`${logPrefix} Invalid JSON in request body`);
-      return jsonResponse(400, { message: "Invalid JSON in request body" });
+    if ("statusCode" in parsedBody) {
+      return parsedBody;
     }
 
     const { refreshToken } = parsedBody;
@@ -40,11 +32,7 @@ const handler: Handler = async (event, context) => {
     const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      logError(
-        "Missing Google OAuth credentials",
-        new Error("Missing environment variables"),
-        logPrefix
-      );
+      logError("Missing Google OAuth credentials", new Error("Missing environment variables"), logPrefix);
       return jsonResponse(500, { message: "Server configuration error" });
     }
 
@@ -76,11 +64,7 @@ const handler: Handler = async (event, context) => {
       expiresIn: data.expires_in,
     });
   } catch (error) {
-    logError(
-      "Unexpected error in refreshGoogleToken handler",
-      error,
-      logPrefix
-    );
+    logError("Unexpected error in refreshGoogleToken handler", error, logPrefix);
     return jsonResponse(500, {
       message: "Internal server error",
     });
