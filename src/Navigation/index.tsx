@@ -18,7 +18,7 @@ type Props = {
 };
 
 const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
-  const { t, i18n } = useTranslation("translation", {
+  const { t } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
   const { pathname } = useLocation();
