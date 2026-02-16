@@ -18,7 +18,7 @@ export const CameraModalOverlay = styled.div<{ $isOpen: boolean }>`
 export const CameraContainer = styled.div`
   position: relative;
   width: 90%;
-  max-width: 600px;
+  max-width: 1200px;
   max-height: 70vh;
   aspect-ratio: 4 / 3;
   background-color: #000;

@@ -5,11 +5,7 @@ import { jsonResponse, logError } from "../lib/response";
 import { Data } from "../../../src/types";
 import { publishAblyUpdate } from "../../config/ably";
 
-export const updateData = async (
-  event: HandlerEvent,
-  context: HandlerContext,
-  logPrefix: string
-) => {
+export const updateData = async (event: HandlerEvent, context: HandlerContext, logPrefix: string) => {
   try {
     const email = context.clientContext?.user.email as string;
     const body = event.body as string;
@@ -43,9 +39,7 @@ export const updateData = async (
     for (const incomingList of data.lists) {
       const dbList = foundUser.lists.find((l) => l.id === incomingList.id);
       if (dbList && dbList.version !== incomingList.version) {
-        console.warn(
-          `${logPrefix} Version mismatch for list ID: ${incomingList.id}`
-        );
+        console.warn(`${logPrefix} Version mismatch for list ID: ${incomingList.id}`);
         return jsonResponse(409, {
           message: "Conflict detected: Version mismatch.",
           data: {
@@ -64,18 +58,14 @@ export const updateData = async (
         const changed =
           dbList.name !== incomingList.name ||
           dbList.date !== incomingList.date ||
-          JSON.stringify(dbList.taskList) !==
-            JSON.stringify(incomingList.taskList);
+          JSON.stringify(dbList.taskList) !== JSON.stringify(incomingList.taskList);
         if (changed) {
           dbList.name = incomingList.name;
           dbList.date = incomingList.date;
           dbList.taskList = incomingList.taskList;
           dbList.version = (incomingList.version || 0) + 1;
         } else {
-          console.log(
-            `${logPrefix} No changes detected for list:`,
-            incomingList.id
-          );
+          console.log(`${logPrefix} No changes detected for list:`, incomingList.id);
         }
       } else {
         foundUser.lists.push({ ...incomingList, version: 0 });

@@ -163,9 +163,7 @@ const tasksSlice = createSlice({
       const index = state.tasks.findIndex(({ id }) => id === taskId);
       if (index === -1) return;
       const time = new Date().toISOString();
-      // !isRemoteSaveable && state.undoTasksStack.push(stateForUndo);
       state.undoTasksStack.push(stateForUndo);
-
       state.redoTasksStack = [];
       isRemoteSaveable
         ? (state.tasks[index] = {
@@ -372,47 +370,6 @@ const tasksSlice = createSlice({
     setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
       state.changeSource = payload;
     },
-    setImage: (
-      state,
-      {
-        payload: { taskId, image },
-      }: PayloadAction<{
-        taskId: string;
-        image: Task["image"];
-      }>,
-    ) => {
-      const index = state.tasks.findIndex((task) => task.id === taskId);
-      if (index === -1) return;
-      const time = new Date().toISOString();
-      state.tasks[index] = {
-        ...state.tasks[index],
-        updatedAt: time,
-        image,
-      };
-    },
-    clearAllTaskImages: (state) => {
-      const time = new Date().toISOString();
-      state.tasks = state.tasks.map((task) => ({
-        ...task,
-        updatedAt: time,
-        image: null,
-      }));
-
-      state.undoTasksStack = state.undoTasksStack.map((taskListData) => ({
-        ...taskListData,
-        tasks: taskListData.tasks.map((task) => ({
-          ...task,
-          image: null,
-        })),
-      }));
-      state.redoTasksStack = state.redoTasksStack.map((taskListData) => ({
-        ...taskListData,
-        tasks: taskListData.tasks.map((task) => ({
-          ...task,
-          image: null,
-        })),
-      }));
-    },
   },
 });
 
@@ -439,8 +396,6 @@ export const {
   switchTasksSort,
   clearStorage,
   setChangeSource,
-  setImage,
-  clearAllTaskImages,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;

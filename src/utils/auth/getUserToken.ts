@@ -12,13 +12,6 @@ export const getUserToken = async () => {
   const remainingMs = getTokenExpiresIn(user);
   const remainingSeconds = Math.floor(remainingMs / 1000);
 
-  process.env.NODE_ENV === "development" &&
-    console.log(
-      `[getUserToken] Remaining token time: ${remainingSeconds} seconds (${new Date(
-        Date.now() + remainingMs,
-      ).toISOString()})`,
-    );
-
   if (remainingMs <= 0) {
     return await refreshUserToken();
   }

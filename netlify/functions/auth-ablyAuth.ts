@@ -12,12 +12,8 @@ const handler: Handler = async (event, context) => {
   const emailParam = event.queryStringParameters?.email;
   const deviceId = event.queryStringParameters?.deviceId;
   const isAuthenticated = context?.clientContext?.user !== undefined;
-  const email = isAuthenticated
-    ? context?.clientContext?.user?.email
-    : emailParam;
-  const isAdmin =
-    context?.clientContext?.user?.app_metadata?.roles?.includes("admin") ??
-    false;
+  const email = isAuthenticated ? context?.clientContext?.user?.email : emailParam;
+  const isAdmin = context?.clientContext?.user?.app_metadata?.roles?.includes("admin") ?? false;
 
   if (!email) {
     console.warn(`${logPrefix} Unauthorized request: missing email`);
@@ -42,15 +38,15 @@ const handler: Handler = async (event, context) => {
           "global:presence-admins": ["subscribe", "presence"],
         }
       : isAuthenticated
-      ? {
-          [`user:${email}:lists`]: ["subscribe"],
-          [`user:${email}:confirmation`]: ["subscribe"],
-          [`user:${email}:presence`]: ["subscribe", "presence"],
-          "global:presence-admins": ["presence"],
-        }
-      : {
-          [`user:${email}:confirmation`]: ["subscribe"],
-        };
+        ? {
+            [`user:${email}:lists`]: ["subscribe"],
+            [`user:${email}:confirmation`]: ["subscribe"],
+            [`user:${email}:presence`]: ["subscribe", "presence"],
+            "global:presence-admins": ["presence"],
+          }
+        : {
+            [`user:${email}:confirmation`]: ["subscribe"],
+          };
 
     const tokenRequest = await ably.auth.createTokenRequest({
       clientId: uniqueClientId,

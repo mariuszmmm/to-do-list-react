@@ -3,7 +3,6 @@ import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../hooks";
-import { selectTaskById, selectTaskListMetaData } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
 import {
   Image,
@@ -25,19 +24,30 @@ import { useTaskImageActionsProps } from "./hooks/useTaskImageActionsProps";
 import { CameraModal } from "./CameraModal";
 import { TaskImageActions } from "./TaskImageActions";
 import { TaskImageProps } from "./types";
+import { ListsData } from "../../../types";
 
-export const TaskImage = () => {
+type Props = {
+  listsData?: ListsData;
+  localListId: string;
+};
+
+export const TaskImage = ({ listsData, localListId }: Props) => {
   const navigate = useNavigate();
   const { id: taskId } = useParams();
   const email = useAppSelector(selectLoggedUserEmail);
 
-  const task = useAppSelector((state) => (taskId ? selectTaskById(state, taskId) : null));
-  const { id: listId, name: listName } = useAppSelector(selectTaskListMetaData);
-  const taskImageProps: TaskImageProps = { userEmail: email, listId, listName, taskId };
+  const remoteList = listsData?.lists.find((list) => list.id === localListId);
+  const remoteTask = remoteList?.taskList.find((t) => t.id === taskId);
+  const taskImageProps: TaskImageProps = {
+    userEmail: email,
+    listId: remoteList?.id ?? "",
+    listName: remoteList?.name ?? "",
+    taskId,
+  };
   const { t } = useTranslation("translation", {
     keyPrefix: "taskImagePage",
   });
-  const { imageUrl: taskImageUrl, publicId: taskImagePublicId } = task?.image || {};
+  const { imageUrl: taskImageUrl, publicId: taskImagePublicId } = remoteTask?.image || {};
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] = useState(false);
@@ -61,7 +71,7 @@ export const TaskImage = () => {
   const handleConfirmRemove = async () => {
     if (taskImagePublicId && taskImageProps.taskId) {
       try {
-        await removeImage({ publicId: taskImagePublicId, taskId: taskImageProps.taskId });
+        await removeImage({ publicId: taskImagePublicId, taskImageProps });
         clearPreview();
       } catch (err) {
         console.error("[TaskImage] Remove image failed", err);
@@ -111,6 +121,7 @@ export const TaskImage = () => {
   const fileInputProps = {
     type: "file" as const,
     accept: "image/*",
+    capture: "environment" as const,
     onChange: onFileChange,
     disabled: isUploading,
     style: { display: "none" },
@@ -118,7 +129,6 @@ export const TaskImage = () => {
 
   const isButtonDisabled = isUploading || isRemoving || isConfirmingRemove;
   const imageSrc = previewUrl || taskImageUrl;
-  // const imageSrc = previewUrl || (taskImageUrl ? `${taskImageUrl}?cb=${Date.now()}` : undefined);
 
   const handleAddOrChange = () => {
     setPhotoSourceButtonsVisible(true);
@@ -165,9 +175,9 @@ export const TaskImage = () => {
       <Header title={t("title")} />
       <Section
         taskDetails
-        title={task ? task.content : t("noTask")}
+        title={remoteTask ? remoteTask.content : t("noTask")}
         body={
-          task && (
+          remoteTask && (
             <>
               <ImagePreview>
                 {imageSrc ? <Image src={imageSrc} alt='image preview' /> : <ImagePlaceholder />}
@@ -181,16 +191,22 @@ export const TaskImage = () => {
 
               <ImageInput ref={fileInputRef} {...fileInputProps} />
 
-              <CameraModal
-                isOpen={isCameraModalOpen}
-                videoRef={videoRef}
-                cameraError={cameraError}
-                isActive={isActive}
-                isCameraLoading={isCameraLoading}
-                isUploading={isUploading}
-                onTakePhoto={handleTakePhoto}
-                onClose={handleCloseCameraModal}
-              />
+              {typeof window !== "undefined" &&
+                !(
+                  "ontouchstart" in window ||
+                  (window.matchMedia && window.matchMedia("(pointer: coarse)").matches)
+                ) && (
+                  <CameraModal
+                    isOpen={isCameraModalOpen}
+                    videoRef={videoRef}
+                    cameraError={cameraError}
+                    isActive={isActive}
+                    isCameraLoading={isCameraLoading}
+                    isUploading={isUploading}
+                    onTakePhoto={handleTakePhoto}
+                    onClose={handleCloseCameraModal}
+                  />
+                )}
 
               <TaskImageActions
                 status={taskImageActionsProps.status}

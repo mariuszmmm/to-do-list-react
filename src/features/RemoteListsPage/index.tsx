@@ -19,7 +19,7 @@ import {
   selectList,
 } from "./remoteListsSlice";
 import { selectModalIsOpen, selectModalConfirmed, openModal, closeModal } from "../../Modal/modalSlice";
-import { clearAllTaskImages, selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
+import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
 
 type Props = { listsData: ListsData; localListId: string };
@@ -88,10 +88,8 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
         listId: listToRemove.id,
         deviceId,
       });
-      if (taskListId === listToRemove.id) {
-        dispatch(clearAllTaskImages());
-        dispatch(setListStatus({}));
-      }
+
+      if (taskListId === listToRemove.id) dispatch(setListStatus({}));
       dispatch(selectList(null));
       dispatch(setListToRemove(null));
     } else {

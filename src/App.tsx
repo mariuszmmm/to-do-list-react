@@ -58,7 +58,7 @@ const App = () => {
         <Routes>
           <Route path='/account-recovery' element={<AccountRecoveryPage />} />
           <Route path='/user-confirmation' element={<UserConfirmationPage />} />
-          <Route path='/tasks/image/:id' element={<TaskImage />} />
+          <Route path='/tasks/image/:id' element={<TaskImage listsData={safeData} localListId={localListId} />} />
           <Route path='/tasks/:id' element={<TaskPage />} />
           <Route path='/tasks' element={<TasksPage listsData={safeData} saveListMutation={saveListMutation} />} />
           <Route path='/archived-lists' element={<ArchivedListsPage />} />

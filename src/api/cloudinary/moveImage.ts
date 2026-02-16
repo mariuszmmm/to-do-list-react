@@ -2,7 +2,19 @@ import axios from "axios";
 import { getUserToken } from "../../utils/auth/getUserToken";
 import { TaskImageProps } from "../../features/tasks/TaskImage/types";
 
-export const moveCloudinaryImage = async (publicId: string, taskImageProps: TaskImageProps, oldPublicId?: string) => {
+interface MoveCloudinaryImageArgs {
+  publicId: string;
+  taskImageProps: TaskImageProps;
+  oldPublicId?: string;
+  deviceId: string;
+}
+
+export const moveCloudinaryImage = async ({
+  publicId,
+  taskImageProps,
+  oldPublicId,
+  deviceId,
+}: MoveCloudinaryImageArgs) => {
   const token = await getUserToken();
 
   if (!token) {
@@ -14,16 +26,17 @@ export const moveCloudinaryImage = async (publicId: string, taskImageProps: Task
   params.append("folder", `${taskImageProps.userEmail}/${taskImageProps.listName}`);
 
   const optionalParams = [
-    oldPublicId && ["oldPublicId", oldPublicId],
     taskImageProps.userEmail && ["userEmail", taskImageProps.userEmail],
     taskImageProps.listId && ["listId", taskImageProps.listId],
     taskImageProps.listName && ["listName", taskImageProps.listName],
     taskImageProps.taskId && ["taskId", taskImageProps.taskId],
+    oldPublicId && ["oldPublicId", oldPublicId],
+    deviceId && ["deviceId", deviceId],
   ].filter(Boolean) as [string, string][];
 
   optionalParams.forEach(([key, value]) => params.append(key, value));
 
-  const res = await axios.post(`/image?${params.toString()}`, null, {
+  const res = await axios.put(`/image?${params.toString()}`, null, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

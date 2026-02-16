@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { Nav, NavList, Account, NavButton, ActiveAccount } from "./styled";
+import { Nav, NavList, Account, ActiveAccount, NavListItem } from "./styled";
+import LangSwitcherDesktop from "./LangSwitcherDesktop";
+import LangSwitcherMobile from "./LangSwitcherMobile";
 import { AutoMinWidthNavLink } from "./AutoMinWidthNavLink";
-import { supportedLanguages } from "../utils/i18n/languageResources";
 import { ListsData } from "../types";
 import { Loader } from "../common/Loader";
 import { auth } from "../api/auth";
@@ -29,40 +30,36 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
     <Nav>
       {!authRoute && (
         <NavList $isLists={!!user && !isError}>
-          <li>
-            {supportedLanguages.map((lang) => (
-              <NavButton
-                onClick={() => i18n.changeLanguage(lang)}
-                $isActive={i18n.language.split("-")[0] === lang}
-                key={lang}
-                width="34px"
-              >
-                {lang.toUpperCase()}
-              </NavButton>
-            ))}
-          </li>
-          <li>
-            <AutoMinWidthNavLink to="/tasks" $inactive={pathname !== "/tasks"} text={t("tasksPage")}>
+          <NavListItem $first $main>
+            <LangSwitcherDesktop />
+            <LangSwitcherMobile />
+          </NavListItem>
+          <NavListItem $main>
+            <AutoMinWidthNavLink to='/tasks' $inactive={pathname !== "/tasks"} text={t("tasksPage")}>
               {t("tasksPage")}
             </AutoMinWidthNavLink>
-          </li>
+          </NavListItem>
           {!!user && !isError && (
-            <li>
+            <NavListItem $main>
               {isLoading ? (
                 <Loader isDarkTheme={isDarkTheme} />
               ) : !!listsData ? (
-                <AutoMinWidthNavLink to="/lists" text={t("lists")}>{t("lists")}</AutoMinWidthNavLink>
+                <AutoMinWidthNavLink to='/lists' text={t("lists")}>
+                  {t("lists")}
+                </AutoMinWidthNavLink>
               ) : null}
-            </li>
+            </NavListItem>
           )}
-          <li>
-            <AutoMinWidthNavLink to="/info" text={t("info")}>{t("info")}</AutoMinWidthNavLink>
-          </li>
-          <li>
-            <AutoMinWidthNavLink to="/account" text={""}>
+          <NavListItem $main>
+            <AutoMinWidthNavLink to='/info' text={t("info")}>
+              {t("info")}
+            </AutoMinWidthNavLink>
+          </NavListItem>
+          <NavListItem $last $main>
+            <AutoMinWidthNavLink to='/account' text={""}>
               {pathname === "/account" ? <ActiveAccount /> : <Account />}
             </AutoMinWidthNavLink>
-          </li>
+          </NavListItem>
         </NavList>
       )}
     </Nav>

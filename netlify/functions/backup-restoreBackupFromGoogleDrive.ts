@@ -55,9 +55,7 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         backupResult = await downloadFileFromGoogleDrive(fileId, accessToken);
       } catch (err: any) {
         if (err && err.status === 401) {
-          console.warn(
-            `${logPrefix} Google Drive authentication failed: ${err.message}`
-          );
+          console.warn(`${logPrefix} Google Drive authentication failed: ${err.message}`);
           return jsonResponse(401, {
             message: "Google Drive authentication failed.",
             source: "google-drive",
@@ -67,11 +65,7 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
       }
 
       const backupData = backupResult;
-      const typeResponse = validateBackupType(
-        backupData.backupType,
-        "all-users-backup",
-        logPrefix
-      );
+      const typeResponse = validateBackupType(backupData.backupType, "all-users-backup", logPrefix);
       if (typeResponse) {
         return typeResponse;
       }
@@ -81,9 +75,7 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         return usersResponse;
       }
 
-      const { restored, failed } = await restoreAllUsersFromBackupData(
-        backupData
-      );
+      const { restored, failed } = await restoreAllUsersFromBackupData(backupData);
 
       return jsonResponse(200, {
         restored,

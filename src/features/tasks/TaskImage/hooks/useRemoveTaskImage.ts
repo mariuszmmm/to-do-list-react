@@ -1,37 +1,52 @@
-import { useMutation } from "@tanstack/react-query";
-import { useAppDispatch } from "../../../../hooks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCloudinaryImage } from "../../../../api/cloudinary/deleteImage";
-import { setImage } from "../../tasksSlice";
 import { UploadError, UploadErrorCode } from "../../../../utils/errors/UploadError";
 import { useEffect } from "react";
+import { TaskImageProps } from "../types";
+import { ListsData } from "../../../../types";
+import { getOrCreateDeviceId } from "../../../../utils/storage/deviceId";
 
 interface RemoveArgs {
   publicId: string;
-  taskId: string;
+  taskImageProps: TaskImageProps;
 }
 
 export const useRemoveTaskImage = () => {
-  const dispatch = useAppDispatch();
+  const deviceId = getOrCreateDeviceId();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({ publicId }: RemoveArgs) => {
-      try {
-        const result = await deleteCloudinaryImage(publicId);
+    mutationFn: async ({ publicId, taskImageProps }: RemoveArgs) => {
+      if (!taskImageProps.userEmail) throw new UploadError(UploadErrorCode.NOT_AUTHENTICATED);
+      if (!taskImageProps.taskId) {
+        throw new UploadError(UploadErrorCode.GENERAL_ERROR);
+      }
 
-        if (result?.result === "not found") {
-          console.warn(`[useRemoveTaskImage] Image not found in Cloudinary: ${publicId}`);
-        }
-      } catch (err) {
+      const result = await deleteCloudinaryImage({ publicId, taskImageProps, deviceId });
+
+      if (!result.success) {
         throw new UploadError(UploadErrorCode.DELETE_FAILED);
       }
+
+      return { listId: taskImageProps.listId, taskId: taskImageProps.taskId };
     },
 
-    onSuccess: (_, { taskId }) => {
-      if (!taskId) return;
-      dispatch(setImage({ taskId, image: null }));
+    onSuccess: ({ listId, taskId }) => {
+      queryClient.setQueryData(["listsData"], (oldData: ListsData | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          lists: oldData.lists.map((list) =>
+            list.id === listId
+              ? {
+                  ...list,
+                  taskList: list.taskList.map((task) => (task.id === taskId ? { ...task, image: null } : task)),
+                }
+              : list,
+          ),
+        };
+      });
     },
-
-    onError: () => {},
   });
 
   useEffect(() => {

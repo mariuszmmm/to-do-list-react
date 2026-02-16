@@ -14,8 +14,7 @@ export const StyledLink = styled(Link)<StyledLinkProps>`
   ${({ disabled, $edit }) =>
     disabled &&
     css`
-      color: ${({ theme }) =>
-        $edit ? theme.colors.button.edit : theme.colors.button.disabled};
+      color: ${({ theme }) => ($edit ? theme.colors.button.edit : theme.colors.button.disabled)};
       pointer-events: none;
     `}
 

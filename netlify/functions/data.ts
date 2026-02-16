@@ -5,6 +5,7 @@ import { getData } from "./data/getData";
 import { addData } from "./data/addData";
 import { removeData } from "./data/removeData";
 import { updateData } from "./data/updateData";
+import { jsonResponse } from "./lib/response";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[data]";
@@ -29,10 +30,7 @@ const handler: Handler = async (event, context) => {
     case "DELETE":
       return removeData(event, context, "[removeData]");
     default:
-      return {
-        statusCode: 405,
-        body: JSON.stringify({ error: "Method Not Allowed" }),
-      };
+      return jsonResponse(405, { error: "Method Not Allowed" });
   }
 };
 

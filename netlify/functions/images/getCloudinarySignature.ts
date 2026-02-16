@@ -5,21 +5,16 @@ import cloudinary, {
   cloud_name,
   upload_preset,
 } from "../../config/cloudinary";
+import { jsonResponse } from "../lib/response";
 
 export const getCloudinarySignature = () => {
   const configValidation = validateCloudinaryConfig();
   if (!configValidation.isValid) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: configValidation.error }),
-    };
+    return jsonResponse(500, { error: configValidation.error });
   }
 
   if (!upload_preset) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Missing CLOUDINARY_UPLOAD_PRESET" }),
-    };
+    return jsonResponse(500, { error: "Missing CLOUDINARY_UPLOAD_PRESET" });
   }
 
   const timestamp = Math.round(Date.now() / 1000);
@@ -37,16 +32,13 @@ export const getCloudinarySignature = () => {
 
   const signature = cloudinary.utils.api_sign_request(params, api_secret!);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      api_key,
-      asset_folder,
-      cloud_name,
-      signature,
-      tags,
-      timestamp,
-      upload_preset,
-    }),
-  };
+  return jsonResponse(200, {
+    api_key,
+    asset_folder,
+    cloud_name,
+    signature,
+    tags,
+    timestamp,
+    upload_preset,
+  });
 };

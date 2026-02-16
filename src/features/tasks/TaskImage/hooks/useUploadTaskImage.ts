@@ -1,12 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import { useAppDispatch } from "../../../../hooks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCloudinaryUpload } from "../../../../hooks/media/cloudinary/useCloudinaryUpload";
 import { moveCloudinaryImage } from "../../../../api/cloudinary/moveImage";
-import { setImage } from "../../tasksSlice";
 import { UploadError, UploadErrorCode } from "../../../../utils/errors/UploadError";
 import { useEffect, useState } from "react";
 import { isCanceledError } from "../../../../utils/errors/isCanceledError";
 import { TaskImageProps } from "../types";
+import { ListsData } from "../../../../types";
+import { getOrCreateDeviceId } from "../../../../utils/storage/deviceId";
 
 type UploadPhase = "idle" | "uploading" | "committing";
 
@@ -17,9 +17,9 @@ interface UploadArgs {
 }
 
 export const useUploadTaskImage = () => {
-  const dispatch = useAppDispatch();
   const cloudinary = useCloudinaryUpload();
-
+  const queryClient = useQueryClient();
+  const deviceId = getOrCreateDeviceId();
   const [phase, setPhase] = useState<UploadPhase>("idle");
 
   const mutation = useMutation({
@@ -43,7 +43,6 @@ export const useUploadTaskImage = () => {
         if (err instanceof UploadError) {
           throw err;
         }
-        console.error("XXX Upload error:", err);
         throw new UploadError(UploadErrorCode.GENERAL_ERROR);
       }
 
@@ -53,33 +52,39 @@ export const useUploadTaskImage = () => {
 
       setPhase("committing");
 
-      const moved = await moveCloudinaryImage(temp.public_id, taskImageProps, previousPublicId);
+      const moved = await moveCloudinaryImage({
+        publicId: temp.public_id,
+        taskImageProps,
+        oldPublicId: previousPublicId,
+        deviceId,
+      });
 
-      if (!moved?.result?.public_id) {
+      if (!moved.success) {
         throw new UploadError(UploadErrorCode.MOVE_FAILED);
       }
 
-      const image = { ...moved.result, original_filename: file.name };
-
-      return { taskId: taskImageProps.taskId, image };
+      return {
+        listId: taskImageProps.listId,
+        taskId: taskImageProps.taskId,
+        image: moved.result,
+      };
     },
 
-    onSuccess: ({ taskId, image }) => {
-      dispatch(
-        setImage({
-          taskId,
-          image: {
-            imageUrl: image.secure_url,
-            publicId: image.public_id,
-            width: image.width,
-            height: image.height,
-            format: image.format,
-            createdAt: image.created_at,
-            displayName: image.display_name,
-            originalFilename: image.original_filename,
-          },
-        }),
-      );
+    onSuccess: ({ listId, taskId, image }) => {
+      queryClient.setQueryData(["listsData"], (oldData: ListsData | undefined) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          lists: oldData.lists.map((list) =>
+            list.id === listId
+              ? {
+                  ...list,
+                  taskList: list.taskList.map((task) => (task.id === taskId ? { ...task, image } : task)),
+                }
+              : list,
+          ),
+        };
+      });
 
       setPhase("idle");
       setTimeout(() => cloudinary.resetProgress(), 300);

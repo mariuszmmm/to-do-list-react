@@ -2,10 +2,7 @@ import type { Handler } from "@netlify/functions";
 import UserData from "../models/UserData";
 import { connectToDB } from "../config/mongoose";
 import { jsonResponse, logError } from "../functions/lib/response";
-import {
-  checkClientContext,
-  checkHttpMethod,
-} from "../functions/lib/validators";
+import { checkClientContext, checkHttpMethod } from "../functions/lib/validators";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[deleteUser]";
@@ -39,20 +36,13 @@ const handler: Handler = async (event, context) => {
       headers: { Authorization: adminAuthHeader },
     });
     if (!response.ok) {
-      console.warn(
-        `${logPrefix} Failed to delete user from identity: ${response.status} - ${response.statusText}`
-      );
+      console.warn(`${logPrefix} Failed to delete user from identity: ${response.status} - ${response.statusText}`);
       return jsonResponse(response.status, { message: response.statusText });
     }
 
-    const updateResult = await UserData.updateOne(
-      { email },
-      { account: "deleted" }
-    );
+    const updateResult = await UserData.updateOne({ email }, { account: "deleted" });
     if (updateResult.modifiedCount === 0) {
-      console.warn(
-        `${logPrefix} Failed to update user account to 'deleted': ${email}`
-      );
+      console.warn(`${logPrefix} Failed to update user account to 'deleted': ${email}`);
       return jsonResponse(500, { message: "Failed to delete user" });
     }
 

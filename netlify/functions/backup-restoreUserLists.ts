@@ -4,11 +4,7 @@ import type { Handler } from "@netlify/functions";
 import UserData from "../models/UserData";
 import { connectToDB } from "../config/mongoose";
 import { publishAblyUpdate } from "../config/ably";
-import {
-  checkClientContext,
-  checkEventBody,
-  checkHttpMethod,
-} from "../functions/lib/validators";
+import { checkClientContext, checkEventBody, checkHttpMethod } from "../functions/lib/validators";
 import { BackupData, Task } from "../../src/types";
 import { jsonResponse, logError } from "../functions/lib/response";
 
@@ -45,12 +41,8 @@ const handler: Handler = async (event, context) => {
       return jsonResponse(400, { message: "Missing backupData" });
     }
 
-    const isAllUsersBackup =
-      backupData.backupType === "all-users-backup" &&
-      Array.isArray(backupData.users);
-    const isUserListsBackup =
-      backupData.backupType === "user-lists-backup" &&
-      Array.isArray(backupData.lists);
+    const isAllUsersBackup = backupData.backupType === "all-users-backup" && Array.isArray(backupData.users);
+    const isUserListsBackup = backupData.backupType === "user-lists-backup" && Array.isArray(backupData.lists);
 
     if (!isAllUsersBackup && !isUserListsBackup) {
       console.warn(`${logPrefix} Invalid backup format for restore`);
@@ -73,9 +65,7 @@ const handler: Handler = async (event, context) => {
     if (Array.isArray(backupData.lists)) {
       listsToRestore = backupData.lists;
     } else if (Array.isArray(backupData.users)) {
-      const backupUser = backupData.users.find(
-        (user: { email: string; lists: List[] }) => user.email === email
-      );
+      const backupUser = backupData.users.find((user: { email: string; lists: List[] }) => user.email === email);
       if (!backupUser || !Array.isArray(backupUser.lists)) {
         console.warn(`${logPrefix} User lists not found in backup`);
         return jsonResponse(400, {
@@ -91,25 +81,23 @@ const handler: Handler = async (event, context) => {
     }
 
     const currentDate = new Date().toISOString();
-    const normalizedLists: List[] = listsToRestore.map(
-      (list: List & { taskList: Task[] }) => ({
-        id: list.id || nanoid(),
-        name: list.name || "Untitled List",
-        date: list.date || currentDate,
-        updatedAt: list.updatedAt || currentDate,
-        version: list.version || 0,
-        taskList: Array.isArray(list.taskList)
-          ? list.taskList.map((task: any) => ({
-              ...task,
-              id: task.id || nanoid(),
-              content: task.content || "",
-              done: typeof task.done === "boolean" ? task.done : false,
-              date: task.date || currentDate,
-              updatedAt: task.updatedAt || currentDate,
-            }))
-          : [],
-      })
-    );
+    const normalizedLists: List[] = listsToRestore.map((list: List & { taskList: Task[] }) => ({
+      id: list.id || nanoid(),
+      name: list.name || "Untitled List",
+      date: list.date || currentDate,
+      updatedAt: list.updatedAt || currentDate,
+      version: list.version || 0,
+      taskList: Array.isArray(list.taskList)
+        ? list.taskList.map((task: any) => ({
+            ...task,
+            id: task.id || nanoid(),
+            content: task.content || "",
+            done: typeof task.done === "boolean" ? task.done : false,
+            date: task.date || currentDate,
+            updatedAt: task.updatedAt || currentDate,
+          }))
+        : [],
+    }));
 
     foundUser.lists = normalizedLists;
     await foundUser.save();

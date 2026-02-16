@@ -3,35 +3,34 @@ import { checkClientContext } from "./lib/validators";
 import { getCloudinarySignature } from "./images/getCloudinarySignature";
 import { deleteCloudinaryImage } from "./images/deleteCloudinaryImage";
 import { moveCloudinaryImageToFolder } from "./images/moveCloudinaryImageToFolder";
+import { jsonResponse } from "./lib/response";
 
 const handler: Handler = async (event, context) => {
-  const logPrefix = "[Netlify Function: Cloudinary Image API]";
+  const logPrefix = "[Cloudinary Image API]";
+
+  const params = (event.queryStringParameters || {}) as {
+    publicId: string;
+    folder: string;
+    oldPublicId: string;
+    userEmail: string;
+    listId: string;
+    listName: string;
+    taskId: string;
+    deviceId: string;
+  };
 
   const authResponse = checkClientContext(context, logPrefix);
   if (authResponse) return authResponse;
 
-  const params = (event.queryStringParameters || {}) as unknown as {
-    publicId: string;
-    folder: string;
-    oldPublicId?: string;
-    userEmail?: string;
-    listId?: string;
-    listName?: string;
-    taskId?: string;
-  };
-
   switch (event.httpMethod) {
     case "GET":
       return getCloudinarySignature();
-    case "POST":
-      return moveCloudinaryImageToFolder(params);
+    case "PUT":
+      return moveCloudinaryImageToFolder(params, context, "[moveCloudinaryImageToFolder]");
     case "DELETE":
-      return deleteCloudinaryImage(params.publicId);
+      return deleteCloudinaryImage(params, context, "[deleteCloudinaryImage]");
     default:
-      return {
-        statusCode: 405,
-        body: JSON.stringify({ error: "Method Not Allowed" }),
-      };
+      return jsonResponse(405, { error: "Method Not Allowed" });
   }
 };
 

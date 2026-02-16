@@ -1,22 +1,56 @@
-import { NavLink } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { NavLink } from "react-router-dom";
 import { ReactComponent as user } from "../images/user.svg";
 import { ReactComponent as user_1 } from "../images/user_1.svg";
 
-interface NavListProps {
-  $isLists: boolean;
-}
-interface ButtonProps {
-  $isActive?: boolean;
-  width?: string;
-}
+export const LangDropdown = styled.ul`
+  display: flex;
+  position: absolute;
+  left: -20px;
+  top: 100%;
+  z-index: 1001;
+  min-width: 60px;
+  padding: 15px 0 10px 0;
+  list-style: none;
+  background-color: ${({ theme }) => theme.colors.nav.background};
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  opacity: 0;
+  transform: translateX(-100%);
+  pointer-events: none;
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+`;
 
-interface StyledNavLinkProps {
-  $inactive?: boolean;
-}
-interface AccountProps {
-  $isActive?: boolean;
-}
+export const LangDesktop = styled.div`
+  display: flex;
+  gap: 8px;
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    display: none;
+  }
+`;
+
+export const LangMobileWrapper = styled.div`
+  position: relative;
+  display: none;
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    display: inline-block;
+  }
+  &:hover ${LangDropdown}, &:focus-within ${LangDropdown} {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+`;
+
+export const LangMobileLabel = styled.span`
+  cursor: pointer;
+  user-select: none;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.colors.nav.text};
+`;
 
 export const Nav = styled.nav`
   background-color: ${({ theme }) => theme.colors.nav.background};
@@ -29,8 +63,11 @@ export const Nav = styled.nav`
   position: fixed;
   min-width: 300px;
   width: 100%;
-  z-index: 10;
+  z-index: 1000;
 `;
+interface NavListProps {
+  $isLists: boolean;
+}
 
 export const NavList = styled.ul<NavListProps>`
   list-style: none;
@@ -47,29 +84,47 @@ export const NavList = styled.ul<NavListProps>`
     css`
       grid-template-columns: 1fr auto auto auto 1fr;
     `};
-
-  li {
-    text-align: right;
-  }
-
-  li:first-child {
-    text-align: left;
-    margin-left: 20px;
-  }
-
-  li:last-child {
-    margin-right: 20px;
-  }
 `;
+
+interface NavListItemProps {
+  $first?: boolean;
+  $last?: boolean;
+  $main?: boolean;
+}
+
+export const NavListItem = styled.li<NavListItemProps>`
+  ${({ $main }) =>
+    $main &&
+    css`
+      text-align: right;
+    `}
+
+  ${({ $first }) =>
+    $first &&
+    css`
+      text-align: left;
+      margin-left: 20px;
+    `}
+
+  ${({ $last }) =>
+    $last &&
+    css`
+      margin-right: 20px;
+    `}
+`;
+
+interface StyledNavLinkProps {
+  $inactive?: boolean;
+}
 
 export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.nav.text};
   transition: color 0.2s ease-in-out;
+  text-underline-offset: 5px;
 
   &:hover {
     text-decoration: underline;
-    text-underline-offset: 5px;
   }
 
   &.active {
@@ -82,27 +137,32 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   }
 `;
 
+interface ButtonProps {
+  $isActive?: boolean;
+  width?: string;
+}
+
 export const NavButton = styled.button<ButtonProps>`
   background: none;
   border: none;
   color: ${({ theme }) => theme.colors.nav.text};
   width: ${({ width }) => width || "auto"};
   cursor: pointer;
+  text-underline-offset: 5px;
 
   &:hover {
     text-decoration: underline;
-    text-underline-offset: 5px;
   }
   ${({ $isActive }) =>
     $isActive &&
     css`
       font-weight: ${({ theme }) => theme.fontWeight.bold};
     `};
-
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    display: none;
-  }
 `;
+
+interface AccountProps {
+  $isActive?: boolean;
+}
 
 export const Account = styled(user)<AccountProps>`
   margin-top: 0.2rem;

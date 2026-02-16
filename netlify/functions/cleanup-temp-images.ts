@@ -24,7 +24,8 @@ const handler: Handler = async (event) => {
 
     // Calculate threshold: 72 hours ago
     const now = new Date();
-    const threshold = new Date(now.getTime() - 72 * 60 * 60 * 1000);
+    // const threshold = new Date(now.getTime() - 72 * 60 * 60 * 1000);
+    const threshold = new Date(now.getTime() - 0); // For testing, set to 0 hours to delete all in folder
     const thresholdISO = threshold.toISOString().split(".")[0] + "Z"; // Format: 2026-02-09T12:00:00Z
 
     const basicAuth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString("base64");

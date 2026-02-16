@@ -10,7 +10,6 @@ const ImageSchema = new Schema<Image>({
   displayName: { type: String, required: false, default: null },
   height: { type: Number, required: false, default: null },
   width: { type: Number, required: false, default: null },
-  originalFilename: { type: String, required: false, default: null },
 });
 
 const TaskSchema = new Schema<Task>({
@@ -50,9 +49,7 @@ const UserDataSchema = new Schema<UserDoc>({
   lists: { type: [ListSchema], default: [] },
 });
 
-const UserData =
-  (mongoose.models.User as mongoose.Model<UserDoc>) ||
-  mongoose.model<UserDoc>("User", UserDataSchema);
+const UserData = (mongoose.models.User as mongoose.Model<UserDoc>) || mongoose.model<UserDoc>("User", UserDataSchema);
 
 export type UserDoc = mongoose.Document & {
   email: string;

@@ -24,11 +24,7 @@ export async function connectToDB(retries = MAX_RETRIES) {
   } catch (error) {
     if (retries > 0) {
       const delay = RETRY_DELAY_MS * (MAX_RETRIES - retries + 1);
-      console.warn(
-        `MongoDB connect failed, retrying in ${
-          delay / 1000
-        }s... (${retries} left)`
-      );
+      console.warn(`MongoDB connect failed, retrying in ${delay / 1000}s... (${retries} left)`);
       await new Promise((res) => setTimeout(res, delay));
       return connectToDB(retries - 1);
     }
@@ -36,9 +32,7 @@ export async function connectToDB(retries = MAX_RETRIES) {
     console.error("[connectToDB] Connection error:", error);
 
     if (process.env.NETLIFY || process.env.NODE_ENV !== "production") {
-      console.error(
-        "[connectToDB] Max retries reached. Exiting process to trigger restart."
-      );
+      console.error("[connectToDB] Max retries reached. Exiting process to trigger restart.");
       process.exit(1);
     }
     throw error;

@@ -1,12 +1,7 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import { restoreAllUsersFromBackupData } from "../functions/lib/restoreAllUsersFromBackupData";
-import {
-  checkAdminRole,
-  checkClientContext,
-  checkEventBody,
-  checkHttpMethod,
-} from "../functions/lib/validators";
+import { checkAdminRole, checkClientContext, checkEventBody, checkHttpMethod } from "../functions/lib/validators";
 import { BackupData } from "../../src/types";
 import { jsonResponse, logError } from "../functions/lib/response";
 
@@ -50,9 +45,7 @@ const handler: Handler = async (event, context) => {
       return jsonResponse(400, { message: "Invalid backup data structure" });
     }
 
-    const { restored, failed } = await restoreAllUsersFromBackupData(
-      backupData
-    );
+    const { restored, failed } = await restoreAllUsersFromBackupData(backupData);
 
     return jsonResponse(200, {
       message: `Restored ${restored} users, ${failed} failed`,

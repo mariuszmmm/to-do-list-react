@@ -10,9 +10,7 @@ export const getData = async (context: HandlerContext, logPrefix: string) => {
     let foundUser = await UserData.findOne({ email, account: "active" }).exec();
 
     if (!foundUser) {
-      console.warn(
-        `${logPrefix} User not found in DB, creating empty record: ${email}`
-      );
+      console.warn(`${logPrefix} User not found in DB, creating empty record: ${email}`);
       foundUser = await UserData.create({
         email,
         account: "active",
@@ -21,7 +19,6 @@ export const getData = async (context: HandlerContext, logPrefix: string) => {
     }
 
     const lists = mapListsToResponse(foundUser.lists);
-    // console.log("lists", lists);
 
     return jsonResponse(200, {
       message: "User data found",

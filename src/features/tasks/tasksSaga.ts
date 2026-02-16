@@ -27,7 +27,6 @@ import {
   undoTasks,
   clearTaskList,
   selectListStatus,
-  setImage,
 } from "./tasksSlice";
 import { selectListToLoad, setListToLoad } from "../RemoteListsPage/remoteListsSlice";
 import { addArchivedList, setArchivedListToLoad } from "../ArchivedListPage/archivedListsSlice";
@@ -196,7 +195,6 @@ export function* tasksSaga() {
       undoTasks.type,
       redoTasks.type,
       setListName.type,
-      setImage.type,
     ],
     saveTasksInLocalStorageHandler,
   );

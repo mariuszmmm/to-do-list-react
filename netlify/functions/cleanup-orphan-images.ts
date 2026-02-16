@@ -25,7 +25,8 @@ const handler: Handler = async (event) => {
 
   try {
     const ASSET_FOLDER = "Todo-list";
-    const GRACE_PERIOD_DAYS = 7; // Only delete images older than 7 days
+    // const GRACE_PERIOD_DAYS = 7; // Only delete images older than 7 days
+    const GRACE_PERIOD_DAYS = 0; // For testing, set to 0 days to delete all images in folder
 
     console.log(`${logPrefix} Starting orphan images cleanup...`);
 

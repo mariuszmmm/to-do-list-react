@@ -10,8 +10,7 @@ export const useLogin = () => {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      auth.login(email, password, true),
+    mutationFn: ({ email, password }: { email: string; password: string }) => auth.login(email, password, true),
 
     onMutate: () => {
       dispatch(
@@ -50,9 +49,7 @@ export const useLogin = () => {
 
     onError: async (error: any) => {
       const msg = error.json?.error_description || error.json;
-      const translatedText = msg
-        ? await translateText(msg, i18n.language)
-        : null;
+      const translatedText = msg ? await translateText(msg, i18n.language) : null;
 
       dispatch(
         openModal({
