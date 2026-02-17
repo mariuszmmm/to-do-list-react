@@ -1,7 +1,7 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/auth/getUserToken";
-import { fetchGoogleDriveBackupListApi, uploadAllUsersToGoogleDriveApi } from "../../../../api/backupApi";
+import { fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 import { BackupFile } from "../../../../types";
