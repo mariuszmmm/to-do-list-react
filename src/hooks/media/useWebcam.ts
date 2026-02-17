@@ -137,33 +137,29 @@ export const useWebcam = () => {
 
   useEffect(() => {
     const checkCameraAvailability = async () => {
-      try {
-        const hasUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices);
-
-        if (!hasUserMedia) {
-          setIsAvailable(false);
-          setError({
-            type: "unknown",
-            message: "Your browser does not support camera access",
-          });
-          return;
-        }
-
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const hasVideoDevice = devices.some((device) => device.kind === "videoinput");
-
-        if (hasVideoDevice) {
+      if (navigator.mediaDevices && typeof navigator.mediaDevices.enumerateDevices === "function") {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const hasVideoDevice = devices.some((device) => device.kind === "videoinput");
+          if (hasVideoDevice) {
+            setIsAvailable(true);
+            setError(null);
+          } else {
+            setIsAvailable(false);
+            setError({
+              type: "camera-not-found",
+              message: "No camera device found",
+            });
+          }
+        } catch (err) {
           setIsAvailable(true);
           setError(null);
-        } else {
-          setIsAvailable(false);
         }
-      } catch (err) {
-        console.error("Failed to check camera availability", err);
-        setIsAvailable(false);
+      } else {
+        setIsAvailable(null);
+        setError(null);
       }
     };
-
     checkCameraAvailability();
   }, []);
 

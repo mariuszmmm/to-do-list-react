@@ -96,7 +96,7 @@ const langPl = {
       removing: "Usuwanie…",
       cameraPermissionDenied:
         "Dostęp do kamery został odmówiony. Zezwól na dostęp do kamery w ustawieniach przeglądarki.",
-      cameraNotFound: "Nie znaleziono urządzenia kamera. Sprawdź połączenie kamerę.",
+      cameraNotFound: "Nie znaleziono urządzenia kamera. Sprawdź połączenie.",
       cameraError: "Podczas uzyskiwania dostępu do kamery wystąpił błąd.",
       error: {
         imageUploadError: "Błąd podczas przesyłania obrazu",

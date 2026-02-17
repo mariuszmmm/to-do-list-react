@@ -49,7 +49,8 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
   });
   const { imageUrl: taskImageUrl, publicId: taskImagePublicId } = remoteTask?.image || {};
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputCameraRef = useRef<HTMLInputElement>(null);
+  const fileInputGalleryRef = useRef<HTMLInputElement>(null);
   const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] = useState(false);
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -86,7 +87,7 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     confirmButtonLabel: { key: "modal.buttons.deleteButton" },
   });
 
-  const { onFileChange, handleGalleryClick, handleCancelUpload } = useFileUploadHandlers({
+  const { onFileChange: onCameraFileChange, handleCancelUpload } = useFileUploadHandlers({
     taskImageProps,
     setPreview,
     uploadTaskImage,
@@ -94,10 +95,24 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     clearPreview,
     setPhotoSourceButtonsVisible,
     cancelUpload,
-    fileInputRef,
+    fileInputRef: fileInputCameraRef,
+  });
+  const { onFileChange: onGalleryFileChange } = useFileUploadHandlers({
+    taskImageProps,
+    setPreview,
+    uploadTaskImage,
+    taskImagePublicId,
+    clearPreview,
+    setPhotoSourceButtonsVisible,
+    cancelUpload,
+    fileInputRef: fileInputGalleryRef,
   });
 
-  const { handleCameraClick, handleTakePhoto, handleCloseCameraModal } = useCameraHandlers({
+  const {
+    handleCameraClick: handleCameraModalClick,
+    handleTakePhoto,
+    handleCloseCameraModal,
+  } = useCameraHandlers({
     taskImageProps,
     capturePhoto,
     setPreview,
@@ -118,11 +133,18 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     stopCamera,
   });
 
-  const fileInputProps = {
+  const fileInputCameraProps = {
     type: "file" as const,
     accept: "image/*",
     capture: "environment" as const,
-    onChange: onFileChange,
+    onChange: onCameraFileChange,
+    disabled: isUploading,
+    style: { display: "none" },
+  };
+  const fileInputGalleryProps = {
+    type: "file" as const,
+    accept: "image/*",
+    onChange: onGalleryFileChange,
     disabled: isUploading,
     style: { display: "none" },
   };
@@ -150,6 +172,21 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     }
   };
 
+  const isMobile =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches));
+
+  const handleCameraButton = () => {
+    if (isMobile) {
+      fileInputCameraRef.current?.click();
+    } else {
+      handleCameraModalClick();
+    }
+  };
+  const handleGalleryButton = () => {
+    fileInputGalleryRef.current?.click();
+  };
+
   const taskImageActionsProps = useTaskImageActionsProps({
     isUploading,
     uploadError,
@@ -159,8 +196,8 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     phase,
     isCameraAvailable,
     cameraError,
-    handleGalleryClick,
-    handleCameraClick,
+    handleGalleryClick: handleGalleryButton,
+    handleCameraClick: handleCameraButton,
     handleAddOrChange,
     handleRemoveImage,
     handleCancelButton,
@@ -189,7 +226,8 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
                 )}
               </ImagePreview>
 
-              <ImageInput ref={fileInputRef} {...fileInputProps} />
+              <ImageInput ref={fileInputCameraRef} {...fileInputCameraProps} />
+              <ImageInput ref={fileInputGalleryRef} {...fileInputGalleryProps} />
 
               {typeof window !== "undefined" &&
                 !(

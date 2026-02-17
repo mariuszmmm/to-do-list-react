@@ -25,3 +25,24 @@ export const getWidthForSwitchTaskSortButton = (lang: string) => {
   if (lang === "de") return "190px";
   return "auto";
 };
+
+export const getWidthForTasksNavButton = (lang: string) => {
+  if (lang === "pl") return "68px";
+  if (lang === "en") return "47px";
+  if (lang === "de") return "83px";
+  return "auto";
+};
+
+export const getWidthForListsNavButton = (lang: string) => {
+  if (lang === "pl") return "40px";
+  if (lang === "en") return "39px";
+  if (lang === "de") return "51px";
+  return "auto";
+};
+
+export const getWidthForInfoNavButton = (lang: string) => {
+  if (lang === "pl") return "91px";
+  if (lang === "en") return "33px";
+  if (lang === "de") return "33px";
+  return "auto";
+};

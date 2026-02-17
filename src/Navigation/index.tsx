@@ -1,14 +1,18 @@
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { Nav, NavList, Account, ActiveAccount, NavListItem } from "./styled";
-import LangSwitcherDesktop from "./LangSwitcherDesktop";
-import LangSwitcherMobile from "./LangSwitcherMobile";
-import { AutoMinWidthNavLink } from "./AutoMinWidthNavLink";
+import { Nav, NavList, Account, ActiveAccount, NavListItem, StyledNavLink } from "./styled";
+import { LangSwitcherDesktop } from "./LangSwitcherDesktop";
+import { LangSwitcherMobile } from "./LangSwitcherMobile";
 import { ListsData } from "../types";
 import { Loader } from "../common/Loader";
 import { auth } from "../api/auth";
 import { useAppSelector } from "../hooks";
 import { selectIsDarkTheme } from "../common/ThemeSwitch/themeSlice";
+import {
+  getWidthForInfoNavButton,
+  getWidthForListsNavButton,
+  getWidthForTasksNavButton,
+} from "../utils/ui/getWidthForDynamicButtons";
 
 type Props = {
   listsData?: ListsData;
@@ -18,7 +22,7 @@ type Props = {
 };
 
 const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
   const { pathname } = useLocation();
@@ -34,31 +38,34 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
             <LangSwitcherDesktop />
             <LangSwitcherMobile />
           </NavListItem>
+
           <NavListItem $main>
-            <AutoMinWidthNavLink to='/tasks' $inactive={pathname !== "/tasks"} text={t("tasksPage")}>
+            <StyledNavLink
+              to='/tasks'
+              $inactive={pathname !== "/tasks"}
+              width={getWidthForTasksNavButton(i18n.language)}
+            >
               {t("tasksPage")}
-            </AutoMinWidthNavLink>
+            </StyledNavLink>
           </NavListItem>
           {!!user && !isError && (
             <NavListItem $main>
               {isLoading ? (
                 <Loader isDarkTheme={isDarkTheme} />
               ) : !!listsData ? (
-                <AutoMinWidthNavLink to='/lists' text={t("lists")}>
+                <StyledNavLink to='/lists' width={getWidthForListsNavButton(i18n.language)}>
                   {t("lists")}
-                </AutoMinWidthNavLink>
+                </StyledNavLink>
               ) : null}
             </NavListItem>
           )}
           <NavListItem $main>
-            <AutoMinWidthNavLink to='/info' text={t("info")}>
+            <StyledNavLink to='/info' width={getWidthForInfoNavButton(i18n.language)}>
               {t("info")}
-            </AutoMinWidthNavLink>
+            </StyledNavLink>
           </NavListItem>
           <NavListItem $last $main>
-            <AutoMinWidthNavLink to='/account' text={""}>
-              {pathname === "/account" ? <ActiveAccount /> : <Account />}
-            </AutoMinWidthNavLink>
+            <StyledNavLink to='/account'>{pathname === "/account" ? <ActiveAccount /> : <Account />}</StyledNavLink>
           </NavListItem>
         </NavList>
       )}

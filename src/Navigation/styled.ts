@@ -3,22 +3,27 @@ import { NavLink } from "react-router-dom";
 import { ReactComponent as user } from "../images/user.svg";
 import { ReactComponent as user_1 } from "../images/user_1.svg";
 
-export const LangDropdown = styled.ul`
+interface LangDropdownProps {
+  $isOpen?: boolean;
+}
+
+export const LangDropdown = styled.ul<LangDropdownProps>`
   display: flex;
   position: absolute;
   left: -20px;
-  top: 100%;
+  top: calc(100% + 17px);
   z-index: 1001;
   min-width: 60px;
   padding: 15px 0 10px 0;
   list-style: none;
+  padding-top: 10px;
   background-color: ${({ theme }) => theme.colors.nav.background};
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  opacity: 0;
-  transform: translateX(-100%);
-  pointer-events: none;
+  gap: 20px;
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  transform: ${({ $isOpen }) => ($isOpen ? "translateX(0)" : "translateX(-100%)")};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
   transition:
     opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -26,7 +31,7 @@ export const LangDropdown = styled.ul`
 
 export const LangDesktop = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 14px;
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     display: none;
   }
@@ -35,21 +40,11 @@ export const LangDesktop = styled.div`
 export const LangMobileWrapper = styled.div`
   position: relative;
   display: none;
+  padding-left: 1px;
+
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     display: inline-block;
   }
-  &:hover ${LangDropdown}, &:focus-within ${LangDropdown} {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-`;
-
-export const LangMobileLabel = styled.span`
-  cursor: pointer;
-  user-select: none;
-  font-weight: ${({ theme }) => theme.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.nav.text};
 `;
 
 export const Nav = styled.nav`
@@ -115,16 +110,21 @@ export const NavListItem = styled.li<NavListItemProps>`
 
 interface StyledNavLinkProps {
   $inactive?: boolean;
+  width?: string;
 }
 
 export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.nav.text};
   transition: color 0.2s ease-in-out;
-  text-underline-offset: 5px;
+  width: ${({ width }) => width || "auto"};
+  display: inline-block;
+  text-align: center;
+  min-width: fit-content;
 
   &:hover {
     text-decoration: underline;
+    text-underline-offset: 5px;
   }
 
   &.active {
@@ -149,10 +149,12 @@ export const NavButton = styled.button<ButtonProps>`
   width: ${({ width }) => width || "auto"};
   cursor: pointer;
   text-underline-offset: 5px;
+  padding: 0;
 
   &:hover {
     text-decoration: underline;
   }
+
   ${({ $isActive }) =>
     $isActive &&
     css`
