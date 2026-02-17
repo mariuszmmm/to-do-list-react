@@ -44,7 +44,9 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "serve-https": "npm run build && serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
+    "https": "npm run build && serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem"
   },
   "eslintConfig": {
     "extends": [

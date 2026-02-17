@@ -29,9 +29,9 @@ import { useSortableRowAnimation } from "../../../../hooks/ui/useSortableRowAnim
 import { Task } from "../../../../types";
 import { TaskActions } from "../../../../common/TaskActions";
 import { selectLoggedUserEmail } from "../../../AccountPage/accountSlice";
-import type { TaskFormApi } from "../TaskForm/hooks/useTaskForm";
+import { useTaskForm } from "../hooks/useTaskForm";
 
-export const TasksList = ({ taskForm }: { taskForm: TaskFormApi }) => {
+export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskForm> }) => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);

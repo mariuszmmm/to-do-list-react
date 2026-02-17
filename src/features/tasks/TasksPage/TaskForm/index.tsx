@@ -7,9 +7,9 @@ import { MicrophoneIcon } from "../../../../common/icons";
 import { InputButton } from "../../../../common/InputButton";
 import { TaskFormButtons } from "./TaskFormButtons";
 import { TaskInput } from "./TaskInput";
-import type { TaskFormApi } from "./hooks/useTaskForm";
+import { useTaskForm } from "../hooks/useTaskForm";
 
-export const TaskForm = ({ taskForm }: { taskForm: TaskFormApi }) => {
+export const TaskForm = ({ taskForm }: { taskForm: ReturnType<typeof useTaskForm> }) => {
   const { t } = useTranslation("translation", { keyPrefix: "tasksPage" });
   const editedTask = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
