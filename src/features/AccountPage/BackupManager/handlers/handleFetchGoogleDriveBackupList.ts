@@ -1,7 +1,7 @@
 import { TFunction } from "i18next";
 import { StatusState } from "..";
 import { getUserToken } from "../../../../utils/auth/getUserToken";
-import { fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
+import { fetchGoogleDriveBackupListApi, uploadAllUsersToGoogleDriveApi } from "../../../../api/backupApi";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 import { BackupFile } from "../../../../types";
@@ -16,9 +16,7 @@ export const handleFetchGoogleDriveBackupList = async (
 ): Promise<void> => {
   try {
     const token = await getUserToken();
-    if (!token) {
-      throw new Error("No user token");
-    }
+    if (!token) throw new Error("No user token");
 
     if (!googleAccessToken) {
       setStatus({

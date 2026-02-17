@@ -6,7 +6,7 @@ export const handleDeleteBackupConfirmation = (
   fileId: string,
   fileName: string,
   setFileToDelete: (file: BackupFile | null) => void,
-  dispatch: ReturnType<typeof useAppDispatch>
+  dispatch: ReturnType<typeof useAppDispatch>,
 ): void => {
   setFileToDelete({ id: fileId, name: fileName });
 
@@ -19,6 +19,6 @@ export const handleDeleteBackupConfirmation = (
       },
       type: "confirm",
       confirmButton: { key: "modal.buttons.deleteButton" },
-    })
+    }),
   );
 };

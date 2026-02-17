@@ -4,7 +4,7 @@ import { publishAblyUpdate } from "../../config/ably";
 import { BackupData, List, Task } from "../../../src/types";
 
 export const restoreAllUsersFromBackupData = async (
-  backupData: BackupData
+  backupData: BackupData,
 ): Promise<{ restored: number; failed: number }> => {
   let restored = 0;
   let failed = 0;
@@ -21,25 +21,23 @@ export const restoreAllUsersFromBackupData = async (
       }
 
       const currentDate = new Date().toISOString();
-      const normalizedLists: List[] = userList.map(
-        (list: List & { taskList: Task[] }) => ({
-          id: list.id || nanoid(),
-          name: list.name || "Untitled List",
-          date: list.date || currentDate,
-          updatedAt: list.updatedAt || currentDate,
-          version: list.version || 0,
-          taskList: Array.isArray(list.taskList)
-            ? list.taskList.map((task: any) => ({
-                ...task,
-                id: task.id || nanoid(),
-                content: task.content || "",
-                done: typeof task.done === "boolean" ? task.done : false,
-                date: task.date || currentDate,
-                updatedAt: task.updatedAt || currentDate,
-              }))
-            : [],
-        })
-      );
+      const normalizedLists: List[] = userList.map((list: List & { taskList: Task[] }) => ({
+        id: list.id || nanoid(),
+        name: list.name || "Untitled List",
+        date: list.date || currentDate,
+        updatedAt: list.updatedAt || currentDate,
+        version: list.version || 0,
+        taskList: Array.isArray(list.taskList)
+          ? list.taskList.map((task: any) => ({
+              ...task,
+              id: task.id || nanoid(),
+              content: task.content || "",
+              done: typeof task.done === "boolean" ? task.done : false,
+              date: task.date || currentDate,
+              updatedAt: task.updatedAt || currentDate,
+            }))
+          : [],
+      }));
 
       await UserData.findOneAndUpdate(
         { email: user.email },
@@ -48,7 +46,7 @@ export const restoreAllUsersFromBackupData = async (
           account: user.account || "active",
           lists: normalizedLists,
         },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: "after" },
       );
 
       await publishAblyUpdate(user.email, {

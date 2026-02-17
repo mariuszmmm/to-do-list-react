@@ -22,11 +22,10 @@ const handler: Handler = async (event) => {
   try {
     const ASSET_FOLDER = "Todo-list/temp_uploads";
 
-    // Calculate threshold: 72 hours ago
+    // Calculate threshold: 24 hours ago (1 dzień)
     const now = new Date();
-    // const threshold = new Date(now.getTime() - 72 * 60 * 60 * 1000);
-    const threshold = new Date(now.getTime() - 0); // For testing, set to 0 hours to delete all in folder
-    const thresholdISO = threshold.toISOString().split(".")[0] + "Z"; // Format: 2026-02-09T12:00:00Z
+    const threshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const thresholdISO = threshold.toISOString().split(".")[0] + "Z";
 
     const basicAuth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString("base64");
 
@@ -38,8 +37,7 @@ const handler: Handler = async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        expression: `folder:${ASSET_FOLDER} AND created_at<${thresholdISO}`,
-        max_results: 500,
+        expression: `folder:${ASSET_FOLDER} AND created_at < "${thresholdISO}"`,
       }),
     });
 

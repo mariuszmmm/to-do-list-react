@@ -13,7 +13,7 @@ const handler: Handler = async (event) => {
   try {
     await connectToDB();
 
-    const timedOutMs = 1000 * 60 * 5; // 5 minutes
+    const timedOutMs = 1000 * 60 * 60; // 1 hour
     const cutoffIso = new Date(Date.now() - timedOutMs).toISOString();
 
     const updateResult = await UserData.updateMany(

@@ -249,6 +249,12 @@ export const restoreSelectedBackupFromGoogleDriveApi = async (
 ): Promise<ApiResponse<{ restored: number; failed: number }>> => {
   try {
     let currentAccessToken = accessToken;
+    await axios.post(
+      "/backup-uploadAllUsersToGoogleDrive",
+      { accessToken: currentAccessToken },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
     let response = await axios.post(
       "/backup-restoreBackupFromGoogleDrive",
       { fileId, accessToken: currentAccessToken },

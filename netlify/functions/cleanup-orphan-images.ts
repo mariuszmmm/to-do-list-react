@@ -26,7 +26,7 @@ const handler: Handler = async (event) => {
   try {
     const ASSET_FOLDER = "Todo-list";
     // const GRACE_PERIOD_DAYS = 7; // Only delete images older than 7 days
-    const GRACE_PERIOD_DAYS = 0; // For testing, set to 0 days to delete all images in folder
+    const GRACE_PERIOD_DAYS = 1; // Usuwaj osierocone zdjęcia starsze niż 1 dzień
 
     console.log(`${logPrefix} Starting orphan images cleanup...`);
 
@@ -47,7 +47,7 @@ const handler: Handler = async (event) => {
     // Paginate through all Cloudinary results
     do {
       const searchBody: any = {
-        expression: `folder:${ASSET_FOLDER}/* AND created_at<${thresholdISO}`,
+        expression: `folder:${ASSET_FOLDER}/* AND created_at < "${thresholdISO}"`,
         max_results: 100,
         with_field: ["context", "tags"], // Include context and tags in response
       };
