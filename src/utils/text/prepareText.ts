@@ -17,7 +17,7 @@ const trimText = (text: string) => text.replace(/^[ \t]+|[ \t]+$/g, "");
 
 const replaceWordPeriod = (text: string) => {
   if (!text.includes(` ${t("prepareText.period")}`)) return text;
-  return text.replaceAll(` ${t("prepareText.period")}`, ". ");
+  return text.replaceAll(` ${t("prepareText.period")}`, ".");
 };
 
 const replaceWordComma = (text: string) => {

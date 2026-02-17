@@ -3,10 +3,6 @@ import { prepareText } from "../../utils/text/prepareText";
 import i18n from "../../utils/i18n";
 import { defaultLanguage, langCodes, SupportedLanguages } from "../../utils/i18n/languageResources";
 
-/**
- * Hook for speech-to-text functionality using the Web Speech API.
- * Handles speech recognition, language, interim/final results, and error handling.
- */
 export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const [supportSpeech, setSupportSpeech] = useState<boolean | null>(null);
@@ -43,7 +39,6 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
     recog.onstart = () => setIsListening(true);
     recog.onend = () => setIsListening(false);
 
-    // Handle speech recognition results (interim and final)
     recog.onresult = (event) => {
       const result = event.results[event.resultIndex];
 
@@ -55,12 +50,11 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
       if (isInterimSupported.current) {
         setIsActive(false);
         interimTextRef.current = "";
-        finalTextRef.current += text;
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            finalTextRef.current += transcript + " "; // dodane + " ";
+            finalTextRef.current += transcript + " ";
           } else {
             setIsActive(true);
             interimTextRef.current += transcript;
@@ -74,7 +68,6 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
       }
     };
 
-    // Handle speech recognition errorss
     recog.onerror = async (event) => {
       console.error("Speech recognition error: ", event.error);
       setIsListening(false);
@@ -93,27 +86,31 @@ export const useSpeechToText = ({ prevText }: { prevText?: string }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getSpeechLang, i18n.language]);
 
-  // Start speech recognition with previous text
   const start = useCallback(
     (prevText?: string) => {
-      prevText && (finalTextRef.current = prevText);
+      let initial = prevText || "";
+      if (initial && !initial.endsWith(" ")) initial += " ";
+      finalTextRef.current = initial;
+      interimTextRef.current = "";
+      setText(initial);
       recognitionRef.current?.start();
     },
     [recognitionRef],
   );
 
-  // Stop speech recognition
   const stop = useCallback(() => {
     recognitionRef.current?.stop();
   }, []);
 
-  // Clear speech text and refs
   const clear = useCallback(() => {
     setText("");
     interimTextRef.current = "";
     finalTextRef.current = "";
     hasCheckedInterim.current = false;
     isInterimSupported.current = false;
+    // Dodatkowo resetuj rozpoznawanie mowy
+    setIsListening(false);
+    setIsActive(false);
   }, []);
 
   return {

@@ -33,10 +33,11 @@ export const useTaskForm = () => {
     if (speech.isListening) {
       speech.stop();
     } else {
-      speech.start(`${editedTask ? textAreaRef.current?.value : inputValue} `);
+      const prevText = editedTask ? textAreaRef.current?.value || "" : inputValue;
+      speech.start(prevText);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speech.isListening, editedTask]);
+  }, [speech.isListening, editedTask, inputValue]);
 
   const handleChange = useCallback(
     (v: string) => {
@@ -67,6 +68,7 @@ export const useTaskForm = () => {
 
     setInputValue("");
     setTextAreaValue("");
+    speech.setText("");
     speech.clear();
   }, [inputValue, textAreaValue, editedTask, dispatch, tasks, taskListMetaData, speech]);
 
@@ -109,26 +111,30 @@ export const useTaskForm = () => {
 
   useEffect(() => {
     if (!editedTask && speech.text) {
-      setInputValue(speech.text);
-      inputRef.current?.focus();
-      if (inputRef.current) {
-        requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          inputRef.current!.scrollLeft = inputRef.current!.scrollWidth;
-          inputRef.current!.scrollTop = inputRef.current!.scrollHeight;
-        });
+      if (speech.text !== "") {
+        setInputValue(speech.text);
+        inputRef.current?.focus();
+        if (inputRef.current) {
+          requestAnimationFrame(() => {
+            inputRef.current?.focus();
+            inputRef.current!.scrollLeft = inputRef.current!.scrollWidth;
+            inputRef.current!.scrollTop = inputRef.current!.scrollHeight;
+          });
+        }
       }
     }
 
     if (editedTask && speech.text) {
-      setTextAreaValue(speech.text);
-      textAreaRef.current?.focus();
-      if (textAreaRef.current) {
-        requestAnimationFrame(() => {
-          textAreaRef.current?.focus();
-          textAreaRef.current!.scrollLeft = textAreaRef.current!.scrollWidth;
-          textAreaRef.current!.scrollTop = textAreaRef.current!.scrollHeight;
-        });
+      if (speech.text !== "") {
+        setTextAreaValue(speech.text);
+        textAreaRef.current?.focus();
+        if (textAreaRef.current) {
+          requestAnimationFrame(() => {
+            textAreaRef.current?.focus();
+            textAreaRef.current!.scrollLeft = textAreaRef.current!.scrollWidth;
+            textAreaRef.current!.scrollTop = textAreaRef.current!.scrollHeight;
+          });
+        }
       }
     }
   }, [speech.text, editedTask]);
@@ -136,7 +142,7 @@ export const useTaskForm = () => {
   useEffect(() => {
     if (speech.isListening) {
       speech.stop();
-      speech.clear();
+      // Nie czyść speech przy wyłączaniu rozpoznawania mowy, tylko przy submit
     }
     setTextAreaValue(editedTask?.content || "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
