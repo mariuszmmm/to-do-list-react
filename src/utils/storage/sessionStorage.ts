@@ -15,13 +15,17 @@ export const getConfimationTokenFromSessionStorage = (): string | null => {
   return data ? JSON.parse(data) : null;
 };
 
-export const saveRecoveryTokenFromSessionStorage = (token: string) =>
+export const removeConfimationTokenFromSessionStorage = () => sessionStorage.removeItem(confimationTokenKey);
+
+export const saveRecoveryTokenInSessionStorage = (token: string) =>
   sessionStorage.setItem(recoveryTokenKey, JSON.stringify(token));
 
 export const getRecoveryTokenFromSessionStorage = (): string | null => {
   const data = sessionStorage.getItem(recoveryTokenKey);
   return data ? JSON.parse(data) : null;
 };
+
+export const removeRecoveryTokenFromSessionStorage = () => sessionStorage.removeItem(recoveryTokenKey);
 
 export const saveListMetadataInSessionStorage = (taskListMetaData: TaskListMetaData | null) => {
   if (!taskListMetaData) {

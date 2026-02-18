@@ -1,3 +1,8 @@
+/**
+ * Ta funkcja jest uruchamiana wyłącznie przez webhook Netlify.
+ * Nie jest wywoływana bezpośrednio z poziomu przeglądarki ani frontend aplikacji.
+ * Obsługuje procesy backendowe związane z potwierdzaniem konta użytkownika.
+ */
 import type { Handler } from "@netlify/functions";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
@@ -74,6 +79,7 @@ const handler: Handler = async (event) => {
       logError("Failed to send Ably notification", ablyError, logPrefix);
     }
 
+    console.log("[confirmUser] Response:", { message: "User confirmed", email });
     return jsonResponse(200, { message: "User confirmed", email });
   } catch (error) {
     logError("Unexpected error in confirmUser handler", error, logPrefix);

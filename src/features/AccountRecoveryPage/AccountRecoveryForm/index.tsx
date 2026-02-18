@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { SubmitEventHandler, useEffect, useRef, useState } from "react";
 import { useValidation } from "../../../hooks/validation/useValidation";
 import { useAppDispatch } from "../../../hooks/redux/redux";
 import { Form } from "../../../common/Form";
@@ -38,9 +38,12 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
             type: "loading",
           }),
         );
+
         const token = getRecoveryTokenFromSessionStorage();
-        if (!token) throw new Error();
+        if (!token) throw new Error("No token");
+
         await auth.recover(token);
+
         dispatch(
           openModal({
             title: { key: "modal.accountRecovery.title" },
@@ -73,7 +76,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
     setMessage,
   });
 
-  const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  const onFormSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     if (!passwordValidation()) return;

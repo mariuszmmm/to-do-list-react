@@ -11,10 +11,12 @@ type Status = "waiting" | "success" | "error";
 
 const UserConfirmationPage = () => {
   const [status, setStatus] = useState<Status>("waiting");
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "confirmationPage",
   });
   const dispatch = useAppDispatch();
+
+  console.log("UserConfirmationPage   t ", { tekst: i18n.t("modal.confirmation.title") });
 
   useEffect(() => {
     const confirmation = async () => {
@@ -26,6 +28,7 @@ const UserConfirmationPage = () => {
             type: "loading",
           }),
         );
+
         const token = getConfimationTokenFromSessionStorage();
         if (!token) throw new Error("No token");
 

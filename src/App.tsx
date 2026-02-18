@@ -45,14 +45,25 @@ const App = () => {
 
   return (
     <HashRouter>
-      <SessionManager authRoutes={authRoutes} />
-      <Navigation listsData={safeData} isLoading={isLoading} isError={isError} authRoutes={authRoutes} />
-      <TokenManager />
-      <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
-      <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
+      {(() => {
+        const { hash } = window.location;
+        if (!authRoutes.some((route) => hash.startsWith(`#${route}`))) {
+          return (
+            <>
+              <SessionManager authRoutes={authRoutes} />
+              <Navigation listsData={safeData} isLoading={isLoading} isError={isError} authRoutes={authRoutes} />
+              <TokenManager />
+              <AblyManager userEmail={loggedUserEmail} enabled={!!loggedUserEmail} />
+              <ListSyncManager listsData={safeData} saveListMutation={saveListMutation} />
+            </>
+          );
+        }
+        return null;
+      })()}
+
       <Container>
         <HeaderControls>
-          <ThemeSwitch />
+          <ThemeSwitch authRoutes={authRoutes} />
           <CurrentDate authRoutes={authRoutes} />
         </HeaderControls>
         <Routes>

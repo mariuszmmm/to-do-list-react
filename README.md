@@ -48,6 +48,9 @@
 <li>Netlify GoTrue.js</li>
 <li>MongoDB</li>
 <li>EmailJS</li>
+<li>Cloudinary (Image Management)</li>
+<li>Ably (Real-time Synchronization)</li>
+<li>@dnd-kit (Drag and Drop)</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
 <li>Controlled Components</li>
@@ -81,6 +84,10 @@
     - Password reset and change,
     - Account deletion.<br>
   - <b>Adding tasks by voice:</b> Ability to enter task content using speech recognition (Web Speech API).
+  - <b>Task Attachments:</b> Ability to attach images to tasks (powered by <b>Cloudinary</b>).
+  - <b>Drag & Drop:</b> Intuitively reorder users' tasks and lists (powered by <b>@dnd-kit</b>).
+  - <b>Real-time Sync:</b> Instant updates across devices using <b>Ably</b>.
+  - <b>Archived Lists:</b> Archive lists to keep your workspace clean without losing data.
 
 - <b>Lists Page:</b></br>
   After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
@@ -164,6 +171,7 @@ Example views:
 <b>Adding a Task</b>
 
 - Enter the task name in the text field and click <b>"Add Task"</b> or press <b>Enter</b>.
+- Click the <b>image icon</b> to upload an attachment to the task.
 
 </br>
 
@@ -192,7 +200,7 @@ Example views:
 - <b>Display details:</b> Click a task to view its detailed information.
 - <b>Delete task:</b> Click the trash icon next to a task to delete it.
 - <b>Done all / Undone all:</b> Allows you to mark all tasks as completed or unmark them.
-- <b>Enable/disable sorting:</b> Toggles sorting mode. In list view, buttons will appear to move tasks up and down.
+- <b>Enable/disable sorting:</b> Toggles sorting mode. In list view, buttons will appear to move tasks up and down, or you can drag and drop them.
 
 </br>
 

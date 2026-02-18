@@ -1,12 +1,3 @@
-export const confirmUserApi = async (email: string) => {
-  return fetch(`/user-confirm?email=${email}`)
-    .then((response) => response.json())
-    .then((data) => data)
-    .catch((error) => {
-      console.error("Error fetching data", error);
-    });
-};
-
 export const deleteUserApi = async (token: string) => {
   return fetch("/user-delete", {
     method: "DELETE",

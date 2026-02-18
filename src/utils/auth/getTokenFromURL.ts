@@ -1,4 +1,4 @@
-import { saveConfimationTokenInSessionStorage, saveRecoveryTokenFromSessionStorage } from "../storage/sessionStorage";
+import { saveConfimationTokenInSessionStorage, saveRecoveryTokenInSessionStorage } from "../storage/sessionStorage";
 
 export const handleAuthTokensFromUrl = () => {
   const url = window.location.href;
@@ -18,7 +18,7 @@ export const handleAuthTokensFromUrl = () => {
 
   const recoveryToken = params.get("recovery_token");
   if (recoveryToken) {
-    saveRecoveryTokenFromSessionStorage(recoveryToken);
+    saveRecoveryTokenInSessionStorage(recoveryToken);
     const recoveryUrl = process.env.REACT_APP_RECOVERY_URL;
     if (recoveryUrl) window.location.href = recoveryUrl;
   }

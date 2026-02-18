@@ -25,51 +25,54 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
+
   const { pathname } = useLocation();
   const authRoute = authRoutes.includes(pathname);
   const user = auth.currentUser();
   const isDarkTheme = useAppSelector(selectIsDarkTheme);
 
   return (
-    <Nav>
+    <>
       {!authRoute && (
-        <NavList $isLists={!!user && !isError}>
-          <NavListItem $first $main>
-            <LangSwitcherDesktop />
-            <LangSwitcherMobile />
-          </NavListItem>
-
-          <NavListItem $main>
-            <StyledNavLink
-              to='/tasks'
-              $inactive={pathname !== "/tasks"}
-              width={getWidthForTasksNavButton(i18n.language)}
-            >
-              {t("tasksPage")}
-            </StyledNavLink>
-          </NavListItem>
-          {!!user && !isError && (
-            <NavListItem $main>
-              {isLoading ? (
-                <Loader isDarkTheme={isDarkTheme} />
-              ) : !!listsData ? (
-                <StyledNavLink to='/lists' width={getWidthForListsNavButton(i18n.language)}>
-                  {t("lists")}
-                </StyledNavLink>
-              ) : null}
+        <Nav>
+          <NavList $isLists={!!user && !isError}>
+            <NavListItem $first $main>
+              <LangSwitcherDesktop />
+              <LangSwitcherMobile />
             </NavListItem>
-          )}
-          <NavListItem $main>
-            <StyledNavLink to='/info' width={getWidthForInfoNavButton(i18n.language)}>
-              {t("info")}
-            </StyledNavLink>
-          </NavListItem>
-          <NavListItem $last $main>
-            <StyledNavLink to='/account'>{pathname === "/account" ? <ActiveAccount /> : <Account />}</StyledNavLink>
-          </NavListItem>
-        </NavList>
+
+            <NavListItem $main>
+              <StyledNavLink
+                to='/tasks'
+                $inactive={pathname !== "/tasks"}
+                width={getWidthForTasksNavButton(i18n.language)}
+              >
+                {t("tasksPage")}
+              </StyledNavLink>
+            </NavListItem>
+            {!!user && !isError && (
+              <NavListItem $main>
+                {isLoading ? (
+                  <Loader isDarkTheme={isDarkTheme} />
+                ) : !!listsData ? (
+                  <StyledNavLink to='/lists' width={getWidthForListsNavButton(i18n.language)}>
+                    {t("lists")}
+                  </StyledNavLink>
+                ) : null}
+              </NavListItem>
+            )}
+            <NavListItem $main>
+              <StyledNavLink to='/info' width={getWidthForInfoNavButton(i18n.language)}>
+                {t("info")}
+              </StyledNavLink>
+            </NavListItem>
+            <NavListItem $last $main>
+              <StyledNavLink to='/account'>{pathname === "/account" ? <ActiveAccount /> : <Account />}</StyledNavLink>
+            </NavListItem>
+          </NavList>
+        </Nav>
       )}
-    </Nav>
+    </>
   );
 };
 

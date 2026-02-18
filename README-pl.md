@@ -48,6 +48,9 @@
 <li>Netlify GoTrue.js</li>
 <li>MongoDB</li>
 <li>EmailJS</li>
+<li>Cloudinary (Zarządzanie obrazami)</li>
+<li>Ably (Synchronizacja w czasie rzeczywistym)</li>
+<li>@dnd-kit (Przeciągnij i upuść)</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
 <li>Controlled Components</li>
@@ -82,6 +85,10 @@
     - Resetowanie i zmiana hasła,
     - Usuwanie konta.<br>
   - <b>Dodawanie zadań głosem:</b> Możliwość wprowadzania treści zadania za pomocą rozpoznawania mowy (Web Speech API).
+  - <b>Załączniki do zadań:</b> Możliwość dodawania zdjęć do zadań (obsługiwane przez <b>Cloudinary</b>).
+  - <b>Przeciągnij i Upuść (Drag & Drop):</b> Intuicyjne sortowanie zadań i list poprzez przeciąganie (obsługiwane przez <b>@dnd-kit</b>).
+  - <b>Synchronizacja w czasie rzeczywistym:</b> Natychmiastowe aktualizacje na różnych urządzeniach dzięki <b>Ably</b>.
+  - <b>Archiwizacja list:</b> Możliwość archiwizowania list w celu utrzymania porządku bez utraty danych.
 - <b>Strona List:</b></br>
   Po zalogowaniu użytkownik ma dostęp do strony "Listy", gdzie wyświetlane są wszystkie zapisane listy pobierane z bazy danych MongoDB. Na tej stronie możliwe jest:
   - Podgląd zawartości wybranej listy,
@@ -164,6 +171,7 @@ Przykładowe widoki:
 <b>Dodawanie zadania</b>
 
 - Wprowadź nazwę zadania w polu tekstowym i kliknij <b>"Dodaj zadanie"</b> lub naciśnij klawisz <b>Enter</b>.
+- Kliknij <b>ikonę obrazka</b>, aby dodać załącznik do zadania.
 
 </br>
 
@@ -192,7 +200,7 @@ Przykładowe widoki:
 - <b>Wyświetlanie szczegółów:</b> Kliknij zadanie, aby wyświetlić jego szczegółowe informacje.
 - <b>Usuwanie zadania:</b> Kliknij ikonę kosza przy zadaniu, aby je usunąć.
 - <b>Ukończ wszystkie / Odznacz wszystkie:</b> Pozwala na oznaczenie wszystkich zadań jako ukończone lub ich odznaczenie.
-- <b>Włącz/Wyłącz sortowanie:</b> Przełącza tryb sortowania. W widoku listy pojawią się przyciski umożliwiające przesuwanie zadań w górę i w dół.
+- <b>Włącz/Wyłącz sortowanie:</b> Przełącza tryb sortowania. W widoku listy pojawią się przyciski umożliwiające przesuwanie zadań w górę i w dół lub możesz je przeciągać (Drag & Drop).
 
 </br>
 
