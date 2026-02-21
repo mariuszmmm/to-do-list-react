@@ -15,7 +15,8 @@
 - [Configuration](#-configuration)
 - [Application views](#-application-views)
 - [User Instructions](#-user-instructions)
-- [Adding Tasks by Voice](#-adding-tasks-by-voice)
+- [Voice task input](#-voice-task-input)
+- [Contact Form](#-contact-form)
 
 </br>
 
@@ -32,8 +33,8 @@
   The application supports translating the entire site into three languages: <b>Polish (pl)</b>, <b>English (en)</b>, and <b>German (de)</b>, using <b>react-i18next</b>. New features have also been implemented, such as dynamic translation of error messages using <b>Cloud Translation API</b>, which ensures that server messages are translated in real-time based on the user’s selected language.
   Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list-typescript-react.netlify.app
 
-- [**Older version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
-  The older version is hosted on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
+- [**Basic version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
+  Currently, the basic version of the application is located on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
 
 </br>
 
@@ -83,7 +84,7 @@
     - Login,
     - Password reset and change,
     - Account deletion.<br>
-  - <b>Adding tasks by voice:</b> Ability to enter task content using speech recognition (Web Speech API).
+  - <b>Voice task input:</b> Ability to enter task content using speech recognition (Web Speech API).
   - <b>Task Attachments:</b> Ability to attach images to tasks (powered by <b>Cloudinary</b>).
   - <b>Drag & Drop:</b> Intuitively reorder users' tasks and lists (powered by <b>@dnd-kit</b>).
   - <b>Real-time Sync:</b> Instant updates across devices using <b>Ably</b>.
@@ -125,15 +126,35 @@ To run the to-do-list-react application locally, follow these steps:
 
 3. <b>Configure Environment Variables:</b><br>
    Create a .env file in the root directory and define the following variables:
-
 ```commandline
-   MONGODB_URI=your_mongodb_uri
-   MONGODB_DATABASE=your_database
-   WEBHOOK_SECRET=your_webhook_secret
-   REACT_APP_CONFIRMATION_URL="http://localhost:8888/#/user-confirmation"
-   REACT_APP_RECOVERY_URL="http://localhost:8888/#/account-recovery"
-   TRANSLATION_API_KEY="your_translation_api_key"
-   TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+    ABLY_API_KEY="your_ably_api_key_here"
+
+    GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    GOOGLE_DRIVE_CLIENT_SECRET="your_google_drive_client_secret_here"
+    GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+
+    MONGODB_DATABASE="your_mongodb_database_name"
+    MONGODB_URI="your_mongodb_connection_string"
+
+    REACT_APP_ABLY_API_KEY="your_ably_api_key_for_react_here"
+    REACT_APP_CONFIRMATION_URL="https://your-netlify-app.netlify.app/#/user-confirmation"
+    REACT_APP_EMAILJS_PUBLIC_KEY="your_emailjs_public_key_here"
+    REACT_APP_EMAILJS_SERVICE_ID="your_emailjs_service_id_here"
+    REACT_APP_EMAILJS_TEMPLATE_ID="your_emailjs_template_id_here"
+    REACT_APP_GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    REACT_APP_GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+    REACT_APP_NETLIFY_IDENTITY_URL="https://your-netlify-app.netlify.app/.netlify/identity"
+    REACT_APP_RECOVERY_URL="https://your-netlify-app.netlify.app/#/account-recovery"
+
+    TRANSLATION_API_KEY="your_google_translation_api_key_here"
+    TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+
+    WEBHOOK_SECRET="your_webhook_secret_here"
+
+    CLOUDINARY_API_SECRET="your_cloudinary_api_secret_here"
+    CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name_here"
+    CLOUDINARY_API_KEY="your_cloudinary_api_key_here"
+    CLOUDINARY_UPLOAD_PRESET="your_unsigned_upload_preset_here"
 ```
 
 4. <b>Start the Application:</b><br>
@@ -188,6 +209,13 @@ Example views:
 
 </br>
 
+<b>Adding images to tasks</b> (available for logged-in users)
+
+- Click the image icon to add an image to the task.
+- You can add one image from your computer's disk or take a photo with your camera.
+
+</br>
+
 <b>Searching for Tasks</b>
 
 - Enter a keyword or phrase in the search field.
@@ -215,7 +243,7 @@ Example views:
 
 <b>Save list</b> (available for logged-in users)
 
-- Select the <b>"Save List"</b> option – the to-do list will be saved to the database. If the list name already exists, you can rename it or overwrite the existing one.
+- Select the <b>"Save List"</b> option – the to-do list will be saved to the database.
 
 </br>
 
@@ -225,12 +253,13 @@ Example views:
   - <b>Password change, account deletion, and other account features.</b>
   - <b>Lists Page:</b> View saved lists, preview contents, load a list into the current to-do-list, or delete a list.
   - <b>Save the current to-do list to the database.</b>
+  - <b>Ability to add images to tasks.</b>
 
 </br>
 
-## 🎤 Adding Tasks by Voice
+## 🎤 Voice task input
 
-The application allows you to add and edit tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
+The application allows you to dictate when adding and editing tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
 
 </br>
 

@@ -1,15 +1,15 @@
 import { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
+import { jsonResponse } from "./lib/response";
 
 const handler: Handler = async (event) => {
   const logPrefix = "[cleanup-orphan-images]";
+  console.log(`${logPrefix} Function started. Method: ${event.httpMethod}`);
 
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: "Method not allowed" }),
-    };
+    console.warn(`${logPrefix} Method ${event.httpMethod} not allowed.`);
+    return jsonResponse(405, { message: "Method not allowed" });
   }
 
   const API_KEY = process.env.CLOUDINARY_API_KEY;
@@ -17,25 +17,27 @@ const handler: Handler = async (event) => {
   const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 
   if (!API_KEY || !API_SECRET || !CLOUD_NAME) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "Missing Cloudinary configuration" }),
-    };
+    console.error(`${logPrefix} Missing Cloudinary configuration.`);
+    return jsonResponse(500, { message: "Missing Cloudinary configuration" });
   }
 
   try {
     const ASSET_FOLDER = "Todo-list";
-    // const GRACE_PERIOD_DAYS = 7; // Only delete images older than 7 days
-    const GRACE_PERIOD_DAYS = 1; // Usuwaj osierocone zdjęcia starsze niż 1 dzień
+    // const GRACE_PERIOD_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+    const GRACE_PERIOD_MS = 1000 * 60 * 60; // 1 hour - TEST
 
     console.log(`${logPrefix} Starting orphan images cleanup...`);
 
-    // Calculate threshold: images older than 7 days
+    // Calculate threshold: older than
     const now = new Date();
-    const threshold = new Date(now.getTime() - GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000);
+    const threshold = new Date(now.getTime() - GRACE_PERIOD_MS);
     const thresholdISO = threshold.toISOString().split(".")[0] + "Z";
 
-    const basicAuth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString("base64");
+    console.log(`${logPrefix} Threshold: ${thresholdISO} (1 hour ago)`);
+
+    const basicAuth = Buffer.from(`${API_KEY}:${API_SECRET}`).toString(
+      "base64",
+    );
 
     // 1. Fetch all images from Cloudinary in Todo-list folder (older than grace period)
     console.log(`${logPrefix} Fetching images from Cloudinary...`);
@@ -95,33 +97,40 @@ const handler: Handler = async (event) => {
           if (pathParts.length >= 4) {
             userName = pathParts[1];
             listName = pathParts[2];
-          } else if (pathParts.length === 3 && pathParts[1] !== "temp_uploads") {
+          } else if (
+            pathParts.length === 3 &&
+            pathParts[1] !== "temp_uploads"
+          ) {
             userName = pathParts[1];
           }
         }
 
-        const imageName = resource.filename || resource.public_id.split("/").pop() || "unknown";
+        const imageName =
+          resource.filename || resource.public_id.split("/").pop() || "unknown";
         const sizeKB = (resource.bytes / 1024).toFixed(2);
         const format = resource.format || "unknown";
-        const tags = resource.tags && resource.tags.length > 0 ? resource.tags.join(", ") : "no tags";
+        const tags =
+          resource.tags && resource.tags.length > 0
+            ? resource.tags.join(", ")
+            : "no tags";
         const listId = context.listId || "no listId";
 
         console.log(
           `${logPrefix}   [${index + 1}] User: ${userName} | List: ${listName} | Image: ${imageName} | Size: ${sizeKB} KB`,
         );
-        console.log(`${logPrefix}       Tags: [${tags}] | listId: ${listId} | taskId: ${taskId} | Email: ${userEmail}`);
+        console.log(
+          `${logPrefix}       Tags: [${tags}] | listId: ${listId} | taskId: ${taskId} | Email: ${userEmail}`,
+        );
         console.log(`${logPrefix}       public_id: ${resource.public_id}`);
       });
     }
 
     if (allCloudinaryImages.length === 0) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: "No images found in Cloudinary",
-          cleaned: 0,
-        }),
-      };
+      console.log(`${logPrefix} No images found in Cloudinary to process.`);
+      return jsonResponse(200, {
+        message: "No images found in Cloudinary",
+        data: { cleaned: 0 },
+      });
     }
 
     // 2. Fetch all public_ids from MongoDB
@@ -214,7 +223,9 @@ const handler: Handler = async (event) => {
       }
     }
 
-    console.log(`${logPrefix} Found ${mongoPublicIds.size} public_ids in MongoDB`);
+    console.log(
+      `${logPrefix} Found ${mongoPublicIds.size} public_ids in MongoDB`,
+    );
 
     if (mongoImagesMap.size > 0) {
       console.log(`${logPrefix} MongoDB images (unique):`);
@@ -223,7 +234,9 @@ const handler: Handler = async (event) => {
           `${logPrefix}   [${index + 1}] User: ${entry.userName} | Email: ${entry.userEmail} | List: ${entry.listName} | ListId: ${entry.listId}`,
         );
         console.log(`${logPrefix}       publicId: ${entry.publicId}`);
-        console.log(`${logPrefix}       imageUrl: ${entry.image?.imageUrl ?? null}`);
+        console.log(
+          `${logPrefix}       imageUrl: ${entry.image?.imageUrl ?? null}`,
+        );
       });
     }
 
@@ -236,7 +249,35 @@ const handler: Handler = async (event) => {
       return !mongoPublicIds.has(resource.public_id);
     });
 
-    console.log(`${logPrefix} Found ${orphanImages.length} orphan images to delete`);
+    console.log(
+      `${logPrefix} Found ${orphanImages.length} orphan images to delete (in Cloudinary but not in MongoDB)`,
+    );
+
+    // 4. Find missing images (in MongoDB but NOT in Cloudinary)
+    const cloudinaryPublicIds = new Set(
+      allCloudinaryImages.map((img) => img.public_id),
+    );
+    const missingInCloudinary: any[] = [];
+
+    mongoImagesMap.forEach((entry, publicId) => {
+      if (!cloudinaryPublicIds.has(publicId)) {
+        missingInCloudinary.push(entry);
+      }
+    });
+
+    console.log(
+      `${logPrefix} Found ${missingInCloudinary.length} images in MongoDB that are MISSING in Cloudinary`,
+    );
+
+    if (missingInCloudinary.length > 0) {
+      console.warn(`${logPrefix} ⚠️ MISSING IMAGES IN CLOUDINARY:`);
+      missingInCloudinary.forEach((entry, index) => {
+        console.warn(
+          `${logPrefix}   [${index + 1}] User: ${entry.userName} | List: ${entry.listName} | publicId: ${entry.publicId}`,
+        );
+        console.warn(`${logPrefix}       URL: ${entry.image?.imageUrl}`);
+      });
+    }
 
     // Log detailed info about orphan images that will be deleted
     if (orphanImages.length > 0) {
@@ -255,67 +296,57 @@ const handler: Handler = async (event) => {
           if (pathParts.length >= 4) {
             userName = pathParts[1];
             listName = pathParts[2];
-          } else if (pathParts.length === 3 && pathParts[1] !== "temp_uploads") {
+          } else if (
+            pathParts.length === 3 &&
+            pathParts[1] !== "temp_uploads"
+          ) {
             userName = pathParts[1];
           }
         }
 
-        const imageName = resource.filename || resource.public_id.split("/").pop() || "unknown";
+        const imageName =
+          resource.filename || resource.public_id.split("/").pop() || "unknown";
         const sizeKB = (resource.bytes / 1024).toFixed(2);
         const format = resource.format || "unknown";
-        const tags = resource.tags && resource.tags.length > 0 ? resource.tags.join(", ") : "no tags";
+        const tags =
+          resource.tags && resource.tags.length > 0
+            ? resource.tags.join(", ")
+            : "no tags";
         const listId = context.listId || "no listId";
 
         console.log(
           `${logPrefix}   ❌ [${index + 1}] User: ${userName} | List: ${listName} | Image: ${imageName} | Size: ${sizeKB} KB`,
         );
-        console.log(`${logPrefix}       Tags: [${tags}] | listId: ${listId} | taskId: ${taskId} | Email: ${userEmail}`);
+        console.log(
+          `${logPrefix}       Tags: [${tags}] | listId: ${listId} | taskId: ${taskId} | Email: ${userEmail}`,
+        );
       });
 
-      const totalSizeKB = orphanImages.reduce((sum, r) => sum + (r.bytes || 0), 0) / 1024;
+      const totalSizeKB =
+        orphanImages.reduce((sum, r) => sum + (r.bytes || 0), 0) / 1024;
       console.log(
         `${logPrefix} Total size to be freed: ${totalSizeKB.toFixed(2)} KB (${(totalSizeKB / 1024).toFixed(2)} MB)`,
       );
     }
 
     if (orphanImages.length === 0) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: "No orphan images found",
+      console.log(
+        `${logPrefix} No orphan images found. Everything is in sync.`,
+      );
+      return jsonResponse(200, {
+        message: "No orphan images found",
+        data: {
           totalCloudinaryImages: allCloudinaryImages.length,
           totalMongoImages: mongoPublicIds.size,
           cleaned: 0,
-          cloudinaryImages: allCloudinaryImages.map((resource) => {
-            const context = resource.context ? resource.context : {};
-            const userEmail = context.userEmail || "unknown";
-            let listName = context.listName || "unknown";
-
-            if (!context.userEmail) {
-              const pathParts = resource.public_id.split("/");
-              if (pathParts.length >= 4) {
-                listName = pathParts[2] || listName;
-              }
-            }
-
-            return {
-              userEmail,
-              listName,
-              publicId: resource.public_id,
-            };
-          }),
-          mongoImages: Array.from(mongoImagesMap.values()).map((entry) => ({
-            userEmail: entry.userEmail,
-            listName: entry.listName,
-            publicId: entry.publicId,
-            imageUrl: entry.image?.imageUrl ?? null,
-          })),
-        }),
-      };
+        },
+      });
     }
 
     // 4. Delete orphan images in batches of 10
-    const publicIdsToDelete = orphanImages.map((resource) => resource.public_id);
+    const publicIdsToDelete = orphanImages.map(
+      (resource) => resource.public_id,
+    );
     console.log(`${logPrefix} Public IDs to delete:`, publicIdsToDelete);
 
     let totalDeleted = 0;
@@ -347,7 +378,9 @@ const handler: Handler = async (event) => {
       }
     }
 
-    console.log(`${logPrefix} Cleanup completed. Total deleted: ${totalDeleted}`);
+    console.log(
+      `${logPrefix} Cleanup completed. Total deleted: ${totalDeleted}`,
+    );
 
     // 5. Clean up empty folders in Todo-list
     try {
@@ -381,7 +414,8 @@ const handler: Handler = async (event) => {
           body: JSON.stringify(searchFolderBody),
         });
         const searchFolderData = await searchFolderResp.json();
-        const hasImages = searchFolderData.resources && searchFolderData.resources.length > 0;
+        const hasImages =
+          searchFolderData.resources && searchFolderData.resources.length > 0;
         if (!hasImages) {
           emptyFolders.push(folderPath);
         }
@@ -402,55 +436,32 @@ const handler: Handler = async (event) => {
           console.warn(`${logPrefix} Failed to delete folder: ${emptyFolder}`);
         }
       }
-      console.log(`${logPrefix} Empty folders cleanup completed. Deleted: ${emptyFolders.length}`);
+      console.log(
+        `${logPrefix} Empty folders cleanup completed. Deleted: ${emptyFolders.length}`,
+      );
     } catch (folderErr) {
-      console.warn(`${logPrefix} Error during empty folders cleanup:`, folderErr);
+      console.warn(
+        `${logPrefix} Error during empty folders cleanup:`,
+        folderErr,
+      );
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Orphan cleanup completed",
+    return jsonResponse(200, {
+      message: "Orphan cleanup completed",
+      data: {
         totalCloudinaryImages: allCloudinaryImages.length,
         totalMongoImages: mongoPublicIds.size,
         orphansFound: orphanImages.length,
+        missingInCloudinary: missingInCloudinary.length,
         cleaned: totalDeleted,
-        gracePeriodDays: GRACE_PERIOD_DAYS,
-        cloudinaryImages: allCloudinaryImages.map((resource) => {
-          const context = resource.context ? resource.context : {};
-          const userEmail = context.userEmail || "unknown";
-          let listName = context.listName || "unknown";
-
-          if (!context.userEmail) {
-            const pathParts = resource.public_id.split("/");
-            if (pathParts.length >= 4) {
-              listName = pathParts[2] || listName;
-            }
-          }
-
-          return {
-            userEmail,
-            listName,
-            publicId: resource.public_id,
-          };
-        }),
-        mongoImages: Array.from(mongoImagesMap.values()).map((entry) => ({
-          userEmail: entry.userEmail,
-          listName: entry.listName,
-          publicId: entry.publicId,
-          imageUrl: entry.image?.imageUrl ?? null,
-        })),
-      }),
-    };
+      },
+    });
   } catch (error) {
     console.error(`${logPrefix} Cleanup error:`, error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "Failed to cleanup orphan images",
-        message: error instanceof Error ? error.message : "Unknown error",
-      }),
-    };
+    return jsonResponse(500, {
+      message: "Failed to cleanup orphan images",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 };
 

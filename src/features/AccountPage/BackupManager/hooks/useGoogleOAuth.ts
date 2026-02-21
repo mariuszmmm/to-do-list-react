@@ -22,12 +22,6 @@ export function useGoogleOAuth({
         try {
           const data = await exchangeGoogleOAuthCodeApi(code);
           localStorage.setItem("google_drive_access_token", data.accessToken);
-          if (data.refreshToken) {
-            localStorage.setItem(
-              "google_drive_refresh_token",
-              data.refreshToken,
-            );
-          }
           setGoogleAccessToken(data.accessToken);
           setShowGoogleAuth(false);
           setStatus({

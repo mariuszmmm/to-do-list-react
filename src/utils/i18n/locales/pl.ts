@@ -2,7 +2,7 @@ const langPl = {
   navigation: {
     tasksPage: "Zadania",
     lists: "Listy",
-    info: "Informacje",
+    info: "O aplikacji",
   },
   listFrom: "Lista z dnia",
   currentList: "bieżąca",

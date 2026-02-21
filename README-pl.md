@@ -15,7 +15,8 @@
 - [Konfiguracja](#-konfiguracja)
 - [Widok aplikacji](#-widok-aplikacji)
 - [Instrukcje użytkowania](#-instrukcje-użytkowania)
-- [Dodawanie zadań głosem](#-dodawanie-zadań-głosem)
+- [Dyktowanie zadań](#-dyktowanie-zadań)
+- [Formularz kontaktowy](#-formularz-kontaktowy)
 
 </br>
 
@@ -32,8 +33,8 @@
   Aplikacja wspiera tłumaczenie całej strony na trzy języki: <b>polski (pl)</b>, <b>angielski (en)</b> i <b>niemiecki (de)</b> dzięki zastosowaniu <b>react-i18next</b>. Zostały również wdrożone nowe funkcje, takie jak dynamiczne tłumaczenie komunikatów błędów za pomocą <b>Cloud Translation API</b>, które zapewniają, że komunikaty serwera będą tłumaczone na bieżąco w zależności od wybranego języka użytkownika.
   Nowością jest także przejście na <b>TanStack Query</b> (dawniej <b>React Query</b>) do obsługi zapytań i mutacji w aplikacji, co znacząco upraszcza zarządzanie stanem i operacjami asynchronicznymi. Cała aplikacja została również dostosowana do pracy z <b>TypeScript</b>, co poprawia stabilność kodu i ułatwia jego utrzymanie.<br/>https://to-do-list-typescript-react.netlify.app
 
-- [**Stara wersja :**](https://mariuszmmm.github.io/to-do-list-react)</br>
-  Aktualnie starsza wersja aplikacji znajduje się na branchu <b>gh-pages</b> i jest dostępna pod adresem:</br>https://mariuszmmm.github.io/to-do-list-react
+- [**Wersja podstawowa :**](https://mariuszmmm.github.io/to-do-list-react)</br>
+  Aktualnie podstawowa wersja aplikacji znajduje się na branchu <b>gh-pages</b> i jest dostępna pod adresem:</br>https://mariuszmmm.github.io/to-do-list-react
 
 </br>
 
@@ -84,7 +85,7 @@
     - Logowanie,
     - Resetowanie i zmiana hasła,
     - Usuwanie konta.<br>
-  - <b>Dodawanie zadań głosem:</b> Możliwość wprowadzania treści zadania za pomocą rozpoznawania mowy (Web Speech API).
+  - <b>Dyktowanie zadań:</b> Możliwość wprowadzania treści zadania za pomocą rozpoznawania mowy (Web Speech API).
   - <b>Załączniki do zadań:</b> Możliwość dodawania zdjęć do zadań (obsługiwane przez <b>Cloudinary</b>).
   - <b>Przeciągnij i Upuść (Drag & Drop):</b> Intuicyjne sortowanie zadań i list poprzez przeciąganie (obsługiwane przez <b>@dnd-kit</b>).
   - <b>Synchronizacja w czasie rzeczywistym:</b> Natychmiastowe aktualizacje na różnych urządzeniach dzięki <b>Ably</b>.
@@ -127,13 +128,34 @@ Aby uruchomić aplikację to-do-list-react lokalnie, wykonaj poniższe kroki:
    Utwórz plik .env w katalogu głównym projektu i zdefiniuj zmienne środowiskowe:
 
 ```commandline
-   MONGODB_URI=twoja_mongodb_uri
-   MONGODB_DATABASE=twoja_baza_danych
-   WEBHOOK_SECRET=twoj_webhook_secret
-   REACT_APP_CONFIRMATION_URL="http://localhost:8888/#/user-confirmation"
-   REACT_APP_RECOVERY_URL="http://localhost:8888/#/account-recovery"
-   TRANSLATION_API_KEY="twoj_translation_api_key"
-   TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+    ABLY_API_KEY="your_ably_api_key_here"
+
+    GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    GOOGLE_DRIVE_CLIENT_SECRET="your_google_drive_client_secret_here"
+    GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+
+    MONGODB_DATABASE="your_mongodb_database_name"
+    MONGODB_URI="your_mongodb_connection_string"
+
+    REACT_APP_ABLY_API_KEY="your_ably_api_key_for_react_here"
+    REACT_APP_CONFIRMATION_URL="https://your-netlify-app.netlify.app/#/user-confirmation"
+    REACT_APP_EMAILJS_PUBLIC_KEY="your_emailjs_public_key_here"
+    REACT_APP_EMAILJS_SERVICE_ID="your_emailjs_service_id_here"
+    REACT_APP_EMAILJS_TEMPLATE_ID="your_emailjs_template_id_here"
+    REACT_APP_GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    REACT_APP_GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+    REACT_APP_NETLIFY_IDENTITY_URL="https://your-netlify-app.netlify.app/.netlify/identity"
+    REACT_APP_RECOVERY_URL="https://your-netlify-app.netlify.app/#/account-recovery"
+
+    TRANSLATION_API_KEY="your_google_translation_api_key_here"
+    TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+
+    WEBHOOK_SECRET="your_webhook_secret_here"
+
+    CLOUDINARY_API_SECRET="your_cloudinary_api_secret_here"
+    CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name_here"
+    CLOUDINARY_API_KEY="your_cloudinary_api_key_here"
+    CLOUDINARY_UPLOAD_PRESET="your_unsigned_upload_preset_here"
 ```
 
 4. <b>Uruchomienie aplikacji:</b><br>
@@ -188,6 +210,13 @@ Przykładowe widoki:
 
 </br>
 
+<b>Dodawanie zdjęć do zadań</b> (dostępne dla zalogowanych użytkowników)
+
+- Kliknij ikonę obrazka, aby dodać zdjęcie do zadania.
+- Możesz dodać jedno zdjęcie z dysku komputera lub zrobić zdjęcie aparatem.
+
+</br>
+
 <b>Wyszukiwanie zadań</b>
 
 - Wpisz słowo lub frazę w pole wyszukiwania.
@@ -215,7 +244,7 @@ Przykładowe widoki:
 
 <b>Zapisywanie listy zadań</b> (dostępne dla zalogowanych użytkowników)
 
-- Wybierz opcję <b>"Zapisz listę"</b> – lista zadań zostanie zapisana w bazie danych. Jeśli nazwa zapisywanej listy już istnieje, możesz ją zmienić lub nadpisać istniejącą.
+- Wybierz opcję <b>"Zapisz listę"</b> – lista zadań zostanie zapisana w bazie danych.
 
 </br>
 
@@ -225,12 +254,13 @@ Przykładowe widoki:
   - <b>Zmiany hasła, usuwania konta oraz innych funkcji konta.</b>
   - <b>Strony "Listy":</b> Przegląd zapisanych list, podgląd zawartości, ładowanie listy do bieżącej listy zadań lub jej usunięcie.
   - <b>Możliwości zapisywania bieżącej listy do bazy danych.</b>
+  - <b>Możliwość dodawania zdjęć do zadań</b>
 
 </br>
 
-## 🎤 Dodawanie zadań głosem
+## 🎤 Dyktowanie zadań
 
-Aplikacja umożliwia dodawanie oraz edytowanie zadań za pomocą rozpoznawania mowy. Funkcjonalność ta wykorzystuje Web Speech API i jest dostępna w formularzu dodawania/edycji zadania.
+Aplikacja umożliwia dyktowanie przy dodawaniu oraz edytowaniu zadań za pomocą rozpoznawania mowy. Funkcjonalność ta wykorzystuje Web Speech API i jest dostępna w formularzu dodawania/edycji zadania.
 
 </br>
 
@@ -252,6 +282,6 @@ Aplikacja umożliwia dodawanie oraz edytowanie zadań za pomocą rozpoznawania m
 
 </br>
 
-## 📬 Contact Form
+## 📬 Formularz kontaktowy
 
 Aplikacja zawiera formularz kontaktowy, który umożliwia użytkownikom wysyłanie wiadomości bezpośrednio do autora. Formularz jest zintegrowany z [EmailJS](https://www.emailjs.com/docs/examples/reactjs/), co pozwala na wysyłanie e-maili bez potrzeby posiadania backendowego serwera.

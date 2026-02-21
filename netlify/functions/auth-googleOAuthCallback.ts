@@ -34,14 +34,21 @@ const handler: Handler = async (event) => {
     const redirectUri = process.env.GOOGLE_DRIVE_REDIRECT_URI;
 
     if (!clientId || !clientSecret || !redirectUri) {
-      logError(`${logPrefix} Missing Google configuration`, new Error("Missing environment variables"), logPrefix);
+      logError(
+        `${logPrefix} Missing Google configuration`,
+        new Error("Missing environment variables"),
+        logPrefix,
+      );
       return jsonResponse(500, {
-        message: "Server configuration error - missing Google Drive credentials",
+        message:
+          "Server configuration error - missing Google Drive credentials",
       });
     }
 
     process.env.NODE_ENV === "development" &&
-      console.log(`[googleOAuthCallback] Exchanging code for token. Redirect URI: ${redirectUri}`);
+      console.log(
+        `[googleOAuthCallback] Exchanging code for token. Redirect URI: ${redirectUri}`,
+      );
 
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -67,6 +74,13 @@ const handler: Handler = async (event) => {
 
     const tokenData = await tokenResponse.json();
 
+    if (tokenData.refresh_token) {
+      console.log(`${logPrefix} !!! PERMANENT REFRESH TOKEN OBTAINED !!!`);
+      console.log(`${logPrefix} Copy this to GOOGLE_BACKUP_REFRESH_TOKEN:`);
+      console.log(tokenData.refresh_token);
+      console.log(`${logPrefix} ------------------------------------------`);
+    }
+
     return jsonResponse(200, {
       success: true,
       accessToken: tokenData.access_token,
@@ -75,7 +89,11 @@ const handler: Handler = async (event) => {
       message: "Authorization successful",
     });
   } catch (error) {
-    logError("Unexpected error in googleOAuthCallback handler", error, logPrefix);
+    logError(
+      "Unexpected error in googleOAuthCallback handler",
+      error,
+      logPrefix,
+    );
     return jsonResponse(500, {
       message: "Internal server error",
     });

@@ -22,7 +22,8 @@ export const LangDropdown = styled.ul<LangDropdownProps>`
   align-items: center;
   gap: 20px;
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-  transform: ${({ $isOpen }) => ($isOpen ? "translateX(0)" : "translateX(-100%)")};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? "translateX(0)" : "translateX(-100%)"};
   pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
   transition:
     opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),

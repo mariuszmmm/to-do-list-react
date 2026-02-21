@@ -1,4 +1,5 @@
 # 🟢 Ważne: Wszystkie odpowiedzi AI muszą być zawsze udzielane w języku polskim.
+
 # Copilot Instructions for AI Coding Agents
 
 ## ⚠️ CRITICAL RULE - Code Changes
@@ -35,7 +36,6 @@
 
 - **Start Dev Server:** `npm start` (runs `netlify dev` for both frontend and functions)
 - **Build:** `npm run build` (React build)
-- **Test:** `npm test` (Jest + React Testing Library)
 - **Deploy:** `npm run deploy` (to GitHub Pages)
 - **Env Vars:** Copy `.env.example` to `.env` and fill in secrets for local/dev/Netlify
 - **Netlify Functions:** Use local emulation via `netlify dev` for full-stack testing
@@ -48,7 +48,6 @@
 - **UI:** Prefer `src/common/` components for layout and controls; style with Styled Components
 - **Voice Input:** Handled via custom hook `useSpeechToText` and Web Speech API typings in `src/@types/custom.d.ts`
 - **Account/Sync:** User/account flows in `src/features/AccountPage/`, sync in `src/components/ListSyncManager.tsx`
-- **Testing:** See `TESTING.md` for CI, pre-commit, and local test setup
 
 ## Integration Points
 
@@ -68,7 +67,6 @@
 
 - See `README.md` and `README-pl.md` for user and setup docs
 - See `BACKUP_SETUP.md` for Google Drive integration
-- See `TESTING.md` for test/CI setup
 
 ---
 

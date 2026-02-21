@@ -1,9 +1,10 @@
 import { findOrCreateFolder } from "./findOrCreateFolder";
 
 export const uploadBackupToGoogleDrive = async (
+  folderName: string,
   fileName: string,
   fileContent: string,
-  accessToken: string
+  accessToken: string,
 ): Promise<{
   success: boolean;
   statusCode: number;
@@ -12,7 +13,7 @@ export const uploadBackupToGoogleDrive = async (
   message: string;
 }> => {
   try {
-    const folderId = await findOrCreateFolder("to-do-list-backup", accessToken);
+    const folderId = await findOrCreateFolder(folderName, accessToken);
 
     const fileMetadata: any = {
       name: fileName,
@@ -42,14 +43,14 @@ export const uploadBackupToGoogleDrive = async (
           "Content-Type": `multipart/related; boundary="${boundary}"`,
         },
         body: multipartBody,
-      }
+      },
     );
 
     if (!response.ok) {
       const errorData = await response.json();
       console.error(
         "[uploadBackupToGoogleDrive] Upload error data:",
-        errorData
+        errorData,
       );
       return {
         success: false,

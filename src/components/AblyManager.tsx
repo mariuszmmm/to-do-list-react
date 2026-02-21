@@ -12,7 +12,9 @@ export const AblyManager = ({
 }) => {
   const dispatch = useAppDispatch();
   const lastPresenceDataRef = useRef<string | null>(null);
-  const { onPresenceUpdate, onListsUpdate } = useAblyManager();
+  const { onPresenceUpdate, onListsUpdate } = useAblyManager({
+    isGlobalManager: true,
+  });
   useAblySubscription({
     userEmail,
     enabled,

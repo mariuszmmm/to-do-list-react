@@ -30,7 +30,10 @@ const handler: Handler = async (event, context) => {
 
   try {
     const email = context.clientContext?.user.email as string;
-    const parsedBody = parseJsonBody<{ accessToken?: string }>(event.body, logPrefix);
+    const parsedBody = parseJsonBody<{ accessToken?: string }>(
+      event.body,
+      logPrefix,
+    );
 
     if ("statusCode" in parsedBody) {
       return parsedBody;
@@ -45,13 +48,21 @@ const handler: Handler = async (event, context) => {
     }
 
     const fileContent = JSON.stringify(backupData);
+    const folderName = "To-do-list/Backups";
 
     try {
-      const uploadResponse = await uploadBackupToGoogleDrive(fileName, fileContent, accessToken);
+      const uploadResponse = await uploadBackupToGoogleDrive(
+        folderName,
+        fileName,
+        fileContent,
+        accessToken,
+      );
 
       if (!uploadResponse.success) {
         if (uploadResponse.statusCode === 401) {
-          console.warn(`${logPrefix} Google Drive authentication failed: ${uploadResponse.message}`);
+          console.warn(
+            `${logPrefix} Google Drive authentication failed: ${uploadResponse.message}`,
+          );
           return jsonResponse(401, {
             message: "Google Drive authentication failed",
             source: "google-drive",
@@ -74,7 +85,11 @@ const handler: Handler = async (event, context) => {
       });
     }
   } catch (error) {
-    logError("Unexpected error in uploadAllUsersToGoogleDrive handler", error, logPrefix);
+    logError(
+      "Unexpected error in uploadAllUsersToGoogleDrive handler",
+      error,
+      logPrefix,
+    );
     return jsonResponse(500, {
       message: "Internal server error",
     });

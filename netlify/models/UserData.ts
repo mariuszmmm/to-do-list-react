@@ -30,7 +30,7 @@ const TaskSchema = new Schema<Task>({
 });
 
 const ListSchema = new Schema<List>({
-  id: { type: String, required: true, unique: true },
+  id: { type: String, required: true },
   name: { type: String, required: true },
   date: { type: String, required: true },
   updatedAt: { type: String, required: true },
@@ -49,7 +49,9 @@ const UserDataSchema = new Schema<UserDoc>({
   lists: { type: [ListSchema], default: [] },
 });
 
-const UserData = (mongoose.models.User as mongoose.Model<UserDoc>) || mongoose.model<UserDoc>("User", UserDataSchema);
+const UserData =
+  (mongoose.models.User as mongoose.Model<UserDoc>) ||
+  mongoose.model<UserDoc>("User", UserDataSchema, "users");
 
 export type UserDoc = mongoose.Document & {
   email: string;

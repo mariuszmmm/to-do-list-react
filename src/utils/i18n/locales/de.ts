@@ -4,7 +4,7 @@ const langDe: typeof langPl = {
   navigation: {
     tasksPage: "Aufgaben",
     lists: "Listen",
-    info: "Info",
+    info: "Über",
   },
   listFrom: "Liste vom",
   currentList: "aktuell",

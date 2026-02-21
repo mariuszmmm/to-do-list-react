@@ -5,16 +5,22 @@ import { jsonResponse, logError } from "../functions/lib/response";
 
 const handler: Handler = async (event) => {
   const logPrefix = "[cleanup-deletedTasks]";
+  console.log(`${logPrefix} Function started. Method: ${event.httpMethod}`);
 
   if (event.httpMethod !== "POST") {
+    console.warn(`${logPrefix} Method ${event.httpMethod} not allowed.`);
     return jsonResponse(405, { message: "Method not allowed" });
   }
 
   try {
+    console.log(`${logPrefix} Connecting to database...`);
     await connectToDB();
 
-    const timedOutMs = 1000 * 60 * 60; // 1 hour
+    // const timedOutMs = 1000 * 60 * 60 * 24 * 7; // 7 days
+    const timedOutMs = 1000 * 60 * 60; // 1 hour - TEST
+
     const cutoffIso = new Date(Date.now() - timedOutMs).toISOString();
+    console.log(`${logPrefix} Cleaning up tasks deleted before: ${cutoffIso}`);
 
     const updateResult = await UserData.updateMany(
       { account: "active" },
@@ -25,6 +31,10 @@ const handler: Handler = async (event) => {
           },
         },
       },
+    );
+
+    console.log(
+      `${logPrefix} Cleanup finished. Modified documents: ${updateResult.modifiedCount}`,
     );
 
     return jsonResponse(200, {

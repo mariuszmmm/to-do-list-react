@@ -80,6 +80,7 @@ const ModalButton = styled.button`
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.button.disabled};
+    color: ${({ theme }) => theme.colors.button.cancel};
     filter: none;
     cursor: auto;
   }
@@ -101,4 +102,4 @@ export const ModalYesButton = styled(ModalButton)`
   background-color: ${({ theme }) => theme.colors.button.check};
 `;
 
-export const ModalNoButton = ModalConfirmButton;
+export const ModalNoButton = ModalConfirmButton; 

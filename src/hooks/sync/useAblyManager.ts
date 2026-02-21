@@ -1,6 +1,9 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useAppSelector } from "../redux/redux";
-import { selectIsAdmin, selectLoggedUserEmail } from "../../features/AccountPage/accountSlice";
+import {
+  selectIsAdmin,
+  selectLoggedUserEmail,
+} from "../../features/AccountPage/accountSlice";
 import {
   getAblyInstance,
   closeAblyConnection,
@@ -25,10 +28,13 @@ const subscriptionsRef = {
   presenceUpdate: new Map<string, PresenceUpdateCallback[]>(),
 };
 
-export const useAblyManager = () => {
+export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
+  const { isGlobalManager = false } = options;
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const channelsRef = useRef<Map<string, any>>(new Map());
-  const confirmationHandlersRef = useRef<Map<string, (message: any) => void>>(new Map());
+  const confirmationHandlersRef = useRef<Map<string, (message: any) => void>>(
+    new Map(),
+  );
   const presenceChannelRef = useRef<any | null>(null);
   const isInitializedRef = useRef<boolean>(false);
   const isAdmin = useAppSelector(selectIsAdmin);
@@ -114,16 +120,19 @@ export const useAblyManager = () => {
     [cleanupConfirmationChannel, subscribeToConfirmationChannel],
   );
 
-  const onListsUpdate = useCallback((email: string, callback: ListsUpdateCallback) => {
-    const callbacks = subscriptionsRef.listsUpdate.get(email) || [];
-    callbacks.push(callback);
-    subscriptionsRef.listsUpdate.set(email, callbacks);
+  const onListsUpdate = useCallback(
+    (email: string, callback: ListsUpdateCallback) => {
+      const callbacks = subscriptionsRef.listsUpdate.get(email) || [];
+      callbacks.push(callback);
+      subscriptionsRef.listsUpdate.set(email, callbacks);
 
-    return () => {
-      const idx = callbacks.indexOf(callback);
-      if (idx > -1) callbacks.splice(idx, 1);
-    };
-  }, []);
+      return () => {
+        const idx = callbacks.indexOf(callback);
+        if (idx > -1) callbacks.splice(idx, 1);
+      };
+    },
+    [],
+  );
 
   const onPresenceUpdate = useCallback((callback: PresenceUpdateCallback) => {
     const callbacks = subscriptionsRef.presenceUpdate.get("presence") || [];
@@ -137,7 +146,7 @@ export const useAblyManager = () => {
   }, []);
 
   useEffect(() => {
-    if (!loggedUserEmail) {
+    if (!isGlobalManager || !loggedUserEmail) {
       return;
     }
 
@@ -153,10 +162,14 @@ export const useAblyManager = () => {
     const dataChannel = ably.channels.get(`user:${loggedUserEmail}:lists`);
     channelsRef.current.set("data", dataChannel);
 
-    const presenceSelfChannel = ably.channels.get(`user:${loggedUserEmail}:presence`);
+    const presenceSelfChannel = ably.channels.get(
+      `user:${loggedUserEmail}:presence`,
+    );
     const presenceAdminChannel = ably.channels.get("global:presence-admins");
 
-    const presenceCountChannel = isAdmin ? presenceAdminChannel : presenceSelfChannel;
+    const presenceCountChannel = isAdmin
+      ? presenceAdminChannel
+      : presenceSelfChannel;
 
     presenceChannelRef.current = presenceCountChannel;
     channelsRef.current.set("presence:self", presenceSelfChannel);
@@ -180,7 +193,8 @@ export const useAblyManager = () => {
       const handleListsMessage = (message: any) => {
         if (!message.data?.lists) return;
         if (message.data.deviceId === currentDeviceId) return;
-        const callbacks = subscriptionsRef.listsUpdate.get(loggedUserEmail) || [];
+        const callbacks =
+          subscriptionsRef.listsUpdate.get(loggedUserEmail) || [];
         callbacks.forEach((cb) => cb(message.data));
       };
 
@@ -205,7 +219,8 @@ export const useAblyManager = () => {
           const userDevices = counts[loggedUserEmail || ""] || 0;
           const allDevices = members.length;
 
-          const callbacks = subscriptionsRef.presenceUpdate.get("presence") || [];
+          const callbacks =
+            subscriptionsRef.presenceUpdate.get("presence") || [];
           callbacks.forEach((cb) =>
             cb({
               users,
@@ -260,7 +275,11 @@ export const useAblyManager = () => {
         try {
           for (const [key, channel] of channels) {
             if (key.startsWith("presence") && channel?.presence) {
-              await safePresenceLeave(channel.presence, { status: "offline" }, 2000);
+              await safePresenceLeave(
+                channel.presence,
+                { status: "offline" },
+                2000,
+              );
             }
 
             if (key.startsWith("confirmation:")) {
@@ -281,21 +300,29 @@ export const useAblyManager = () => {
         }
       })();
     };
-  }, [loggedUserEmail, isAdmin, subscribeToConfirmationChannel]);
+  }, [
+    isGlobalManager,
+    loggedUserEmail,
+    isAdmin,
+    subscribeToConfirmationChannel,
+  ]);
 
   useEffect(() => {
-    if (!loggedUserEmail) {
-      const timer = setTimeout(() => {
-        closeAblyConnection();
-        isInitializedRef.current = false;
-        subscriptionsRef.confirmation.clear();
-        subscriptionsRef.listsUpdate.clear();
-        subscriptionsRef.presenceUpdate.clear();
-      }, 100);
+    if (!isGlobalManager || !loggedUserEmail) {
+      if (!loggedUserEmail) {
+        const timer = setTimeout(() => {
+          closeAblyConnection();
+          isInitializedRef.current = false;
+          subscriptionsRef.confirmation.clear();
+          subscriptionsRef.listsUpdate.clear();
+          subscriptionsRef.presenceUpdate.clear();
+        }, 100);
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
+      return;
     }
-  }, [loggedUserEmail]);
+  }, [isGlobalManager, loggedUserEmail]);
 
   return {
     onConfirmation,
