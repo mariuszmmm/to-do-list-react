@@ -1,0 +1,17 @@
+name: Automated Backup to Google Drive
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # Every day at 02:00 AM
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  auto-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Automated Backup
+        run: |
+          curl -X POST "https://${{ secrets.NETLIFY_SITE_NAME }}.netlify.app/.netlify/functions/backup-autoAllUsersToGoogleDrive" \
+          -H "Content-Type: application/json" \
+          -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+          -d '{}'
