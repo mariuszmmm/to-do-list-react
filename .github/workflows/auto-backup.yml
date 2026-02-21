@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Trigger Automated Backup
         run: |
-          curl -X POST "https://to-do-list.myprojects.pl/.netlify/functions/backup-autoAllUsersToGoogleDrive" \
+          curl -X POST "https://to-do-list.myprojects.pl/backup-autoAllUsersToGoogleDrive" \
           -H "Content-Type: application/json" \
           -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
           -d '{}'

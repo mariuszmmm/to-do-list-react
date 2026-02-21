@@ -77,3 +77,8 @@
   from = "/auth-refreshGoogleToken"
   to = "/.netlify/functions/auth-refreshGoogleToken"
   status = 200
+
+  [[redirects]]
+  from = "/backup-autoAllUsersToGoogleDrive"
+  to = "/.netlify/functions/backup-autoAllUsersToGoogleDrive"
+  status = 200
