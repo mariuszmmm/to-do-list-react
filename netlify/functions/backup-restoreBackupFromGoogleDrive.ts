@@ -3,6 +3,7 @@ import type { Handler, HandlerResponse } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import { restoreAllUsersFromBackupData } from "../functions/lib/restoreAllUsersFromBackupData";
 import { jsonResponse, logError } from "../functions/lib/response";
+import { getGoogleAccessToken } from "../functions/lib/googleDriveHelper";
 import {
   checkClientContext,
   checkEventBody,
@@ -14,6 +15,8 @@ import {
 } from "../functions/lib/validators";
 import { findActiveUser } from "../functions/lib/database";
 import { BackupData } from "../../src/types";
+import SystemConfig from "../models/SystemConfig";
+import { publishSystemLog } from "./lib/ablyHelper";
 
 const handler: Handler = async (event, context): Promise<HandlerResponse> => {
   const logPrefix = "[restoreBackupFromGoogleDrive]";
@@ -32,6 +35,29 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
 
   await connectToDB();
 
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+  ) => {
+    try {
+      const timestamp = new Date().toISOString();
+      const value = { status, details, timestamp };
+      await SystemConfig.create({
+        key: `log_restore_gd_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+      await publishSystemLog({
+        key: "log_restore_gd",
+        status,
+        details,
+        timestamp,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
+
   try {
     const email = context.clientContext?.user.email as string;
     const body = event.body as string;
@@ -42,7 +68,32 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
       return requestData;
     }
 
-    const { fileId, accessToken } = requestData;
+    let { fileId, accessToken }: { fileId?: string; accessToken?: string } =
+      requestData;
+
+    // Use system refresh token if no access token provided by frontend
+    if (!accessToken) {
+      const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
+      const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+
+      if (clientId && clientSecret && refreshToken) {
+        accessToken =
+          (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
+          undefined;
+      }
+    }
+
+    if (!accessToken) {
+      const authMsg = "Google Drive authentication failed";
+      console.warn(`${logPrefix} ${authMsg}`);
+      return jsonResponse(401, { message: authMsg, source: "google-drive" });
+    }
+
+    if (!fileId) {
+      console.warn(`${logPrefix} Missing fileId`);
+      return jsonResponse(400, { message: "Missing fileId" });
+    }
 
     const userData = await findActiveUser(email, logPrefix);
     if ("statusCode" in userData) {
@@ -55,7 +106,9 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         backupResult = await downloadFileFromGoogleDrive(fileId, accessToken);
       } catch (err: any) {
         if (err && err.status === 401) {
-          console.warn(`${logPrefix} Google Drive authentication failed: ${err.message}`);
+          console.warn(
+            `${logPrefix} Google Drive authentication failed: ${err.message}`,
+          );
           return jsonResponse(401, {
             message: "Google Drive authentication failed.",
             source: "google-drive",
@@ -65,7 +118,11 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
       }
 
       const backupData = backupResult;
-      const typeResponse = validateBackupType(backupData.backupType, "all-users-backup", logPrefix);
+      const typeResponse = validateBackupType(
+        backupData.backupType,
+        "all-users",
+        logPrefix,
+      );
       if (typeResponse) {
         return typeResponse;
       }
@@ -75,14 +132,26 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         return usersResponse;
       }
 
-      const { restored, failed } = await restoreAllUsersFromBackupData(backupData);
+      const { restored, failed } =
+        await restoreAllUsersFromBackupData(backupData);
+
+      const msg = `Restored ${restored} users, ${failed} failed from Google Drive`;
+      await updateStatus("success", msg);
 
       return jsonResponse(200, {
+        message: msg,
         restored,
         failed,
       });
     } catch (processError) {
       logError("Backup process error", processError, logPrefix);
+      await updateStatus(
+        "error",
+        "Restore from GD failed: " +
+          (processError instanceof Error
+            ? processError.message
+            : "Internal error"),
+      );
       return jsonResponse(500, {
         message: "Failed to restore from Google Drive",
       });

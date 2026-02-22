@@ -1,7 +1,7 @@
 import type { Handler } from "@netlify/functions";
 import Ably from "ably";
 import { jsonResponse, logError } from "../functions/lib/response";
-import { checkHttpMethod } from "../functions/lib/validators";
+import { checkHttpMethod, isUserAdmin } from "../functions/lib/validators";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[ably-auth]";
@@ -12,8 +12,10 @@ const handler: Handler = async (event, context) => {
   const emailParam = event.queryStringParameters?.email;
   const deviceId = event.queryStringParameters?.deviceId;
   const isAuthenticated = context?.clientContext?.user !== undefined;
-  const email = isAuthenticated ? context?.clientContext?.user?.email : emailParam;
-  const isAdmin = context?.clientContext?.user?.app_metadata?.roles?.includes("admin") ?? false;
+  const email = isAuthenticated
+    ? context?.clientContext?.user?.email
+    : emailParam;
+  const isAdmin = isUserAdmin(context);
 
   if (!email) {
     console.warn(`${logPrefix} Unauthorized request: missing email`);
@@ -36,6 +38,7 @@ const handler: Handler = async (event, context) => {
           [`user:${email}:confirmation`]: ["subscribe"],
           [`user:${email}:presence`]: ["subscribe", "presence"],
           "global:presence-admins": ["subscribe", "presence"],
+          "system:logs": ["subscribe"],
         }
       : isAuthenticated
         ? {

@@ -1,5 +1,8 @@
 import { TFunction } from "i18next";
-import { deleteBackupFromGoogleDriveApi, fetchGoogleDriveBackupListApi } from "../../../../api/backupApi";
+import {
+  deleteBackupFromGoogleDriveApi,
+  fetchGoogleDriveBackupListApi,
+} from "../../../../api/backupApi";
 import i18n from "../../../../utils/i18n";
 import { translateText } from "../../../../api/translateTextApi";
 import { BackupFile } from "../../../../types";
@@ -7,12 +10,11 @@ import { getUserToken } from "../../../../utils/auth/getUserToken";
 
 export const handleDeleteBackup = async (
   fileId: string,
-  googleAccessToken: string,
   t: TFunction<"translation", "accountPage.backup">,
-  setShowGoogleAuth: (show: boolean) => void,
   setShowBackupList: (show: boolean) => void,
   setBackupFiles: (files: BackupFile[]) => void,
   setCurrentPage: (number: number) => void,
+  setShowGoogleAuth?: (show: boolean) => void,
 ) => {
   try {
     const token = await getUserToken();
@@ -20,29 +22,16 @@ export const handleDeleteBackup = async (
       throw new Error("No user token");
     }
 
-    if (!googleAccessToken) {
-      setShowGoogleAuth(true);
-      setShowBackupList(false);
-      return {
-        success: false,
-        message: i18n.t("accountPage.backup.listGoogleDriveBackups.notAuthorized"),
-      };
-    }
-
-    const deleteResult = await deleteBackupFromGoogleDriveApi({
-      token,
-      googleAccessToken,
-      fileId,
-    });
+    const deleteResult = await deleteBackupFromGoogleDriveApi(token, fileId);
 
     if (!deleteResult.success) {
-      throw new Error(deleteResult.message);
+      throw deleteResult;
     }
 
-    const result = await fetchGoogleDriveBackupListApi({ token, googleAccessToken });
+    const result = await fetchGoogleDriveBackupListApi(token);
 
     if (!result.success || !result.data || !result.data.files) {
-      throw new Error(result.message);
+      throw result;
     }
 
     setBackupFiles(result.data.files);
@@ -51,11 +40,21 @@ export const handleDeleteBackup = async (
     return { success: true };
   } catch (error: unknown) {
     console.error("[DeleteBackup]", error);
-    setShowGoogleAuth(true);
 
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) || t("listGoogleDriveBackups.errorDelete");
+      (msg && typeof msg === "string"
+        ? await translateText(msg, i18n.language)
+        : null) || t("listGoogleDriveBackups.errorDelete");
+
+    if (
+      error &&
+      typeof error === "object" &&
+      "source" in error &&
+      (error as any).source === "google-drive"
+    ) {
+      setShowGoogleAuth?.(true);
+    }
 
     return { success: false, message: translatedText };
   }

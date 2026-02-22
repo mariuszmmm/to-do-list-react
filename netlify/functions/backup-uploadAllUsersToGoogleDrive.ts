@@ -1,15 +1,19 @@
+import SystemConfig from "../models/SystemConfig";
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import { getAllUsersForBackup } from "../functions/lib/getAllUsersForBackup";
-import { uploadBackupToGoogleDrive } from "../functions/lib/uploadBackupToGoogleDrive";
+import { getAllUsersForBackup } from "./lib/getAllUsersForBackup";
+import { uploadBackupToGoogleDrive } from "./lib/uploadBackupToGoogleDrive";
+import { getGoogleAccessToken } from "./lib/googleDriveHelper";
 import {
   checkAdminRole,
   checkClientContext,
   checkEventBody,
   checkHttpMethod,
   parseJsonBody,
-} from "../functions/lib/validators";
-import { jsonResponse, logError } from "../functions/lib/response";
+} from "./lib/validators";
+import { jsonResponse, logError } from "./lib/response";
+import { publishSystemLog } from "./lib/ablyHelper";
+import UserData from "../models/UserData";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[uploadAllUsersToGoogleDrive]";
@@ -28,6 +32,33 @@ const handler: Handler = async (event, context) => {
 
   await connectToDB();
 
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+  ) => {
+    try {
+      const timestamp = new Date().toISOString();
+      const value = { status, details, timestamp };
+
+      // Add a unique log entry for the history list
+      await SystemConfig.create({
+        key: `log_manualbackup_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+
+      // Notify admins in real-time
+      await publishSystemLog({
+        key: "log_manualbackup",
+        status,
+        details,
+        timestamp,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
+
   try {
     const email = context.clientContext?.user.email as string;
     const parsedBody = parseJsonBody<{ accessToken?: string }>(
@@ -39,49 +70,109 @@ const handler: Handler = async (event, context) => {
       return parsedBody;
     }
 
-    const { accessToken } = parsedBody;
+    let { accessToken } = parsedBody;
+
+    // Use system refresh token if no access token provided by frontend
+    if (!accessToken) {
+      const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID?.replace(/"/g, "");
+      const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET?.replace(
+        /"/g,
+        "",
+      );
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(
+        /"/g,
+        "",
+      );
+
+      if (clientId && clientSecret && refreshToken) {
+        accessToken =
+          (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
+          undefined;
+      } else if (clientId && clientSecret) {
+        // Fallback: try to fetch refresh token from the DB for this specific admin
+        try {
+          const userDoc = await UserData.findOne({ email });
+          const dbRefreshToken = userDoc?.googleRefreshToken;
+
+          if (dbRefreshToken) {
+            console.log(
+              `${logPrefix} Found refresh token in DB, attempting exchange...`,
+            );
+            accessToken =
+              (await getGoogleAccessToken(
+                clientId,
+                clientSecret,
+                dbRefreshToken,
+              )) || undefined;
+          }
+        } catch (dbError) {
+          console.error(
+            `${logPrefix} DB fetch error for refresh token:`,
+            dbError,
+          );
+        }
+      }
+
+      if (!accessToken) {
+        console.warn(
+          `${logPrefix} Missing Google environment variables or DB token. (ID: ${!!clientId}, Secret: ${!!clientSecret}, Token: ${!!refreshToken})`,
+        );
+      }
+    }
+
     const { backupData, fileName } = await getAllUsersForBackup(email);
 
-    if (!accessToken || !backupData || !fileName) {
+    if (!accessToken) {
+      const authMsg = "Google Drive authentication failed";
+      console.warn(`${logPrefix} ${authMsg}`);
+      await updateStatus("error", authMsg);
+      return jsonResponse(401, { message: authMsg, source: "google-drive" });
+    }
+
+    if (!backupData || !fileName) {
       console.warn(`${logPrefix} Missing required data for upload`);
-      return jsonResponse(400, { message: "Missing required data for upload" });
+      const msg = "Missing required data for upload";
+      await updateStatus("error", msg);
+      return jsonResponse(400, { message: msg });
     }
 
     const fileContent = JSON.stringify(backupData);
-    const folderName = "To-do-list/Backups";
 
     try {
       const uploadResponse = await uploadBackupToGoogleDrive(
-        folderName,
-        fileName,
+        `Backup_${fileName}`,
         fileContent,
         accessToken,
       );
 
       if (!uploadResponse.success) {
         if (uploadResponse.statusCode === 401) {
-          console.warn(
-            `${logPrefix} Google Drive authentication failed: ${uploadResponse.message}`,
-          );
+          const authMsg = "Google Drive authentication failed";
+          console.warn(`${logPrefix} ${authMsg}: ${uploadResponse.message}`);
+          await updateStatus("error", authMsg);
           return jsonResponse(401, {
-            message: "Google Drive authentication failed",
+            message: authMsg,
             source: "google-drive",
           });
         }
         throw new Error(uploadResponse.message);
       }
 
+      await updateStatus("success", "Manual backup completed successfully");
+
       return jsonResponse(200, {
         message: "Backup uploaded to Google Drive successfully",
       });
     } catch (driveError) {
+      const driveMsg = "Failed to upload to Google Drive";
       console.warn(
-        `${logPrefix} Failed to upload to Google Drive: ${
+        `${logPrefix} ${driveMsg}: ${
           driveError instanceof Error ? driveError.message : "Unknown error"
         }`,
       );
+      await updateStatus("error", driveMsg);
       return jsonResponse(500, {
-        message: "Failed to upload to Google Drive",
+        message: driveMsg,
       });
     }
   } catch (error) {
@@ -89,6 +180,11 @@ const handler: Handler = async (event, context) => {
       "Unexpected error in uploadAllUsersToGoogleDrive handler",
       error,
       logPrefix,
+    );
+    await updateStatus(
+      "error",
+      "Unexpected error: " +
+        (error instanceof Error ? error.message : "Unknown"),
     );
     return jsonResponse(500, {
       message: "Internal server error",

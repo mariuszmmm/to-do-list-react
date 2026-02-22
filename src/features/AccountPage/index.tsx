@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../hooks/redux/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { StyledSpan, AnimatedSpan } from "../../common/StyledList";
@@ -8,6 +8,7 @@ import { AccountButtons } from "./AccountButtons";
 import { AccountForm } from "./AccountForm";
 import { AccountFormActions } from "./AccountFormActions";
 import { BackupManager } from "./BackupManager";
+import { SystemAdmin } from "./SystemAdmin";
 import { PresenceUsersList } from "./PresenceUsersList";
 import { SessionInfo } from "./SessionInfo";
 import { Settings } from "../../types";
@@ -18,9 +19,15 @@ import {
   selectTotalUsersCount,
   selectUserDevicesCount,
 } from "./accountSlice";
+import { getSystemStatusApi } from "../../api/backupApi";
+import { openModal } from "../../Modal/modalSlice";
+import { getUserToken } from "../../utils/auth/getUserToken";
 import { useTranslation } from "react-i18next";
 import { NameContainer } from "../tasks/TasksPage/EditableListName/styled";
-import { getSettingsFromLocalStorage, saveSettingsInLocalStorage } from "../../utils/storage/localStorage";
+import {
+  getSettingsFromLocalStorage,
+  saveSettingsInLocalStorage,
+} from "../../utils/storage/localStorage";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -32,7 +39,8 @@ const AccountPage = () => {
     keyPrefix: "accountPage",
   });
   const [isBackupOpen, setIsBackupOpen] = useState(() => {
-    const shouldOpenBackup = sessionStorage.getItem("open_backup_after_oauth") === "true";
+    const shouldOpenBackup =
+      sessionStorage.getItem("open_backup_after_oauth") === "true";
     if (shouldOpenBackup) return true;
     return getSettingsFromLocalStorage()?.isBackupOpen || false;
   });
@@ -45,8 +53,13 @@ const AccountPage = () => {
   const [isPresenceListOpen, setIsPresenceListOpen] = useState(
     () => getSettingsFromLocalStorage()?.isPresenceListOpen || false,
   );
+  const [isSystemAdminOpen, setIsSystemAdminOpen] = useState(
+    () => (getSettingsFromLocalStorage() as any)?.isSystemAdminOpen || false,
+  );
 
-  const persistSettings = (partial: Partial<Settings>) => {
+  const persistSettings = (
+    partial: Partial<Settings & { isSystemAdminOpen: boolean }>,
+  ) => {
     const current = getSettingsFromLocalStorage() || {
       showSearch: false,
       hideDone: false,
@@ -86,9 +99,17 @@ const AccountPage = () => {
     });
   };
 
+  const toggleSystemAdmin = () => {
+    setIsSystemAdminOpen((prev: boolean) => {
+      const next = !prev;
+      persistSettings({ isSystemAdminOpen: next });
+      return next;
+    });
+  };
+
   const renderToggleButton = (isOpen: boolean, onClick: () => void) => (
     <CollapseButton
-      type='button'
+      type="button"
       onClick={(e) => {
         e.stopPropagation();
         onClick();
@@ -100,12 +121,32 @@ const AccountPage = () => {
     </CollapseButton>
   );
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (sessionStorage.getItem("open_backup_after_oauth") === "true") {
       sessionStorage.removeItem("open_backup_after_oauth");
     }
-  }, []);
+
+    if (isAdmin) {
+      getUserToken().then((token) => {
+        if (token) {
+          getSystemStatusApi(token).then((response) => {
+            if (response.success && response.data?.status?.status === "error") {
+              dispatch(
+                openModal({
+                  title: { key: "modal.backupAuthError.title" },
+                  message: { key: "modal.backupAuthError.message" },
+                  type: "error",
+                }),
+              );
+            }
+          });
+        }
+      });
+    }
+  }, [isAdmin, dispatch]);
 
   return (
     <>
@@ -121,17 +162,22 @@ const AccountPage = () => {
             {loggedUserEmail && (
               <AnimatedSpan $comment $visible={userDevices > 0}>
                 <br />
-                <strong>{t("deviceCount.device", { count: userDevices })}</strong>
+                <strong>
+                  {t("deviceCount.device", { count: userDevices })}
+                </strong>
               </AnimatedSpan>
             )}
           </>
         }
       />
 
-      {loggedUserEmail && (
+      {loggedUserEmail && isAdmin && (
         <Section
           title={t("sessionInfo.title")}
-          extraHeaderContent={renderToggleButton(isSessionInfoOpen, toggleSessionInfo)}
+          extraHeaderContent={renderToggleButton(
+            isSessionInfoOpen,
+            toggleSessionInfo,
+          )}
           onHeaderClick={toggleSessionInfo}
           onlyOpenButton={isPresenceListOpen !== undefined}
           body={<SessionInfo isSessionInfoOpen={isSessionInfoOpen} />}
@@ -142,16 +188,23 @@ const AccountPage = () => {
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.summaryTitle")}
-          extraHeaderContent={renderToggleButton(isActivitySummaryOpen, toggleActivitySummary)}
+          extraHeaderContent={renderToggleButton(
+            isActivitySummaryOpen,
+            toggleActivitySummary,
+          )}
           onHeaderClick={toggleActivitySummary}
           onlyOpenButton={isPresenceListOpen !== undefined}
           body={
             <NameContainer $account>
               <StyledSpan $comment>
-                <strong>{t("activeUsers.count", { count: totalUsersCount })}</strong>
+                <strong>
+                  {t("activeUsers.count", { count: totalUsersCount })}
+                </strong>
               </StyledSpan>
               <StyledSpan $comment>
-                <strong>{t("allDevices.device", { count: allDevicesCount })}</strong>
+                <strong>
+                  {t("allDevices.device", { count: allDevicesCount })}
+                </strong>
               </StyledSpan>
             </NameContainer>
           }
@@ -162,11 +215,28 @@ const AccountPage = () => {
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("activeUsers.label")}
-          extraHeaderContent={renderToggleButton(isPresenceListOpen, togglePresenceList)}
+          extraHeaderContent={renderToggleButton(
+            isPresenceListOpen,
+            togglePresenceList,
+          )}
           onHeaderClick={togglePresenceList}
-          onlyOpenButton={isPresenceListOpen !== undefined}
+          onlyOpenButton={true}
           body={<PresenceUsersList />}
           bodyHidden={!isPresenceListOpen}
+        />
+      )}
+
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={t("systemAdmin.title")}
+          extraHeaderContent={renderToggleButton(
+            isSystemAdminOpen,
+            toggleSystemAdmin,
+          )}
+          onHeaderClick={toggleSystemAdmin}
+          onlyOpenButton={true}
+          body={<SystemAdmin />}
+          bodyHidden={!isSystemAdminOpen}
         />
       )}
 

@@ -22,6 +22,7 @@ interface StyledTaskProps {
   disabled?: boolean;
   $isDragging?: boolean;
   $edit?: boolean;
+  $error?: boolean;
 }
 
 export const StyledList = styled.ul`
@@ -41,7 +42,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
     border-color 0.5s ease-in-out;
 
   grid-template-columns: ${({ $type }) =>
-    $type === "tasks" || $type === "lists" || $type === "sort" || $type === "archived"
+    $type === "tasks" ||
+    $type === "lists" ||
+    $type === "sort" ||
+    $type === "archived"
       ? "auto 1fr auto"
       : $type === "tasksView"
         ? "auto 1fr"
@@ -68,7 +72,10 @@ export const StyledListItem = styled.li<StyledListItemProps>`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-template-columns: ${({ $type }) =>
-      $type === "tasks" || $type === "lists" || $type === "sort" || $type === "archived"
+      $type === "tasks" ||
+      $type === "lists" ||
+      $type === "sort" ||
+      $type === "archived"
         ? "1fr auto"
         : $type === "tasksView"
           ? "1fr"
@@ -113,7 +120,11 @@ export const StyledListContent = styled.div<StyledListContentProps>`
     grid-row: 1 / 2;
     margin: 0;
     ${({ $type }) =>
-      $type === "lists" || $type === "sort" ? "grid-column: span 2;" : $type === "tasks" ? "grid-column: span 3;" : ""}
+      $type === "lists" || $type === "sort"
+        ? "grid-column: span 2;"
+        : $type === "tasks"
+          ? "grid-column: span 3;"
+          : ""}
   }
 `;
 
@@ -127,7 +138,10 @@ export const TaskNumber = styled.span<{
   ${({ $edit, $isDragging }) =>
     ($edit || $isDragging) &&
     css`
-      color: ${({ theme }) => ($edit || $isDragging ? theme.colors.button.edit : theme.colors.textPrimary)};
+      color: ${({ theme }) =>
+        $edit || $isDragging
+          ? theme.colors.button.edit
+          : theme.colors.textPrimary};
       pointer-events: none;
     `}
 `;
@@ -139,20 +153,23 @@ export const StyledSpan = styled.span<StyledTaskProps>`
   ${({ $done }) =>
     $done &&
     css`
-      text-decoration: 1px line-through ${({ theme }) => theme.colors.textPrimary};
+      text-decoration: 1px line-through
+        ${({ theme }) => theme.colors.textPrimary};
     `};
 
   ${({ $ListName, $isDragging }) =>
     $ListName &&
     css`
       font-weight: ${({ theme }) => theme.fontWeight.bold};
-      color: ${({ theme }) => ($isDragging ? theme.colors.textSecendary : theme.colors.textPrimary)};
+      color: ${({ theme }) =>
+        $isDragging ? theme.colors.textSecendary : theme.colors.textPrimary};
     `}
 
   ${({ $noLink, $isDragging }) =>
     $noLink &&
     css`
-      color: ${({ theme }) => ($isDragging ? theme.colors.textSecendary : theme.colors.textPrimary)};
+      color: ${({ theme }) =>
+        $isDragging ? theme.colors.textSecendary : theme.colors.textPrimary};
     `}
 
   ${({ $comment }) =>
@@ -170,11 +187,19 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       text-decoration-color: ${({ theme }) => theme.colors.textSecendary};
     `};
 
+  ${({ $error, theme }) =>
+    $error &&
+    css`
+      color: ${theme.colors.status.error};
+    `}
+
   strong {
     ${({ $tokenStatus, theme }) =>
       $tokenStatus &&
       css`
-        color: ${$tokenStatus === "active" ? theme.colors.status.success : theme.colors.status.warning};
+        color: ${$tokenStatus === "active"
+          ? theme.colors.status.success
+          : theme.colors.status.warning};
       `}
   }
 `;

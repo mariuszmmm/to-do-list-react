@@ -85,3 +85,28 @@
   from = "/backup-autoAllUsersToGoogleDrive"
   to = "/.netlify/functions/backup-autoAllUsersToGoogleDrive"
   status = 200
+
+  [[redirects]]
+  from = "/get-system-status"
+  to = "/.netlify/functions/get-system-status"
+  status = 200
+
+  [[redirects]]
+  from = "/cleanup-orphan-images"
+  to = "/.netlify/functions/cleanup-orphan-images"
+  status = 200
+
+  [[redirects]]
+  from = "/diagnose-system"
+  to = "/.netlify/functions/diagnose-system"
+  status = 200
+
+  [[redirects]]
+  from = "/test-set-backup-error"
+  to = "/.netlify/functions/test-set-backup-error"
+  status = 200
+
+  [[redirects]]
+  from = "/test-reset-backup-status"
+  to = "/.netlify/functions/test-reset-backup-status"
+  status = 200

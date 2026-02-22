@@ -6,24 +6,13 @@ import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 
 export const handleUploadAllUsersToGoogleDrive = async (
-  googleAccessToken: string | null,
   t: TFunction<"translation", "accountPage.backup">,
   setStatus: (status: StatusState) => void,
-  setShowGoogleAuth: (show: boolean) => void,
+  setShowGoogleAuth?: (show: boolean) => void,
 ): Promise<void> => {
   try {
     const token = await getUserToken();
     if (!token) throw new Error("No user token");
-
-    if (!googleAccessToken) {
-      setStatus({
-        isLoading: false,
-        message: t("uploadAllUsersToGoogleDrive.notAuthorized"),
-        messageType: "error",
-      });
-      setShowGoogleAuth(true);
-      return;
-    }
 
     setStatus({
       isLoading: true,
@@ -31,8 +20,8 @@ export const handleUploadAllUsersToGoogleDrive = async (
       messageType: "info",
     });
 
-    const result = await uploadAllUsersToGoogleDriveApi(token, googleAccessToken);
-    if (!result.success) throw new Error(result.message);
+    const result = await uploadAllUsersToGoogleDriveApi(token);
+    if (!result.success) throw result;
 
     setStatus({
       isLoading: false,
@@ -41,11 +30,20 @@ export const handleUploadAllUsersToGoogleDrive = async (
     });
   } catch (error: unknown) {
     console.error("[handleUploadAllUsersToGoogleDrive]", error);
-    setShowGoogleAuth(true);
 
     const msg = error instanceof Error ? error.message : "";
     const translatedText =
-      (msg ? await translateText(msg, i18n.language) : null) || t("uploadAllUsersToGoogleDrive.error");
+      (msg ? await translateText(msg, i18n.language) : null) ||
+      t("uploadAllUsersToGoogleDrive.error");
+
+    if (
+      error &&
+      typeof error === "object" &&
+      "source" in error &&
+      error.source === "google-drive"
+    ) {
+      setShowGoogleAuth?.(true);
+    }
 
     setStatus({
       isLoading: false,

@@ -1,5 +1,8 @@
 import { Handler } from "@netlify/functions";
+import { connectToDB } from "../config/mongoose";
+import SystemConfig from "../models/SystemConfig";
 import { jsonResponse } from "./lib/response";
+import { publishSystemLog } from "./lib/ablyHelper";
 
 const handler: Handler = async (event) => {
   const logPrefix = "[cleanup-temp-images]";
@@ -10,15 +13,52 @@ const handler: Handler = async (event) => {
     return jsonResponse(405, { message: "Method not allowed" });
   }
 
-  const API_KEY = process.env.CLOUDINARY_API_KEY;
-  const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-  const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+    stats?: any,
+  ) => {
+    try {
+      await connectToDB();
+      const timestamp = new Date().toISOString();
+      const value = { status, details, stats, timestamp };
 
-  if (!API_KEY || !API_SECRET || !CLOUD_NAME) {
-    return jsonResponse(500, { message: "Missing Cloudinary configuration" });
-  }
+      // Update the persistent latest status for UI health indicators (if needed, though this is temp cleanup)
+      await SystemConfig.findOneAndUpdate(
+        { key: "lastTempCleanupStatus" },
+        { value, updatedAt: new Date() },
+        { upsert: true },
+      );
+
+      // Add a unique log entry for the history list
+      await SystemConfig.create({
+        key: `log_cleanup_temp_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+
+      // Notify admins in real-time
+      await publishSystemLog({
+        key: "log_cleanup_temp",
+        status,
+        details,
+        timestamp,
+        stats,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
 
   try {
+    const API_KEY = process.env.CLOUDINARY_API_KEY;
+    const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+    const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+
+    if (!API_KEY || !API_SECRET || !CLOUD_NAME) {
+      throw new Error("Missing Cloudinary configuration");
+    }
+
     const ASSET_FOLDER = "Todo-list/temp_uploads";
 
     // Calculate threshold
@@ -52,6 +92,9 @@ const handler: Handler = async (event) => {
     console.log(`${logPrefix} Resources found to delete: ${resourcesFound}`);
 
     if (!searchData.resources || searchData.resources.length === 0) {
+      await updateStatus("success", "No temp images to cleanup", {
+        cleaned: 0,
+      });
       return jsonResponse(200, {
         message: "No resources found in folder",
         data: { cleaned: 0 },
@@ -82,18 +125,24 @@ const handler: Handler = async (event) => {
         `${logPrefix} Successfully deleted ${deletedCount} resources.`,
       );
 
+      await updateStatus("success", "Temp images cleanup completed", {
+        cleaned: deletedCount,
+      });
       return jsonResponse(200, {
         message: "Cleanup completed",
         data: { cleaned: deletedCount },
       });
     } else {
-      return jsonResponse(400, {
-        message: "Failed to delete resources",
-        error: deleteData,
-      });
+      throw new Error(
+        `Failed to delete resources: ${JSON.stringify(deleteData)}`,
+      );
     }
   } catch (error) {
     console.error(`${logPrefix} Cleanup error:`, error);
+    await updateStatus(
+      "error",
+      error instanceof Error ? error.message : "Unknown error",
+    );
     return jsonResponse(500, {
       message: "Failed to cleanup Cloudinary",
       error: error instanceof Error ? error.message : "Unknown error",

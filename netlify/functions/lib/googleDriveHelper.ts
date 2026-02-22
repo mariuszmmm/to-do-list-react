@@ -1,4 +1,8 @@
 import { jsonResponse } from "./response";
+import { connectToDB } from "../../config/mongoose";
+import SystemConfig from "../../models/SystemConfig";
+// Memory cache to avoid DB calls for warm function containers
+let memoryCache: { token: string; expiresAt: Date } | null = null;
 
 /**
  * Gets a fresh access token using a refresh token
@@ -9,6 +13,42 @@ export const getGoogleAccessToken = async (
   refreshToken: string,
 ): Promise<string | null> => {
   try {
+    const now = new Date();
+    const bufferTime = 5 * 60 * 1000; // 5-minute buffer
+
+    // 1. Check Memory Cache (Fastest)
+    if (
+      memoryCache &&
+      memoryCache.expiresAt.getTime() - now.getTime() > bufferTime
+    ) {
+      // console.log("[getGoogleAccessToken] Using memory-cached token");
+      return memoryCache.token;
+    }
+
+    await connectToDB();
+
+    // 2. Check MongoDB Cache
+    const configKey = "google_drive_access_token";
+    const cachedConfig = await SystemConfig.findOne({ key: configKey });
+
+    if (cachedConfig) {
+      const expirationDate = new Date(cachedConfig.value.expiresAt);
+      if (expirationDate.getTime() - now.getTime() > bufferTime) {
+        console.log(
+          "[getGoogleAccessToken] Using cached Google access token (from MongoDB)",
+        );
+        // Update memory cache for next call
+        memoryCache = {
+          token: cachedConfig.value.token,
+          expiresAt: expirationDate,
+        };
+        return cachedConfig.value.token;
+      }
+    }
+
+    console.log(
+      "[getGoogleAccessToken] Cache expired or missing. Obtaining new token from Google API...",
+    );
     const response = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: {
@@ -29,9 +69,33 @@ export const getGoogleAccessToken = async (
     }
 
     const data = await response.json();
-    return data.access_token;
+    const accessToken = data.access_token;
+
+    // Save to cache. Token usually expires in 3600 seconds.
+    const expiresIn = data.expires_in || 3600;
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+    // Update memory cache
+    memoryCache = { token: accessToken, expiresAt };
+
+    // Update DB cache
+    await SystemConfig.findOneAndUpdate(
+      { key: configKey },
+      {
+        key: configKey,
+        value: { token: accessToken, expiresAt },
+        updatedAt: new Date(),
+      },
+      { upsert: true, new: true },
+    );
+
+    console.log("[getGoogleAccessToken] Successfully cached new access token.");
+    return accessToken;
   } catch (error) {
-    console.error("[getGoogleAccessToken] Error refreshing token:", error);
+    console.error(
+      "[getGoogleAccessToken] Error refreshing/getting token:",
+      error,
+    );
     return null;
   }
 };

@@ -1,5 +1,5 @@
 import { getBackupFileName } from "./getBackupFileName";
-import { BackupData } from "../../../src/types";
+import { BackupData, BackupType } from "../../../src/types";
 import UserData from "../../models/UserData";
 
 export const getAllUsersForBackup = async (email: string) => {
@@ -19,14 +19,15 @@ export const getAllUsersForBackup = async (email: string) => {
   });
 
   const now = new Date();
-  const fileName = getBackupFileName("all-users-backup", now);
+  const backupType: BackupType = "all-users";
+  const fileName = getBackupFileName(backupType, now);
 
   const backupData: BackupData = {
     version: "1.0",
-    timestamp: new Date().toISOString(),
+    timestamp: now.toISOString(),
     createdBy: email,
     fileName,
-    backupType: "all-users-backup",
+    backupType,
     users: allUserData.map((userData) => ({
       email: userData.email,
       account: userData.account,
@@ -37,7 +38,7 @@ export const getAllUsersForBackup = async (email: string) => {
       tasksCount:
         userData.lists?.reduce(
           (sum: number, list: any) => sum + (list.taskList?.length || 0),
-          0
+          0,
         ) || 0,
     })),
     totalUsers: allUserData.length,

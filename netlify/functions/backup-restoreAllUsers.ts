@@ -1,9 +1,16 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import { restoreAllUsersFromBackupData } from "../functions/lib/restoreAllUsersFromBackupData";
-import { checkAdminRole, checkClientContext, checkEventBody, checkHttpMethod } from "../functions/lib/validators";
+import {
+  checkAdminRole,
+  checkClientContext,
+  checkEventBody,
+  checkHttpMethod,
+} from "../functions/lib/validators";
 import { BackupData } from "../../src/types";
 import { jsonResponse, logError } from "../functions/lib/response";
+import SystemConfig from "../models/SystemConfig";
+import { publishSystemLog } from "./lib/ablyHelper";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[restoreAllUsers]";
@@ -21,6 +28,29 @@ const handler: Handler = async (event, context) => {
   if (adminResponse) return adminResponse;
 
   await connectToDB();
+
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+  ) => {
+    try {
+      const timestamp = new Date().toISOString();
+      const value = { status, details, timestamp };
+      await SystemConfig.create({
+        key: `log_restore_disk_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+      await publishSystemLog({
+        key: "log_restore_disk",
+        status,
+        details,
+        timestamp,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
 
   try {
     const body = event.body as string;
@@ -45,15 +75,24 @@ const handler: Handler = async (event, context) => {
       return jsonResponse(400, { message: "Invalid backup data structure" });
     }
 
-    const { restored, failed } = await restoreAllUsersFromBackupData(backupData);
+    const { restored, failed } =
+      await restoreAllUsersFromBackupData(backupData);
+
+    const msg = `Restored ${restored} users, ${failed} failed`;
+    await updateStatus("success", msg);
 
     return jsonResponse(200, {
-      message: `Restored ${restored} users, ${failed} failed`,
+      message: msg,
       restored,
       failed,
     });
   } catch (error) {
     logError("Error restoring users", error, logPrefix);
+    await updateStatus(
+      "error",
+      "Restoration failed: " +
+        (error instanceof Error ? error.message : "Internal error"),
+    );
     return jsonResponse(500, { message: "Internal server error" });
   }
 };

@@ -35,16 +35,22 @@ export const getAblyInstance = (): Ably.Realtime => {
             const email = getEmailFromToken(userToken);
 
             if (!email) {
-              callback("User not authenticated - cannot extract email from token", null);
+              callback(
+                "User not authenticated - cannot extract email from token",
+                null,
+              );
               return;
             }
 
-            const response = await fetch(`/auth-ablyAuth?deviceId=${deviceId}`, {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${userToken}`,
+            const response = await fetch(
+              `/auth-ablyAuth?deviceId=${deviceId}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                },
               },
-            });
+            );
 
             if (!response.ok) {
               const errorData = await response.json();
@@ -64,7 +70,10 @@ export const getAblyInstance = (): Ably.Realtime => {
             return;
           }
 
-          const response = await fetch(`/auth-ablyAuth?email=${pendingEmail}&deviceId=${deviceId}`, { method: "GET" });
+          const response = await fetch(
+            `/auth-ablyAuth?email=${pendingEmail}&deviceId=${deviceId}`,
+            { method: "GET" },
+          );
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -97,7 +106,11 @@ export const closeAblyConnection = () => {
   }
 };
 
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> => {
+const withTimeout = async <T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+): Promise<T> => {
   let timeoutId: NodeJS.Timeout | undefined;
   try {
     return await Promise.race([
@@ -115,21 +128,56 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, label: str
   }
 };
 
-export const safeDetachChannel = async (channel: Ably.RealtimeChannel, timeoutMs = 3000) => {
+export const safeDetachChannel = async (
+  channel: Ably.RealtimeChannel,
+  timeoutMs = 3000,
+) => {
   try {
-    await withTimeout(channel.detach(), timeoutMs, "Channel detach");
+    // If connection is already closing or closed, detaching is not needed/possible
+    const connectionState =
+      (channel as any).realtime?.connection?.state ||
+      (channel as any).ably?.connection?.state;
+    if (connectionState === "closing" || connectionState === "closed") {
+      return;
+    }
+
+    // If channel is already detached or detaching, don't do anything
+    if (
+      channel.state === "detached" ||
+      channel.state === "detaching" ||
+      channel.state === "failed"
+    ) {
+      return;
+    }
+
+    // Wrap the call to handle potential synchronous throws from Ably v2
+    const detachPromise = (async () => {
+      try {
+        return await channel.detach();
+      } catch (e) {
+        // Re-throw to be caught by withTimeout's catch
+        throw e;
+      }
+    })();
+
+    await withTimeout(detachPromise, timeoutMs, "Channel detach");
   } catch (err) {
-    if (err instanceof Error && err.message.includes("timeout")) {
-      console.warn("[Ably] detach timeout, proceeding: ", err.message);
+    const errorMsg = err instanceof Error ? err.message : String(err);
+
+    // Ignore harmless errors during cleanup
+    if (
+      errorMsg.includes("timeout") ||
+      errorMsg.includes("superseded") ||
+      errorMsg.includes("Connection closed") ||
+      errorMsg.includes("detached") ||
+      errorMsg.includes("detaching") ||
+      errorMsg.includes("Channel operation failed") ||
+      errorMsg.includes("attach") || // Catch "Unable to attach"
+      errorMsg.includes("reason unknown")
+    ) {
       return;
     }
-    if (err instanceof Error && err.message.includes("superseded")) {
-      return;
-    }
-    if (err instanceof Error && err.message.includes("Connection closed")) {
-      return;
-    }
-    console.error("[Ably] detach error:", err);
+    console.warn("[Ably] silent detach error:", errorMsg);
   }
 };
 
@@ -147,7 +195,8 @@ export const safePresenceLeave = async (
     }
     if (
       err instanceof Error &&
-      (err.message.includes("detached") || err.message.includes("Channel operation failed"))
+      (err.message.includes("detached") ||
+        err.message.includes("Channel operation failed"))
     ) {
       return;
     }

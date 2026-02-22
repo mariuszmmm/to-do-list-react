@@ -47,6 +47,7 @@ const UserDataSchema = new Schema<UserDoc>({
     required: true,
   },
   lists: { type: [ListSchema], default: [] },
+  googleRefreshToken: { type: String, required: false },
 });
 
 const UserData =
@@ -57,6 +58,7 @@ export type UserDoc = mongoose.Document & {
   email: string;
   account: "active" | "deleted" | "pending";
   lists: List[];
+  googleRefreshToken?: string;
 };
 
 export default UserData;

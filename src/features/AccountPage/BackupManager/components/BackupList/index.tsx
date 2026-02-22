@@ -28,12 +28,11 @@ interface BackupListProps {
   status: { isLoading: boolean };
   currentPage: number;
   itemsPerPage: number;
-  googleAccessToken: string | null;
   setShowBackupList: (show: boolean) => void;
-  setShowGoogleAuth: (show: boolean) => void;
   setStatus: (status: any) => void;
   setCurrentPage: (page: number) => void;
   setFileToDelete: (file: BackupFile | null) => void;
+  setShowGoogleAuth: (show: boolean) => void;
 }
 
 export const BackupList: React.FC<BackupListProps> = ({
@@ -41,12 +40,11 @@ export const BackupList: React.FC<BackupListProps> = ({
   status,
   currentPage,
   itemsPerPage,
-  googleAccessToken,
   setShowBackupList,
-  setShowGoogleAuth,
   setStatus,
   setCurrentPage,
   setFileToDelete,
+  setShowGoogleAuth,
 }) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage.backup",
@@ -66,10 +64,8 @@ export const BackupList: React.FC<BackupListProps> = ({
               key={file.id}
               onClick={() =>
                 !status.isLoading &&
-                googleAccessToken &&
                 handleRestoreBackupFromGoogleDrive(
                   file.id,
-                  googleAccessToken,
                   t,
                   setStatus,
                   setShowBackupList,

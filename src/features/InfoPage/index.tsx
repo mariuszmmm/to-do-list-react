@@ -16,62 +16,87 @@ const InfoPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  console.log("InfoPage   t ", { tekst: t("aboutApp.topics.features.subTitle") });
-
   return (
     <>
       <Header title={t("aboutApp.title")} />
       <Section
         body={
           <>
-            <Header sub title={`⚙️ ${t("aboutApp.topics.features.subTitle")} `} />
+            <Header
+              sub
+              title={`⚙️ ${t("aboutApp.topics.features.subTitle")} `}
+            />
             <List>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part1' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part1" />
               </ListItem>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part2' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part2" />
               </ListItem>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part3' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part3" />
               </ListItem>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part4' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part4" />
               </ListItem>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part5' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part5" />
               </ListItem>
               <ListItem>
-                <Trans i18nKey='infoPage.aboutApp.topics.features.description.part6' />
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part6" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part7" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part8" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part9" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part10" />
               </ListItem>
             </List>
             <br />
-            <Header sub title={`🛠️ ${t("aboutApp.topics.technologies.subTitle")}`} />
+            <Header
+              sub
+              title={`🛠️ ${t("aboutApp.topics.technologies.subTitle")}`}
+            />
             <List>
               <ListItem>- TypeScript, JavaScript (ES6+)</ListItem>
               <ListItem>- React, React Router</ListItem>
               <ListItem>- Redux, Redux Toolkit, Redux Saga</ListItem>
               <ListItem>- TanStack Query (react-query)</ListItem>
               <ListItem>- react-i18next, Cloud Translation API</ListItem>
-              <ListItem>- Netlify GoTrue.js, EmailJS</ListItem>
-              <ListItem>- MongoDB</ListItem>
+              <ListItem>- Netlify, Netlify GoTrue.js</ListItem>
+              <ListItem>- MongoDB, Cloudinary, Ably</ListItem>
+              <ListItem>- EmailJS, @dnd-kit</ListItem>
               <ListItem>- Styled Components, CSS Grid, Flexbox</ListItem>
             </List>
             <br />
             <Header sub title={`🌐 ${t("aboutApp.topics.links.subTitle")}`} />
             <List>
               <ListItem>
-                🚀 <Trans i18nKey='infoPage.aboutApp.topics.links.description.newApp' />
+                🚀{" "}
+                <Trans i18nKey="infoPage.aboutApp.topics.links.description.newApp" />
                 <br />
-                <StyledLink to='https://to-do-list-typescript-react.netlify.app' target='_blank'>
+                <StyledLink
+                  to="https://to-do-list-typescript-react.netlify.app"
+                  target="_blank"
+                >
                   {" "}
                   https://to-do-list-typescript-react.netlify.app
                 </StyledLink>
               </ListItem>
               <ListItem>
-                ⏳ <Trans i18nKey='infoPage.aboutApp.topics.links.description.oldApp' />
+                ⏳{" "}
+                <Trans i18nKey="infoPage.aboutApp.topics.links.description.oldApp" />
                 <br />
-                <StyledLink to='https://mariuszmmm.github.io/to-do-list-react' target='_blank'>
+                <StyledLink
+                  to="https://mariuszmmm.github.io/to-do-list-react"
+                  target="_blank"
+                >
                   {" "}
                   https://mariuszmmm.github.io/to-do-list-react
                 </StyledLink>
@@ -83,30 +108,32 @@ const InfoPage = () => {
       <br />
       <Header title={t("aboutAuthor.title")} />
       <Section
-        title='Mariusz Matusiewicz'
+        title="Mariusz Matusiewicz"
         body={
           <>
             <Text>
-              <Trans i18nKey='infoPage.aboutAuthor.description.part1' />
+              <Trans i18nKey="infoPage.aboutAuthor.description.part1" />
             </Text>
             <Text>
-              <Trans i18nKey='infoPage.aboutAuthor.description.part2' />
+              <Trans i18nKey="infoPage.aboutAuthor.description.part2" />
             </Text>
             <br />
             <Header sub title={`🔗 ${t("aboutAuthor.links.subTitle")}`} />
             <List>
               <ListItem>
-                🏡 <Trans i18nKey='infoPage.aboutAuthor.links.description.personalHomepage' />
+                🏡{" "}
+                <Trans i18nKey="infoPage.aboutAuthor.links.description.personalHomepage" />
                 <br />
-                <StyledLink to='https://myprojects.pl/' target='_blank'>
+                <StyledLink to="https://myprojects.pl/" target="_blank">
                   {" "}
                   https://myprojects.pl
                 </StyledLink>
               </ListItem>
               <ListItem>
-                🐙 <Trans i18nKey='infoPage.aboutAuthor.links.description.github' />
+                🐙{" "}
+                <Trans i18nKey="infoPage.aboutAuthor.links.description.github" />
                 <br />
-                <StyledLink to='https://github.com/mariuszmmm' target='_blank'>
+                <StyledLink to="https://github.com/mariuszmmm" target="_blank">
                   {" "}
                   https://github.com/mariuszmmm
                 </StyledLink>

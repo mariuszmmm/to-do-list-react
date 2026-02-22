@@ -22,6 +22,16 @@ export function useGoogleOAuth({
         try {
           const data = await exchangeGoogleOAuthCodeApi(code);
           localStorage.setItem("google_drive_access_token", data.accessToken);
+          if (data.refreshToken) {
+            console.log("\n====================================");
+            console.log("GOOGLE_BACKUP_REFRESH_TOKEN:");
+            console.log(data.refreshToken);
+            console.log("====================================\n");
+          } else {
+            console.log(
+              "No new refresh token received. You might need to revoke app access in Google Account to force a new one.",
+            );
+          }
           setGoogleAccessToken(data.accessToken);
           setShowGoogleAuth(false);
           setStatus({

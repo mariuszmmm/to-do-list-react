@@ -7,7 +7,9 @@ import {
   checkHttpMethod,
 } from "../functions/lib/validators";
 import { jsonResponse, logError } from "../functions/lib/response";
-import { BackupData } from "../../src/types";
+import { BackupData, BackupType } from "../../src/types";
+import SystemConfig from "../models/SystemConfig";
+import { publishSystemLog } from "./lib/ablyHelper";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[downloadUserLists]";
@@ -19,6 +21,29 @@ const handler: Handler = async (event, context) => {
   if (authResponse) return authResponse;
 
   await connectToDB();
+
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+  ) => {
+    try {
+      const timestamp = new Date().toISOString();
+      const value = { status, details, timestamp };
+      await SystemConfig.create({
+        key: `log_backup_disk_user_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+      await publishSystemLog({
+        key: "log_backup_disk_user",
+        status,
+        details,
+        timestamp,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
 
   try {
     const email = context.clientContext!.user.email as string;
@@ -42,7 +67,8 @@ const handler: Handler = async (event, context) => {
     });
 
     const now = new Date();
-    const fileName = getBackupFileName("user-lists-backup", now);
+    const backupType: BackupType = "user-lists";
+    const fileName = getBackupFileName("user-lists", now);
 
     const backupData: BackupData = {
       version: "1.0",
@@ -50,21 +76,24 @@ const handler: Handler = async (event, context) => {
       createdBy: email,
       user: email,
       fileName,
-      backupType: "user-lists-backup",
+      backupType,
       lists,
       totalLists: lists.length,
       totalTasks,
     };
+
+    await updateStatus("success", `User backup downloaded by ${email}`);
 
     return jsonResponse(
       200,
       { backupData, message: "Download successful" },
       {
         "Content-Disposition": `attachment; filename="${fileName}"`,
-      }
+      },
     );
   } catch (error) {
     logError("Unexpected error in downloadUserLists handler", error, logPrefix);
+    await updateStatus("error", "Download failed: Internal server error");
     return jsonResponse(500, { message: "Internal server error" });
   }
 };

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { QueryObserverResult } from "@tanstack/react-query";
 import { useAppDispatch, useAppSelector } from "../redux/redux";
-import { closeModal, openModal, selectModalIsOpen, selectModalType } from "../../Modal/modalSlice";
+import {
+  closeModal,
+  openModal,
+  selectModalIsOpen,
+  selectModalState,
+} from "../../Modal/modalSlice";
 
 interface DataFetchingErrorParams {
   isError: boolean;
@@ -9,10 +14,15 @@ interface DataFetchingErrorParams {
   refetch?: () => Promise<QueryObserverResult>;
 }
 
-export const useDataFetchingError = ({ isError, isData, refetch }: DataFetchingErrorParams) => {
+export const useDataFetchingError = ({
+  isError,
+  isData,
+  refetch,
+}: DataFetchingErrorParams) => {
   const [openModalDelay, setOpenModalDelay] = useState(0);
   const isModalOpen = useAppSelector(selectModalIsOpen);
-  const modalType = useAppSelector(selectModalType);
+  const { type: modalType, title: modalTitle } =
+    useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -36,7 +46,11 @@ export const useDataFetchingError = ({ isError, isData, refetch }: DataFetchingE
           }
         }, 20 * 1000);
       }
-    } else if (modalType === "error" && isData) {
+    } else if (
+      modalType === "error" &&
+      isData &&
+      modalTitle?.key === "modal.listsDownload.title"
+    ) {
       dispatch(closeModal());
       setOpenModalDelay(0);
     }

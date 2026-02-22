@@ -11,12 +11,21 @@ export type StatusState = {
   isLoading: boolean;
   message: string;
   messageType: "success" | "error" | "info";
-}
+};
 
 export const BackupManager = () => {
-  const { t } = useTranslation("translation", { keyPrefix: "accountPage.backup", });
-  const [status, setStatus] = useState<StatusState>({ isLoading: false, message: "", messageType: "info", });
-  const { googleAccessToken, showGoogleAuth, setShowGoogleAuth } = useGoogleOAuth({ setStatus, t });
+  const { t } = useTranslation("translation", {
+    keyPrefix: "accountPage.backup",
+  });
+  const [status, setStatus] = useState<StatusState>({
+    isLoading: false,
+    message: "",
+    messageType: "info",
+  });
+  const { showGoogleAuth, setShowGoogleAuth } = useGoogleOAuth({
+    setStatus,
+    t,
+  });
   const [backupFiles, setBackupFiles] = useState<BackupFile[]>([]);
   const [showBackupList, setShowBackupList] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,12 +34,11 @@ export const BackupManager = () => {
 
   useDeleteBackupConfirmation(
     fileToDelete,
-    googleAccessToken,
-    setShowGoogleAuth,
     setShowBackupList,
     setBackupFiles,
     setCurrentPage,
-    setFileToDelete
+    setFileToDelete,
+    setShowGoogleAuth,
   );
 
   return (
@@ -41,24 +49,25 @@ export const BackupManager = () => {
           status={status}
           currentPage={currentPage}
           itemsPerPage={itemsPerPage}
-          googleAccessToken={googleAccessToken}
           setShowBackupList={setShowBackupList}
-          setShowGoogleAuth={setShowGoogleAuth}
           setStatus={setStatus}
           setCurrentPage={setCurrentPage}
           setFileToDelete={setFileToDelete}
+          setShowGoogleAuth={setShowGoogleAuth}
         />
       ) : (
         <>
-          <BackupStatusMessage message={status.message} messageType={status.messageType} />
+          <BackupStatusMessage
+            message={status.message}
+            messageType={status.messageType}
+          />
           <BackupActions
             status={status}
-            showGoogleAuth={showGoogleAuth}
-            googleAccessToken={googleAccessToken}
             setStatus={setStatus}
-            setShowGoogleAuth={setShowGoogleAuth}
             setBackupFiles={setBackupFiles}
             setShowBackupList={setShowBackupList}
+            showGoogleAuth={showGoogleAuth}
+            setShowGoogleAuth={setShowGoogleAuth}
           />
         </>
       )}

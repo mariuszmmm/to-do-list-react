@@ -1,7 +1,6 @@
 import { findOrCreateFolder } from "./findOrCreateFolder";
 
 export const uploadBackupToGoogleDrive = async (
-  folderName: string,
   fileName: string,
   fileContent: string,
   accessToken: string,
@@ -13,7 +12,10 @@ export const uploadBackupToGoogleDrive = async (
   message: string;
 }> => {
   try {
-    const folderId = await findOrCreateFolder(folderName, accessToken);
+    const folderId = await findOrCreateFolder(
+      "To-do-list_Backups",
+      accessToken,
+    );
 
     const fileMetadata: any = {
       name: fileName,

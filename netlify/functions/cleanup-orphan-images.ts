@@ -1,30 +1,76 @@
 import { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
+import SystemConfig from "../models/SystemConfig";
 import { jsonResponse } from "./lib/response";
+import { publishSystemLog } from "./lib/ablyHelper";
 
 const handler: Handler = async (event) => {
   const logPrefix = "[cleanup-orphan-images]";
-  console.log(`${logPrefix} Function started. Method: ${event.httpMethod}`);
+  console.log(`${logPrefix} Function started.`);
 
   if (event.httpMethod !== "POST") {
     console.warn(`${logPrefix} Method ${event.httpMethod} not allowed.`);
     return jsonResponse(405, { message: "Method not allowed" });
   }
 
-  const API_KEY = process.env.CLOUDINARY_API_KEY;
-  const API_SECRET = process.env.CLOUDINARY_API_SECRET;
-  const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+    stats?: any,
+  ) => {
+    try {
+      await connectToDB();
+      const timestamp = new Date().toISOString();
+      const value = {
+        status,
+        details,
+        stats,
+        timestamp,
+      };
 
-  if (!API_KEY || !API_SECRET || !CLOUD_NAME) {
-    console.error(`${logPrefix} Missing Cloudinary configuration.`);
-    return jsonResponse(500, { message: "Missing Cloudinary configuration" });
-  }
+      // Update the persistent latest status for UI health indicators
+      await SystemConfig.findOneAndUpdate(
+        { key: "lastOrphanCleanupStatus" },
+        { value, updatedAt: new Date() },
+        { upsert: true },
+      );
+
+      // Add a unique log entry for the history list
+      await SystemConfig.create({
+        key: `log_cleanup_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
+
+      // Notify admins in real-time
+      await publishSystemLog({
+        key: "log_cleanup",
+        status,
+        details,
+        timestamp,
+        stats,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
 
   try {
+    const API_KEY = process.env.CLOUDINARY_API_KEY;
+    const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+    const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+
+    if (!API_KEY || !API_SECRET || !CLOUD_NAME) {
+      console.error(`${logPrefix} Missing Cloudinary configuration.`);
+      await updateStatus("error", "Missing Cloudinary configuration");
+      return jsonResponse(500, { message: "Missing Cloudinary configuration" });
+    }
+
     const ASSET_FOLDER = "Todo-list";
-    // const GRACE_PERIOD_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
-    const GRACE_PERIOD_MS = 1000 * 60 * 60; // 1 hour - TEST
+    const GRACE_PERIOD_MS = 1000 * 60 * 60; // 1 hour
+
+    await connectToDB();
 
     console.log(`${logPrefix} Starting orphan images cleanup...`);
 
@@ -446,18 +492,27 @@ const handler: Handler = async (event) => {
       );
     }
 
+    const resultData = {
+      totalCloudinaryImages: allCloudinaryImages.length,
+      totalMongoImages: mongoPublicIds.size,
+      orphansFound: orphanImages.length,
+      missingInCloudinary: missingInCloudinary.length,
+      cleaned: totalDeleted,
+    };
+
+    await updateStatus("success", "Cleanup completed successfully", resultData);
+
     return jsonResponse(200, {
       message: "Orphan cleanup completed",
-      data: {
-        totalCloudinaryImages: allCloudinaryImages.length,
-        totalMongoImages: mongoPublicIds.size,
-        orphansFound: orphanImages.length,
-        missingInCloudinary: missingInCloudinary.length,
-        cleaned: totalDeleted,
-      },
+      data: resultData,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(`${logPrefix} Cleanup error:`, error);
+    await updateStatus(
+      "error",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+
     return jsonResponse(500, {
       message: "Failed to cleanup orphan images",
       error: error instanceof Error ? error.message : "Unknown error",

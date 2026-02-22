@@ -98,7 +98,8 @@ const langDe: typeof langPl = {
       removing: "Löschen…",
       cameraPermissionDenied:
         "Kamerazugriff wurde verweigert. Erlauben Sie den Kamerazugriff in den Einstellungen Ihres Browsers.",
-      cameraNotFound: "Kameragerät nicht gefunden. Überprüfen Sie die Kameraverbindung.",
+      cameraNotFound:
+        "Kameragerät nicht gefunden. Überprüfen Sie die Kameraverbindung.",
       cameraError: "Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.",
       error: {
         imageUploadError: "Fehler beim Hochladen des Bildes",
@@ -157,6 +158,14 @@ const langDe: typeof langPl = {
               "<strong>Benutzerkontoverwaltung</strong>: <br/>Registrierung, Anmeldung, Passwort zurücksetzen und ändern, Kontolöschung mit Netlify GoTrue.",
             part6:
               "<strong>Sprachgesteuertes Hinzufügen von Aufgaben</strong>: <br/>Möglichkeit, Aufgabeninhalte per Spracherkennung (Web Speech API) einzugeben.",
+            part7:
+              "<strong>Aufgabenanhänge</strong>: <br/>Möglichkeit, Bilder an Aufgaben anzuhängen (mithilfe von Cloudinary).",
+            part8:
+              "<strong>Drag & Drop</strong>: <br/>intuitive Neuordnung von Aufgaben und Listen (mithilfe von @dnd-kit).",
+            part9:
+              "<strong>Echtzeit-Synchronisation</strong>: <br/>sofortige Updates auf allen Geräten durch Ably.",
+            part10:
+              "<strong>Archivierte Listen und Backups</strong>: <br/>Archivieren von Listen und Backups auf Google Drive oder lokalen Speicher.",
           },
         },
         technologies: {
@@ -234,6 +243,115 @@ const langDe: typeof langPl = {
       device_many: "Gesamtzahl der aktiven Geräte: {{count}}",
       device_other: "Gesamtzahl der aktiven Geräte: {{count}}",
     },
+    systemAdmin: {
+      title: "System & Wartung",
+      ablyStatus: {
+        connected: "Verbunden",
+        connecting: "Verbindung wird hergestellt...",
+        disconnected: "Getrennt",
+        failed: "Verbindung fehlgeschlagen",
+      },
+      ably: {
+        title: "Kommunikation & Sync (Ably)",
+        state: "Verbindungsstatus: {{state}}",
+        connectionId: "Verbindungs-ID: {{id}}",
+        channel: "System-Kanal: {{name}}",
+        deviceId: "Geräte-ID: {{id}}",
+        labels: {
+          status: "Verbindungsstatus",
+          deviceId: "Geräte-ID",
+          connectionId: "Verbindungs-ID",
+          channel: "System-Kanal",
+        },
+      },
+      database: {
+        title: "Dateninfrastruktur & Benutzer",
+        users: "Benutzer: {{count}}",
+        lists: "Listen: {{count}}",
+        tasks: "Aufgaben: {{count}}",
+        dataSize: "Datengröße: {{size}} MB",
+        storageSize: "Festplattennutzung: {{size}} MB",
+        indexSize: "Indexgröße: {{size}} MB",
+        collections: "Kollektionen: {{count}}",
+        usage: "MongoDB Speichernutzung (Limit 512MB)",
+        labels: {
+          dataSize: "Datengröße",
+          storageSize: "Festplattennutzung",
+          indexSize: "Indexgröße",
+          collections: "Kollektionen",
+          users: "Benutzer",
+          lists: "Listen",
+          tasks: "Aufgaben",
+        },
+      },
+      storage: {
+        title: "Bildspeicher (Cloudinary)",
+        lastCleanup: "Letzte Reinigung: {{date}}",
+        never: "nie",
+        cleanButton: "Reinigung ausführen",
+        cleaning: "Reinigung läuft...",
+        resources: "Dateien: {{used}} / {{limit}}",
+        transformations: "Transformationen: {{used}} / {{limit}}",
+        bandwidth: "Bandbreite: {{used}}GB / {{limit}}GB",
+        credits: "Credits: {{used}} / {{limit}} ({{percent}}%)",
+        creditsUsage: "Cloudinary Credits (Limit 25)",
+        success: "Reinigung erfolgreich abgeschlossen!",
+        error: "Fehler bei der Reinigung.",
+        labels: {
+          resources: "Dateien",
+          transformations: "Transformationen",
+          bandwidth: "Bandbreite",
+          credits: "Credits",
+        },
+        results: {
+          totalCloudinaryImages: "Alle Cloudinary-Bilder",
+          totalMongoImages: "Bilder in der Datenbank",
+          orphansFound: "Gefundene Waisen",
+          missingInCloudinary: "In Cloudinary fehlend",
+          cleaned: "Entfernte Bilder",
+        },
+      },
+      netlify: {
+        title: "Hosting & Plattform (Netlify)",
+        bandwidth: "Bandbreitennutzung: {{used}} / {{limit}}",
+        buildMinutes: "Build-Minuten: {{used}} / {{limit}}",
+        functions: "Funktionsaufrufe: {{used}} / {{limit}}",
+        lastDeploy: "Letzter Deploy: {{date}}",
+        siteName: "Seitenname: {{name}}",
+        noData:
+          "Netlify-Monitoring ist nicht konfiguriert oder Daten sind nie verfügbar.",
+        bandwidthLabel: "Bandbreite (Monatlich)",
+        buildMinutesLabel: "Build-Minuten",
+        functionsLabel: "Funktionsaufrufe",
+        labels: {
+          siteName: "Seitenname",
+          lastDeploy: "Letzter Deploy",
+        },
+      },
+      diagnosis: {
+        title: "Diagnose & Systemwartung",
+        runButton: "API-Tests ausführen",
+        running: "Wird getestet...",
+        success: "Diagnose erfolgreich abgeschlossen!",
+        error: "Fehler während der Diagnose.",
+      },
+      logs: {
+        title: "Aktuelle Systemereignisse",
+        noLogs: "Keine Ereignisse aufgezeichnet",
+        types: {
+          autobackup: "Auto-Backup (GD)",
+          manualbackup: "Manuelles Backup (GD)",
+          backup_disk_all: "Vollständiges Backup (Datei)",
+          backup_disk_user: "Benutzer-Backup (Datei)",
+          restore_gd: "Wiederherstellung (GD)",
+          restore_disk: "Wiederherstellung (Datei)",
+          cleanup: "Verwaiste Bilder bereinigen",
+          cleanup_temp: "Temp-Bilder bereinigen",
+          cleanup_tasks: "Gelöschte Aufgaben bereinigen",
+          oauth: "Google-Autorisierung",
+        },
+      },
+    },
     form: {
       buttons: {
         login: "Anmelden",
@@ -288,12 +406,17 @@ const langDe: typeof langPl = {
       },
       restoreUserLists: {
         button: "Meine Listen wiederherstellen",
-        tooltip: "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
+        tooltip:
+          "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
         processing: "Deine Listen werden verarbeitet...",
-        success: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_few: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_many: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
-        success_other: "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_few:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_many:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
+        success_other:
+          "Backup wurde erfolgreich wiederhergestellt!\n{{count}} Listen wurden wiederhergestellt.",
         error: "Fehler beim Wiederherstellen deiner Listen",
       },
       restoreAllUsers: {
@@ -323,7 +446,8 @@ const langDe: typeof langPl = {
         button: "Von Google Drive wiederherstellen",
         tooltip: "Backup von Google Drive wiederherstellen",
         restoring: "Backup wird von Google Drive wiederhergestellt...",
-        success: "Backup wurde wiederhergestellt! {{count}} Listen wurden wiederhergestellt.",
+        success:
+          "Backup wurde wiederhergestellt! {{count}} Listen wurden wiederhergestellt.",
         error: "Fehler beim Wiederherstellen des Backups",
         notAuthorized: "Nicht mit Google Drive autorisiert",
       },
@@ -357,7 +481,8 @@ const langDe: typeof langPl = {
       success: "Registrierung erfolgreich.",
       error: "Registrierung fehlgeschlagen.",
     },
-    closeTab: "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
+    closeTab:
+      "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -368,7 +493,8 @@ const langDe: typeof langPl = {
       success: "Konto wurde wiederhergestellt.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
-    closeTab: "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
+    closeTab:
+      "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -423,7 +549,8 @@ const langDe: typeof langPl = {
         loading: "Registrierung läuft...",
         info: "Ein Link zur Konto-Registrierung wurde an die angegebene E-Mail-Adresse gesendet.",
         error: {
-          userExists: "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.",
+          userExists:
+            "Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert.",
           default: "Registrierungsfehler",
         },
       },
@@ -433,7 +560,8 @@ const langDe: typeof langPl = {
       message: {
         loading: "Konto-Wiederherstellung läuft...",
         info: "Ein Link zum Zurücksetzen des Passworts wurde an die angegebene E-Mail-Adresse gesendet.<br/> Wenn du keine Nachricht erhalten hast, versuche es in 15 Minuten erneut.",
-        success: "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
+        success:
+          "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
         error: {
           default: "Fehler bei der Wiederherstellung des Kontos.",
           linkExpired: "Der Link ist abgelaufen oder wurde bereits verwendet.",
@@ -471,10 +599,13 @@ const langDe: typeof langPl = {
     listSave: {
       title: "Liste speichern",
       message: {
-        confirm: "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
+        confirm:
+          "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
-        loading: "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
-        success: "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
+        loading:
+          "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
+        success:
+          "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
         error: {
           conflict:
             "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
@@ -491,7 +622,8 @@ const langDe: typeof langPl = {
     listRemove: {
       title: "Liste löschen",
       message: {
-        confirm: "Möchtest du die Liste <strong>{{name}}</strong> wirklich löschen?",
+        confirm:
+          "Möchtest du die Liste <strong>{{name}}</strong> wirklich löschen?",
         loading: "Liste wird gelöscht...",
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
@@ -515,7 +647,8 @@ const langDe: typeof langPl = {
     deleteBackup: {
       title: "Sicherung löschen",
       message: {
-        confirm: "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
+        confirm:
+          "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich löschen?",
         loading: "Sicherung wird gelöscht...",
         success: "Die Sicherung wurde gelöscht.",
         error: "Fehler beim Löschen der Sicherung.",
@@ -567,6 +700,11 @@ const langDe: typeof langPl = {
         },
       },
       button: "Absenden",
+    },
+    backupAuthError: {
+      title: "Automatischer Backup-Fehler",
+      message:
+        "Die automatischen Sicherungen wurden aufgrund von Problemen mit der Google Drive-Autorisierung eingestellt. <br/><br/> Eine erneute Autorisierung des Google-Kontos und die Aktualisierung der Variable <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> im Netlify-Panel ist erforderlich.",
     },
   },
   prepareText: {

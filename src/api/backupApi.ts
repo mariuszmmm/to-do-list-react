@@ -1,24 +1,30 @@
 import axios from "axios";
 import { BackupData, BackupFile } from "../types";
-import { refreshGoogleAccessToken } from "../utils/googleDrive/refreshGoogleAccessToken";
-
 type ApiResponse<T = undefined> = {
   success: boolean;
   statusCode: number;
   message: string;
   data?: T;
+  source?: string;
 };
 
 const makeErrorResponse = <T>(error: any): ApiResponse<T> => {
-  const msg = error?.response?.data?.message || error?.message || "Unknown error occurred";
+  const msg =
+    error?.response?.data?.message ||
+    error?.message ||
+    "Unknown error occurred";
+  const source = error?.response?.data?.source;
   return {
     success: false,
     statusCode: error?.response?.status || 500,
     message: msg,
+    ...(source && { source }),
   };
 };
 
-export const downloadUserListsApi = async (token: string): Promise<ApiResponse<{ backupData: BackupData }>> => {
+export const downloadUserListsApi = async (
+  token: string,
+): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
     const response = await axios.get("/backup-downloadUserLists", {
       headers: { Authorization: `Bearer ${token}` },
@@ -36,7 +42,9 @@ export const downloadUserListsApi = async (token: string): Promise<ApiResponse<{
   }
 };
 
-export const downloadAllUsersApi = async (token: string): Promise<ApiResponse<{ backupData: BackupData }>> => {
+export const downloadAllUsersApi = async (
+  token: string,
+): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
     const response = await axios.get("/backup-downloadAllUsers", {
       headers: { Authorization: `Bearer ${token}` },
@@ -100,12 +108,13 @@ export const restoreAllUsersApi = async (
   }
 };
 
-export const uploadAllUsersToGoogleDriveApi = async (token: string, accessToken: string): Promise<ApiResponse> => {
+export const uploadAllUsersToGoogleDriveApi = async (
+  token: string,
+): Promise<ApiResponse> => {
   try {
-    let currentAccessToken = accessToken;
     let response = await axios.post(
       "/backup-uploadAllUsersToGoogleDrive",
-      { accessToken: currentAccessToken },
+      {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
@@ -115,41 +124,18 @@ export const uploadAllUsersToGoogleDriveApi = async (token: string, accessToken:
       message: response.data.message,
     };
   } catch (error: any) {
-    if (error?.response?.status === 401) {
-      if (error.response?.data?.source !== "google-drive") throw new Error(error.response?.data?.message);
-
-      const newAccessToken = await refreshGoogleAccessToken();
-      if (!newAccessToken) throw new Error("Google Drive authorization expired. Please authorize again.");
-
-      let retryResponse = await axios.post(
-        "/backup-uploadAllUsersToGoogleDrive",
-        { accessToken: newAccessToken },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-
-      return {
-        success: true,
-        statusCode: retryResponse.status,
-        message: retryResponse.statusText,
-      };
-    }
-
     console.error("Error uploading backup to Google Drive", error);
     return makeErrorResponse(error);
   }
 };
 
-export const fetchGoogleDriveBackupListApi = async ({
-  token,
-  googleAccessToken,
-}: {
-  token: string;
-  googleAccessToken: string;
-}): Promise<ApiResponse<{ files?: BackupFile[] }>> => {
+export const fetchGoogleDriveBackupListApi = async (
+  token: string,
+): Promise<ApiResponse<{ files?: BackupFile[] }>> => {
   try {
     const response = await axios.post(
       "/backup-fetchGoogleDriveBackupList",
-      { googleAccessToken },
+      {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
@@ -160,48 +146,19 @@ export const fetchGoogleDriveBackupListApi = async ({
       data: response.data,
     };
   } catch (error: any) {
-    if (error?.response?.status === 401) {
-      if (error.response?.data?.source !== "google-drive") throw new Error(error.response?.data?.message);
-
-      const newGoogleAccessToken = await refreshGoogleAccessToken();
-      if (!newGoogleAccessToken) throw new Error("Google Drive authorization expired. Please authorize again.");
-
-      try {
-        const retryResponse = await axios.post(
-          "/backup-fetchGoogleDriveBackupList",
-          { googleAccessToken: newGoogleAccessToken },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
-
-        return {
-          success: true,
-          statusCode: retryResponse.status,
-          message: retryResponse.data.message,
-          data: retryResponse.data,
-        };
-      } catch (retryError: any) {
-        console.error("Error listing backups after token refresh", retryError);
-        return makeErrorResponse(retryError);
-      }
-    }
     console.error("Error listing Google Drive files", error);
     return makeErrorResponse(error);
   }
 };
 
-export const deleteBackupFromGoogleDriveApi = async ({
-  token,
-  googleAccessToken,
-  fileId,
-}: {
-  token: string;
-  googleAccessToken: string;
-  fileId: string;
-}): Promise<ApiResponse> => {
+export const deleteBackupFromGoogleDriveApi = async (
+  token: string,
+  fileId: string,
+): Promise<ApiResponse> => {
   try {
     const response = await axios.post(
       "/backup-deleteBackupFromGoogleDrive",
-      { fileId, accessToken: googleAccessToken },
+      { fileId },
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
@@ -211,32 +168,6 @@ export const deleteBackupFromGoogleDriveApi = async ({
       message: response.data.message,
     };
   } catch (error: any) {
-    if (error?.response?.status === 401) {
-      if (error.response?.data?.source !== "google-drive") throw new Error(error.response?.data?.message);
-
-      const newGoogleAccessToken = await refreshGoogleAccessToken();
-      if (!newGoogleAccessToken) {
-        throw new Error("Google Drive authorization expired. Please authorize again.");
-      }
-
-      try {
-        const retryResponse = await axios.post(
-          "/backup-deleteBackupFromGoogleDrive",
-          { fileId, accessToken: newGoogleAccessToken },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
-
-        return {
-          success: true,
-          statusCode: retryResponse.status,
-          message: retryResponse.data.message,
-        };
-      } catch (retryError: any) {
-        console.error("Error deleting backup after token refresh", retryError);
-        return makeErrorResponse(retryError);
-      }
-    }
-
     console.error("Error deleting backup from Google Drive", error);
     return makeErrorResponse(error);
   }
@@ -245,19 +176,17 @@ export const deleteBackupFromGoogleDriveApi = async ({
 export const restoreSelectedBackupFromGoogleDriveApi = async (
   token: string,
   fileId: string,
-  accessToken: string,
 ): Promise<ApiResponse<{ restored: number; failed: number }>> => {
   try {
-    let currentAccessToken = accessToken;
     await axios.post(
       "/backup-uploadAllUsersToGoogleDrive",
-      { accessToken: currentAccessToken },
+      {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
     let response = await axios.post(
       "/backup-restoreBackupFromGoogleDrive",
-      { fileId, accessToken: currentAccessToken },
+      { fileId },
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
@@ -268,28 +197,113 @@ export const restoreSelectedBackupFromGoogleDriveApi = async (
       data: response.data,
     };
   } catch (error: any) {
-    if (error?.response?.status === 401) {
-      if (error.response?.data?.source !== "google-drive") throw new Error(error.response?.data?.message);
-
-      const newAccessToken = await refreshGoogleAccessToken();
-      if (!newAccessToken) {
-        throw new Error("Google Drive authorization expired. Please authorize again.");
-      }
-
-      let retryResponse = await axios.post(
-        "/backup-restoreBackupFromGoogleDrive",
-        { fileId, accessToken: newAccessToken },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-
-      return {
-        success: true,
-        statusCode: retryResponse.status,
-        message: retryResponse.statusText,
-        data: retryResponse.data,
-      };
-    }
     console.error("[restoreBackupFromGoogleDriveApi]", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const getSystemStatusApi = async (
+  token: string,
+): Promise<
+  ApiResponse<{
+    status: { status: string; details?: string; timestamp?: string };
+    cleanupStatus: {
+      status: string;
+      details?: string;
+      timestamp?: string;
+      stats?: any;
+    };
+    stats: {
+      totalUsers: number;
+      totalLists: number;
+      totalTasks: number;
+    };
+    storageStats?: {
+      storage: {
+        used: number;
+        limit: number;
+        used_percent: number;
+        usage_gb: string;
+        limit_gb: string;
+      };
+      objects: {
+        used: number;
+        limit: number;
+      };
+    };
+    logs: Array<{
+      key: string;
+      status: string;
+      details?: string;
+      timestamp: string;
+      stats?: any;
+    }>;
+    netlifyStats?: {
+      bandwidth: { used: number; included: number; used_percent: number };
+      build_minutes: { used: number; included: number; used_percent: number };
+      functions: { used: number; included: number; used_percent: number };
+      site_name: string;
+      last_deploy_at: string | null;
+    };
+  }>
+> => {
+  try {
+    const response = await axios.get("/get-system-status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message || "System status fetched",
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error fetching system status", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const runCleanupApi = async (
+  token: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.post(
+      "/cleanup-orphan-images",
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error: any) {
+    console.error("Error running cleanup", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const diagnoseSystemApi = async (
+  token: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.get("/diagnose-system", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message || "Diagnosis completed",
+      data: response.data.results,
+    };
+  } catch (error: any) {
+    console.error("Error running diagnosis", error);
     return makeErrorResponse(error);
   }
 };

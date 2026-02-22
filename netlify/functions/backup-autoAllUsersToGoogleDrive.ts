@@ -1,9 +1,11 @@
+import SystemConfig from "../models/SystemConfig";
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import { getAllUsersForBackup } from "../functions/lib/getAllUsersForBackup";
 import { uploadBackupToGoogleDrive } from "../functions/lib/uploadBackupToGoogleDrive";
 import { findOrCreateFolder } from "../functions/lib/findOrCreateFolder";
 import { jsonResponse, logError } from "../functions/lib/response";
+import { publishSystemLog } from "../functions/lib/ablyHelper";
 import {
   getGoogleAccessToken,
   listFilesID,
@@ -18,25 +20,70 @@ const handler: Handler = async (event) => {
     return jsonResponse(405, { message: "Method not allowed" });
   }
 
-  // Security check: verify cron secret
-  const cronSecret = process.env.CRON_SECRET;
-  const providedSecret = event.headers["x-cron-secret"];
+  const updateStatus = async (
+    status: "success" | "error",
+    details?: string,
+  ) => {
+    try {
+      await connectToDB();
+      const timestamp = new Date().toISOString();
+      const value = { status, details, timestamp };
 
-  if (!cronSecret || providedSecret !== cronSecret) {
-    console.warn(`${logPrefix} Unauthorized access attempt.`);
-    return jsonResponse(401, { message: "Unauthorized" });
-  }
+      // Update the persistent latest status for UI health indicators
+      await SystemConfig.findOneAndUpdate(
+        { key: "lastAutoBackupStatus" },
+        { value, updatedAt: new Date() },
+        { upsert: true },
+      );
 
-  const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-  const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+      // Add a unique log entry for the history list
+      await SystemConfig.create({
+        key: `log_autobackup_${Date.now()}`,
+        value,
+        updatedAt: new Date(),
+      });
 
-  if (!clientId || !clientSecret || !refreshToken) {
-    console.error(`${logPrefix} Missing Google Drive configuration.`);
-    return jsonResponse(500, { message: "Missing Google Drive configuration" });
-  }
+      // Notify admins in real-time
+      await publishSystemLog({
+        key: "log_autobackup",
+        status,
+        details,
+        timestamp,
+      });
+    } catch (err) {
+      console.error(`${logPrefix} Failed to update SystemConfig:`, err);
+    }
+  };
 
   try {
+    // Security check: verify cron secret
+    const cronSecret = process.env.CRON_SECRET;
+    const providedSecret = event.headers["x-cron-secret"];
+
+    if (!cronSecret || providedSecret !== cronSecret) {
+      console.warn(`${logPrefix} Unauthorized access attempt.`);
+      await updateStatus("error", "Unauthorized access attempt to auto-backup");
+      return jsonResponse(401, { message: "Unauthorized" });
+    }
+
+    const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID?.replace(/"/g, "");
+    const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET?.replace(
+      /"/g,
+      "",
+    );
+    const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(
+      /"/g,
+      "",
+    );
+
+    if (!clientId || !clientSecret || !refreshToken) {
+      console.error(`${logPrefix} Missing Google Drive configuration.`);
+      await updateStatus("error", "Missing Google Drive configuration");
+      return jsonResponse(500, {
+        message: "Missing Google Drive configuration",
+      });
+    }
+
     await connectToDB();
 
     // 1. Refresh Access Token
@@ -47,6 +94,7 @@ const handler: Handler = async (event) => {
       refreshToken,
     );
     if (!accessToken) {
+      await updateStatus("error", "Google Drive authentication failed (401)");
       return jsonResponse(401, {
         message: "Failed to refresh Google access token",
       });
@@ -58,18 +106,18 @@ const handler: Handler = async (event) => {
       "system-automated-backup",
     );
     const fileContent = JSON.stringify(backupData);
-    const folderName = "To-do-list/AutoBackups";
+    const folderName = "To-do-list_Backups";
 
     // 3. Upload Backup
     console.log(`${logPrefix} Uploading backup to Google Drive...`);
     const uploadResponse = await uploadBackupToGoogleDrive(
-      folderName,
-      fileName,
+      `AutoBackup_${fileName}`,
       fileContent,
       accessToken,
     );
 
     if (!uploadResponse.success) {
+      await updateStatus("error", uploadResponse.message);
       throw new Error(`Upload failed: ${uploadResponse.message}`);
     }
 
@@ -99,6 +147,8 @@ const handler: Handler = async (event) => {
       );
     }
 
+    await updateStatus("success");
+
     return jsonResponse(200, {
       message: "Automated backup completed successfully",
       fileName,
@@ -106,6 +156,10 @@ const handler: Handler = async (event) => {
     });
   } catch (error) {
     logError("Error in automated backup", error, logPrefix);
+    await updateStatus(
+      "error",
+      error instanceof Error ? error.message : "Unknown error",
+    );
     return jsonResponse(500, {
       message: "Internal server error during automated backup",
       error: error instanceof Error ? error.message : "Unknown error",

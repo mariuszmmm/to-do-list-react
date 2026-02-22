@@ -14,22 +14,20 @@ import { selectIsAdmin } from "../../../accountSlice";
 
 interface BackupActionsProps {
   status: { isLoading: boolean };
-  showGoogleAuth: boolean;
-  googleAccessToken: string | null;
   setStatus: (status: any) => void;
-  setShowGoogleAuth: (show: boolean) => void;
   setBackupFiles: (files: any[]) => void;
   setShowBackupList: (show: boolean) => void;
+  showGoogleAuth: boolean;
+  setShowGoogleAuth: (show: boolean) => void;
 }
 
 export const BackupActions: React.FC<BackupActionsProps> = ({
   status,
-  showGoogleAuth,
-  googleAccessToken,
   setStatus,
-  setShowGoogleAuth,
   setBackupFiles,
   setShowBackupList,
+  showGoogleAuth,
+  setShowGoogleAuth,
 }) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage.backup",
@@ -42,7 +40,7 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         onClick={() => handleDownloadUserLists(t, setStatus)}
         disabled={status.isLoading}
         title={t("downloadUserLists.tooltip")}
-        data-icon='📥'
+        data-icon="📥"
       >
         {t("downloadUserLists.button")}
       </Button>
@@ -52,7 +50,7 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           onClick={() => handleDownloadAllUsers(t, setStatus)}
           disabled={status.isLoading}
           title={t("downloadAllUsers.tooltip")}
-          data-icon='📥'
+          data-icon="📥"
         >
           {t("downloadAllUsers.button")}
         </Button>
@@ -62,7 +60,7 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         onClick={() => handleRestoreUserLists(t, setStatus)}
         disabled={status.isLoading}
         title={t("restoreUserLists.tooltip")}
-        data-icon='📂'
+        data-icon="📂"
       >
         {t("restoreUserLists.button")}
       </Button>
@@ -72,7 +70,7 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           onClick={() => handleRestoreAllUsers(t, setStatus)}
           disabled={status.isLoading}
           title={t("restoreAllUsers.tooltip")}
-          data-icon='📂'
+          data-icon="📂"
         >
           {t("restoreAllUsers.button")}
         </Button>
@@ -80,10 +78,12 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
 
       {isAdmin && (
         <Button
-          onClick={() => handleUploadAllUsersToGoogleDrive(googleAccessToken, t, setStatus, setShowGoogleAuth)}
-          disabled={status.isLoading || showGoogleAuth}
+          onClick={() =>
+            handleUploadAllUsersToGoogleDrive(t, setStatus, setShowGoogleAuth)
+          }
+          disabled={status.isLoading}
           title={t("uploadAllUsersToGoogleDrive.tooltip")}
-          data-icon='☁️'
+          data-icon="☁️"
         >
           {t("uploadAllUsersToGoogleDrive.button")}
         </Button>
@@ -93,28 +93,26 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         <Button
           onClick={() =>
             handleFetchGoogleDriveBackupList(
-              googleAccessToken,
               t,
               setStatus,
-              setShowGoogleAuth,
               setBackupFiles,
               setShowBackupList,
+              setShowGoogleAuth,
             )
           }
-          disabled={status.isLoading || showGoogleAuth}
+          disabled={status.isLoading}
           title={t("restoreBackupFromGoogleDrive.tooltip")}
-          data-icon='☁️'
+          data-icon="☁️"
         >
           {t("restoreBackupFromGoogleDrive.button")}
         </Button>
       )}
-
       {isAdmin && showGoogleAuth && (
         <Button
           onClick={() => handleAuthorizeGoogle(t, setStatus)}
           disabled={status.isLoading}
           title={t("authorizeGoogle.tooltip")}
-          data-icon='🚀'
+          data-icon="🚀"
         >
           {t("authorizeGoogle.button")}
         </Button>

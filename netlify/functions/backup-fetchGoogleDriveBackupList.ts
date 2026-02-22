@@ -1,5 +1,6 @@
 import type { Handler, HandlerResponse } from "@netlify/functions";
 import { jsonResponse, logError } from "../functions/lib/response";
+import { getGoogleAccessToken } from "../functions/lib/googleDriveHelper";
 import {
   checkClientContext,
   checkAdminRole,
@@ -24,39 +25,45 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
   if (adminResponse) return adminResponse;
 
   try {
-    const parsedBody = parseJsonBody<{ googleAccessToken?: string }>(event.body, logPrefix);
+    const parsedBody = parseJsonBody<{ googleAccessToken?: string }>(
+      event.body,
+      logPrefix,
+    );
 
     if ("statusCode" in parsedBody) {
       return parsedBody;
     }
 
-    const { googleAccessToken } = parsedBody;
+    let { googleAccessToken } = parsedBody;
 
     if (!googleAccessToken) {
-      console.warn(`${logPrefix} Missing googleAccessToken`);
-      return jsonResponse(400, { message: "Missing googleAccessToken" });
+      const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
+      const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+
+      if (clientId && clientSecret && refreshToken) {
+        googleAccessToken =
+          (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
+          undefined;
+      }
+    }
+
+    if (!googleAccessToken) {
+      const authMsg = "Google Drive authentication failed";
+      console.warn(`${logPrefix} ${authMsg}`);
+      return jsonResponse(401, { message: authMsg, source: "google-drive" });
     }
 
     try {
+      // 1. Find the folder(s)
       const folderResponse = await fetch(
-        "https://www.googleapis.com/drive/v3/files?q=name='to-do-list-backup' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id)",
+        "https://www.googleapis.com/drive/v3/files?q=name='To-do-list_Backups' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id,name,createdTime)&orderBy=createdTime",
         {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${googleAccessToken}`,
-          },
+          headers: { Authorization: `Bearer ${googleAccessToken}` },
         },
       );
 
       if (!folderResponse.ok) {
-        if (folderResponse.status === 401) {
-          console.warn(`${logPrefix} Google Drive authentication failed`);
-          return jsonResponse(401, {
-            message: "Google Drive authentication failed",
-            source: "google-drive",
-          });
-        }
-
         const errorData = await folderResponse.text();
         console.error(`${logPrefix} Folder search error:`, errorData);
         return jsonResponse(folderResponse.status, {
@@ -65,6 +72,9 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
       }
 
       const folderData = await folderResponse.json();
+      console.log(
+        `${logPrefix} Found ${folderData.files?.length || 0} matching folders.`,
+      );
 
       if (!folderData.files || folderData.files.length === 0) {
         return jsonResponse(200, {
@@ -73,27 +83,22 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         });
       }
 
+      // If multiple folders exist, we use the one that was created FIRST (likely the original one)
+      // or at least we log it.
       const folderId = folderData.files[0].id;
+      console.log(
+        `${logPrefix} Using folderId: ${folderId} (${folderData.files[0].name})`,
+      );
 
+      // 2. List JSON files in that folder
       const backupsResponse = await fetch(
-        `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and name contains 'backup-' and mimeType='application/json' and trashed=false&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime)`,
+        `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and mimeType='application/json' and trashed=false&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime,size)`,
         {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${googleAccessToken}`,
-          },
+          headers: { Authorization: `Bearer ${googleAccessToken}` },
         },
       );
 
       if (!backupsResponse.ok) {
-        if (backupsResponse.status === 401) {
-          console.warn(`${logPrefix} Google Drive authentication failed`);
-          return jsonResponse(401, {
-            message: "Google Drive authentication failed",
-            source: "google-drive",
-          });
-        }
-
         const errorData = await backupsResponse.text();
         console.error(`${logPrefix} Backups search error:`, errorData);
         return jsonResponse(backupsResponse.status, {
@@ -102,26 +107,23 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
       }
 
       const backupsData = await backupsResponse.json();
+      console.log(
+        `${logPrefix} Found ${backupsData.files?.length || 0} backups in folder.`,
+      );
 
       return jsonResponse(200, {
         message: "Backups listed successfully",
         files: backupsData.files || [],
       });
     } catch (driveError) {
-      console.error(
-        `${logPrefix} Failed to fetch from Google Drive: ${
-          driveError instanceof Error ? driveError.message : "Unknown error"
-        }`,
-      );
+      console.error(`${logPrefix} Google Drive API error:`, driveError);
       return jsonResponse(500, {
-        message: "Failed to fetch backup list from Google Drive",
+        message: "Connection to Google Drive failed",
       });
     }
   } catch (error) {
-    logError("Unexpected error in fetchGoogleDriveBackupList handler", error, logPrefix);
-    return jsonResponse(500, {
-      message: "Internal server error",
-    });
+    logError("Unexpected error in fetch handler", error, logPrefix);
+    return jsonResponse(500, { message: "Internal server error" });
   }
 };
 

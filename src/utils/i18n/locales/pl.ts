@@ -155,6 +155,14 @@ const langPl = {
               "<strong>Zarządzanie kontem użytkownika</strong>: <br/>rejestracja, logowanie, resetowanie i zmiana hasła, usuwanie konta za pomocą Netlify GoTrue.",
             part6:
               "<strong>Dodawanie zadań głosowo</strong>: <br/>możliwość wprowadzania treści zadań za pomocą rozpoznawania mowy (Web Speech API).",
+            part7:
+              "<strong>Załączniki zadań</strong>: <br/>możliwość dodawania zdjęć do zadań (Dzięki Cloudinary).",
+            part8:
+              "<strong>Przeciągnij i upuść</strong>: <br/>intuicyjna zmiana kolejności zadań i list (Dzięki @dnd-kit).",
+            part9:
+              "<strong>Synchronizacja w czasie rzeczywistym</strong>: <br/>natychmiastowe aktualizacje na różnych urządzeniach dzięki Ably.",
+            part10:
+              "<strong>Zarchiwizowane listy i kopie zapasowe</strong>: <br/>archiwizacja list oraz kopie zapasowe na Google Drive lub dysk lokalny.",
           },
         },
         technologies: {
@@ -232,6 +240,115 @@ const langPl = {
       device_many: "Ilość wszystkich aktywnych urządzeń: {{count}}",
       device_other: "Ilość wszystkich aktywnych urządzeń: {{count}}",
     },
+    systemAdmin: {
+      title: "System i Konserwacja",
+      ablyStatus: {
+        connected: "Połączono",
+        connecting: "Łączenie...",
+        disconnected: "Rozłączono",
+        failed: "Błąd połączenia",
+      },
+      ably: {
+        title: "Komunikacja i Synchronizacja (Ably)",
+        state: "Stan połączenia: {{state}}",
+        connectionId: "Identyfikator połączenia: {{id}}",
+        channel: "Kanał systemowy: {{name}}",
+        deviceId: "Identyfikator urządzenia: {{id}}",
+        labels: {
+          status: "Stan połączenia",
+          deviceId: "Identyfikator urządzenia",
+          connectionId: "Identyfikator połączenia",
+          channel: "Kanał systemowy",
+        },
+      },
+      database: {
+        title: "Infrastruktura Danych i Użytkownicy",
+        users: "Użytkownicy: {{count}}",
+        lists: "Listy: {{count}}",
+        tasks: "Zadania: {{count}}",
+        dataSize: "Rozmiar danych: {{size}} MB",
+        storageSize: "Rozmiar dysku: {{size}} MB",
+        indexSize: "Rozmiar indeksów: {{size}} MB",
+        collections: "Kolekcje: {{count}}",
+        usage: "Użycie dysku MongoDB (Limit 512MB)",
+        labels: {
+          dataSize: "Rozmiar danych",
+          storageSize: "Rozmiar dysku",
+          indexSize: "Rozmiar indeksów",
+          collections: "Kolekcje",
+          users: "Użytkownicy",
+          lists: "Listy",
+          tasks: "Zadania",
+        },
+      },
+      storage: {
+        title: "Magazyn Zdjęć (Cloudinary)",
+        lastCleanup: "Ostatnie czyszczenie: {{date}}",
+        never: "nigdy",
+        cleanButton: "Uruchom czyszczenie",
+        cleaning: "Trwa czyszczenie...",
+        resources: "Pliki: {{used}} / {{limit}}",
+        transformations: "Transformacje: {{used}} / {{limit}}",
+        bandwidth: "Transfer: {{used}}GB / {{limit}}GB",
+        credits: "Kredyty: {{used}} / {{limit}} ({{percent}}%)",
+        creditsUsage: "Kredyty Cloudinary (Limit 25)",
+        success: "Czyszczenie zakończone sukcesem!",
+        error: "Błąd podczas czyszczenia.",
+        labels: {
+          resources: "Pliki",
+          transformations: "Transformacje",
+          bandwidth: "Transfer",
+          credits: "Kredyty",
+        },
+        results: {
+          totalCloudinaryImages: "Wszystkie obrazy Cloudinary",
+          totalMongoImages: "Obrazy w bazie danych",
+          orphansFound: "Znalezione sieroty",
+          missingInCloudinary: "Brakujące w Cloudinary",
+          cleaned: "Usunięte obrazy",
+        },
+      },
+      netlify: {
+        title: "Hosting i Platforma (Netlify)",
+        bandwidth: "Transfer danych: {{used}} / {{limit}}",
+        buildMinutes: "Minuty budowania: {{used}} / {{limit}}",
+        functions: "Wywołania funkcji: {{used}} / {{limit}}",
+        lastDeploy: "Ostatnie wdrożenie: {{date}}",
+        siteName: "Nazwa strony: {{name}}",
+        noData:
+          "Monitoring Netlify nie jest skonfigurowany lub dane są niedostępne.",
+        bandwidthLabel: "Transfer (Miesięczny)",
+        buildMinutesLabel: "Minuty budowania",
+        functionsLabel: "Wywołania funkcji",
+        labels: {
+          siteName: "Nazwa strony",
+          lastDeploy: "Ostatnie wdrożenie",
+        },
+      },
+      diagnosis: {
+        title: "Diagnostyka i Konserwacja Systemu",
+        runButton: "Uruchom testy API",
+        running: "Trwa testowanie...",
+        success: "Diagnostyka zakończona sukcesem!",
+        error: "Błąd podczas przeprowadzania diagnostyki.",
+      },
+      logs: {
+        title: "Ostatnie zdarzenia systemowe",
+        noLogs: "Brak zarejestrowanych zdarzeń",
+        types: {
+          autobackup: "Auto-Backup (Google Drive)",
+          manualbackup: "Backup (Google Drive)",
+          backup_disk_all: "Pełny Backup (Plik)",
+          backup_disk_user: "Backup Użytkownika (Plik)",
+          restore_gd: "Przywracanie (Google Drive)",
+          restore_disk: "Przywracanie (Plik)",
+          cleanup: "Czyszczenie zdjęć osieroconych",
+          cleanup_temp: "Czyszczenie zdjęć tymczas.",
+          cleanup_tasks: "Czyszczenie usuniętych zadań",
+          oauth: "Autoryzacja Google",
+        },
+      },
+    },
     form: {
       buttons: {
         login: "Zaloguj",
@@ -288,10 +405,14 @@ const langPl = {
         button: "Przywróć moje listy",
         tooltip: "Przywróć tylko swoje listy z pliku na komputerze",
         processing: "Przetwarzanie Twoich list...",
-        success: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
-        success_few: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} listy.",
-        success_many: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
-        success_other: "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_few:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} listy.",
+        success_many:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
+        success_other:
+          "Kopia zapasowa została przywrócona!\nPrzywrócono {{count}} list.",
         error: "Błąd podczas przywracania Twoich list",
       },
       restoreAllUsers: {
@@ -321,7 +442,8 @@ const langPl = {
         button: "Przywróć z Google Drive",
         tooltip: "Przywróć kopię zapasową z Google Drive",
         restoring: "Przywracanie kopii zapasowej z Google Drive...",
-        success: "Kopia zapasowa została przywrócona! Przywrócono {{count}} list.",
+        success:
+          "Kopia zapasowa została przywrócona! Przywrócono {{count}} list.",
         error: "Błąd podczas przywracania kopii zapasowej",
         notAuthorized: "Brak autoryzacji do Google Drive",
       },
@@ -421,7 +543,8 @@ const langPl = {
         loading: "Trwa rejestracja...",
         info: "Na podany adres e-mail został wysłany link do rejestracji konta.",
         error: {
-          userExists: "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
+          userExists:
+            "Użytkownik z tym adresem e-mail jest już zarejestrowany.",
           default: "Błąd rejestracji",
         },
       },
@@ -469,10 +592,13 @@ const langPl = {
     listSave: {
       title: "Zapisywanie listy",
       message: {
-        confirm: "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
+        confirm:
+          "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
         cancel: "Zmień nazwę listy i zapisz ponownie.",
-        loading: "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
-        success: "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
+        loading:
+          "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
+        success:
+          "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
         error: {
           conflict:
             "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
@@ -489,7 +615,8 @@ const langPl = {
     listRemove: {
       title: "Usuwanie listy",
       message: {
-        confirm: "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
+        confirm:
+          "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
@@ -513,7 +640,8 @@ const langPl = {
     deleteBackup: {
       title: "Usuwanie kopii zapasowej",
       message: {
-        confirm: "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
+        confirm:
+          "Czy na pewno chcesz usunąć kopię zapasową: <strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie kopii zapasowej...",
         success: "Kopia zapasowa została usunięta.",
         error: "Błąd podczas usuwania kopii zapasowej.",
@@ -565,6 +693,11 @@ const langPl = {
         },
       },
       button: "Wyślij",
+    },
+    backupAuthError: {
+      title: "Błąd automatycznej kopii zapasowej",
+      message:
+        "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/> Wymagana jest ponowna autoryzacja konta Google i aktualizacja zmiennej <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> w panelu Netlify.",
     },
   },
   prepareText: {

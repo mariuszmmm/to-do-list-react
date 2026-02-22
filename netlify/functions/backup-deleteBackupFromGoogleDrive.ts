@@ -1,5 +1,6 @@
 import type { Handler, HandlerResponse } from "@netlify/functions";
 import { jsonResponse, logError } from "../functions/lib/response";
+import { getGoogleAccessToken } from "../functions/lib/googleDriveHelper";
 import {
   checkClientContext,
   checkEventBody,
@@ -24,61 +25,79 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
   if (adminResponse) return adminResponse;
 
   try {
-    const parsedBody = parseJsonBody<{ fileId?: string; accessToken?: string }>(event.body, logPrefix);
+    const parsedBody = parseJsonBody<{ fileId?: string; accessToken?: string }>(
+      event.body,
+      logPrefix,
+    );
 
     if ("statusCode" in parsedBody) {
       return parsedBody;
     }
 
-    const { fileId, accessToken } = parsedBody;
+    let { fileId, accessToken } = parsedBody;
 
-    if (!fileId || !accessToken) {
-      console.warn(`${logPrefix} Missing fileId or accessToken`);
-      return jsonResponse(400, { message: "Missing fileId or accessToken" });
+    // Use system refresh token if no access token provided by frontend
+    if (!accessToken) {
+      const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
+      const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+
+      if (clientId && clientSecret && refreshToken) {
+        accessToken =
+          (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
+          undefined;
+      }
     }
 
+    if (!accessToken) {
+      const authMsg = "Google Drive authentication failed";
+      console.warn(`${logPrefix} ${authMsg}`);
+      return jsonResponse(401, { message: authMsg, source: "google-drive" });
+    }
+
+    if (!fileId) {
+      console.warn(`${logPrefix} Missing fileId`);
+      return jsonResponse(400, { message: "Missing fileId" });
+    }
+
+    console.log(`${logPrefix} Requesting deletion of fileId: ${fileId}`);
+
     try {
-      const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      const response = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error(`${logPrefix} Google API Delete error:`, errorData);
         if (response.status === 401) {
-          console.warn(`${logPrefix} Google Drive authentication failed`);
           return jsonResponse(401, {
             message: "Google Drive authentication failed",
             source: "google-drive",
           });
         }
-
-        const errorData = await response.text();
-        console.error(`${logPrefix} Delete error:`, errorData);
         return jsonResponse(response.status, {
-          message: "Failed to delete backup from Google Drive",
+          message: `Failed to delete backup: ${errorData}`,
         });
       }
 
-      return jsonResponse(204, {
-        message: "Backup deleted successfully",
-      });
+      console.log(`${logPrefix} Google confirmed deletion (204) for ${fileId}`);
+      return jsonResponse(204, { message: "Backup deleted successfully" });
     } catch (driveError) {
-      console.error(
-        `${logPrefix} Failed to delete from Google Drive: ${
-          driveError instanceof Error ? driveError.message : "Unknown error"
-        }`,
-      );
+      console.error(`${logPrefix} Fetch error during delete:`, driveError);
       return jsonResponse(500, {
-        message: "Failed to delete backup from Google Drive",
+        message: "Connection to Google Drive failed",
       });
     }
   } catch (error) {
-    logError("Unexpected error in deleteBackupFromGoogleDrive handler", error, logPrefix);
-    return jsonResponse(500, {
-      message: "Internal server error",
-    });
+    logError("Unexpected error in delete handler", error, logPrefix);
+    return jsonResponse(500, { message: "Internal server error" });
   }
 };
 

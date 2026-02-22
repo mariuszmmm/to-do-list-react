@@ -1,8 +1,11 @@
-import type { Handler } from "@netlify/functions";
-import { checkEventBody, checkHttpMethod } from "../functions/lib/validators";
-import { jsonResponse, logError } from "../functions/lib/response";
+import { checkEventBody, checkHttpMethod } from "./lib/validators";
+import { jsonResponse, logError } from "./lib/response";
+import { connectToDB } from "../config/mongoose";
+import UserData from "../models/UserData";
+import SystemConfig from "../models/SystemConfig";
+import { publishSystemLog } from "./lib/ablyHelper";
 
-const handler: Handler = async (event) => {
+const handler: Handler = async (event, context) => {
   const logPrefix = "[googleOAuthCallback]";
 
   const methodResponse = checkHttpMethod(event.httpMethod, "POST", logPrefix);
@@ -29,9 +32,15 @@ const handler: Handler = async (event) => {
       return jsonResponse(400, { message: "Authorization code is required" });
     }
 
-    const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-    const redirectUri = process.env.GOOGLE_DRIVE_REDIRECT_URI;
+    const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID?.replace(/"/g, "");
+    const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET?.replace(
+      /"/g,
+      "",
+    );
+    const redirectUri = process.env.GOOGLE_DRIVE_REDIRECT_URI?.replace(
+      /"/g,
+      "",
+    );
 
     if (!clientId || !clientSecret || !redirectUri) {
       logError(
@@ -74,7 +83,53 @@ const handler: Handler = async (event) => {
 
     const tokenData = await tokenResponse.json();
 
+    // Save refresh token to database if provided
     if (tokenData.refresh_token) {
+      try {
+        await connectToDB();
+
+        // Get user from Netlify Identity context
+        const userEmail = context.clientContext?.user?.email;
+        if (userEmail) {
+          await UserData.findOneAndUpdate(
+            { email: userEmail },
+            { googleRefreshToken: tokenData.refresh_token },
+            { upsert: true },
+          );
+
+          // Log this as a system event
+          try {
+            const logEntry = {
+              status: "success",
+              details: `Google OAuth refresh token updated for ${userEmail}`,
+              timestamp: new Date().toISOString(),
+            };
+            await SystemConfig.create({
+              key: `log_oauth_${Date.now()}`,
+              value: logEntry,
+              updatedAt: new Date(),
+            });
+
+            // Notify admins in real-time
+            await publishSystemLog({
+              key: "log_oauth",
+              ...logEntry,
+            });
+          } catch (logErr) {
+            console.error(`${logPrefix} Failed to create system log:`, logErr);
+          }
+
+          console.log(
+            `${logPrefix} Refresh token saved to DB for ${userEmail}`,
+          );
+        }
+      } catch (dbError) {
+        console.error(
+          `${logPrefix} Error saving refresh token to DB:`,
+          dbError,
+        );
+      }
+
       console.log(`${logPrefix} !!! PERMANENT REFRESH TOKEN OBTAINED !!!`);
       console.log(`${logPrefix} Copy this to GOOGLE_BACKUP_REFRESH_TOKEN:`);
       console.log(tokenData.refresh_token);

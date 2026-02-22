@@ -96,8 +96,10 @@ const langEn: typeof langPl = {
       uploading: "Uploading…",
       loading: "Loading…",
       removing: "Removing…",
-      cameraPermissionDenied: "Camera access denied. Please allow camera access in your browser settings.",
-      cameraNotFound: "No camera device found. Please check your camera connection.",
+      cameraPermissionDenied:
+        "Camera access denied. Please allow camera access in your browser settings.",
+      cameraNotFound:
+        "No camera device found. Please check your camera connection.",
       cameraError: "An error occurred while accessing the camera.",
       error: {
         imageUploadError: "Error uploading image",
@@ -156,6 +158,14 @@ const langEn: typeof langPl = {
               "<strong>User Account Management</strong>: <br/>registration, login, password reset and change, account deletion via Netlify GoTrue.",
             part6:
               "<strong>Voice Task Input</strong>: <br/>ability to enter task content using speech recognition (Web Speech API).",
+            part7:
+              "<strong>Task Attachments</strong>: <br/>ability to attach images to tasks (powered by Cloudinary).",
+            part8:
+              "<strong>Drag & Drop</strong>: <br/>intuitively reorder users' tasks and lists (powered by @dnd-kit).",
+            part9:
+              "<strong>Real-time Sync</strong>: <br/>instant updates across devices using Ably.",
+            part10:
+              "<strong>Archived Lists & Backup</strong>: <br/>archive lists and backup to Google Drive or local storage.",
           },
         },
         technologies: {
@@ -233,6 +243,114 @@ const langEn: typeof langPl = {
       device_many: "Total active devices: {{count}}",
       device_other: "Total active devices: {{count}}",
     },
+    systemAdmin: {
+      title: "System & Maintenance",
+      ablyStatus: {
+        connected: "Connected",
+        connecting: "Connecting...",
+        disconnected: "Disconnected",
+        failed: "Connection failed",
+      },
+      ably: {
+        title: "Communication & Sync (Ably)",
+        state: "Connection State: {{state}}",
+        connectionId: "Connection ID: {{id}}",
+        channel: "System Channel: {{name}}",
+        deviceId: "Device ID: {{id}}",
+        labels: {
+          status: "Connection State",
+          deviceId: "Device ID",
+          connectionId: "Connection ID",
+          channel: "System Channel",
+        },
+      },
+      database: {
+        title: "Data Infrastructure & Users",
+        users: "Users: {{count}}",
+        lists: "Lists: {{count}}",
+        tasks: "Tasks: {{count}}",
+        dataSize: "Data Size: {{size}} MB",
+        storageSize: "Disk Usage: {{size}} MB",
+        indexSize: "Index Size: {{size}} MB",
+        collections: "Collections: {{count}}",
+        usage: "MongoDB Storage Usage (Limit 512MB)",
+        labels: {
+          dataSize: "Data Size",
+          storageSize: "Disk Usage",
+          indexSize: "Index Size",
+          collections: "Collections",
+          users: "Users",
+          lists: "Lists",
+          tasks: "Tasks",
+        },
+      },
+      storage: {
+        title: "Image Storage (Cloudinary)",
+        lastCleanup: "Last cleanup: {{date}}",
+        never: "never",
+        cleanButton: "Run cleanup",
+        cleaning: "Cleaning...",
+        resources: "Files: {{used}} / {{limit}}",
+        transformations: "Transformations: {{used}} / {{limit}}",
+        bandwidth: "Bandwidth: {{used}}GB / {{limit}}GB",
+        credits: "Credits: {{used}} / {{limit}} ({{percent}}%)",
+        creditsUsage: "Cloudinary Credits (Limit 25)",
+        success: "Cleanup completed successfully!",
+        error: "Error during cleanup.",
+        labels: {
+          resources: "Files",
+          transformations: "Transformations",
+          bandwidth: "Bandwidth",
+          credits: "Credits",
+        },
+        results: {
+          totalCloudinaryImages: "Total Cloudinary images",
+          totalMongoImages: "Images in database",
+          orphansFound: "Orphans found",
+          missingInCloudinary: "Missing in Cloudinary",
+          cleaned: "Images removed",
+        },
+      },
+      netlify: {
+        title: "Hosting & Platform (Netlify)",
+        bandwidth: "Bandwidth Usage: {{used}} / {{limit}}",
+        buildMinutes: "Build Minutes: {{used}} / {{limit}}",
+        functions: "Function Invocations: {{used}} / {{limit}}",
+        lastDeploy: "Last Deploy: {{date}}",
+        siteName: "Site Name: {{name}}",
+        noData: "Netlify monitoring is not configured or data unavailable.",
+        bandwidthLabel: "Bandwidth (Monthly)",
+        buildMinutesLabel: "Build Minutes",
+        functionsLabel: "Function Invocations",
+        labels: {
+          siteName: "Site Name",
+          lastDeploy: "Last Deploy",
+        },
+      },
+      diagnosis: {
+        title: "Diagnostics & System Maintenance",
+        runButton: "Run API Tests",
+        running: "Testing...",
+        success: "Diagnosis completed successfully!",
+        error: "Error during diagnosis.",
+      },
+      logs: {
+        title: "Recent System Events",
+        noLogs: "No events recorded",
+        types: {
+          autobackup: "Auto-Backup (GD)",
+          manualbackup: "Manual Backup (GD)",
+          backup_disk_all: "Full Backup (Disk)",
+          backup_disk_user: "User Backup (Disk)",
+          restore_gd: "Restore from GD",
+          restore_disk: "Restore from Disk",
+          cleanup: "Orphan Image Cleanup",
+          cleanup_temp: "Temp Image Cleanup",
+          cleanup_tasks: "Deleted Tasks Cleanup",
+          oauth: "Google Authorization",
+        },
+      },
+    },
     form: {
       buttons: {
         login: "Log in",
@@ -299,7 +417,8 @@ const langEn: typeof langPl = {
         button: "Restore all users",
         tooltip: "Restore all users from backup",
         processing: "Processing...",
-        success: "Backup has been restored!\nRestored: {{restored}}/{{total}} users.\nFailed: {{failed}}.",
+        success:
+          "Backup has been restored!\nRestored: {{restored}}/{{total}} users.\nFailed: {{failed}}.",
         error: "Error while restoring all users",
       },
 
@@ -334,8 +453,8 @@ const langEn: typeof langPl = {
           cancel: "Cancel",
         },
         tooltips: {
-          restore: "Przywróć kopię zapasową",
-          delete: "Usuń kopię zapasową z Google Drive",
+          restore: "Restore backup",
+          delete: "Delete backup from Google Drive",
         },
         error: "Error fetching backup list",
         errorDelete: "Error deleting backup",
@@ -344,7 +463,8 @@ const langEn: typeof langPl = {
       },
       restoreSelectedBackup: {
         restoring: "Restoring backup from Google Drive...",
-        success: "Backup restored!\n{{restored}} users restored, {{failed}} failed ({{total}} total)",
+        success:
+          "Backup restored!\n{{restored}} users restored, {{failed}} failed ({{total}} total)",
         error: "Error while restoring backup",
         notAuthorized: "Not authorized to Google Drive",
       },
@@ -469,12 +589,15 @@ const langEn: typeof langPl = {
     listSave: {
       title: "Saving list",
       message: {
-        confirm: "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
+        confirm:
+          "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{name}}</strong> to the database...",
-        success: "List <strong>{{name}}</strong> has been saved to the database.",
+        success:
+          "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
-          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while adding the list to the database.",
         },
       },
@@ -488,30 +611,33 @@ const langEn: typeof langPl = {
     listRemove: {
       title: "Deleting list",
       message: {
-        confirm: "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
+        confirm:
+          "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
-          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while deleting the list.",
         },
       },
     },
     imageRemove: {
-      title: "Deleting foto",
+      title: "Deleting photo",
       message: {
-        confirm: "Are you sure you want to delete the foto?",
+        confirm: "Are you sure you want to delete the photo?",
         loading: "Deleting...",
-        success: "The foto has been removed.",
+        success: "The photo has been removed.",
         error: {
-          default: "An error occurred while deleting the foto.",
+          default: "An error occurred while deleting the photo.",
         },
       },
     },
     deleteBackup: {
       title: "Deleting backup",
       message: {
-        confirm: "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
+        confirm:
+          "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
         loading: "Deleting backup...",
         success: "The backup has been deleted.",
         error: "An error occurred while deleting the backup.",
@@ -523,7 +649,8 @@ const langEn: typeof langPl = {
         loading: "Updating list...",
         success: "The list has been updated in the database.",
         error: {
-          conflict: "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+          conflict:
+            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
           default: "An error occurred while updating the list.",
         },
       },
@@ -562,6 +689,11 @@ const langEn: typeof langPl = {
         },
       },
       button: "Send",
+    },
+    backupAuthError: {
+      title: "Automated Backup Error",
+      message:
+        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/> You need to re-authorize your Google account and update the <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> variable in Netlify.",
     },
   },
   prepareText: {

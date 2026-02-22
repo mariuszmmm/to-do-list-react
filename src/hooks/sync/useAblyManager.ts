@@ -62,7 +62,10 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
 
     try {
       await channel.attach();
-      channel.subscribe("user-confirmed", handleConfirmation);
+      channel.subscribe("user-confirmed", handleConfirmation).catch((err) => {
+        if (err instanceof Error && err.message.includes("superseded")) return;
+        console.warn("[AblyManager] Confirmation subscribe error:", err);
+      });
     } catch (err) {
       if (err instanceof Error && err.message.includes("superseded")) {
         return;
@@ -198,7 +201,13 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
         callbacks.forEach((cb) => cb(message.data));
       };
 
-      dataChannel.subscribe("lists-updated", handleListsMessage);
+      dataChannel
+        .subscribe("lists-updated", handleListsMessage)
+        .catch((err) => {
+          if (err instanceof Error && err.message.includes("superseded"))
+            return;
+          console.warn("[AblyManager] Lists subscribe error:", err);
+        });
 
       const updatePresenceCount = async () => {
         try {
@@ -241,9 +250,24 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
         await updatePresenceCount();
       };
 
-      presenceCountChannel.presence.subscribe("enter", handlePresenceEvent);
-      presenceCountChannel.presence.subscribe("leave", handlePresenceEvent);
-      presenceCountChannel.presence.subscribe("update", handlePresenceEvent);
+      presenceCountChannel.presence
+        .subscribe("enter", handlePresenceEvent)
+        .catch((e) => {
+          if (e instanceof Error && !e.message.includes("superseded"))
+            console.warn(e);
+        });
+      presenceCountChannel.presence
+        .subscribe("leave", handlePresenceEvent)
+        .catch((e) => {
+          if (e instanceof Error && !e.message.includes("superseded"))
+            console.warn(e);
+        });
+      presenceCountChannel.presence
+        .subscribe("update", handlePresenceEvent)
+        .catch((e) => {
+          if (e instanceof Error && !e.message.includes("superseded"))
+            console.warn(e);
+        });
 
       try {
         await presenceSelfChannel.presence.enter({

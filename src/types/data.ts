@@ -70,5 +70,5 @@ export type BackupData = {
   totalTasks: number;
 };
 
-export type BackupType = "all-users-backup" | "user-lists-backup";
+export type BackupType = "all-users" | "user-lists";
 export type BackupFile = { id: string; name: string; modifiedTime?: string };
