@@ -11,6 +11,13 @@ import {
   DiagnosisValue,
   StatsGridLarge,
   StatsRow,
+  BillingPeriodText,
+  ProgressBarText,
+  CreditBreakdownContainer,
+  CreditBreakdownTitle,
+  CreditBreakdownGrid,
+  CreditBreakdownRow,
+  CreditBreakdownValue,
 } from "../styled";
 
 interface NetlifySectionProps {
@@ -23,7 +30,7 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
   });
 
   return (
-    <TopBorderSection style={{ borderTop: "none", paddingTop: 0 }}>
+    <TopBorderSection $noBorder>
       <SectionTitle>{t("netlify.title")}</SectionTitle>
       {netlifyStats ? (
         <SubSectionContainer>
@@ -47,13 +54,15 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
 
           {/* Bandwidth Progress Bar */}
           <ProgressBarLabel>
-            <span>{t("netlify.bandwidthLabel", "Bandwidth")}</span>
-            <span>
+            <ProgressBarText>
+              {t("netlify.bandwidthLabel", "Bandwidth")}
+            </ProgressBarText>
+            <ProgressBarText>
               {Number(
                 netlifyStats?.bandwidth?.used / (1024 * 1024 * 1024) || 0,
               ).toFixed(2)}
               GB / 100GB ({netlifyStats?.bandwidth?.used_percent || 0}%)
-            </span>
+            </ProgressBarText>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
@@ -68,12 +77,14 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
 
           {/* Credits Progress Bar */}
           <ProgressBarLabel>
-            <span>{t("netlify.creditsLabel", "Credits")}</span>
-            <span>
+            <ProgressBarText>
+              {t("netlify.creditsLabel", "Credits")}
+            </ProgressBarText>
+            <ProgressBarText>
               {netlifyStats?.credits?.used || 0} /{" "}
               {netlifyStats?.credits?.included || 300} (
               {netlifyStats?.credits?.used_percent || 0}%)
-            </span>
+            </ProgressBarText>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
@@ -85,30 +96,67 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
               }
             />
           </ProgressBarTrack>
+          {netlifyStats?.next_billing_period_start && (
+            <BillingPeriodText>
+              {t("netlify.nextBillingPeriod", "Credits renew on")}:{" "}
+              {new Date(
+                netlifyStats.next_billing_period_start,
+              ).toLocaleDateString()}
+            </BillingPeriodText>
+          )}
 
-          {/* Concurrent Builds Progress Bar */}
-          <ProgressBarLabel>
-            <span>
-              {t("netlify.concurrentBuildsLabel", "Concurrent Builds")}
-            </span>
-            <span>
-              {netlifyStats?.concurrent_builds?.used || 0} /{" "}
-              {netlifyStats?.concurrent_builds?.max || 1} (
-              {netlifyStats?.concurrent_builds?.used_percent || 0}%)
-            </span>
-          </ProgressBarLabel>
-          <ProgressBarTrack>
-            <ProgressBarFill
-              $width={Number(
-                netlifyStats?.concurrent_builds?.used_percent || 0,
-              )}
-              $color={
-                Number(netlifyStats?.concurrent_builds?.used_percent || 0) > 80
-                  ? "#ff4d4f"
-                  : "#13c2c2"
-              }
-            />
-          </ProgressBarTrack>
+          {/* Credit Breakdown */}
+          {netlifyStats?.credit_breakdown && (
+            <CreditBreakdownContainer>
+              <CreditBreakdownTitle>
+                {t("netlify.creditBreakdownLabel", "Credit Usage Breakdown")}:
+              </CreditBreakdownTitle>
+              <CreditBreakdownGrid>
+                <CreditBreakdownRow>
+                  •{" "}
+                  {t(
+                    "netlify.breakdown.productionDeploys",
+                    "Production Deploys",
+                  )}
+                  :{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.productionDeploys}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+                <CreditBreakdownRow>
+                  • {t("netlify.breakdown.aiInference", "AI Inference")}:{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.aiInference}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+                <CreditBreakdownRow>
+                  • {t("netlify.breakdown.compute", "Compute")}:{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.compute}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+                <CreditBreakdownRow>
+                  • {t("netlify.breakdown.bandwidth", "Bandwidth")}:{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.bandwidth}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+                <CreditBreakdownRow>
+                  • {t("netlify.breakdown.webRequests", "Web Requests")}:{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.webRequests}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+                <CreditBreakdownRow>
+                  • {t("netlify.breakdown.formSubmissions", "Form Submissions")}
+                  :{" "}
+                  <CreditBreakdownValue>
+                    {netlifyStats.credit_breakdown.formSubmissions}
+                  </CreditBreakdownValue>
+                </CreditBreakdownRow>
+              </CreditBreakdownGrid>
+            </CreditBreakdownContainer>
+          )}
         </SubSectionContainer>
       ) : (
         <StyledCommentBlock $comment>

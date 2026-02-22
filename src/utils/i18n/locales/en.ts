@@ -321,7 +321,16 @@ const langEn: typeof langPl = {
         noData: "Netlify monitoring is not configured or data unavailable.",
         bandwidthLabel: "Bandwidth (Monthly)",
         creditsLabel: "Credits",
-        concurrentBuildsLabel: "Concurrent Builds",
+        nextBillingPeriod: "Credits renew on",
+        creditBreakdownLabel: "Credit Usage Breakdown",
+        breakdown: {
+          productionDeploys: "Production Deploys",
+          compute: "Compute",
+          aiInference: "AI Inference",
+          bandwidth: "Bandwidth",
+          webRequests: "Web Requests",
+          formSubmissions: "Form Submissions",
+        },
         labels: {
           siteName: "Site Name",
           lastDeploy: "Last Deploy",

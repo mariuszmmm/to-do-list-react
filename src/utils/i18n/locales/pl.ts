@@ -319,7 +319,16 @@ const langPl = {
           "Monitoring Netlify nie jest skonfigurowany lub dane są niedostępne.",
         bandwidthLabel: "Transfer (Miesięczny)",
         creditsLabel: "Kredyty",
-        concurrentBuildsLabel: "Jednoczesne budowania",
+        nextBillingPeriod: "Odnowienie kredytów",
+        creditBreakdownLabel: "Rozbicie wykorzystania kredytów",
+        breakdown: {
+          productionDeploys: "Budowania",
+          compute: "Obliczenia",
+          aiInference: "Wnioskowanie AI",
+          bandwidth: "Transfer",
+          webRequests: "Zapytania do stron",
+          formSubmissions: "Formularze",
+        },
         labels: {
           siteName: "Nazwa strony",
           lastDeploy: "Ostatnie wdrożenie",

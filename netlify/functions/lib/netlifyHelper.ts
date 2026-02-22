@@ -11,14 +11,17 @@ export interface NetlifyUsage {
     included: number;
     used_percent: number;
   };
-  concurrent_builds: {
-    used: number;
-    included: number;
-    max: number;
-    used_percent: number;
+  credit_breakdown: {
+    productionDeploys: number;
+    compute: number;
+    aiInference: number;
+    bandwidth: number;
+    webRequests: number;
+    formSubmissions: number;
   };
   site_name: string;
   last_deploy_at: string | null;
+  next_billing_period_start: string | null;
 }
 
 export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
@@ -57,7 +60,7 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
     }
     const bandwidthLimit = 100 * 1024 * 1024 * 1024; // 100GB default free
 
-    // 3. Get Account details for credits and concurrent builds
+    // 3. Get Account details for billing periods
     let accountData: any = null;
     try {
       const accountResponse = await axios.get(
@@ -72,24 +75,85 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
       console.warn("[getNetlifyUsage] Error fetching account details", err);
     }
 
-    const capabilities = accountData?.capabilities || {};
+    // 4. Get credits billing stats
+    let creditsUsed = 0;
+    let creditsLimit = 300;
+    let creditBreakdown = {
+      productionDeploys: 0,
+      compute: 0,
+      aiInference: 0,
+      bandwidth: 0,
+      webRequests: 0,
+      formSubmissions: 0,
+    };
 
-    // Credits logic
-    const creditsUsed = accountData?.credits?.used || 0;
-    const creditsLimit =
-      accountData?.plan_credits || accountData?.credits?.included || 300;
+    try {
+      // Fetch both generic credits and detailed credit usage concurrently
+      const [creditsResponse, usageResponse] = await Promise.allSettled([
+        axios.get(
+          `https://api.netlify.com/api/v1/${accountSlug}/billing/credits`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ),
+        axios.get(
+          `https://api.netlify.com/api/v1/${accountSlug}/billing/credit_usage`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        ),
+      ]);
+
+      if (creditsResponse.status === "fulfilled") {
+        const planCredits = creditsResponse.value.data?.plan_credits || {};
+        creditsUsed = planCredits.used
+          ? Number(parseFloat(planCredits.used).toFixed(1))
+          : 0;
+        creditsLimit = planCredits.total ? parseFloat(planCredits.total) : 300;
+      }
+
+      if (usageResponse.status === "fulfilled") {
+        const usageData = usageResponse.value.data || {};
+        creditBreakdown = {
+          productionDeploys: usageData.production_deploys?.credits_used
+            ? Number(
+                parseFloat(usageData.production_deploys.credits_used).toFixed(
+                  1,
+                ),
+              )
+            : 0,
+          compute:
+            usageData.compute?.credits_used || usageData.functions?.credits_used
+              ? Number(
+                  parseFloat(
+                    usageData.compute?.credits_used ||
+                      usageData.functions?.credits_used,
+                  ).toFixed(2),
+                )
+              : 0,
+          aiInference: usageData.ai_inference?.credits_used
+            ? Number(parseFloat(usageData.ai_inference.credits_used).toFixed(2))
+            : 0,
+          bandwidth: usageData.bandwidth?.credits_used
+            ? Number(parseFloat(usageData.bandwidth.credits_used).toFixed(2))
+            : 0,
+          webRequests: usageData.web_requests?.credits_used
+            ? Number(parseFloat(usageData.web_requests.credits_used).toFixed(2))
+            : 0,
+          formSubmissions: usageData.form_submissions?.credits_used
+            ? Number(
+                parseFloat(usageData.form_submissions.credits_used).toFixed(1),
+              )
+            : 0,
+        };
+      }
+    } catch (err) {
+      console.warn("[getNetlifyUsage] Error fetching unified credits", err);
+    }
+
     const creditsPercent =
       creditsLimit > 0
         ? parseFloat(((creditsUsed / creditsLimit) * 100).toFixed(1))
-        : 0;
-
-    // Concurrent builds logic
-    const concurrentUsed = capabilities.concurrent_builds?.used || 0;
-    const concurrentLimit = capabilities.concurrent_builds?.included || 1;
-    const concurrentMax = capabilities.concurrent_builds?.max || 1;
-    const concurrentPercent =
-      concurrentMax > 0
-        ? parseFloat(((concurrentUsed / concurrentMax) * 100).toFixed(1))
         : 0;
 
     return {
@@ -105,15 +169,11 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
         included: creditsLimit,
         used_percent: creditsPercent,
       },
-      concurrent_builds: {
-        used: concurrentUsed,
-        included: concurrentLimit,
-        max: concurrentMax,
-        used_percent: concurrentPercent,
-      },
+      credit_breakdown: creditBreakdown,
       site_name: siteData.name,
       last_deploy_at:
         siteData.published_deploy?.published_at || siteData.updated_at || null,
+      next_billing_period_start: accountData?.next_billing_period_start || null,
     };
   } catch (error) {
     console.error("[getNetlifyUsage] Error fetching Netlify data:", error);

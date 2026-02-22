@@ -7,9 +7,11 @@ import {
   ProgressBarLabel,
   ProgressBarTrack,
   ProgressBarFill,
+  ProgressBarText,
   FlexColumnStartContainer,
   ActionButton,
   StatsGrid,
+  StatsGridSuccess,
   DiagnosisKey,
   DiagnosisValue,
   StatsRow,
@@ -43,12 +45,12 @@ export const StorageSection = ({
         <SpacerContainer>
           {/* Cloudinary Storage Progress Bar */}
           <ProgressBarLabel>
-            <span>{t("storage.title")}</span>
-            <span>
+            <ProgressBarText>{t("storage.title")}</ProgressBarText>
+            <ProgressBarText>
               {Number(storageStats?.storage?.usage_gb || 0).toFixed(2)}GB /{" "}
               {storageStats?.storage?.limit_gb || 0}GB (
               {storageStats?.storage?.used_percent || 0}%)
-            </span>
+            </ProgressBarText>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
@@ -63,14 +65,14 @@ export const StorageSection = ({
 
           {/* Cloudinary Credits Progress Bar */}
           <ProgressBarLabel>
-            <span>
+            <ProgressBarText>
               {t("storage.creditsUsage", "Cloudinary Credits (Limit 25)")}
-            </span>
-            <span>
+            </ProgressBarText>
+            <ProgressBarText>
               {Number(storageStats?.credits?.used || 0).toFixed(2)} /{" "}
               {storageStats?.credits?.limit || 25} (
               {Number(storageStats?.credits?.used_percent || 0).toFixed(1)}%)
-            </span>
+            </ProgressBarText>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
@@ -86,7 +88,7 @@ export const StorageSection = ({
             />
           </ProgressBarTrack>
 
-          <StatsGrid style={{ marginBottom: "20px" }}>
+          <StatsGrid>
             <StatsRow>
               <DiagnosisKey>{`${t("storage.labels.resources")}:`}</DiagnosisKey>
               <DiagnosisValue $isSuccess={true}>
@@ -124,14 +126,7 @@ export const StorageSection = ({
       )}
 
       {results && (
-        <StatsGrid
-          style={{
-            marginTop: "15px",
-            marginBottom: "15px",
-            background: "rgba(82, 196, 26, 0.1)",
-            border: "1px solid rgba(82, 196, 26, 0.2)",
-          }}
-        >
+        <StatsGridSuccess>
           {Object.entries(results).map(([key, value]) => (
             <StatsRow key={key}>
               <DiagnosisKey>{`${t(`storage.results.${key}`, key)}:`}</DiagnosisKey>
@@ -140,7 +135,7 @@ export const StorageSection = ({
               </DiagnosisValue>
             </StatsRow>
           ))}
-        </StatsGrid>
+        </StatsGridSuccess>
       )}
 
       <FlexColumnStartContainer>
@@ -155,9 +150,7 @@ export const StorageSection = ({
           {loading ? t("storage.cleaning") : t("storage.cleanButton")}
         </ActionButton>
         {message && (
-          <StyledSpan $error={message.isError} style={{ marginTop: "8px" }}>
-            {message.text}
-          </StyledSpan>
+          <StyledSpan $error={message.isError}>{message.text}</StyledSpan>
         )}
       </FlexColumnStartContainer>
     </TopBorderSection>

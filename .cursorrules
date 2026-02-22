@@ -2,6 +2,6 @@
 
 - Wszystkie pliki generowane dla użytkownika do podglądu (np. `task.md`, `implementation_plan.md`, `walkthrough.md`) muszą być ZAWSZE pisane w języku polskim.
 - Prefer communications in Polish if the user initiates in Polish.
-- W aplikacji używamy `styled-components`. Nie dodajemy styli bezpośrednio do znaczników HTML (inline styles).
+- **CRITICAL: W aplikacji używamy WYŁĄCZNIE `styled-components`. ABSOLUTNIE NIE DODAJEMY styli bezpośrednio do znaczników HTML (inline styles np. `style={{...}}`). Wszystkie nowe style muszą trafić do pliku `styled.ts`!**
 - Twórz zawsze komponenty generyczne, które można użyć w różnych aplikacjach.
-- Alway adhere to the "Polish language for artifacts" rule.
+- Always adhere to the "Polish language for artifacts" rule.

@@ -6,9 +6,9 @@ import {
   LogItem,
   LogHeader,
   LogTitle,
-  InfoSpan,
-  LogDetails,
-  LogStats,
+  LogTimestamp,
+  LogDetailsText,
+  LogStatsSeparator,
 } from "../styled";
 
 interface LogsSectionProps {
@@ -59,26 +59,18 @@ export const LogsSection = ({ logs }: LogsSectionProps) => {
                   );
                 })()}
               </LogTitle>
-              <InfoSpan $opacity={0.5} style={{ fontSize: "0.8rem" }}>
+              <LogTimestamp>
                 {new Date(log.timestamp).toLocaleTimeString()}
-              </InfoSpan>
+              </LogTimestamp>
             </LogHeader>
-            <LogDetails style={{ fontSize: "0.85rem", marginTop: "4px" }}>
-              {log.details || "No details"}
-            </LogDetails>
+            <LogDetailsText>{log.details || "No details"}</LogDetailsText>
             {log.stats && log.key.startsWith("log_cleanup") && (
-              <LogStats
-                style={{
-                  borderTop: "1px solid rgba(255,255,255,0.05)",
-                  paddingTop: "4px",
-                  marginTop: "6px",
-                }}
-              >
+              <LogStatsSeparator>
                 {t("storage.results.cleaned", "Cleaned")}:{" "}
                 <strong>{log.stats.cleaned}</strong>{" "}
                 {log.stats.orphansFound !== undefined &&
                   `| ${t("storage.results.orphansFound", "Found")}: ${log.stats.orphansFound}`}
-              </LogStats>
+              </LogStatsSeparator>
             )}
           </LogItem>
         ))

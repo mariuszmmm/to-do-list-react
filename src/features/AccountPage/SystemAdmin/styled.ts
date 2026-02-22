@@ -7,19 +7,21 @@ export const SectionContainer = styled.div`
   width: 100%;
 `;
 
-export const TopBorderSection = styled(SectionContainer)`
-  border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
-  padding-top: 20px;
+export const TopBorderSection = styled(SectionContainer)<{
+  $noBorder?: boolean;
+}>`
+  border-top: ${({ theme, $noBorder }) =>
+    $noBorder ? "none" : `1px solid ${theme.colors.border.primary}`};
+  padding-top: ${({ $noBorder }) => ($noBorder ? "0" : "20px")};
 `;
 
 export const SectionTitle = styled.h3`
   font-size: 1.1rem;
-  margin-bottom: 10px;
   line-height: 1.4;
+  margin-bottom: 10px;
 `;
 
 export const SubSectionContainer = styled.div`
-  margin-top: 10px;
   width: 100%;
 `;
 
@@ -217,6 +219,34 @@ export const LogStats = styled.div`
   opacity: 0.5;
 `;
 
+export const LogTimestamp = styled.span`
+  font-size: 0.8rem;
+  opacity: 0.5;
+`;
+
+export const LogDetailsText = styled.div`
+  opacity: 0.8;
+  font-size: 0.85rem;
+  margin-top: 4px;
+`;
+
+export const LogStatsSeparator = styled.div`
+  font-size: 0.75rem;
+  margin-top: 6px;
+  padding-top: 4px;
+  opacity: 0.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+`;
+
+export const StatsGridSuccess = styled(StatsGrid)`
+  background: rgba(82, 196, 26, 0.1);
+  border: 1px solid rgba(82, 196, 26, 0.2);
+  margin-top: 15px;
+  margin-bottom: 15px;
+`;
+
+export const CreditBreakdownRow = styled.div``;
+
 export const StyledCommentBlock = styled(StyledSpan)`
   display: block;
   margin-top: 10px;
@@ -229,4 +259,43 @@ export const InfoSpan = styled.span<{ $opacity?: number }>`
 export const ActionButton = styled(Button)<{ $hasMarginTop?: boolean }>`
   width: auto;
   ${({ $hasMarginTop }) => $hasMarginTop && "margin-top: 8px;"}
+`;
+
+export const BillingPeriodText = styled.div`
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-align: right;
+`;
+
+export const ProgressBarText = styled.span``;
+
+export const CreditBreakdownContainer = styled.div`
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-size: 0.85rem;
+`;
+
+export const CreditBreakdownTitle = styled.div`
+  margin-bottom: 10px;
+  font-weight: bold;
+`;
+
+export const CreditBreakdownGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 20px;
+  opacity: 0.8;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+`;
+
+export const CreditBreakdownValue = styled.span`
+  color: var(--text-primary);
 `;

@@ -5,6 +5,7 @@ import {
   ProgressBarLabel,
   ProgressBarTrack,
   ProgressBarFill,
+  ProgressBarText,
   StatsGrid,
   DiagnosisKey,
   DiagnosisValue,
@@ -50,8 +51,10 @@ export const DatabaseSection = ({ stats }: DatabaseSectionProps) => {
         <>
           <ProgressWrapper>
             <ProgressBarLabel>
-              <span>{t("database.usage", "Limit MongoDB (512 MB)")}</span>
-              <span>
+              <ProgressBarText>
+                {t("database.usage", "Limit MongoDB (512 MB)")}
+              </ProgressBarText>
+              <ProgressBarText>
                 {Number(stats.dbSize.storageSize / (1024 * 1024) || 0).toFixed(
                   2,
                 )}{" "}
@@ -63,7 +66,7 @@ export const DatabaseSection = ({ stats }: DatabaseSectionProps) => {
                   100,
                 ).toFixed(1)}
                 %)
-              </span>
+              </ProgressBarText>
             </ProgressBarLabel>
             <ProgressBarTrack>
               <ProgressBarFill

@@ -322,7 +322,16 @@ const langDe: typeof langPl = {
           "Netlify-Monitoring ist nicht konfiguriert oder Daten sind nie verfügbar.",
         bandwidthLabel: "Bandbreite (Monatlich)",
         creditsLabel: "Credits",
-        concurrentBuildsLabel: "Gleichzeitige Builds",
+        nextBillingPeriod: "Credits-Erneuerung am",
+        creditBreakdownLabel: "Aufschlüsselung der Credits",
+        breakdown: {
+          productionDeploys: "Deployment",
+          compute: "Compute",
+          aiInference: "KI-Inferenz",
+          bandwidth: "Bandbreite",
+          webRequests: "Webanfragen",
+          formSubmissions: "Formulare",
+        },
         labels: {
           siteName: "Seitenname",
           lastDeploy: "Letzter Deploy",
