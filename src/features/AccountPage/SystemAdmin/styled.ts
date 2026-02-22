@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Button } from "../../../common/Button";
 import { StyledSpan } from "../../../common/StyledList";
 

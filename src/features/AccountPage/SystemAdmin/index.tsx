@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import {
   getSystemStatusApi,
   runCleanupApi,
@@ -7,8 +6,6 @@ import {
 } from "../../../api/backupApi";
 import { NameContainer } from "../../tasks/TasksPage/EditableListName/styled";
 import { getUserToken } from "../../../utils/auth/getUserToken";
-import { useAppSelector } from "../../../hooks/redux/redux";
-import { selectAccountMode } from "../accountSlice";
 import { getAblyInstance, safeDetachChannel } from "../../../utils/sync/ably";
 import { getOrCreateDeviceId } from "../../../utils/storage/deviceId";
 
@@ -20,10 +17,6 @@ import { DiagnosisSection } from "./components/DiagnosisSection";
 import { LogsSection } from "./components/LogsSection";
 
 export const SystemAdmin = () => {
-  const { t } = useTranslation("translation", {
-    keyPrefix: "accountPage.systemAdmin",
-  });
-  const accountMode = useAppSelector(selectAccountMode);
   const [isCleaning, setIsCleaning] = useState(false);
   const [isDiagnosing, setIsDiagnosing] = useState(false);
   const [cleanupResults, setCleanupResults] = useState<any>(null);
@@ -36,7 +29,6 @@ export const SystemAdmin = () => {
     isError: boolean;
   } | null>(null);
   const [stats, setStats] = useState<any>(null);
-  const [status, setStatus] = useState<any>(null);
   const [cleanupStatus, setCleanupStatus] = useState<any>(null);
   const [logs, setLogs] = useState<any[]>([]);
   const [storageStats, setStorageStats] = useState<any>(null);
@@ -54,7 +46,6 @@ export const SystemAdmin = () => {
       const response = await getSystemStatusApi(token);
       if (response.success && response.data) {
         setStats(response.data.stats);
-        setStatus(response.data.status);
         setCleanupStatus(response.data.cleanupStatus);
         setLogs(response.data.logs || []);
         setStorageStats(response.data.storageStats);
@@ -97,7 +88,6 @@ export const SystemAdmin = () => {
       });
 
       // Also update the specific statuses if they were updated
-      if (newLog.key === "log_autobackup") setStatus(newLog);
       if (newLog.key === "log_cleanup") setCleanupStatus(newLog);
     };
 
