@@ -9,6 +9,7 @@ import {
   DiagnosisDetails,
   ActionButton,
   FlexColumnStartContainer,
+  StatsRow,
 } from "../styled";
 
 interface DiagnosisSectionProps {
@@ -32,17 +33,17 @@ export const DiagnosisSection = ({
     <TopBorderSection>
       <SectionTitle>{t("diagnosis.title", "System Diagnosis")}</SectionTitle>
       {diagnosis && (
-        <StatsGrid style={{ marginBottom: "15px" }}>
+        <StatsGrid>
           {Object.entries(diagnosis).map(([key, value]: [string, any]) => (
             <div key={key}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <StatsRow>
                 <DiagnosisKey>{key}:</DiagnosisKey>
                 <DiagnosisValue $isSuccess={value.status === "success"}>
                   {value.status === "success"
                     ? "✓ OK"
                     : `✗ ${t("diagnosis.error", "Error")}`}
                 </DiagnosisValue>
-              </div>
+              </StatsRow>
               {value.status !== "success" && value.details && (
                 <DiagnosisDetails>{value.details}</DiagnosisDetails>
               )}
@@ -55,9 +56,7 @@ export const DiagnosisSection = ({
           {loading ? t("diagnosis.running") : t("diagnosis.runButton")}
         </ActionButton>
         {message && (
-          <StyledSpan $error={message.isError} style={{ marginTop: "8px" }}>
-            {message.text}
-          </StyledSpan>
+          <StyledSpan $error={message.isError}>{message.text}</StyledSpan>
         )}
       </FlexColumnStartContainer>
     </TopBorderSection>

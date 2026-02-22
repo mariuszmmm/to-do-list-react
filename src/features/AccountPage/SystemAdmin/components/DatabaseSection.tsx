@@ -8,6 +8,8 @@ import {
   StatsGrid,
   DiagnosisKey,
   DiagnosisValue,
+  StatsRow,
+  ProgressWrapper,
 } from "../styled";
 
 interface DatabaseSectionProps {
@@ -23,30 +25,30 @@ export const DatabaseSection = ({ stats }: DatabaseSectionProps) => {
     <TopBorderSection>
       <SectionTitle>{t("database.title")}</SectionTitle>
 
-      <StatsGrid style={{ marginBottom: "20px" }}>
-        <div>
+      <StatsGrid>
+        <StatsRow>
           <DiagnosisKey>{`${t("database.labels.users")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+          <DiagnosisValue $isSuccess={true}>
             {stats?.totalUsers || 0}
           </DiagnosisValue>
-        </div>
-        <div>
+        </StatsRow>
+        <StatsRow>
           <DiagnosisKey>{`${t("database.labels.lists")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+          <DiagnosisValue $isSuccess={true}>
             {stats?.totalLists || 0}
           </DiagnosisValue>
-        </div>
-        <div>
+        </StatsRow>
+        <StatsRow>
           <DiagnosisKey>{`${t("database.labels.tasks")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+          <DiagnosisValue $isSuccess={true}>
             {stats?.totalTasks || 0}
           </DiagnosisValue>
-        </div>
+        </StatsRow>
       </StatsGrid>
 
       {stats?.dbSize && (
         <>
-          <div style={{ marginBottom: "20px" }}>
+          <ProgressWrapper>
             <ProgressBarLabel>
               <span>{t("database.usage", "Limit MongoDB (512 MB)")}</span>
               <span>
@@ -78,39 +80,39 @@ export const DatabaseSection = ({ stats }: DatabaseSectionProps) => {
                 }
               />
             </ProgressBarTrack>
-          </div>
+          </ProgressWrapper>
 
           <StatsGrid>
-            <div>
+            <StatsRow>
               <DiagnosisKey>{`${t("database.labels.dataSize")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${Number(stats.dbSize.dataSize / (1024 * 1024) || 0).toFixed(
                   2,
                 )} MB`}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("database.labels.storageSize")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${Number(
                   stats.dbSize.storageSize / (1024 * 1024) || 0,
                 ).toFixed(2)} MB`}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("database.labels.indexSize")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${Number(stats.dbSize.indexSize / (1024 * 1024) || 0).toFixed(
                   2,
                 )} MB`}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("database.labels.collections")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {stats.dbSize.collections || 0}
               </DiagnosisValue>
-            </div>
+            </StatsRow>
           </StatsGrid>
         </>
       )}

@@ -5,7 +5,7 @@ import { Input } from "../../../common/Input";
 import { useAppDispatch } from "../../../hooks";
 import { openModal } from "../../../Modal/modalSlice";
 import { useTranslation } from "react-i18next";
-import { Form } from "./styled";
+import { Form, FieldWrapper, Label } from "./styled";
 import { TextArea } from "../../../common/TextArea";
 
 const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
@@ -69,8 +69,8 @@ export const ContactForm = () => {
 
   return (
     <Form onSubmit={sendEmail}>
-      <div>
-        <label>{t("sendMessage.labels.email")}</label>
+      <FieldWrapper>
+        <Label>{t("sendMessage.labels.email")}</Label>
         <Input
           type="email"
           name="email"
@@ -79,9 +79,9 @@ export const ContactForm = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-      </div>
-      <div>
-        <label>{t("sendMessage.labels.message")}</label>
+      </FieldWrapper>
+      <FieldWrapper>
+        <Label>{t("sendMessage.labels.message")}</Label>
         <TextArea
           name="message"
           value={message}
@@ -89,7 +89,7 @@ export const ContactForm = () => {
           onChange={(e) => setMessage(e.target.value)}
           required
         />
-      </div>
+      </FieldWrapper>
       <FormButton>{t("sendMessage.button")}</FormButton>
     </Form>
   );

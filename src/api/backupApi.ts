@@ -240,8 +240,13 @@ export const getSystemStatusApi = async (
     }>;
     netlifyStats?: {
       bandwidth: { used: number; included: number; used_percent: number };
-      build_minutes: { used: number; included: number; used_percent: number };
-      functions: { used: number; included: number; used_percent: number };
+      credits: { used: number; included: number; used_percent: number };
+      concurrent_builds: {
+        used: number;
+        included: number;
+        max: number;
+        used_percent: number;
+      };
       site_name: string;
       last_deploy_at: string | null;
     };

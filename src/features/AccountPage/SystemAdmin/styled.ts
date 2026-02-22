@@ -15,6 +15,7 @@ export const TopBorderSection = styled(SectionContainer)`
 export const SectionTitle = styled.h3`
   font-size: 1.1rem;
   margin-bottom: 10px;
+  line-height: 1.4;
 `;
 
 export const SubSectionContainer = styled.div`
@@ -38,6 +39,7 @@ export const FlexCenteredContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 `;
 
 export const FlexColumnStartContainer = styled.div`
@@ -54,6 +56,12 @@ export const ProgressBarLabel = styled.div`
   font-size: 0.85rem;
   margin-bottom: 6px;
   opacity: 0.8;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 `;
 
 export const ProgressBarTrack = styled.div`
@@ -72,6 +80,18 @@ export const ProgressBarFill = styled.div<{ $width: number; $color: string }>`
   transition: width 0.5s ease-in-out;
 `;
 
+export const StatsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+`;
+
 export const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -81,6 +101,12 @@ export const StatsGrid = styled.div`
   background: rgba(0, 0, 0, 0.1);
   padding: 10px;
   border-radius: 4px;
+  margin-bottom: 15px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 `;
 
 export const StatsGridLarge = styled.div`
@@ -91,6 +117,12 @@ export const StatsGridLarge = styled.div`
   background: rgba(0, 0, 0, 0.1);
   padding: 15px;
   border-radius: 4px;
+  margin-bottom: 20px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 `;
 
 export const StatusDot = styled.div<{ $color: string }>`
@@ -117,6 +149,12 @@ export const DiagnosisItem = styled.div`
 export const DiagnosisHeader = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 `;
 
 export const DiagnosisKey = styled.span`
@@ -126,6 +164,14 @@ export const DiagnosisKey = styled.span`
 
 export const DiagnosisValue = styled.div<{ $isSuccess: boolean }>`
   color: ${({ $isSuccess, theme }) => ($isSuccess ? "#52c41a" : "#ff4d4f")};
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+export const ProgressWrapper = styled.div`
+  margin-bottom: 20px;
+  width: 100%;
 `;
 
 export const DiagnosisDetails = styled.span`
@@ -146,6 +192,12 @@ export const LogHeader = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 4px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 `;
 
 export const LogTitle = styled.strong<{ $isError: boolean }>`

@@ -169,10 +169,10 @@ const langPl = {
           subTitle: "Technologie:",
         },
         links: {
-          subTitle: "Dostępne wersje:",
+          subTitle: "Dostępne wersje aplikacji:",
           description: {
-            newApp: "Nowa wersja:",
-            oldApp: "Starsza wersja:",
+            newApp: "Najnowsza wersja stabilna (Netlify):",
+            oldApp: "Wersja archiwalna (GitHub Pages):",
           },
         },
       },
@@ -182,21 +182,21 @@ const langPl = {
       name: "Mariusz Matusiewicz",
       description: {
         part1:
-          "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. Największą satysfakcję daje mi projektowanie intuicyjnych i estetycznych interfejsów, które ułatwiają życie użytkownikom.",
+          "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. W mojej głowie ciągle pojawiają się pomysły na kolejne funkcjonalności do aplikacji, nad którymi pracuję, co świetnie napędza mnie do dalszego działania.",
         part2:
-          "Poza programowaniem kocham góry. Wędrówki to dla mnie sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łączę zamiłowanie do technologii z ciekawością świata. Dzięki temu z entuzjazmem podejmuję nowe wyzwania, które pozwalają mi rozwijać się i tworzyć projekty, z których mogę być dumny. 😊🚀",
+          "Poza programowaniem kocham góry. Wędrówki to dla mnie najlepszy sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łącząc zamiłowanie do technologii z ciekawością świata, z entuzjazmem podejmuję nowe wyzwania i tworzę projekty, z których mogę być dumny. 😊🚀",
       },
       links: {
-        subTitle: "Linki",
+        subTitle: "Linki zewnętrzne",
         description: {
-          personalHomepage: "Strona osobista:",
-          github: "GitHub:",
+          personalHomepage: "Oficjalne portfolio:",
+          github: "Profil GitHub:",
         },
       },
     },
     contactForm: {
       title: "Kontakt",
-      subTitle: "Masz pytanie lub sugestię? ✉️ Napisz do mnie!",
+      subTitle: "Zapraszam do kontaktu. ✉️",
     },
   },
   accountPage: {
@@ -318,8 +318,8 @@ const langPl = {
         noData:
           "Monitoring Netlify nie jest skonfigurowany lub dane są niedostępne.",
         bandwidthLabel: "Transfer (Miesięczny)",
-        buildMinutesLabel: "Minuty budowania",
-        functionsLabel: "Wywołania funkcji",
+        creditsLabel: "Kredyty",
+        concurrentBuildsLabel: "Jednoczesne budowania",
         labels: {
           siteName: "Nazwa strony",
           lastDeploy: "Ostatnie wdrożenie",
@@ -395,7 +395,7 @@ const langPl = {
         error: "Błąd podczas pobierania Twoich list",
       },
       downloadAllUsers: {
-        button: "Pobierz wszystkich użytkowników",
+        button: "Pobierz wszystkich",
         tooltip: "Pobierz listy wszystkich użytkowników na komputer",
         downloading: "Pobieranie wszystkich list użytkowników...",
         success: "Listy wszystkich użytkowników zostały pobrane!",
@@ -416,7 +416,7 @@ const langPl = {
         error: "Błąd podczas przywracania Twoich list",
       },
       restoreAllUsers: {
-        button: "Przywróć wszystkich użytkowników",
+        button: "Przywróć wszystkich",
         tooltip: "Przywróć wszystkich użytkowników z kopii zapasowej",
         processing: "Przetwarzanie...",
         success:

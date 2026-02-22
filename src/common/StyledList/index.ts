@@ -149,6 +149,7 @@ export const TaskNumber = styled.span<{
 export const StyledSpan = styled.span<StyledTaskProps>`
   padding-left: 2px;
   white-space: pre-line;
+  margin-top: 8px;
 
   ${({ $done }) =>
     $done &&

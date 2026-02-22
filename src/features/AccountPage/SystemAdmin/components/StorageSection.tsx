@@ -12,6 +12,7 @@ import {
   StatsGrid,
   DiagnosisKey,
   DiagnosisValue,
+  StatsRow,
 } from "../styled";
 
 interface StorageSectionProps {
@@ -86,29 +87,29 @@ export const StorageSection = ({
           </ProgressBarTrack>
 
           <StatsGrid style={{ marginBottom: "20px" }}>
-            <div>
+            <StatsRow>
               <DiagnosisKey>{`${t("storage.labels.resources")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${storageStats?.resources?.used || 0} ${
                   storageStats?.resources?.limit > 0
                     ? `/ ${storageStats.resources.limit}`
                     : ""
                 }`}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("storage.labels.transformations")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${storageStats?.transformations?.used || 0} ${
                   storageStats?.transformations?.limit > 0
                     ? `/ ${storageStats.transformations.limit}`
                     : ""
                 }`}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("storage.labels.bandwidth")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {`${Number(storageStats?.bandwidth?.usage_gb || 0).toFixed(
                   2,
                 )}GB ${
@@ -117,7 +118,7 @@ export const StorageSection = ({
                     : ""
                 }`}
               </DiagnosisValue>
-            </div>
+            </StatsRow>
           </StatsGrid>
         </SpacerContainer>
       )}
@@ -132,12 +133,12 @@ export const StorageSection = ({
           }}
         >
           {Object.entries(results).map(([key, value]) => (
-            <div key={key}>
+            <StatsRow key={key}>
               <DiagnosisKey>{`${t(`storage.results.${key}`, key)}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {value as string | number}
               </DiagnosisValue>
-            </div>
+            </StatsRow>
           ))}
         </StatsGrid>
       )}

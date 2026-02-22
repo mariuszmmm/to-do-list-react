@@ -172,10 +172,10 @@ const langEn: typeof langPl = {
           subTitle: "Technologies:",
         },
         links: {
-          subTitle: "Available versions:",
+          subTitle: "Application Versions:",
           description: {
-            newApp: "New version:",
-            oldApp: "Older version:",
+            newApp: "Current Production Build (Netlify):",
+            oldApp: "Archived Version (GitHub Pages):",
           },
         },
       },
@@ -185,21 +185,21 @@ const langEn: typeof langPl = {
       name: "Mariusz Matusiewicz",
       description: {
         part1:
-          "Creating front-end applications is my passion, especially with <strong>React</strong>. I love exploring new technologies and continuously improving my skills. My greatest satisfaction comes from designing intuitive and aesthetically pleasing interfaces that make users' lives easier.",
+          "Frontend development is my passion, especially using <strong>React</strong>. I love exploring new technologies and constantly improving my skills. My head is always full of ideas for new features for the apps I'm working on, which really drives me forward.",
         part2:
-          "Beyond programming, I love the mountains. Hiking is my way to relax and recharge. The <strong>Bieszczady</strong> Mountains are especially close to my heart—their tranquility and natural beauty inspire me every time I return. I combine my passion for technology with my curiosity about the world. Thanks to this, I eagerly take on new challenges that help me grow and create projects I can be proud of. 😊🚀",
+          "Outside of programming, I love the mountains. Hiking is the best way for me to rest and recharge my batteries. The <strong>Bieszczady</strong> Mountains are particularly close to my heart – their peace and natural beauty inspire me every time I return there. Combining my love for technology with curiosity about the world, I enthusiastically take on new challenges and create projects I can be proud of. 😊🚀",
       },
       links: {
-        subTitle: "Links",
+        subTitle: "External Links",
         description: {
-          personalHomepage: "Personal website:",
-          github: "GitHub:",
+          personalHomepage: "Official Portfolio:",
+          github: "GitHub Profile:",
         },
       },
     },
     contactForm: {
       title: "Contact",
-      subTitle: "Got a question or suggestion? ✉️ Drop me a message!",
+      subTitle: "Feel free to contact me. ✉️",
     },
   },
   accountPage: {
@@ -320,8 +320,8 @@ const langEn: typeof langPl = {
         siteName: "Site Name: {{name}}",
         noData: "Netlify monitoring is not configured or data unavailable.",
         bandwidthLabel: "Bandwidth (Monthly)",
-        buildMinutesLabel: "Build Minutes",
-        functionsLabel: "Function Invocations",
+        creditsLabel: "Credits",
+        concurrentBuildsLabel: "Concurrent Builds",
         labels: {
           siteName: "Site Name",
           lastDeploy: "Last Deploy",
@@ -397,7 +397,7 @@ const langEn: typeof langPl = {
         error: "Error downloading your lists",
       },
       downloadAllUsers: {
-        button: "Download all users",
+        button: "Download all",
         tooltip: "Download all users' lists to your computer",
         downloading: "Downloading all users' lists...",
         success: "All users' lists have been downloaded!",
@@ -414,7 +414,7 @@ const langEn: typeof langPl = {
         error: "Error while restoring your lists",
       },
       restoreAllUsers: {
-        button: "Restore all users",
+        button: "Restore all",
         tooltip: "Restore all users from backup",
         processing: "Processing...",
         success:

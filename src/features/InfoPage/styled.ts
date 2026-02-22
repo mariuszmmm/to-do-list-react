@@ -7,4 +7,5 @@ export const List = styled.ul`
 
 export const ListItem = styled.li`
   margin-bottom: 1rem;
+  line-height: 1.5;
 `;

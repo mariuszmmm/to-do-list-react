@@ -172,10 +172,10 @@ const langDe: typeof langPl = {
           subTitle: "Technologien:",
         },
         links: {
-          subTitle: " Verfügbare Versionen:",
+          subTitle: "Anwendungsversionen:",
           description: {
-            newApp: "Neue Version:",
-            oldApp: "Alte Version:",
+            newApp: "Aktuelle Produktionsversion (Netlify):",
+            oldApp: "Archivierte Version (GitHub Pages):",
           },
         },
       },
@@ -185,21 +185,21 @@ const langDe: typeof langPl = {
       name: "Mariusz Matusiewicz",
       description: {
         part1:
-          "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>. Ich liebe es, neue Technologien zu erforschen und meine Fähigkeiten ständig weiterzuentwickeln. Die größte Zufriedenheit bereitet mir das Entwerfen intuitiver und ästhetischer Benutzeroberflächen, die das Leben der Nutzer erleichtern.",
+          "Frontend-Entwicklung ist meine Leidenschaft, insbesondere mit <strong>React</strong>. Ich liebe es, neue Technologien zu erkunden und meine Fähigkeiten ständig zu verbessern. Mein Kopf ist immer voller Ideen für neue Funktionen für die Apps, an denen ich arbeite, was mich wirklich antreibt.",
         part2:
-          "Abseits des Programmierens liebe ich die Berge. Wanderungen sind für mich eine Möglichkeit, mich zu entspannen und neue Energie zu tanken. Besonders am Herzen liegen mir die <strong>Bieszczady</strong> – ihre Ruhe und natürliche Schönheit inspirieren mich jedes Mal, wenn ich dorthin zurückkehre. Ich verbinde meine Leidenschaft für Technologie mit meiner Neugier auf die Welt. Dadurch nehme ich mit Begeisterung neue Herausforderungen an, die es mir ermöglichen, mich weiterzuentwickeln und Projekte zu schaffen, auf die ich stolz sein kann. 😊🚀",
+          "Abseits der Programmierung liebe ich die Berge. Wandern ist für mich der beste Weg, um mich auszuruhen und neue Energie zu tanken. Besonders am Herzen liegen mir die <strong>Bieszczady</strong> – ihre Ruhe und natürliche Schönheit inspirieren mich jedes Mal, wenn ich dorthin zurückkehre. Indem ich meine Liebe zur Technologie mit meiner Neugier auf die Welt verbinde, nehme ich enthusiastisch neue Herausforderungen an und erschaffe Projekte, auf die ich stolz sein kann. 😊🚀",
       },
       links: {
-        subTitle: "Links",
+        subTitle: "Externe Links",
         description: {
-          personalHomepage: "Persönliche Homepage:",
-          github: "GitHub:",
+          personalHomepage: "Offizielles Portfolio:",
+          github: "GitHub-Profil:",
         },
       },
     },
     contactForm: {
       title: "Kontakt",
-      subTitle: "Frage oder Vorschlag? ✉️ Schreib mir einfach!",
+      subTitle: "Kontaktieren Sie mich gerne. ✉️",
     },
   },
   accountPage: {
@@ -321,8 +321,8 @@ const langDe: typeof langPl = {
         noData:
           "Netlify-Monitoring ist nicht konfiguriert oder Daten sind nie verfügbar.",
         bandwidthLabel: "Bandbreite (Monatlich)",
-        buildMinutesLabel: "Build-Minuten",
-        functionsLabel: "Funktionsaufrufe",
+        creditsLabel: "Credits",
+        concurrentBuildsLabel: "Gleichzeitige Builds",
         labels: {
           siteName: "Seitenname",
           lastDeploy: "Letzter Deploy",
@@ -398,7 +398,7 @@ const langDe: typeof langPl = {
         error: "Fehler beim Herunterladen Ihrer Listen",
       },
       downloadAllUsers: {
-        button: "Alle Benutzer herunterladen",
+        button: "Alle herunterladen",
         tooltip: "Listen aller Benutzer auf den Computer herunterladen",
         downloading: "Alle Benutzerlisten werden heruntergeladen...",
         success: "Alle Benutzerlisten wurden heruntergeladen!",
@@ -420,7 +420,7 @@ const langDe: typeof langPl = {
         error: "Fehler beim Wiederherstellen deiner Listen",
       },
       restoreAllUsers: {
-        button: "Alle Benutzer wiederherstellen",
+        button: "Alle wiederherstellen",
         tooltip: "Alle Benutzer aus dem Backup wiederherstellen",
         processing: "Wird verarbeitet...",
         success:

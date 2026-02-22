@@ -6,14 +6,15 @@ export interface NetlifyUsage {
     included: number;
     used_percent: number;
   };
-  build_minutes: {
+  credits: {
     used: number;
     included: number;
     used_percent: number;
   };
-  functions: {
+  concurrent_builds: {
     used: number;
     included: number;
+    max: number;
     used_percent: number;
   };
   site_name: string;
@@ -41,14 +42,55 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
     );
 
     const siteData: any = siteResponse.data;
+    const accountSlug = siteData.account_slug;
 
     // 2. Get bandwidth usage
-    const bandwidthUsed = siteData.bandwidth_used || 0;
+    let bandwidthUsed = 0;
+    try {
+      const bandwidthResponse = await axios.get(
+        `https://api.netlify.com/api/v1/accounts/${accountSlug}/bandwidth`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      bandwidthUsed = bandwidthResponse.data.used || 0;
+    } catch (err) {
+      console.warn("[getNetlifyUsage] Error fetching bandwidth", err);
+    }
     const bandwidthLimit = 100 * 1024 * 1024 * 1024; // 100GB default free
 
-    // Build minutes
-    const buildMinutesUsed = siteData.build_time?.used || 0;
-    const buildMinutesLimit = 300; // 300 min default free
+    // 3. Get Account details for credits and concurrent builds
+    let accountData: any = null;
+    try {
+      const accountResponse = await axios.get(
+        `https://api.netlify.com/api/v1/accounts/${accountSlug}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      // The API returns an array, we need the first matching account
+      accountData = Array.isArray(accountResponse.data)
+        ? accountResponse.data[0]
+        : accountResponse.data;
+    } catch (err) {
+      console.warn("[getNetlifyUsage] Error fetching account details", err);
+    }
+
+    const capabilities = accountData?.capabilities || {};
+
+    // Credits logic
+    const creditsUsed = accountData?.credits?.used || 0;
+    const creditsLimit =
+      accountData?.plan_credits || accountData?.credits?.included || 300;
+    const creditsPercent =
+      creditsLimit > 0
+        ? parseFloat(((creditsUsed / creditsLimit) * 100).toFixed(1))
+        : 0;
+
+    // Concurrent builds logic
+    const concurrentUsed = capabilities.concurrent_builds?.used || 0;
+    const concurrentLimit = capabilities.concurrent_builds?.included || 1;
+    const concurrentMax = capabilities.concurrent_builds?.max || 1;
+    const concurrentPercent =
+      concurrentMax > 0
+        ? parseFloat(((concurrentUsed / concurrentMax) * 100).toFixed(1))
+        : 0;
 
     return {
       bandwidth: {
@@ -58,19 +100,16 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
           ((bandwidthUsed / bandwidthLimit) * 100).toFixed(1),
         ),
       },
-      build_minutes: {
-        used: buildMinutesUsed,
-        included: buildMinutesLimit,
-        used_percent: parseFloat(
-          ((buildMinutesUsed / buildMinutesLimit) * 100).toFixed(1),
-        ),
+      credits: {
+        used: creditsUsed,
+        included: creditsLimit,
+        used_percent: creditsPercent,
       },
-      functions: {
-        used: siteData.functions_usage?.used || 0,
-        included: 125000, // 125k default free
-        used_percent: parseFloat(
-          (((siteData.functions_usage?.used || 0) / 125000) * 100).toFixed(1),
-        ),
+      concurrent_builds: {
+        used: concurrentUsed,
+        included: concurrentLimit,
+        max: concurrentMax,
+        used_percent: concurrentPercent,
       },
       site_name: siteData.name,
       last_deploy_at:

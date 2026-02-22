@@ -6,6 +6,7 @@ import {
   StatsGrid,
   DiagnosisKey,
   DiagnosisValue,
+  StatsRow,
 } from "../styled";
 
 interface AblySectionProps {
@@ -25,17 +26,9 @@ export const AblySection = ({ ablyStatus, ablyInfo }: AblySectionProps) => {
     <TopBorderSection>
       <SectionTitle>{t("ably.title")}</SectionTitle>
       <StatsGrid>
-        <div>
+        <StatsRow>
           <DiagnosisKey>{`${t("ably.labels.status")}:`}</DiagnosisKey>
-          <DiagnosisValue
-            $isSuccess={ablyStatus === "connected"}
-            style={{
-              marginLeft: "8px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
+          <DiagnosisValue $isSuccess={ablyStatus === "connected"}>
             <>
               <StatusDot
                 $color={ablyStatus === "connected" ? "#52c41a" : "#faad14"}
@@ -43,25 +36,23 @@ export const AblySection = ({ ablyStatus, ablyInfo }: AblySectionProps) => {
               {t(`ablyStatus.${ablyStatus}`, ablyStatus)}
             </>
           </DiagnosisValue>
-        </div>
-        <div>
+        </StatsRow>
+        <StatsRow>
           <DiagnosisKey>{`${t("ably.labels.channel")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
-            system:logs
-          </DiagnosisValue>
-        </div>
-        <div>
+          <DiagnosisValue $isSuccess={true}>system:logs</DiagnosisValue>
+        </StatsRow>
+        <StatsRow>
           <DiagnosisKey>{`${t("ably.labels.deviceId")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+          <DiagnosisValue $isSuccess={true}>
             {ablyInfo.deviceId || "---"}
           </DiagnosisValue>
-        </div>
-        <div>
+        </StatsRow>
+        <StatsRow>
           <DiagnosisKey>{`${t("ably.labels.connectionId")}:`}</DiagnosisKey>
-          <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+          <DiagnosisValue $isSuccess={true}>
             {ablyInfo.connectionId || "---"}
           </DiagnosisValue>
-        </div>
+        </StatsRow>
       </StatsGrid>
     </TopBorderSection>
   );

@@ -10,11 +10,13 @@ export const StyledLink = styled(Link)<StyledLinkProps>`
   color: ${({ theme }) => theme.colors.button.secendaryText};
   text-decoration: none;
   white-space: pre-wrap;
+  line-height: 2;
 
   ${({ disabled, $edit }) =>
     disabled &&
     css`
-      color: ${({ theme }) => ($edit ? theme.colors.button.edit : theme.colors.button.disabled)};
+      color: ${({ theme }) =>
+        $edit ? theme.colors.button.edit : theme.colors.button.disabled};
       pointer-events: none;
     `}
 

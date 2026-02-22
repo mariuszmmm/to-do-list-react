@@ -10,6 +10,7 @@ import {
   DiagnosisKey,
   DiagnosisValue,
   StatsGridLarge,
+  StatsRow,
 } from "../styled";
 
 interface NetlifySectionProps {
@@ -27,21 +28,21 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
       {netlifyStats ? (
         <SubSectionContainer>
           {/* Netlify Site Info */}
-          <StatsGridLarge style={{ marginBottom: "20px" }}>
-            <div>
+          <StatsGridLarge>
+            <StatsRow>
               <DiagnosisKey>{`${t("netlify.labels.siteName")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {netlifyStats.site_name}
               </DiagnosisValue>
-            </div>
-            <div>
+            </StatsRow>
+            <StatsRow>
               <DiagnosisKey>{`${t("netlify.labels.lastDeploy")}:`}</DiagnosisKey>
-              <DiagnosisValue $isSuccess={true} style={{ marginLeft: "8px" }}>
+              <DiagnosisValue $isSuccess={true}>
                 {netlifyStats.last_deploy_at
                   ? new Date(netlifyStats.last_deploy_at).toLocaleString()
                   : "---"}
               </DiagnosisValue>
-            </div>
+            </StatsRow>
           </StatsGridLarge>
 
           {/* Bandwidth Progress Bar */}
@@ -65,39 +66,44 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
             />
           </ProgressBarTrack>
 
-          {/* Build Minutes Progress Bar */}
+          {/* Credits Progress Bar */}
           <ProgressBarLabel>
-            <span>{t("netlify.buildMinutesLabel", "Build Minutes")}</span>
+            <span>{t("netlify.creditsLabel", "Credits")}</span>
             <span>
-              {netlifyStats?.build_minutes?.used || 0} /{" "}
-              {netlifyStats?.build_minutes?.included || 300} (
-              {netlifyStats?.build_minutes?.used_percent || 0}%)
+              {netlifyStats?.credits?.used || 0} /{" "}
+              {netlifyStats?.credits?.included || 300} (
+              {netlifyStats?.credits?.used_percent || 0}%)
             </span>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
-              $width={Number(netlifyStats?.build_minutes?.used_percent || 0)}
+              $width={Number(netlifyStats?.credits?.used_percent || 0)}
               $color={
-                Number(netlifyStats?.build_minutes?.used_percent || 0) > 80
+                Number(netlifyStats?.credits?.used_percent || 0) > 80
                   ? "#ff4d4f"
                   : "#faad14"
               }
             />
           </ProgressBarTrack>
 
-          {/* Functions Progress Bar */}
+          {/* Concurrent Builds Progress Bar */}
           <ProgressBarLabel>
-            <span>{t("netlify.functionsLabel", "Function Invocations")}</span>
             <span>
-              {Number(netlifyStats?.functions?.used || 0).toLocaleString()} /
-              125,000 ({netlifyStats?.functions?.used_percent || 0}%)
+              {t("netlify.concurrentBuildsLabel", "Concurrent Builds")}
+            </span>
+            <span>
+              {netlifyStats?.concurrent_builds?.used || 0} /{" "}
+              {netlifyStats?.concurrent_builds?.max || 1} (
+              {netlifyStats?.concurrent_builds?.used_percent || 0}%)
             </span>
           </ProgressBarLabel>
           <ProgressBarTrack>
             <ProgressBarFill
-              $width={Number(netlifyStats?.functions?.used_percent || 0)}
+              $width={Number(
+                netlifyStats?.concurrent_builds?.used_percent || 0,
+              )}
               $color={
-                Number(netlifyStats?.functions?.used_percent || 0) > 80
+                Number(netlifyStats?.concurrent_builds?.used_percent || 0) > 80
                   ? "#ff4d4f"
                   : "#13c2c2"
               }

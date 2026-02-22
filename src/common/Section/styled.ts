@@ -26,7 +26,7 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
   margin: 0;
   word-break: break-word;
   white-space: pre-wrap;
-  line-height: ${({ $taskDetails }) => ($taskDetails ? "1.6" : "1")};
+  line-height: ${({ $taskDetails }) => ($taskDetails ? "1.6" : "1.2")};
   transition:
     color 0.5s ease-in-out,
     border-color 0.5s ease-in-out;
