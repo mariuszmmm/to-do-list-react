@@ -94,6 +94,20 @@ export const getCloudinaryUsage = async () => {
         limit: usage.credits?.limit || 0,
         used_percent: usage.credits?.used_percent || 0,
       },
+      requests: {
+        used: usage.requests?.usage || 0,
+        limit: usage.requests?.limit || 0,
+      },
+      impressions: {
+        used: usage.requests?.usage || usage.impressions?.usage || 0,
+        limit: usage.requests?.limit || usage.impressions?.limit || 0,
+      },
+      credit_breakdown: {
+        transformations: usage.transformations?.credits_usage || 0,
+        bandwidth: usage.bandwidth?.credits_usage || 0,
+        storage: usage.storage?.credits_usage || 0,
+        impressions: usage.impressions?.credits_usage || 0,
+      },
     };
   } catch (error) {
     console.error("[getCloudinaryUsage] Error:", error);

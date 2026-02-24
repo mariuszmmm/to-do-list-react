@@ -3,11 +3,12 @@ import {
   getSystemStatusApi,
   runCleanupApi,
   diagnoseSystemApi,
+  runDeletedTasksCleanupApi,
+  runLogsCleanupApi,
 } from "../../../api/backupApi";
 import { NameContainer } from "../../tasks/TasksPage/EditableListName/styled";
 import { getUserToken } from "../../../utils/auth/getUserToken";
 import { getAblyInstance, safeDetachChannel } from "../../../utils/sync/ably";
-import { getOrCreateDeviceId } from "../../../utils/storage/deviceId";
 
 import { NetlifySection } from "./components/NetlifySection";
 import { AblySection } from "./components/AblySection";
@@ -18,9 +19,21 @@ import { LogsSection } from "./components/LogsSection";
 
 export const SystemAdmin = () => {
   const [isCleaning, setIsCleaning] = useState(false);
+  const [isCleaningTasks, setIsCleaningTasks] = useState(false);
+  const [isCleaningLogs, setIsCleaningLogs] = useState(false);
   const [isDiagnosing, setIsDiagnosing] = useState(false);
   const [cleanupResults, setCleanupResults] = useState<any>(null);
+  const [tasksCleanupResults, setTasksCleanupResults] = useState<any>(null);
+  const [logsCleanupResults, setLogsCleanupResults] = useState<any>(null);
   const [cleanupMessage, setCleanupMessage] = useState<{
+    text: string;
+    isError: boolean;
+  } | null>(null);
+  const [tasksCleanupMessage, setTasksCleanupMessage] = useState<{
+    text: string;
+    isError: boolean;
+  } | null>(null);
+  const [logsCleanupMessage, setLogsCleanupMessage] = useState<{
     text: string;
     isError: boolean;
   } | null>(null);
@@ -33,12 +46,9 @@ export const SystemAdmin = () => {
   const [logs, setLogs] = useState<any[]>([]);
   const [storageStats, setStorageStats] = useState<any>(null);
   const [netlifyStats, setNetlifyStats] = useState<any>(null);
+  const [ablyStats, setAblyStats] = useState<any>(null);
   const [diagnosis, setDiagnosis] = useState<any>(null);
   const [ablyStatus, setAblyStatus] = useState<string>("connecting");
-  const [ablyInfo, setAblyInfo] = useState<{
-    connectionId?: string;
-    deviceId?: string;
-  }>({});
 
   const fetchData = async () => {
     const token = await getUserToken();
@@ -50,6 +60,7 @@ export const SystemAdmin = () => {
         setLogs(response.data.logs || []);
         setStorageStats(response.data.storageStats);
         setNetlifyStats(response.data.netlifyStats);
+        setAblyStats(response.data.ablyStats);
       }
     }
   };
@@ -62,14 +73,9 @@ export const SystemAdmin = () => {
 
     // Track connection status
     setAblyStatus(ably.connection.state);
-    setAblyInfo({
-      connectionId: ably.connection.id,
-      deviceId: getOrCreateDeviceId(),
-    });
 
     const onStateChange = (stateChange: any) => {
       setAblyStatus(stateChange.current);
-      setAblyInfo((prev) => ({ ...prev, connectionId: ably.connection.id }));
     };
     ably.connection.on(onStateChange);
 
@@ -139,18 +145,61 @@ export const SystemAdmin = () => {
     setIsDiagnosing(false);
   };
 
+  const handleRunTasksCleanup = async () => {
+    setIsCleaningTasks(true);
+    setTasksCleanupMessage(null);
+    setTasksCleanupResults(null);
+    setLogsCleanupResults(null);
+    const token = await getUserToken();
+    if (token) {
+      const response = await runDeletedTasksCleanupApi(token);
+      if (response.success) {
+        setTasksCleanupResults(response.data);
+        await fetchData();
+      } else {
+        setTasksCleanupMessage({ text: response.message, isError: true });
+      }
+    }
+    setIsCleaningTasks(false);
+  };
+
+  const handleRunLogsCleanup = async () => {
+    setIsCleaningLogs(true);
+    setLogsCleanupMessage(null);
+    setLogsCleanupResults(null);
+    setTasksCleanupResults(null);
+    const token = await getUserToken();
+    if (token) {
+      const response = await runLogsCleanupApi(token);
+      if (response.success) {
+        setLogsCleanupResults(response.data);
+        await fetchData();
+      } else {
+        setLogsCleanupMessage({ text: response.message, isError: true });
+      }
+    }
+    setIsCleaningLogs(false);
+  };
+
   return (
     <NameContainer $account>
       {/* 1. Hosting i Platforma (Netlify) */}
       <NetlifySection netlifyStats={netlifyStats} />
 
-      {/* 2. Komunikacja i Synchronizacja (Ably) */}
-      <AblySection ablyStatus={ablyStatus} ablyInfo={ablyInfo} />
+      {/* 2. Infrastruktura Danych i Użytkownicy (Database) */}
+      <DatabaseSection
+        stats={stats}
+        loading={isCleaningTasks}
+        loadingLogs={isCleaningLogs}
+        message={tasksCleanupMessage}
+        logsMessage={logsCleanupMessage}
+        results={tasksCleanupResults}
+        logsResults={logsCleanupResults}
+        onRunCleanup={handleRunTasksCleanup}
+        onRunLogsCleanup={handleRunLogsCleanup}
+      />
 
-      {/* 3. Infrastruktura Danych i Użytkownicy (Database) */}
-      <DatabaseSection stats={stats} />
-
-      {/* 4. Storage */}
+      {/* 3. Storage */}
       <StorageSection
         storageStats={storageStats}
         cleanupStatus={cleanupStatus}
@@ -159,6 +208,9 @@ export const SystemAdmin = () => {
         results={cleanupResults}
         onRunCleanup={handleRunCleanup}
       />
+
+      {/* 4. Komunikacja i Synchronizacja (Ably) */}
+      <AblySection ablyStatus={ablyStatus} ablyStats={ablyStats} />
 
       {/* 5. Diagnosis */}
       <DiagnosisSection

@@ -25,7 +25,11 @@ const logDevBlock = (isOpen: boolean, ...args: unknown[]) => {
   }
 };
 
-export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean }) => {
+export const SessionInfo = ({
+  isSessionInfoOpen,
+}: {
+  isSessionInfoOpen: boolean;
+}) => {
   const { t } = useTranslation("translation", { keyPrefix: "accountPage" });
   const [sessionData, setSessionData] = useState<SessionData>({});
   const [remainingMs, setRemainingMs] = useState<number>(0);
@@ -52,7 +56,9 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
     if (user.token) {
       logBlock.push({
         Token: {
-          expiresAt: user.token.expires_at ? new Date(user.token.expires_at).toLocaleString() : undefined,
+          expiresAt: user.token.expires_at
+            ? new Date(user.token.expires_at).toLocaleString()
+            : undefined,
           refreshToken: !!user.token.refresh_token,
         },
       });
@@ -61,15 +67,23 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
     }
 
     const remaining = getTokenExpiresIn(user, now);
-    logBlock.push(`Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`);
+    logBlock.push(
+      `Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`,
+    );
 
     logDevBlock(isSessionInfoOpen, ...logBlock);
 
     setSessionData({
       email: user.email,
-      createdAt: user.created_at ? new Date(user.created_at).toLocaleString() : undefined,
-      confirmedAt: user.confirmed_at ? new Date(user.confirmed_at).toLocaleString() : undefined,
-      tokenExpiresAt: user.token?.expires_at ? new Date(user.token.expires_at).toLocaleString() : undefined,
+      createdAt: user.created_at
+        ? new Date(user.created_at).toLocaleString()
+        : undefined,
+      confirmedAt: user.confirmed_at
+        ? new Date(user.confirmed_at).toLocaleString()
+        : undefined,
+      tokenExpiresAt: user.token?.expires_at
+        ? new Date(user.token.expires_at).toLocaleString()
+        : undefined,
     });
 
     setRemainingMs(remaining);
@@ -91,7 +105,8 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
       {sessionData.createdAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.createdAt")}: <strong>{sessionData.createdAt}</strong>
+            {t("sessionInfo.createdAt")}:{" "}
+            <strong>{sessionData.createdAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -100,7 +115,8 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
       {sessionData.confirmedAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.confirmedAt")}: <strong>{sessionData.confirmedAt}</strong>
+            {t("sessionInfo.confirmedAt")}:{" "}
+            <strong>{sessionData.confirmedAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -117,7 +133,8 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
       {sessionData.tokenExpiresAt && (
         <>
           <StyledSpan $comment>
-            {t("sessionInfo.tokenExpiresAt")}: <strong>{sessionData.tokenExpiresAt}</strong>
+            {t("sessionInfo.tokenExpiresAt")}:{" "}
+            <strong>{sessionData.tokenExpiresAt}</strong>
           </StyledSpan>
           <br />
         </>
@@ -130,7 +147,11 @@ export const SessionInfo = ({ isSessionInfoOpen }: { isSessionInfoOpen: boolean 
 
       <StyledSpan $comment $tokenStatus={tokenValid ? "active" : "expired"}>
         {t("sessionInfo.tokenStatus")}:{" "}
-        <strong>{tokenValid ? t("sessionInfo.tokenActive") : t("sessionInfo.tokenExpired")}</strong>
+        <strong>
+          {tokenValid
+            ? t("sessionInfo.tokenActive")
+            : t("sessionInfo.tokenExpired")}
+        </strong>
       </StyledSpan>
     </div>
   );

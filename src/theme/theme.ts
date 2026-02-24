@@ -78,8 +78,14 @@ export const themeLight = {
     shadow: {
       primary: colorNames.alto,
     },
+    info: {
+      value: lighten(0.15, colorNames.forestGreen),
+      value2: colorNames.orange,
+      error: colorNames.red,
+    },
   },
-  boxShadow: "0 0 50px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.05)" as string,
+  boxShadow:
+    "0 0 50px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.05)" as string,
 } as const;
 
 export const themeDark: typeof themeLight = {
@@ -127,6 +133,11 @@ export const themeDark: typeof themeLight = {
     },
     shadow: {
       primary: darken(0.8, colorNames.alto),
+    },
+    info: {
+      value: lighten(0.15, colorNames.forestGreen),
+      value2: colorNames.orange,
+      error: colorNames.red,
     },
   },
   boxShadow: "0 2px 8px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3)",

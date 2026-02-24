@@ -68,20 +68,23 @@ export const EditableListName = () => {
     <NameContainer onSubmit={onNameSubmit}>
       {!listNameToEdit ? (
         <>
-          <StyledSpan $comment>
+          <StyledSpan $commentListName>
             {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)} `}
             {tasks.length > 0 && (
               <>
-                <strong>•</strong>&nbsp;(&nbsp;{i18n.t("currentTaskCount.tasks", { count: tasks.length })}&nbsp;){" "}
+                <strong>•</strong>&nbsp;(&nbsp;
+                {i18n.t("currentTaskCount.tasks", { count: tasks.length })}
+                &nbsp;){" "}
               </>
             )}
-            <strong>•</strong>&nbsp;{`${isRemoteSaveable ? "online" : "offline"}`}
+            <strong>•</strong>&nbsp;
+            {`${isRemoteSaveable ? "online" : "offline"}`}
           </StyledSpan>
           <ListName>{name}</ListName>
         </>
       ) : (
         <Input
-          type='text'
+          type="text"
           value={newName}
           placeholder={t("tasks.inputPlaceholder")}
           onChange={({ target }) => {
@@ -96,8 +99,10 @@ export const EditableListName = () => {
           ref={inpurRef}
         />
       )}
-      <Button $special disabled={isTasksSorting || !!editedTask} type='submit'>
-        {!listNameToEdit ? t("tasks.buttons.titleButtons.change") : t("tasks.buttons.titleButtons.save")}
+      <Button $special disabled={isTasksSorting || !!editedTask} type="submit">
+        {!listNameToEdit
+          ? t("tasks.buttons.titleButtons.change")
+          : t("tasks.buttons.titleButtons.save")}
       </Button>
     </NameContainer>
   );

@@ -10,8 +10,16 @@ import {
   StyledListItem,
   StyledSpan,
 } from "../../../common/StyledList";
-import { EditButton, RemoveButton, ToggleButton } from "../../../common/taskButtons";
-import { selectArchivedList, setArchivedListToLoad, setArchivedListToRemove } from "../archivedListsSlice";
+import {
+  EditButton,
+  RemoveButton,
+  ToggleButton,
+} from "../../../common/taskButtons";
+import {
+  selectArchivedList,
+  setArchivedListToLoad,
+  setArchivedListToRemove,
+} from "../archivedListsSlice";
 import { setArchivedListsOrder } from "../archivedListsSlice";
 import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
@@ -26,7 +34,12 @@ type Props = {
   modalIsOpen: any;
 };
 
-export const TaskLists = ({ lists, selectedListId, selectedListById, modalIsOpen }: Props) => {
+export const TaskLists = ({
+  lists,
+  selectedListId,
+  selectedListById,
+  modalIsOpen,
+}: Props) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation");
 
@@ -63,7 +76,11 @@ export const TaskLists = ({ lists, selectedListId, selectedListById, modalIsOpen
                 {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
                 {list.taskList.length > 0 && (
                   <>
-                    <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length })}&nbsp;)
+                    <strong>•</strong>&nbsp;(&nbsp;
+                    {t("currentTaskCount.tasks", {
+                      count: list.taskList.length,
+                    })}
+                    &nbsp;)
                   </>
                 )}
               </StyledSpan>
@@ -75,13 +92,16 @@ export const TaskLists = ({ lists, selectedListId, selectedListById, modalIsOpen
             <EditButton
               onClick={() => dispatch(setArchivedListToLoad(selectedListById))}
               disabled={selectedListId !== list.id}
-              aria-label='Load archived list'
+              aria-label="Load archived list"
               title={t("archivedListsPage.buttons.load")}
             >
               ✏️
             </EditButton>
           </StyledLink>
-          <RemoveButton onClick={() => dispatch(setArchivedListToRemove(list))} disabled={modalIsOpen}>
+          <RemoveButton
+            onClick={() => dispatch(setArchivedListToRemove(list))}
+            disabled={modalIsOpen}
+          >
             🗑️
           </RemoveButton>
         </TaskActions>

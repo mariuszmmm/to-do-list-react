@@ -2,7 +2,13 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { useQueryParameter } from "../../../../hooks/navigation/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import searchQueryParamName from "../../../../utils/navigation/searchQueryParamName";
-import { EditButton, ImageButton, RemoveButton, SortButton, ToggleButton } from "../../../../common/taskButtons";
+import {
+  EditButton,
+  ImageButton,
+  RemoveButton,
+  SortButton,
+  ToggleButton,
+} from "../../../../common/taskButtons";
 import {
   selectHideDone,
   toggleTaskDone,
@@ -18,20 +24,35 @@ import {
   setTasksToSort,
   setTasks,
 } from "../../tasksSlice";
-import { ArrowDownIcon, ArrowUpIcon, DragHandleIcon } from "../../../../common/icons";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  DragHandleIcon,
+} from "../../../../common/icons";
 import { useDndList } from "../../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../../hooks/ui/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import { useEffect } from "react";
-import { StyledList, StyledListContent, StyledListItem, StyledSpan, TaskNumber } from "../../../../common/StyledList";
+import {
+  StyledList,
+  StyledListContent,
+  StyledListItem,
+  StyledSpan,
+  TaskNumber,
+} from "../../../../common/StyledList";
 import { moveListDown, moveListUp } from "../../../../utils/list/moveList";
 import { useSortableRowAnimation } from "../../../../hooks/ui/useSortableRowAnimation";
-import { Task } from "../../../../types";
+import { ListsData, Task } from "../../../../types";
 import { TaskActions } from "../../../../common/TaskActions";
 import { selectLoggedUserEmail } from "../../../AccountPage/accountSlice";
 import { useTaskForm } from "../hooks/useTaskForm";
 
-export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskForm> }) => {
+type Props = {
+  listsData?: ListsData;
+  taskForm: ReturnType<typeof useTaskForm>;
+};
+
+export const TasksList = ({ taskForm, listsData }: Props) => {
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
@@ -39,19 +60,28 @@ export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskFor
   const editedTaskContent = useAppSelector(selectEditedTask);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
   const tasksToSort = useAppSelector(selectTasksToSort);
-  const filteredTasks = useAppSelector((state) => selectActiveTasksByQuery(state, query));
+  const filteredTasks = useAppSelector((state) =>
+    selectActiveTasksByQuery(state, query),
+  );
   const tasksLst = tasksToSort || filteredTasks || tasks;
   const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
   const { speech } = taskForm;
 
+  const remoteList = listsData?.lists.find(
+    (list) => list.id === taskListMetaData.id,
+  );
+
   useEffect(() => {
     if (!tasks) return;
 
     if (isTasksSorting) {
       const addedTasks = tasks.filter(
-        (task) => !tasksToSort?.some((t) => t.id === task.id || t.content === task.content),
+        (task) =>
+          !tasksToSort?.some(
+            (t) => t.id === task.id || t.content === task.content,
+          ),
       );
       const sortedExistingTasks = tasksToSort?.filter((task) =>
         tasks.some((t) => t.id === task.id && t.content === task.content),
@@ -120,10 +150,16 @@ export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskFor
           </StyledSpan>
         </StyledListContent>
         <div style={{ display: "flex", gap: "10px" }}>
-          <SortButton onClick={() => animateMove("up")} disabled={index === 0 || isAnimating}>
+          <SortButton
+            onClick={() => animateMove("up")}
+            disabled={index === 0 || isAnimating}
+          >
             <ArrowUpIcon />
           </SortButton>
-          <SortButton onClick={() => animateMove("down")} disabled={index === tasksLst.length - 1 || isAnimating}>
+          <SortButton
+            onClick={() => animateMove("down")}
+            disabled={index === tasksLst.length - 1 || isAnimating}
+          >
             <ArrowDownIcon />
           </SortButton>
         </div>
@@ -166,7 +202,13 @@ export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskFor
             </ToggleButton>
           </TaskActions>
           <StyledListContent $type={"tasks"}>
-            {!query ? <TaskNumber $edit={editedTaskContent?.id === task.id}>{`${index + 1}. `}</TaskNumber> : ""}
+            {!query ? (
+              <TaskNumber
+                $edit={editedTaskContent?.id === task.id}
+              >{`${index + 1}. `}</TaskNumber>
+            ) : (
+              ""
+            )}
             <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
               <StyledLink
                 to={`/tasks/${task.id}`}
@@ -200,10 +242,22 @@ export const TasksList = ({ taskForm }: { taskForm: ReturnType<typeof useTaskFor
             </RemoveButton>
 
             {loggedUserEmail && (
-              <ImageButton disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}>
+              <ImageButton
+                disabled={
+                  !!editedTaskContent ||
+                  speech.isActive ||
+                  !isRemoteSaveable ||
+                  !remoteList?.taskList.some((t) => t.id === task.id)
+                }
+              >
                 <StyledLink
                   to={`/tasks/image/${task.id}`}
-                  disabled={!!editedTaskContent || speech.isActive || !isRemoteSaveable}
+                  disabled={
+                    !!editedTaskContent ||
+                    speech.isActive ||
+                    !isRemoteSaveable ||
+                    !remoteList?.taskList.some((t) => t.id === task.id)
+                  }
                 >
                   📷
                 </StyledLink>

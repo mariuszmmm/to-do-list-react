@@ -1,6 +1,11 @@
 import type { DraggableAttributes } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
-import { ArrowDownIcon, ArrowUpIcon, CircleIcon, DragHandleIcon } from "../../../common/icons";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CircleIcon,
+  DragHandleIcon,
+} from "../../../common/icons";
 import {
   StyledList,
   StyledListContent,
@@ -9,7 +14,12 @@ import {
   ListMeta,
   ListMetaText,
 } from "../../../common/StyledList";
-import { EditButton, RemoveButton, SortButton, ToggleButton } from "../../../common/taskButtons";
+import {
+  EditButton,
+  RemoveButton,
+  SortButton,
+  ToggleButton,
+} from "../../../common/taskButtons";
 import { useAppDispatch } from "../../../hooks/redux/redux";
 import { useDndList } from "../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../hooks/ui/useDndItem";
@@ -17,7 +27,12 @@ import { List } from "../../../types";
 import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { moveListDown, moveListUp } from "../../../utils/list/moveList";
 import i18n from "../../../utils/i18n";
-import { selectList, setListToLoad, setListToRemove, setListToSort } from "../remoteListsSlice";
+import {
+  selectList,
+  setListToLoad,
+  setListToRemove,
+  setListToSort,
+} from "../remoteListsSlice";
 import { useSortableRowAnimation } from "../../../hooks/ui/useSortableRowAnimation";
 import { TaskActions } from "../../../common/TaskActions";
 import { StyledLink } from "../../../common/StyledLink";
@@ -91,7 +106,10 @@ export const TaskLists = ({
                 {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
                 {list.taskList.length > 0 && (
                   <>
-                    <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}
+                    <strong>•</strong>&nbsp;(&nbsp;
+                    {t("currentTaskCount.tasks", {
+                      count: list.taskList.length ?? 0,
+                    })}
                     &nbsp;)&nbsp;
                   </>
                 )}
@@ -105,10 +123,16 @@ export const TaskLists = ({
           </ListMeta>
         </StyledListContent>
         <div style={{ display: "flex", gap: "10px" }}>
-          <SortButton onClick={() => animateMove("up")} disabled={index === 0 || isAnimating}>
+          <SortButton
+            onClick={() => animateMove("up")}
+            disabled={index === 0 || isAnimating}
+          >
             <ArrowUpIcon />
           </SortButton>
-          <SortButton onClick={() => animateMove("down")} disabled={index === sortableLists.length - 1 || isAnimating}>
+          <SortButton
+            onClick={() => animateMove("down")}
+            disabled={index === sortableLists.length - 1 || isAnimating}
+          >
             <ArrowDownIcon />
           </SortButton>
         </div>
@@ -146,7 +170,10 @@ export const TaskLists = ({
                   {`${t("listFrom")}:  ${formatCurrentDate(new Date(list.date), i18n.language)} `}
                   {list.taskList.length > 0 && (
                     <>
-                      <strong>•</strong>&nbsp;(&nbsp;{t("currentTaskCount.tasks", { count: list.taskList.length ?? 0 })}
+                      <strong>•</strong>&nbsp;(&nbsp;
+                      {t("currentTaskCount.tasks", {
+                        count: list.taskList.length ?? 0,
+                      })}
                       &nbsp;)&nbsp;
                     </>
                   )}
@@ -160,7 +187,10 @@ export const TaskLists = ({
             </ListMeta>
           </StyledListContent>
           <TaskActions>
-            <StyledLink to={`/tasks`} disabled={selectedListId !== list.id || isListsSorting}>
+            <StyledLink
+              to={`/tasks`}
+              disabled={selectedListId !== list.id || isListsSorting}
+            >
               <EditButton
                 onClick={() => dispatch(setListToLoad(selectedListById))}
                 disabled={selectedListId !== list.id || isListsSorting}
@@ -170,7 +200,10 @@ export const TaskLists = ({
               </EditButton>
             </StyledLink>
 
-            <RemoveButton onClick={() => dispatch(setListToRemove(list))} disabled={modalIsOpen}>
+            <RemoveButton
+              onClick={() => dispatch(setListToRemove(list))}
+              disabled={modalIsOpen}
+            >
               🗑️
             </RemoveButton>
           </TaskActions>

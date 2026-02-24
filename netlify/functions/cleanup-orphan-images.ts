@@ -171,14 +171,6 @@ const handler: Handler = async (event) => {
       });
     }
 
-    if (allCloudinaryImages.length === 0) {
-      console.log(`${logPrefix} No images found in Cloudinary to process.`);
-      return jsonResponse(200, {
-        message: "No images found in Cloudinary",
-        data: { cleaned: 0 },
-      });
-    }
-
     // 2. Fetch all public_ids from MongoDB
     console.log(`${logPrefix} Fetching public_ids from MongoDB...`);
     await connectToDB();
@@ -286,6 +278,26 @@ const handler: Handler = async (event) => {
       });
     }
 
+    if (allCloudinaryImages.length === 0) {
+      console.log(`${logPrefix} No images found in Cloudinary to process.`);
+      const resultData = {
+        totalCloudinaryImages: 0,
+        totalMongoImages: mongoPublicIds.size,
+        orphansFound: 0,
+        missingInCloudinary: mongoPublicIds.size,
+        cleaned: 0,
+      };
+      await updateStatus(
+        "success",
+        "No images found in Cloudinary to process",
+        resultData,
+      );
+      return jsonResponse(200, {
+        message: "No images found in Cloudinary",
+        data: resultData,
+      });
+    }
+
     // 3. Find orphan images (in Cloudinary but not in MongoDB)
     const orphanImages = allCloudinaryImages.filter((resource) => {
       // Skip temp_uploads folder (handled by separate cleanup)
@@ -379,13 +391,15 @@ const handler: Handler = async (event) => {
       console.log(
         `${logPrefix} No orphan images found. Everything is in sync.`,
       );
+      const resultData = {
+        totalCloudinaryImages: allCloudinaryImages.length,
+        totalMongoImages: mongoPublicIds.size,
+        cleaned: 0,
+      };
+      await updateStatus("success", "No orphan images found", resultData);
       return jsonResponse(200, {
         message: "No orphan images found",
-        data: {
-          totalCloudinaryImages: allCloudinaryImages.length,
-          totalMongoImages: mongoPublicIds.size,
-          cleaned: 0,
-        },
+        data: resultData,
       });
     }
 

@@ -18,8 +18,11 @@ export interface NetlifyUsage {
     bandwidth: number;
     webRequests: number;
     formSubmissions: number;
+    raw_usage?: any;
   };
   site_name: string;
+  custom_domain: string | null;
+  default_domain: string | null;
   last_deploy_at: string | null;
   next_billing_period_start: string | null;
 }
@@ -44,6 +47,7 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
       },
     );
 
+    console.log("[getNetlifyUsage] Site response", siteResponse.data);
     const siteData: any = siteResponse.data;
     const accountSlug = siteData.account_slug;
 
@@ -78,7 +82,7 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
     // 4. Get credits billing stats
     let creditsUsed = 0;
     let creditsLimit = 300;
-    let creditBreakdown = {
+    let creditBreakdown: NetlifyUsage["credit_breakdown"] = {
       productionDeploys: 0,
       compute: 0,
       aiInference: 0,
@@ -145,6 +149,7 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
                 parseFloat(usageData.form_submissions.credits_used).toFixed(1),
               )
             : 0,
+          raw_usage: usageData as any,
         };
       }
     } catch (err) {
@@ -169,8 +174,10 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
         included: creditsLimit,
         used_percent: creditsPercent,
       },
-      credit_breakdown: creditBreakdown,
+      credit_breakdown: creditBreakdown as any,
       site_name: siteData.name,
+      custom_domain: siteData.custom_domain || null,
+      default_domain: siteData.default_domain || null,
       last_deploy_at:
         siteData.published_deploy?.published_at || siteData.updated_at || null,
       next_billing_period_start: accountData?.next_billing_period_start || null,

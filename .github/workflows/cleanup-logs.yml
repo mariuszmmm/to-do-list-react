@@ -1,0 +1,23 @@
+name: Cleanup Logs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *" # Every day at 01:00 UTC
+
+jobs:
+  cleanup-logs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Netlify cleanup-logs function
+        run: |
+          NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
+          if [ -z "$NETLIFY_URL" ]; then
+            echo "❌ Error: NETLIFY_SITE_URL secret is not set"
+            exit 1
+          fi
+          echo "⏳ Calling cleanup-logs..."
+          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/cleanup-logs" -H "Content-Type: application/json")
+          echo "Response:"
+          echo "$RESPONSE" | jq '.' 2>/dev/null || echo "$RESPONSE"

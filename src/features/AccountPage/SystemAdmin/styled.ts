@@ -69,7 +69,7 @@ export const ProgressBarLabel = styled.div`
 export const ProgressBarTrack = styled.div`
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 15px;
@@ -82,15 +82,15 @@ export const ProgressBarFill = styled.div<{ $width: number; $color: string }>`
   transition: width 0.5s ease-in-out;
 `;
 
-export const StatsRow = styled.div`
+export const StatsRow = styled.div<{ $long?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 6px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    flex-direction: ${({ $long }) => ($long ? "column" : "row")};
+    align-items: ${({ $long }) => ($long ? "flex-start" : "center")};
   }
 `;
 
@@ -160,15 +160,16 @@ export const DiagnosisHeader = styled.div`
 `;
 
 export const DiagnosisKey = styled.span`
-  text-transform: capitalize;
   font-weight: bold;
 `;
 
 export const DiagnosisValue = styled.div<{ $isSuccess: boolean }>`
-  color: ${({ $isSuccess, theme }) => ($isSuccess ? "#52c41a" : "#ff4d4f")};
+  color: ${({ $isSuccess, theme }) =>
+    $isSuccess ? theme.colors.info.value : theme.colors.info.error};
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 6px;
+  font-weight: 600;
 `;
 
 export const ProgressWrapper = styled.div`
@@ -203,7 +204,8 @@ export const LogHeader = styled.div`
 `;
 
 export const LogTitle = styled.strong<{ $isError: boolean }>`
-  color: ${({ $isError }) => ($isError ? "#ff4d4f" : "#52c41a")};
+  color: ${({ $isError, theme }) =>
+    $isError ? theme.colors.info.error : theme.colors.info.value};
   display: flex;
   align-items: center;
   gap: 5px;
@@ -298,4 +300,17 @@ export const CreditBreakdownGrid = styled.div`
 
 export const CreditBreakdownValue = styled.span`
   color: var(--text-primary);
+`;
+
+export const AnimatedExpandBlock = styled.div<{ $visible: boolean }>`
+  display: grid;
+  grid-template-rows: ${({ $visible }) => ($visible ? "1fr" : "0fr")};
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition:
+    grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s;
+
+  > div {
+    overflow: hidden;
+  }
 `;

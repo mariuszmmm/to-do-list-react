@@ -17,6 +17,8 @@ interface StyledTaskProps {
   $done?: boolean;
   $ListName?: boolean;
   $comment?: boolean;
+  $commentListName?: boolean;
+  $label?: boolean;
   $noLink?: boolean;
   $tokenStatus?: "active" | "expired";
   disabled?: boolean;
@@ -180,6 +182,23 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       font-style: italic;
       font-size: 0.85rem;
       font-weight: ${({ theme }) => theme.fontWeight.normal};
+    `}
+
+  ${({ $commentListName }) =>
+    $commentListName &&
+    css`
+      color: ${({ theme }) => theme.colors.textSecendary};
+      font-style: italic;
+      font-size: 0.85rem;
+      font-weight: ${({ theme }) => theme.fontWeight.normal};
+      margin-top: 0px;
+      margin-bottom: 8px;
+    `}
+
+  ${({ $label }) =>
+    $label &&
+    css`
+      margin: 0;
     `}
 
   ${({ disabled }) =>

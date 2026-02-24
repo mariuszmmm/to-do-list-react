@@ -37,3 +37,7 @@ yarn-error.log*
 
 # Deno (nie używamy w tym projekcie)
 deno.lock
+
+
+# notes
+notes.md

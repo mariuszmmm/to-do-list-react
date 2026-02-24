@@ -250,6 +250,10 @@ export const getSystemStatusApi = async (
       site_name: string;
       last_deploy_at: string | null;
     };
+    ablyStats?: {
+      messages: { used: number; limit: number };
+      connections: { used: number; limit: number };
+    };
   }>
 > => {
   try {
@@ -273,8 +277,18 @@ export const runCleanupApi = async (
   token: string,
 ): Promise<ApiResponse<any>> => {
   try {
+    // Najpierw uruchom czyszczenie tymczasowych obrazów
+    await axios.post(
+      "/.netlify/functions/cleanup-temp-images",
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    // Następnie uruchom czyszczenie "osieroconych" obrazów
     const response = await axios.post(
-      "/cleanup-orphan-images",
+      "/.netlify/functions/cleanup-orphan-images",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -289,6 +303,30 @@ export const runCleanupApi = async (
     };
   } catch (error: any) {
     console.error("Error running cleanup", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const runDeletedTasksCleanupApi = async (
+  token: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.post(
+      "/.netlify/functions/cleanup-deletedTasks",
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error: any) {
+    console.error("Error running deleted tasks cleanup", error);
     return makeErrorResponse(error);
   }
 };
@@ -309,6 +347,29 @@ export const diagnoseSystemApi = async (
     };
   } catch (error: any) {
     console.error("Error running diagnosis", error);
+    return makeErrorResponse(error);
+  }
+};
+export const runLogsCleanupApi = async (
+  token: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.post(
+      "/.netlify/functions/cleanup-logs",
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  } catch (error: any) {
+    console.error("Error running logs cleanup", error);
     return makeErrorResponse(error);
   }
 };

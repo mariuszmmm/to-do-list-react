@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 const TaskButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 3px;
   border: none;
   color: ${({ theme }) => theme.colors.button.primaryText};

@@ -226,6 +226,17 @@ const AccountPage = () => {
         />
       )}
 
+      {loggedUserEmail && (
+        <Section
+          title={t("backup.title")}
+          extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}
+          onHeaderClick={toggleBackup}
+          onlyOpenButton={isPresenceListOpen !== undefined}
+          body={<BackupManager />}
+          bodyHidden={!isBackupOpen}
+        />
+      )}
+
       {loggedUserEmail && isAdmin && (
         <Section
           title={t("systemAdmin.title")}
@@ -237,17 +248,6 @@ const AccountPage = () => {
           onlyOpenButton={true}
           body={<SystemAdmin />}
           bodyHidden={!isSystemAdminOpen}
-        />
-      )}
-
-      {loggedUserEmail && (
-        <Section
-          title={t("backup.title")}
-          extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}
-          onHeaderClick={toggleBackup}
-          onlyOpenButton={isPresenceListOpen !== undefined}
-          body={<BackupManager />}
-          bodyHidden={!isBackupOpen}
         />
       )}
     </>

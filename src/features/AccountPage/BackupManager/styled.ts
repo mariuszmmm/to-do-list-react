@@ -1,10 +1,7 @@
 import styled from "styled-components";
 
 export const BackupListContainer = styled.div`
-  margin-top: 20px;
-  padding: 15px;
-  border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
+  padding: 15px 0;
   background-color: ${({ theme }) => theme.colors.backgroundSecendary};
   transition:
     background-color 0.5s ease-in-out,
@@ -17,7 +14,7 @@ interface BackupItemProps {
 
 export const BackupItemsContainer = styled.div`
   min-height: 370px;
-  margin-bottom: 15px;
+  margin: 20px 0;
 `;
 
 export const BackupListTitle = styled.div`
