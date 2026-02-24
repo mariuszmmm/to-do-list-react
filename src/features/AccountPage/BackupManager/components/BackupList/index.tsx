@@ -11,7 +11,7 @@ import {
 } from "../../styled";
 import { RemoveButton } from "../../../../../common/taskButtons";
 import { useTranslation } from "react-i18next";
-import { handleRestoreBackupFromGoogleDrive } from "../../handlers/handleRestoreBackupFromGoogleDrive";
+import { handleRestoreBackupConfirmation } from "../../handlers/handleRestoreBackupConfirmation";
 import { handleDeleteBackupConfirmation } from "../../handlers/handleDeleteBackupConfirmation";
 import { useAppDispatch } from "../../../../../hooks";
 import { BackupFile } from "../../../../../types";
@@ -32,6 +32,7 @@ interface BackupListProps {
   setStatus: (status: any) => void;
   setCurrentPage: (page: number) => void;
   setFileToDelete: (file: BackupFile | null) => void;
+  setFileToRestore: (file: BackupFile | null) => void;
   setShowGoogleAuth: (show: boolean) => void;
 }
 
@@ -44,6 +45,7 @@ export const BackupList: React.FC<BackupListProps> = ({
   setStatus,
   setCurrentPage,
   setFileToDelete,
+  setFileToRestore,
   setShowGoogleAuth,
 }) => {
   const { t } = useTranslation("translation", {
@@ -64,12 +66,11 @@ export const BackupList: React.FC<BackupListProps> = ({
               key={file.id}
               onClick={() =>
                 !status.isLoading &&
-                handleRestoreBackupFromGoogleDrive(
+                handleRestoreBackupConfirmation(
                   file.id,
-                  t,
-                  setStatus,
-                  setShowBackupList,
-                  setShowGoogleAuth,
+                  file.name,
+                  setFileToRestore,
+                  dispatch,
                 )
               }
               $isLoading={status.isLoading}

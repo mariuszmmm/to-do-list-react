@@ -685,6 +685,16 @@ const langDe: typeof langPl = {
         error: "Fehler beim Löschen der Sicherung.",
       },
     },
+    restoreBackup: {
+      title: "Sicherung wiederherstellen",
+      message: {
+        confirm:
+          "Möchtest du die Sicherung <strong>{{name}}</strong> wirklich wiederherstellen?<br/><br/><small>Hinweis: Die aktuellen Daten werden durch die Daten aus der Sicherung ersetzt.</small>",
+        loading: "Sicherung wird wiederhergestellt...",
+        success: "Die Sicherung wurde wiederhergestellt.",
+        error: "Fehler beim Wiederherstellen der Sicherung.",
+      },
+    },
     listsUpdate: {
       title: "Liste aktualisieren",
       message: {

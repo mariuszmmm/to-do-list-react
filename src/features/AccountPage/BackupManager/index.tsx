@@ -5,6 +5,7 @@ import { BackupStatusMessage } from "./components/BackupStatusMessage";
 import { useTranslation } from "react-i18next";
 import { useGoogleOAuth } from "./hooks/useGoogleOAuth";
 import { useDeleteBackupConfirmation } from "./hooks/useDeleteBackupConfirmation";
+import { useRestoreBackupConfirmation } from "./hooks/useRestoreBackupConfirmation";
 import { BackupFile } from "../../../types";
 
 export type StatusState = {
@@ -30,6 +31,7 @@ export const BackupManager = () => {
   const [showBackupList, setShowBackupList] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [fileToDelete, setFileToDelete] = useState<BackupFile | null>(null);
+  const [fileToRestore, setFileToRestore] = useState<BackupFile | null>(null);
   const itemsPerPage = 5;
 
   useDeleteBackupConfirmation(
@@ -38,6 +40,14 @@ export const BackupManager = () => {
     setBackupFiles,
     setCurrentPage,
     setFileToDelete,
+    setShowGoogleAuth,
+  );
+
+  useRestoreBackupConfirmation(
+    fileToRestore,
+    setStatus,
+    setShowBackupList,
+    setFileToRestore,
     setShowGoogleAuth,
   );
 
@@ -53,6 +63,7 @@ export const BackupManager = () => {
           setStatus={setStatus}
           setCurrentPage={setCurrentPage}
           setFileToDelete={setFileToDelete}
+          setFileToRestore={setFileToRestore}
           setShowGoogleAuth={setShowGoogleAuth}
         />
       ) : (

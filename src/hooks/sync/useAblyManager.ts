@@ -10,6 +10,7 @@ import {
   safeDetachChannel,
   safePresenceLeave,
   setPendingConfirmationEmail,
+  isAblyErrorSilent,
 } from "../../utils/sync/ably";
 import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
 
@@ -63,13 +64,11 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
     try {
       await channel.attach();
       channel.subscribe("user-confirmed", handleConfirmation).catch((err) => {
-        if (err instanceof Error && err.message.includes("superseded")) return;
+        if (isAblyErrorSilent(err)) return;
         console.warn("[AblyManager] Confirmation subscribe error:", err);
       });
     } catch (err) {
-      if (err instanceof Error && err.message.includes("superseded")) {
-        return;
-      }
+      if (isAblyErrorSilent(err)) return;
       console.error("[AblyManager] Confirmation attach failed:", err);
     }
   }, []);
@@ -186,9 +185,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
         await presenceAdminChannel.attach();
         await subscribeToConfirmationChannel(loggedUserEmail);
       } catch (err) {
-        if (err instanceof Error && err.message.includes("superseded")) {
-          return;
-        }
+        if (isAblyErrorSilent(err)) return;
         console.error("[AblyManager] Channel attach failed:", err);
         return;
       }
@@ -204,8 +201,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
       dataChannel
         .subscribe("lists-updated", handleListsMessage)
         .catch((err) => {
-          if (err instanceof Error && err.message.includes("superseded"))
-            return;
+          if (isAblyErrorSilent(err)) return;
           console.warn("[AblyManager] Lists subscribe error:", err);
         });
 
@@ -239,9 +235,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
             }),
           );
         } catch (err) {
-          if (err instanceof Error && err.message.includes("detached")) {
-            return;
-          }
+          if (isAblyErrorSilent(err)) return;
           console.error("[AblyManager] Presence count error:", err);
         }
       };
@@ -253,20 +247,20 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
       presenceCountChannel.presence
         .subscribe("enter", handlePresenceEvent)
         .catch((e) => {
-          if (e instanceof Error && !e.message.includes("superseded"))
-            console.warn(e);
+          if (isAblyErrorSilent(e)) return;
+          console.warn(e);
         });
       presenceCountChannel.presence
         .subscribe("leave", handlePresenceEvent)
         .catch((e) => {
-          if (e instanceof Error && !e.message.includes("superseded"))
-            console.warn(e);
+          if (isAblyErrorSilent(e)) return;
+          console.warn(e);
         });
       presenceCountChannel.presence
         .subscribe("update", handlePresenceEvent)
         .catch((e) => {
-          if (e instanceof Error && !e.message.includes("superseded"))
-            console.warn(e);
+          if (isAblyErrorSilent(e)) return;
+          console.warn(e);
         });
 
       try {

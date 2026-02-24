@@ -674,6 +674,16 @@ const langEn: typeof langPl = {
         error: "An error occurred while deleting the backup.",
       },
     },
+    restoreBackup: {
+      title: "Restoring backup",
+      message: {
+        confirm:
+          "Are you sure you want to restore the backup: <strong>{{name}}</strong>?<br/><br/><small>Note: Current data will be replaced with data from the backup.</small>",
+        loading: "Restoring backup...",
+        success: "Backup has been restored.",
+        error: "Error while restoring backup.",
+      },
+    },
     listsUpdate: {
       title: "Updating list",
       message: {

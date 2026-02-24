@@ -128,6 +128,29 @@ const withTimeout = async <T>(
   }
 };
 
+export const isAblyErrorSilent = (err: any): boolean => {
+  const errorMsg =
+    err instanceof Error ? err.message : typeof err === "string" ? err : "";
+
+  if (!errorMsg) {
+    if (typeof err === "object" && err !== null && "message" in err) {
+      return isAblyErrorSilent(err.message);
+    }
+    return false;
+  }
+
+  return (
+    errorMsg.includes("timeout") ||
+    errorMsg.includes("superseded") ||
+    errorMsg.includes("Connection closed") ||
+    errorMsg.includes("detached") ||
+    errorMsg.includes("detaching") ||
+    errorMsg.includes("Channel operation failed") ||
+    errorMsg.includes("attach") || // catch "Unable to attach"
+    errorMsg.includes("reason unknown")
+  );
+};
+
 export const safeDetachChannel = async (
   channel: Ably.RealtimeChannel,
   timeoutMs = 3000,
@@ -162,22 +185,10 @@ export const safeDetachChannel = async (
 
     await withTimeout(detachPromise, timeoutMs, "Channel detach");
   } catch (err) {
-    const errorMsg = err instanceof Error ? err.message : String(err);
-
-    // Ignore harmless errors during cleanup
-    if (
-      errorMsg.includes("timeout") ||
-      errorMsg.includes("superseded") ||
-      errorMsg.includes("Connection closed") ||
-      errorMsg.includes("detached") ||
-      errorMsg.includes("detaching") ||
-      errorMsg.includes("Channel operation failed") ||
-      errorMsg.includes("attach") || // Catch "Unable to attach"
-      errorMsg.includes("reason unknown")
-    ) {
+    if (isAblyErrorSilent(err)) {
       return;
     }
-    console.warn("[Ably] silent detach error:", errorMsg);
+    console.warn("[Ably] silent detach error:", err);
   }
 };
 
@@ -189,25 +200,8 @@ export const safePresenceLeave = async (
   try {
     await withTimeout(presence.leave(data), timeoutMs, "Presence leave");
   } catch (err) {
-    if (err instanceof Error && err.message.includes("timeout")) {
-      console.warn("[Ably] presence leave timeout, proceeding: ", err.message);
+    if (isAblyErrorSilent(err)) {
       return;
-    }
-    if (
-      err instanceof Error &&
-      (err.message.includes("detached") ||
-        err.message.includes("Channel operation failed"))
-    ) {
-      return;
-    }
-    if (err instanceof Error && err.message.includes("Connection closed")) {
-      return;
-    }
-    if (typeof err === "object" && err !== null && "message" in err) {
-      const errorMessage = String(err.message);
-      if (errorMessage.includes("Connection closed")) {
-        return;
-      }
     }
     console.error("[Ably] presence leave error:", err);
   }

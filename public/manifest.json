@@ -1,6 +1,8 @@
 {
   "short_name": "Lista zadań",
-  "name": "Lista zadań - React App",
+  "name": "Lista zadań",
+  "description": "Nowoczesna i intuicyjna aplikacja do zarządzania codziennymi zadaniami.",
+  "lang": "pl",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,16 +12,18 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#000000"
+  "theme_color": "#359b09",
+  "background_color": "#359b09"
 }

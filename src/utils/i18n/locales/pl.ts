@@ -678,6 +678,16 @@ const langPl = {
         error: "Błąd podczas usuwania kopii zapasowej.",
       },
     },
+    restoreBackup: {
+      title: "Przywracanie kopii zapasowej",
+      message: {
+        confirm:
+          "Czy na pewno chcesz przywrócić kopię zapasową: <strong>{{name}}</strong>?<br/><br/><small>Uwaga: Bieżące dane zostaną zastąpione danymi z kopii.</small>",
+        loading: "Trwa przywracanie kopii zapasowej...",
+        success: "Kopia zapasowa została przywrócona.",
+        error: "Błąd podczas przywracania kopii zapasowej.",
+      },
+    },
     listsUpdate: {
       title: "Aktualizacja list",
       message: {

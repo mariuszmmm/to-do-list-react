@@ -1,20 +1,18 @@
-# Cel zadania
+# Zadanie: Naprawa ostrzeżenia o brakujących kluczach w komponencie Modal
 
-Uporządkowanie i rozbudowa systemu zasad (Rules) oraz wiedzy (Knowledge) o projekcie, aby usprawnić współpracę z AI (Agentem i Cursorem).
+Użytkownik zgłosił błąd/ostrzeżenie w konsoli:
+`installHook.js:1 Each child in a list should have a unique "key" prop.`
+`Check the render method of Modal. It was passed a child from Trans.`
 
-# Plan działania
+Błąd pojawia się po kliknięciu "usuń listę".
 
-1. **Utworzenie folderów**: `.agent/rules` oraz `.agent/knowledge` (wykonano).
-2. **Pliki Rules**:
-   - `.agent/rules/general.md`: Podstawowe zasady zachowania i komunikacji.
-   - `.agent/rules/coding.md`: Standardy kodu (React, TS, Styled-components).
-   - `.agent/rules/ui_ux.md`: Wytyczne projektowe.
-3. **Pliki Knowledge**:
-   - `.agent/knowledge/tech_stack.md`: Rozbudowany opis technologii.
-   - `.agent/knowledge/architecture.md`: Opis struktury projektu i flow danych.
-4. **Konsolidacja .cursorrules**: Aktualizacja głównego pliku reguł dla edytora.
-5. **Usunięcie starych plików**: Usunięcie pojedynczego `.agent/rules.md` po migracji.
+## Analiza
 
-# Status
+Ostrzeżenie wynika z faktu, że komponent `Trans` z biblioteki `react-i18next` zwraca tablicę węzłów (tekst + tagi HTML, np. `<strong>`), które są renderowane jako rodzeństwo wewnątrz `ModalDescription`. React wymaga, aby elementy w tablicy miały unikalne klucze. Choć `Trans` zwykle je dodaje, w pewnych konfiguracjach lub wersjach może to powodować problemy, jeśli nie jest poprawnie powiązany z instancją `t` lub jeśli rodzeństwo nie jest odpowiednio obsłużone.
 
-- Zadanie w toku. Tworzę zawartość plików.
+## Rozwiązanie
+
+1. Refaktoryzacja komponentu `Modal/index.tsx` w celu użycia hooka `useTranslation`.
+2. Zastąpienie prostych wywołań `<Trans>` funkcją `t()`, co jest wydajniejsze i bezpieczniejsze dla prostych tekstów.
+3. Przekazanie funkcji `t` jako prop do pozostałych komponentów `<Trans>`, co pomaga w poprawnej generacji kluczy przez `react-i18next`.
+4. Upewnienie się, że fragmenty i warunkowe renderowanie nie wprowadzają dodatkowych problemów z kluczami.

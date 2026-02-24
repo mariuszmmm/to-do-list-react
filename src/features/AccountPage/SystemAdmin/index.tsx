@@ -8,7 +8,11 @@ import {
 } from "../../../api/backupApi";
 import { NameContainer } from "../../tasks/TasksPage/EditableListName/styled";
 import { getUserToken } from "../../../utils/auth/getUserToken";
-import { getAblyInstance, safeDetachChannel } from "../../../utils/sync/ably";
+import {
+  getAblyInstance,
+  safeDetachChannel,
+  isAblyErrorSilent,
+} from "../../../utils/sync/ably";
 
 import { NetlifySection } from "./components/NetlifySection";
 import { AblySection } from "./components/AblySection";
@@ -98,8 +102,7 @@ export const SystemAdmin = () => {
     };
 
     channel.subscribe("new-log", onNewLog).catch((err) => {
-      // Ignore "Attach request superseded by a subsequent detach request" errors
-      if (err instanceof Error && err.message.includes("superseded")) return;
+      if (isAblyErrorSilent(err)) return;
       console.warn("[SystemAdmin] channel subscribe error:", err);
     });
 

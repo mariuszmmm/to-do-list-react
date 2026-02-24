@@ -50,6 +50,7 @@ export const ModalDescription = styled.p`
   padding: 20px;
   margin: 0;
   word-break: break-word;
+  white-space: pre-wrap;
 `;
 
 export const ModalButtonContainer = styled.div`
@@ -102,4 +103,4 @@ export const ModalYesButton = styled(ModalButton)`
   background-color: ${({ theme }) => theme.colors.button.check};
 `;
 
-export const ModalNoButton = ModalConfirmButton; 
+export const ModalNoButton = ModalConfirmButton;
