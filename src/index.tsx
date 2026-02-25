@@ -1,7 +1,7 @@
 import i18n from "./utils/i18n";
 import { setInputAutoFocusFlagIfRoot } from "./utils/navigation/setFirstLoadFlagIfRoot";
 import { I18nextProvider } from "react-i18next";
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "react-redux";
@@ -27,16 +27,6 @@ const queryClient = new QueryClient();
 
 const AppProviders = ({ children }: { children: React.ReactNode }) => {
   const isDarkTheme = useAppSelector(selectIsDarkTheme);
-  const theme = isDarkTheme ? themeDark : themeLight;
-
-  useEffect(() => {
-    const themeColor = theme.colors.nav.background;
-    const metaTags = document.querySelectorAll('meta[name="theme-color"]');
-
-    metaTags.forEach((tag) => {
-      tag.setAttribute("content", themeColor);
-    });
-  }, [theme]);
 
   return (
     <ThemeProvider theme={isDarkTheme ? themeDark : themeLight}>
