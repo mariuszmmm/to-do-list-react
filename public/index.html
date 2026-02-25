@@ -4,17 +4,26 @@
     <meta charset="utf-8" />
     <title>Lista zadań</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#359b09" />
+    <meta
+      name="theme-color"
+      content="#007380"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#005c67"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <meta property="og:image" content="%PUBLIC_URL%/share.png" />
     <meta property="og:title" content="Lista zadań" />
     <meta property="og:type" content="website" />
     <meta
       name="description"
-      content="(Web site created using create-react-app)"
+      content="Nowoczesna i intuicyjna aplikacja do zarządzania codziennymi zadaniami."
     />
 
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
 
@@ -24,6 +33,22 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&display=swap"
       rel="stylesheet"
     />
+    <style>
+      body {
+        background-color: #eeeeee; /* Domyślny jasny */
+        margin: 0;
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          var settings = JSON.parse(localStorage.getItem("settings"));
+          if (settings && settings.isDarkTheme) {
+            document.body.style.backgroundColor = "#151515";
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body>
