@@ -4,7 +4,7 @@
 
 - **`favicon.png`**: Logo powiększone (90-95% powierzchni), zminimalizowane marginesy. Używane w `index.html` dla kart przeglądarki.
 - **`logo192.png` & `logo512.png`**: Ikony typu **maskable**. Posiadają "bezpieczny margines" (logo zajmuje ok. 60-70% środka), co chroni przed ucinaniem przez system Android przy nakładaniu masek (koła/kwadratu).
-- **`manifest.json`**: Ustawiono `"purpose": "any maskable"` dla obu ikon logo.
+- **`manifest.json`**: Rozdzielono parametry `"purpose"` na osobne wpisy (`maskable` i `any`) dla każdego rozmiaru. Rozwiązuje to problem "podskakiwania" lub nagłej zmiany rozmiaru ikony podczas startu aplikacji na Androidzie.
 
 ## Kolory Systmowe i PWA
 
