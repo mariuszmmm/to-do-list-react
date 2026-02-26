@@ -14,7 +14,7 @@ export const ModalBackground = styled.div`
 
 export const ModalContainer = styled.div`
   max-width: 900px;
-  min-width: 300px;
+  min-width: 360px;
   padding: 160px 20px 0;
   margin: 0 auto;
 

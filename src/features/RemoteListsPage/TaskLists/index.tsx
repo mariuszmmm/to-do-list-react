@@ -159,7 +159,9 @@ export const TaskLists = ({
           onClick={() => dispatch(selectList(list.id))}
           $type={"lists"}
         >
-          <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+          <ToggleButton disabled={isListsSorting || modalIsOpen}>
+            {selectedListId === list.id ? "✔" : ""}
+          </ToggleButton>
           <StyledListContent $type={"lists"}>
             <StyledSpan $ListName>{list.name}</StyledSpan>
             <br />
@@ -189,11 +191,15 @@ export const TaskLists = ({
           <TaskActions>
             <StyledLink
               to={`/tasks`}
-              disabled={selectedListId !== list.id || isListsSorting}
+              disabled={
+                selectedListId !== list.id || isListsSorting || modalIsOpen
+              }
             >
               <EditButton
                 onClick={() => dispatch(setListToLoad(selectedListById))}
-                disabled={selectedListId !== list.id || isListsSorting}
+                disabled={
+                  selectedListId !== list.id || isListsSorting || modalIsOpen
+                }
                 title={t("remoteListsPage.buttons.load")}
               >
                 ✏️
@@ -202,7 +208,9 @@ export const TaskLists = ({
 
             <RemoveButton
               onClick={() => dispatch(setListToRemove(list))}
-              disabled={modalIsOpen}
+              disabled={
+                selectedListId !== list.id || isListsSorting || modalIsOpen
+              }
             >
               🗑️
             </RemoveButton>

@@ -24,9 +24,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&display=swap"
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&family=Roboto+Mono:wght@400;700&display=swap"
+      as="style"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&family=Roboto+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        var setAppHeight = function () {
+          var doc = document.documentElement;
+          doc.style.setProperty("--app-height", window.innerHeight + "px");
+        };
+        window.addEventListener("resize", setAppHeight);
+        setAppHeight();
+      })();
+    </script>
   </head>
 
   <body>

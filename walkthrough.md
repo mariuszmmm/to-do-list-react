@@ -1,36 +1,26 @@
-# Podsumowanie zmian - System Rules & Knowledge
+# Podsumowanie zmian - Naprawa efektu "bounce" (overscroll)
 
-Zgodnie z Twoją prośbą, stworzyłem od podstaw nową strukturę zasad i wiedzy o projekcie. Zamiast pojedynczych plików, system jest teraz podzielony na logiczne kategorie, co ułatwia zarządzanie i rozbudowę.
+Rozwiązałem problem "podskakiwania" strony (overscroll bounce) w aplikacji PWA, który powodował, że interfejs zachowywał się inaczej niż natywne aplikacje z Google Play.
 
-## 1. Zasady (Rules)
+## Opis zmian:
 
-Znajdują się w folderze `.agent/rules/`. Zostały podzielone na:
+1. **Global Style**:
+   - W pliku `src/theme/GlobalStyle.ts` dodałem właściwość `overscroll-behavior: none;` do elementów `html` oraz `body`.
+   - Ta właściwość wyłącza domyślny efekt "rubber-banding" (gumowania) przeglądarki przy dotarciu do krawędzi przewijania oraz blokuje gest "pull-to-refresh".
 
-- `general.md`: Zasady dotyczące języka, komunikacji i sposobu pracy.
-- `coding.md`: Standardy techniczne (React, TS, Styled Components).
-- `ui_ux.md`: Wytyczne wizualne i estetyczne (styl premium, animacje).
+## Efekt:
 
-## 2. Wiedza (Knowledge)
+Aplikacja zyskała bardziej natywny charakter. Przewijanie zatrzymuje się sztywno na krawędziach treści, co jest standardem w aplikacjach mobilnych instalowanych ze sklepów.
 
-Znajduje się w folderze `.agent/knowledge/`. Zawiera kompendium wiedzy o projekcie:
+## Rekomendacja dla innych projektów:
 
-- `tech_stack.md`: Dokładny spis technologii (Frontend, Backend, Integracje).
-- `architecture.md`: Opis struktury folderów, wzorców projektowych i zarządzania stanem.
+Jeśli Twoje aplikacje Next.js mają ten sam problem, możesz zastosować ten sam zabieg, dodając poniższy kod do globalnego pliku CSS (np. `globals.css`):
 
-## 3. Konfiguracja Cursora
+```css
+html,
+body {
+  overscroll-behavior: none;
+}
+```
 
-Plik `.cursorrules` został uproszczony i zaktualizowany. Pełni teraz rolę "skrótu" do najważniejszych zasad, odsyłając agenta do folderu `.agent/rules/`.
-
-## 4. Notes.md
-
-Zasady w `notes.md` pozostają aktualne - system będzie się nimi kierował przy decydowaniu, gdzie zapisać nową wiedzę lub zasady.
-
-### Jak z tego korzystać?
-
-- **Dodawanie nowych zasad**: Jeśli chcesz coś zmienić w sposobie mojej pracy, edytuj odpowiedni plik w `.agent/rules/`.
-- **Rozszerzanie wiedzy**: Gdy nauczymy się czegoś nowego o specyfice projektu (np. "ten endpoint zwraca dane w tym formacie"), zapiszemy to w `.agent/knowledge/`.
-- **Zadania**: Każde zadanie będę zaczynał od odświeżenia tych zasad.
-
----
-
-System jest gotowy i w pełni funkcjonalny. Czy chcesz dodać jakąś konkretną zasadę lub informację techniczną na start?
+Dziękuję za zgłoszenie i załączenie nagrania – bardzo pomogło w diagnozie!

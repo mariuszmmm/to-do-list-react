@@ -14,6 +14,7 @@ const TaskButton = styled.button`
   transition: filter 0.25s;
   user-select: none;
   cursor: pointer;
+  pointer-events: auto;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 2 / 3;
@@ -21,7 +22,6 @@ const TaskButton = styled.button`
   }
 
   &:hover {
-    cursor: pointer;
     filter: brightness(110%);
   }
 
@@ -31,6 +31,7 @@ const TaskButton = styled.button`
 
   &:disabled {
     cursor: not-allowed;
+    pointer-events: auto;
     opacity: 0.3;
   }
 `;

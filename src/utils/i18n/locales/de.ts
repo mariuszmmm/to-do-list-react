@@ -329,6 +329,8 @@ const langDe: typeof langPl = {
         siteName: "Seitenname: {{name}}",
         noData:
           "Netlify-Monitoring ist nicht konfiguriert oder Daten sind nie verfügbar.",
+        siteMonitoringError:
+          "Die Überwachungssysteme von Netlify melden derzeit Probleme mit der Datenverfügbarkeit.<br/>Einige Statistiken können nicht verfügbar oder auf Null gesetzt sein.",
         bandwidthLabel: "Netlify-Datennutzung (100 GB Limit)",
         productionDeploysLabel: "Deployments (Limit 20)",
         computeLabel: "Berechnungsressourcen (Limit 60 GB-Std.)",
@@ -590,7 +592,7 @@ const langDe: typeof langPl = {
       title: "Konto wiederherstellen",
       message: {
         loading: "Konto-Wiederherstellung läuft...",
-        info: "Ein Link zum Zurücksetzen des Passworts wurde an die angegebene E-Mail-Adresse gesendet.<br/> Wenn du keine Nachricht erhalten hast, versuche es in 15 Minuten erneut.",
+        info: "Ein Link zum Zurücksetzen des Passworts wurde an die angegebene E-Mail-Adresse gesendet.<br/>Wenn du keine Nachricht erhalten hast, versuche es in 15 Minuten erneut.",
         success:
           "Das Konto wurde wiederhergestellt, lege ein neues Passwort fest.",
         error: {
@@ -631,7 +633,7 @@ const langDe: typeof langPl = {
       title: "Liste speichern",
       message: {
         confirm:
-          "Die Liste <strong>{{name}}</strong> existiert bereits.<br/> Möchtest du sie ersetzen?",
+          "Die Liste <strong>{{name}}</strong> existiert bereits.<br/>Möchtest du sie ersetzen?",
         cancel: "Ändere den Namen der Liste und speichere sie erneut.",
         loading:
           "Liste <strong>{{name}}</strong> wird in der Datenbank gespeichert...",
@@ -639,7 +641,7 @@ const langDe: typeof langPl = {
           "Liste <strong>{{name}}</strong> wurde in der Datenbank gespeichert.",
         error: {
           conflict:
-            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/>Versuche es erneut.",
           default: "Fehler beim Hinzufügen der Liste zur Datenbank.",
         },
       },
@@ -659,7 +661,7 @@ const langDe: typeof langPl = {
         success: "Die Liste wurde aus der Datenbank gelöscht.",
         error: {
           conflict:
-            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/>Versuche es erneut.",
           default: "Fehler beim Löschen der Liste.",
         },
       },
@@ -702,7 +704,7 @@ const langDe: typeof langPl = {
         success: "Die Liste wurde aktualisiert.",
         error: {
           conflict:
-            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/> Versuche es erneut.",
+            "Die Operation konnte nicht korrekt ausgeführt werden, da die Listen veraltet sind.<br/>Versuche es erneut.",
           default: "Fehler beim Aktualisieren der Liste.",
         },
       },
@@ -745,7 +747,7 @@ const langDe: typeof langPl = {
     backupAuthError: {
       title: "Automatischer Backup-Fehler",
       message:
-        "Die automatischen Sicherungen wurden aufgrund von Problemen mit der Google Drive-Autorisierung eingestellt. <br/><br/> Eine erneute Autorisierung des Google-Kontos und die Aktualisierung der Variable <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> im Netlify-Panel ist erforderlich.",
+        "Die automatischen Sicherungen wurden aufgrund von Problemen mit der Google Drive-Autorisierung eingestellt. <br/><br/>Eine erneute Autorisierung des Google-Kontos und die Aktualisierung der Variable <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> im Netlify-Panel ist erforderlich.",
     },
   },
   prepareText: {

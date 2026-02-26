@@ -64,7 +64,9 @@ export const TaskLists = ({
         {...(dragProps.attributes as DraggableAttributes)}
         {...(dragProps.listeners || {})}
       >
-        <ToggleButton>{selectedListId === list.id ? "✔" : ""}</ToggleButton>
+        <ToggleButton disabled={modalIsOpen}>
+          {selectedListId === list.id ? "✔" : ""}
+        </ToggleButton>
         <StyledListContent $type={"lists"}>
           <StyledSpan $ListName $isDragging={isDragging}>
             {list.name}
@@ -88,10 +90,13 @@ export const TaskLists = ({
           </ListMeta>
         </StyledListContent>
         <TaskActions>
-          <StyledLink to={`/tasks`} disabled={selectedListId !== list.id}>
+          <StyledLink
+            to={`/tasks`}
+            disabled={selectedListId !== list.id || modalIsOpen}
+          >
             <EditButton
               onClick={() => dispatch(setArchivedListToLoad(selectedListById))}
-              disabled={selectedListId !== list.id}
+              disabled={selectedListId !== list.id || modalIsOpen}
               aria-label="Load archived list"
               title={t("archivedListsPage.buttons.load")}
             >
@@ -100,7 +105,7 @@ export const TaskLists = ({
           </StyledLink>
           <RemoveButton
             onClick={() => dispatch(setArchivedListToRemove(list))}
-            disabled={modalIsOpen}
+            disabled={selectedListId !== list.id || modalIsOpen}
           >
             🗑️
           </RemoveButton>

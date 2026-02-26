@@ -87,13 +87,25 @@ export const StyledListItem = styled.li<StyledListItemProps>`
   ${({ $type, $isDragging }) =>
     ($type === "sort" || $type === "archived") &&
     css`
+      cursor: grab;
+
       ${$isDragging &&
       css`
         background-color: ${({ theme }) => theme.colors.backgrouncSelected};
         z-index: 999;
         opacity: 1;
         cursor: grabbing;
-        & * {
+
+        &
+          ${StyledListContent},
+          &
+          ${StyledSpan},
+          &
+          ${TaskNumber},
+          &
+          ${ListMeta},
+          &
+          ${ListMetaText} {
           cursor: grabbing;
         }
       `}
@@ -104,11 +116,26 @@ export const StyledListItem = styled.li<StyledListItemProps>`
           background-color: ${({ theme }) => theme.colors.backgroundPrimary};
           cursor: grab;
 
-          & * {
+          &
+            ${StyledListContent},
+            &
+            ${StyledSpan},
+            &
+            ${TaskNumber},
+            &
+            ${ListMeta},
+            &
+            ${ListMetaText} {
             cursor: grab;
           }
         }
       `}
+    `}
+
+  ${({ $type }) =>
+    $type === "lists" &&
+    css`
+      cursor: pointer;
     `}
 `;
 
@@ -116,7 +143,7 @@ export const StyledListContent = styled.div<StyledListContentProps>`
   word-break: break-word;
   margin: 0;
   margin: 0 5px;
-  cursor: default;
+  cursor: inherit;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;
@@ -237,6 +264,7 @@ export const AnimatedSpan = styled(StyledSpan)<{ $visible: boolean }>`
 export const ListMeta = styled.div`
   display: flex;
   padding-top: 4px;
+  align-items: baseline;
 `;
 
 export const ListMetaText = styled.div`

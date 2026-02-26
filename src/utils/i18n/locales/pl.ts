@@ -326,6 +326,8 @@ const langPl = {
         siteName: "Nazwa strony: {{name}}",
         noData:
           "Monitoring Netlify nie jest skonfigurowany lub dane są niedostępne.",
+        siteMonitoringError:
+          "Systemy monitorowania Netlify zgłaszają obecnie problemy z dostępnością danych.<br/>Niektóre statystyki mogą być niedostępne lub wyzerowane.",
         bandwidthLabel: "Użycie transferu Netlify (Limit 100 GB)",
         productionDeploysLabel: "Wdrożenia (Limit 20)",
         computeLabel: "Zasoby obliczeniowe (Limit 60 GB-godz.)",
@@ -584,7 +586,7 @@ const langPl = {
       title: "Odzyskiwanie konta",
       message: {
         loading: "Trwa odzyskiwanie konta...",
-        info: "Na podany adres e-mail został wysłany link do zresetowania hasła.<br/> Jeśli nie otrzymałeś wiadomości, spróbuj ponownie za 15 minut.",
+        info: "Na podany adres e-mail został wysłany link do zresetowania hasła.<br/>Jeśli nie otrzymałeś wiadomości, spróbuj ponownie za 15 minut.",
         success: "Konto zostało odzyskane, ustaw nowe hasło.",
         error: {
           default: "Błąd odzyskiwania hasła.",
@@ -624,7 +626,7 @@ const langPl = {
       title: "Zapisywanie listy",
       message: {
         confirm:
-          "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/> Czy chcesz ją zastąpić?",
+          "Lista o nazwie <strong>{{name}}</strong> już isnieje w bazie danych.<br/>Czy chcesz ją zastąpić?",
         cancel: "Zmień nazwę listy i zapisz ponownie.",
         loading:
           "Zapisywanie listy <strong>{{name}}</strong> w bazie danych...",
@@ -632,7 +634,7 @@ const langPl = {
           "Lista <strong>{{name}}</strong> została zapisana w bazie danych.",
         error: {
           conflict:
-            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/>Spróbuj ponownie.",
           default: "Wystąpił błąd podczas dodawania listy do bazy danych.",
         },
       },
@@ -647,12 +649,12 @@ const langPl = {
       title: "Usuwanie listy",
       message: {
         confirm:
-          "Czy na pewno chcesz usunąć listę: <strong>{{name}}</strong> ?",
+          "Czy na pewno chcesz usunąć listę:<br/><strong>{{name}}</strong> ?",
         loading: "Trwa usuwanie listy...",
         success: "Lista została usunięta z bazy danych.",
         error: {
           conflict:
-            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/>Spróbuj ponownie.",
           default: "Wystąpił błąd podczas usuwania listy.",
         },
       },
@@ -695,7 +697,7 @@ const langPl = {
         success: "Listy zostały zaktualizowane.",
         error: {
           conflict:
-            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/> Spróbuj ponownie.",
+            "Operacja nie mogła być wykonana poprawnie, ponieważ listy były nieaktualne.<br/>Spróbuj ponownie.",
           default: "Wystąpił błąd podczas aktualizacji list.",
         },
       },
@@ -738,7 +740,7 @@ const langPl = {
     backupAuthError: {
       title: "Błąd automatycznej kopii zapasowej",
       message:
-        "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/> Wymagana jest ponowna autoryzacja konta Google i aktualizacja zmiennej <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> w panelu Netlify.",
+        "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/>Wymagana jest ponowna autoryzacja konta Google i aktualizacja zmiennej <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> w panelu Netlify.",
     },
   },
   prepareText: {

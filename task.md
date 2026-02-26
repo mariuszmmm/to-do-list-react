@@ -1,18 +1,16 @@
-# Zadanie: Naprawa ostrzeżenia o brakujących kluczach w komponencie Modal
+# Zadanie: Wyłączenie efektu "bounce" (overscroll) w PWA
 
-Użytkownik zgłosił błąd/ostrzeżenie w konsoli:
-`installHook.js:1 Each child in a list should have a unique "key" prop.`
-`Check the render method of Modal. It was passed a child from Trans.`
+Użytkownik zgłosił, że aplikacja "podskakuje" (efekt bounce/overscroll) przy przewijaniu na urządzeniach mobilnych, co nie występuje w natywnych aplikacjach z Google Play.
 
-Błąd pojawia się po kliknięciu "usuń listę".
+## Cel
+
+Zablokowanie domyślnego efektu bounce przeglądarki, aby aplikacja zachowywała się jak natywna.
 
 ## Analiza
 
-Ostrzeżenie wynika z faktu, że komponent `Trans` z biblioteki `react-i18next` zwraca tablicę węzłów (tekst + tagi HTML, np. `<strong>`), które są renderowane jako rodzeństwo wewnątrz `ModalDescription`. React wymaga, aby elementy w tablicy miały unikalne klucze. Choć `Trans` zwykle je dodaje, w pewnych konfiguracjach lub wersjach może to powodować problemy, jeśli nie jest poprawnie powiązany z instancją `t` lub jeśli rodzeństwo nie jest odpowiednio obsłużone.
+Problem wynika z domyślnego zachowania przeglądarek mobilnych (szczególnie Chrome i Safari), które dodają efekt "elastycznego przewijania" (rubber-banding) lub pull-to-refresh na końcach przewijalnej treści. Właściwość CSS `overscroll-behavior: none` pozwala na wyłączenie tego zachowania.
 
-## Rozwiązanie
+## Plan
 
-1. Refaktoryzacja komponentu `Modal/index.tsx` w celu użycia hooka `useTranslation`.
-2. Zastąpienie prostych wywołań `<Trans>` funkcją `t()`, co jest wydajniejsze i bezpieczniejsze dla prostych tekstów.
-3. Przekazanie funkcji `t` jako prop do pozostałych komponentów `<Trans>`, co pomaga w poprawnej generacji kluczy przez `react-i18next`.
-4. Upewnienie się, że fragmenty i warunkowe renderowanie nie wprowadzają dodatkowych problemów z kluczami.
+1. Dodanie `overscroll-behavior: none;` do `GlobalStyle.ts` dla `html` i `body`.
+2. Przetestowanie zmian (symulacja w przeglądarce, o ile to możliwe, lub poinformowanie o konieczności testu na mobile).

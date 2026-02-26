@@ -5,6 +5,8 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     color: ${({ theme }) => theme.colors.textPrimary};
+    overscroll-behavior: none;
+    height: 100%;
   }
 
   *, ::after, ::before {
@@ -15,11 +17,14 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Montserrat', sans-serif;
     color: ${({ theme }) => theme.colors.textPrimary};
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
-    min-width: 300px;
+    min-width: 360px;
     overflow-y: scroll;
     font-size: 1rem;
     transition: background-color 0.5s ease-in-out;
-    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100%;
+    overscroll-behavior: none;  
+    margin: 0;
   }
 `;
 

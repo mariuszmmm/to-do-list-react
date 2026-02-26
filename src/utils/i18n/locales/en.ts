@@ -328,6 +328,8 @@ const langEn: typeof langPl = {
         lastDeploy: "Last Deploy: {{date}}",
         siteName: "Site Name: {{name}}",
         noData: "Netlify monitoring is not configured or data unavailable.",
+        siteMonitoringError:
+          "Netlify monitoring systems are currently reporting data availability issues.<br/>Some statistics may be unavailable or zeroed out.",
         bandwidthLabel: "Netlify Bandwidth Usage (100 GB Limit)",
         productionDeploysLabel: "Production Deploys (Limit 20)",
         computeLabel: "Compute (Limit 60 GB-Hrs)",
@@ -581,7 +583,7 @@ const langEn: typeof langPl = {
       title: "Account recovery",
       message: {
         loading: "Recovering account...",
-        info: "A password reset link has been sent to your email address.<br/> If you don't receive it, please try again in 15 minutes.",
+        info: "A password reset link has been sent to your email address.<br/>If you don't receive it, please try again in 15 minutes.",
         success: "Account has been recovered, set a new password.",
         error: {
           default: "Password recovery error.",
@@ -621,14 +623,14 @@ const langEn: typeof langPl = {
       title: "Saving list",
       message: {
         confirm:
-          "The list <strong>{{name}}</strong> already exists.<br/> Do you want to replace it?",
+          "The list <strong>{{name}}</strong> already exists.<br/>Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{name}}</strong> to the database...",
         success:
           "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
           default: "An error occurred while adding the list to the database.",
         },
       },
@@ -643,12 +645,12 @@ const langEn: typeof langPl = {
       title: "Deleting list",
       message: {
         confirm:
-          "Are you sure you want to delete the list: <strong>{{name}}</strong> ?",
+          "Are you sure you want to delete the list:<br/><strong>{{name}}</strong> ?",
         loading: "Deleting list...",
         success: "The list has been removed from the database.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
           default: "An error occurred while deleting the list.",
         },
       },
@@ -691,7 +693,7 @@ const langEn: typeof langPl = {
         success: "The list has been updated in the database.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/> Try again.",
+            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
           default: "An error occurred while updating the list.",
         },
       },
@@ -734,7 +736,7 @@ const langEn: typeof langPl = {
     backupAuthError: {
       title: "Automated Backup Error",
       message:
-        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/> You need to re-authorize your Google account and update the <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> variable in Netlify.",
+        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/>You need to re-authorize your Google account and update the <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> variable in Netlify.",
     },
   },
   prepareText: {

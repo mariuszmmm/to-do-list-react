@@ -1,15 +1,18 @@
-# Plan implementacji - Naprawa kluczy w Modal
+# Plan implementacji - Wyłączenie efektu "bounce" (overscroll)
 
-## Kroki
+Użytkownik zgłosił problem z efektem "podskakiwania" strony (overscroll bounce) w aplikacjach PWA zainstalowanych przez przeglądarkę, co odróżnia je od aplikacji natywnych z Google Play. Rozwiązaniem jest zastosowanie właściwości CSS `overscroll-behavior: none;`.
 
-1. **Analiza kodu `Modal/index.tsx`** - Znaleziono wielokrotne użycie `<Trans>` dla prostych kluczy oraz jedno złożone użycie dla wiadomości z tagiem `<strong>`. [ZAKOŃCZONE]
-2. **Dodanie hooka `useTranslation`** - Import i inicjalizacja `t` wewnątrz komponentu `Modal`. [ZAKOŃCZONE]
-3. **Refaktoryzacja prostych tłumaczeń** - Zmiana `<Trans i18nKey="..." />` na `{t("...")}` dla:
-   - Tytułu modala.
-   - Tekstu przycisków (Anuluj, Usuń, Tak, Nie, Zamknij). [ZAKOŃCZONE]
-4. **Poprawa złożonego tłumaczenia (`message`)** - Przekazanie propa `t={t}` do komponentu `<Trans>` obsługującego wiadomość, aby zapewnić spójność i poprawne generowanie kluczy. [ZAKOŃCZONE]
-5. **Weryfikacja** - Sprawdzenie czy wszystkie komponenty `Trans` zostały obsłużone. [W TOKU]
+## Kroki:
 
-## Oczekiwany rezultat
+1. **Aktualizacja stylów globalnych**:
+   - Edytuj plik `src/theme/GlobalStyle.ts`.
+   - Dodaj `overscroll-behavior: none;` do selektorów `html` oraz `body`.
+   - To ustawienie zapobiegnie efektowi "gumowania" przy przewijaniu do krawędzi oraz wyłączy gest pull-to-refresh, co przybliży zachowanie PWA do aplikacji natywnej.
 
-Ostrzeżenie `Each child in a list should have a unique "key" prop` powinno zniknąć, a modale powinny nadal poprawnie wyświetlać przetłumaczone treści, w tym pogrubienia i znaki nowej linii.
+2. **Weryfikacja**:
+   - Sprawdź, czy style są poprawnie aplikowane.
+   - (Aplikacja wymaga odświeżenia na urządzeniu mobilnym, aby efekt był widoczny).
+
+## Rationale:
+
+Właściwość `overscroll-behavior` pozwala kontrolować zachowanie przeglądarki, gdy użytkownik dotrze do granicy obszaru przewijania. W aplikacjach mobilnych (PWA) domyślne zachowanie przeglądarki (bounce) często psuje wrażenie "natywności" aplikacji.
