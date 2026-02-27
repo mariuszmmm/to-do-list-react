@@ -370,6 +370,7 @@ const langDe: typeof langPl = {
       logs: {
         title: "Aktuelle Systemereignisse",
         noLogs: "Keine Ereignisse aufgezeichnet",
+        success: "Erfolgreich abgeschlossen",
         types: {
           autobackup: "Auto-Backup (GD)",
           manualbackup: "Manuelles Backup (GD)",

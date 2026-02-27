@@ -108,7 +108,7 @@ const InfoPage = () => {
       <br />
       <Header title={t("aboutAuthor.title")} />
       <Section
-        title="Mariusz Matusiewicz"
+        title={t("aboutAuthor.name")}
         body={
           <>
             <Text>

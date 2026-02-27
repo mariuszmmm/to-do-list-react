@@ -2,6 +2,13 @@
   functions = "netlify/functions"
 
 [[redirects]]
+  from = "https://to-do-list-typescript-react-test.netlify.app/*"
+  to = "https://to-do-list.myprojects.pl/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+
   from = "/data"
   to = "/.netlify/functions/data"
   status = 200
@@ -109,4 +116,9 @@
   [[redirects]]
   from = "/test-reset-backup-status"
   to = "/.netlify/functions/test-reset-backup-status"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200

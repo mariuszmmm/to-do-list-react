@@ -41,8 +41,8 @@ export const getWidthForListsNavButton = (lang: string) => {
 };
 
 export const getWidthForInfoNavButton = (lang: string) => {
-  if (lang === "pl") return "89px";
+  if (lang === "pl") return "91px";
   if (lang === "en") return "33px";
-  if (lang === "de") return "44px";
+  if (lang === "de") return "41px";
   return "auto";
 };

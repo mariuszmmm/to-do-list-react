@@ -2,7 +2,7 @@ const langPl = {
   navigation: {
     tasksPage: "Zadania",
     lists: "Listy",
-    info: "O aplikacji",
+    info: "Informacje",
   },
   listFrom: "Lista z dnia",
   currentList: "bieżąca",
@@ -196,7 +196,7 @@ const langPl = {
     },
     contactForm: {
       title: "Kontakt",
-      subTitle: "Zapraszam do kontaktu. ✉️",
+      subTitle: "Napisz do mnie! ✉️",
     },
   },
   accountPage: {
@@ -367,6 +367,7 @@ const langPl = {
       logs: {
         title: "Ostatnie zdarzenia systemowe",
         noLogs: "Brak zarejestrowanych zdarzeń",
+        success: "Zakończono pomyślnie",
         types: {
           autobackup: "Auto-Backup (Google Drive)",
           manualbackup: "Backup (Google Drive)",

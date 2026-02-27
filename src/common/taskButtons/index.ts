@@ -40,8 +40,23 @@ export const ToggleButton = styled(TaskButton)`
   background: ${({ theme }) => theme.colors.button.check};
 `;
 
-export const ImageButton = styled(TaskButton)`
+export const ImageButton = styled(TaskButton)<{ $hasImage?: boolean }>`
   background: ${({ theme }) => theme.colors.button.image};
+  position: relative;
+
+  &::after {
+    content: "";
+    display: ${({ $hasImage }) => ($hasImage ? "block" : "none")};
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-color: ${({ theme }) => theme.colors.status.success};
+    border-radius: 50%;
+    border: 1px solid ${({ theme }) => theme.colors.button.primaryText};
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  }
 `;
 
 export const EditButton = styled(TaskButton)`

@@ -243,6 +243,7 @@ export const TasksList = ({ taskForm, listsData }: Props) => {
 
             {loggedUserEmail && (
               <ImageButton
+                $hasImage={!!task.image}
                 disabled={
                   !!editedTaskContent ||
                   speech.isActive ||

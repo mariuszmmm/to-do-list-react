@@ -63,15 +63,26 @@ export const LogsSection = ({ logs }: LogsSectionProps) => {
                 {new Date(log.timestamp).toLocaleTimeString()}
               </LogTimestamp>
             </LogHeader>
-            <LogDetailsText>{log.details || "No details"}</LogDetailsText>
-            {log.stats && log.key.startsWith("log_cleanup") && (
-              <LogStatsSeparator>
-                {t("storage.results.cleaned", "Cleaned")}:{" "}
-                <strong>{log.stats.cleaned}</strong>{" "}
-                {log.stats.orphansFound !== undefined &&
-                  `| ${t("storage.results.orphansFound", "Found")}: ${log.stats.orphansFound}`}
-              </LogStatsSeparator>
-            )}
+            <LogDetailsText>
+              {log.details ||
+                (log.status === "success" ? t("logs.success") : "No details")}
+            </LogDetailsText>
+            {log.stats &&
+              (log.key.startsWith("log_cleanup") ||
+                log.key.includes("cleanup")) && (
+                <LogStatsSeparator>
+                  {log.key.includes("cleanup_tasks")
+                    ? t("database.results.modifiedCount")
+                    : t("storage.results.cleaned")}
+                  : <strong>{log.stats.cleaned}</strong>{" "}
+                  {log.stats.orphansFound !== undefined && (
+                    <>
+                      | {t("storage.results.orphansFound")}:{" "}
+                      <strong>{log.stats.orphansFound}</strong>
+                    </>
+                  )}
+                </LogStatsSeparator>
+              )}
           </LogItem>
         ))
       )}

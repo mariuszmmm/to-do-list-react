@@ -1,6 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
-import { Nav, NavList, Account, ActiveAccount, NavListItem, StyledNavLink } from "./styled";
+import {
+  Nav,
+  NavList,
+  Account,
+  ActiveAccount,
+  NavListItem,
+  StyledNavLink,
+} from "./styled";
 import { LangSwitcherDesktop } from "./LangSwitcherDesktop";
 import { LangSwitcherMobile } from "./LangSwitcherMobile";
 import { ListsData } from "../types";
@@ -43,7 +50,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
 
             <NavListItem $main>
               <StyledNavLink
-                to='/tasks'
+                to="/tasks"
                 $inactive={pathname !== "/tasks"}
                 width={getWidthForTasksNavButton(i18n.language)}
               >
@@ -55,19 +62,27 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
                 {isLoading ? (
                   <Loader isDarkTheme={isDarkTheme} />
                 ) : !!listsData ? (
-                  <StyledNavLink to='/lists' width={getWidthForListsNavButton(i18n.language)}>
+                  <StyledNavLink
+                    to="/lists"
+                    width={getWidthForListsNavButton(i18n.language)}
+                  >
                     {t("lists")}
                   </StyledNavLink>
                 ) : null}
               </NavListItem>
             )}
             <NavListItem $main>
-              <StyledNavLink to='/info' width={getWidthForInfoNavButton(i18n.language)}>
+              <StyledNavLink
+                to="/info"
+                width={getWidthForInfoNavButton(i18n.language)}
+              >
                 {t("info")}
               </StyledNavLink>
             </NavListItem>
             <NavListItem $last $main>
-              <StyledNavLink to='/account'>{pathname === "/account" ? <ActiveAccount /> : <Account />}</StyledNavLink>
+              <StyledNavLink to="/account">
+                {pathname === "/account" ? <ActiveAccount /> : <Account />}
+              </StyledNavLink>
             </NavListItem>
           </NavList>
         </Nav>

@@ -199,7 +199,7 @@ const langEn: typeof langPl = {
     },
     contactForm: {
       title: "Contact",
-      subTitle: "Feel free to contact me. ✉️",
+      subTitle: "Drop me a message! ✉️",
     },
   },
   accountPage: {
@@ -369,6 +369,7 @@ const langEn: typeof langPl = {
       logs: {
         title: "Recent System Events",
         noLogs: "No events recorded",
+        success: "Completed successfully",
         types: {
           autobackup: "Auto-Backup (GD)",
           manualbackup: "Manual Backup (GD)",

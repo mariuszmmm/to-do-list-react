@@ -158,7 +158,10 @@ const handler: Handler = async (event, context) => {
         throw new Error(uploadResponse.message);
       }
 
-      await updateStatus("success", "Manual backup completed successfully");
+      await updateStatus(
+        "success",
+        `Manual backup completed successfully: ${fileName}`,
+      );
 
       return jsonResponse(200, {
         message: "Backup uploaded to Google Drive successfully",

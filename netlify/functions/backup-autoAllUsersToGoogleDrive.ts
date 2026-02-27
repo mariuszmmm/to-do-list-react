@@ -123,18 +123,18 @@ const handler: Handler = async (event) => {
 
     console.log(`${logPrefix} Backup uploaded successfully: ${fileName}`);
 
-    // 4. Cleanup old backups (older than 3 days)
+    // 4. Cleanup old backups (older than 10 days)
     console.log(`${logPrefix} Cleaning up old backups...`);
     const folderId = await findOrCreateFolder(folderName, accessToken);
     if (folderId) {
       const files = await listFilesID(folderId, accessToken);
-      const threeDaysAgo = new Date();
-      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
       let deletedCount = 0;
       for (const file of files) {
         const fileCreatedTime = new Date(file.createdTime);
-        if (fileCreatedTime < threeDaysAgo) {
+        if (fileCreatedTime < tenDaysAgo) {
           console.log(
             `${logPrefix} Deleting old backup: ${file.name} (${file.id})`,
           );
@@ -147,7 +147,10 @@ const handler: Handler = async (event) => {
       );
     }
 
-    await updateStatus("success");
+    await updateStatus(
+      "success",
+      `Automated backup completed successfully: ${fileName}`,
+    );
 
     return jsonResponse(200, {
       message: "Automated backup completed successfully",
