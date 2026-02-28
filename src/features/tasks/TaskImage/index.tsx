@@ -9,6 +9,7 @@ import {
   ImageInput,
   ImagePlaceholder,
   ImagePreview,
+  ImagePreviewWrapper,
   ProgressBarContainer,
   ProgressBarFill,
 } from "../../../common/Image";
@@ -230,22 +231,24 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
         body={
           remoteTask && (
             <>
-              <ImagePreview
-                onClick={() => imageSrc && setIsImageModalOpen(true)}
-                style={{ cursor: imageSrc ? "pointer" : "default" }}
-              >
-                {imageSrc ? (
-                  <Image src={imageSrc} alt="image preview" />
-                ) : (
-                  <ImagePlaceholder />
-                )}
+              <ImagePreviewWrapper>
+                <ImagePreview
+                  onClick={() => imageSrc && setIsImageModalOpen(true)}
+                  style={{ cursor: imageSrc ? "pointer" : "default" }}
+                >
+                  {imageSrc ? (
+                    <Image src={imageSrc} alt="image preview" />
+                  ) : (
+                    <ImagePlaceholder />
+                  )}
 
-                {isUploading && (
-                  <ProgressBarContainer>
-                    <ProgressBarFill $width={progress} />
-                  </ProgressBarContainer>
-                )}
-              </ImagePreview>
+                  {isUploading && (
+                    <ProgressBarContainer>
+                      <ProgressBarFill $width={progress} />
+                    </ProgressBarContainer>
+                  )}
+                </ImagePreview>
+              </ImagePreviewWrapper>
 
               {isImageModalOpen && imageSrc && (
                 <ImageModal

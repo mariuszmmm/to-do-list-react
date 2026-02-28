@@ -9,7 +9,11 @@ import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
-import { Image, ImagePreview } from "../../../common/Image";
+import {
+  Image,
+  ImagePreview,
+  ImagePreviewWrapper,
+} from "../../../common/Image";
 import { ImageModal } from "../../../common/ImageModal";
 
 const TaskPage = () => {
@@ -39,12 +43,14 @@ const TaskPage = () => {
             <>
               {task.image && imageUrl && (
                 <>
-                  <ImagePreview
-                    onClick={() => setIsModalOpen(true)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <Image src={imageUrl} alt="preview" key={imageUrl} />
-                  </ImagePreview>
+                  <ImagePreviewWrapper>
+                    <ImagePreview
+                      onClick={() => setIsModalOpen(true)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <Image src={imageUrl} alt="preview" key={imageUrl} />
+                    </ImagePreview>
+                  </ImagePreviewWrapper>
                   {isModalOpen && (
                     <ImageModal
                       src={imageUrl}

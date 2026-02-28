@@ -66,9 +66,6 @@ interface BodyWrapperProps {
 }
 
 export const BodyWrapper = styled.div<BodyWrapperProps>`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   padding: 20px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
