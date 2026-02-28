@@ -1,4 +1,9 @@
-import { saveConfimationTokenInSessionStorage, saveRecoveryTokenInSessionStorage } from "../storage/sessionStorage";
+import {
+  saveConfimationTokenInSessionStorage,
+  saveEmailChangeTokenInSessionStorage,
+  saveInviteTokenInSessionStorage,
+  saveRecoveryTokenInSessionStorage,
+} from "../storage/sessionStorage";
 
 export const handleAuthTokensFromUrl = () => {
   const url = window.location.href;
@@ -21,5 +26,20 @@ export const handleAuthTokensFromUrl = () => {
     saveRecoveryTokenInSessionStorage(recoveryToken);
     const recoveryUrl = process.env.REACT_APP_RECOVERY_URL;
     if (recoveryUrl) window.location.href = recoveryUrl;
+    return;
+  }
+
+  const inviteToken = params.get("invite_token");
+  if (inviteToken) {
+    saveInviteTokenInSessionStorage(inviteToken);
+    const inviteUrl = process.env.REACT_APP_INVITE_URL;
+    if (inviteUrl) window.location.href = inviteUrl;
+    return;
+  }
+
+  const emailChangeToken = params.get("email_change_token");
+  if (emailChangeToken) {
+    saveEmailChangeTokenInSessionStorage(emailChangeToken);
+    window.location.href = "/#/";
   }
 };

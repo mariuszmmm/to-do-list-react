@@ -62,6 +62,11 @@ export const themeLight = {
       disabled: colorNames.silver,
       transparent: colorNames.transparent,
     },
+    progressBar: {
+      background: colorNames.alto,
+      fill: colorNames.forestGreen,
+      fill2: colorNames.blue,
+    },
     status: {
       error: colorNames.red,
       warning: colorNames.crimson,
@@ -117,6 +122,11 @@ export const themeDark: typeof themeLight = {
       cancel: darken(0.03, colorNames.empress),
       disabled: lighten(0.15, colorNames.black),
       transparent: colorNames.transparent,
+    },
+    progressBar: {
+      background: colorNames.alto,
+      fill: colorNames.forestGreen,
+      fill2: colorNames.blue,
     },
     status: {
       error: lighten(0.06, colorNames.red),

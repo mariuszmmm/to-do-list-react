@@ -526,6 +526,17 @@ const langPl = {
     tryAgain: "Spróbuj ponownie później.",
     home: "Strona główna",
   },
+  userInvitationPage: {
+    title: "Aktywacja konta",
+    subTitle: "Ustaw hasło do swojego konta",
+    message: {
+      success: "Twoje konto zostało aktywowane.",
+      error: "Link wygasł lub został użyty.",
+    },
+    closeTab: "Zamknij tę kartę i wróć do wcześniej otwartej przeglądarki.",
+    tryAgain: "Spróbuj ponownie później.",
+    home: "Strona główna",
+  },
   modal: {
     buttons: {
       confirmButton: "Potwierdź",
@@ -603,6 +614,16 @@ const langPl = {
         success: "Konto zostało usunięte.",
         error: {
           default: "Błąd podczas usuwania konta.",
+        },
+      },
+    },
+    userInvitation: {
+      title: "Aktywacja konta",
+      message: {
+        loading: "Trwa aktywacja konta...",
+        success: "Konto zostało aktywowane, możesz się teraz zalogować.",
+        error: {
+          default: "Błąd podczas aktywacji konta.",
         },
       },
     },

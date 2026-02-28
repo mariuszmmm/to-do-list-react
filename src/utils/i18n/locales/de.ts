@@ -532,6 +532,18 @@ const langDe: typeof langPl = {
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
+  userInvitationPage: {
+    title: "Kontoaktivierung",
+    subTitle: "Legen Sie ein Passwort für Ihr Konto fest",
+    message: {
+      success: "Ihr Konto wurde aktiviert.",
+      error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
+    },
+    closeTab:
+      "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
+    tryAgain: "Versuchen Sie es später erneut.",
+    home: "Startseite",
+  },
   modal: {
     buttons: {
       confirmButton: "Bestätigen",
@@ -610,6 +622,16 @@ const langDe: typeof langPl = {
         success: "Das Konto wurde gelöscht.",
         error: {
           default: "Fehler beim Löschen des Kontos.",
+        },
+      },
+    },
+    userInvitation: {
+      title: "Kontoaktivierung",
+      message: {
+        loading: "Konto wird aktiviert...",
+        success: "Konto aktiviert, Sie können sich jetzt anmelden.",
+        error: {
+          default: "Fehler bei der Kontoaktivierung.",
         },
       },
     },

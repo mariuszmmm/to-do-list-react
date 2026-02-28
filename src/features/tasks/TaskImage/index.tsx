@@ -23,6 +23,7 @@ import { useFileUploadHandlers } from "./hooks/useFileUploadHandlers";
 import { useTaskImageActionsProps } from "./hooks/useTaskImageActionsProps";
 import { CameraModal } from "./CameraModal";
 import { TaskImageActions } from "./TaskImageActions";
+import { ImageModal } from "../../../common/ImageModal";
 import { TaskImageProps } from "./types";
 import { ListsData } from "../../../types";
 
@@ -47,16 +48,26 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "taskImagePage",
   });
-  const { imageUrl: taskImageUrl, publicId: taskImagePublicId } = remoteTask?.image || {};
+  const { imageUrl: taskImageUrl, publicId: taskImagePublicId } =
+    remoteTask?.image || {};
 
   const fileInputCameraRef = useRef<HTMLInputElement>(null);
   const fileInputGalleryRef = useRef<HTMLInputElement>(null);
-  const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] = useState(false);
+  const [photoSourceButtonsVisible, setPhotoSourceButtonsVisible] =
+    useState(false);
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const { previewUrl, setPreview, clearPreview } = useImagePreview();
-  const { uploadTaskImage, cancelUpload, progress, phase, isUploading, uploadError } = useUploadTaskImage();
+  const {
+    uploadTaskImage,
+    cancelUpload,
+    progress,
+    phase,
+    isUploading,
+    uploadError,
+  } = useUploadTaskImage();
   const { removeImage, isRemoving, removeError } = useRemoveTaskImage();
   const {
     videoRef,
@@ -80,23 +91,25 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
     }
   };
 
-  const { trigger: handleRemoveImage, isPending: isConfirmingRemove } = useConfirmRemoveAction({
-    onConfirm: handleConfirmRemove,
-    title: { key: "modal.imageRemove.title" },
-    message: { key: "modal.imageRemove.message.confirm" },
-    confirmButtonLabel: { key: "modal.buttons.deleteButton" },
-  });
+  const { trigger: handleRemoveImage, isPending: isConfirmingRemove } =
+    useConfirmRemoveAction({
+      onConfirm: handleConfirmRemove,
+      title: { key: "modal.imageRemove.title" },
+      message: { key: "modal.imageRemove.message.confirm" },
+      confirmButtonLabel: { key: "modal.buttons.deleteButton" },
+    });
 
-  const { onFileChange: onCameraFileChange, handleCancelUpload } = useFileUploadHandlers({
-    taskImageProps,
-    setPreview,
-    uploadTaskImage,
-    taskImagePublicId,
-    clearPreview,
-    setPhotoSourceButtonsVisible,
-    cancelUpload,
-    fileInputRef: fileInputCameraRef,
-  });
+  const { onFileChange: onCameraFileChange, handleCancelUpload } =
+    useFileUploadHandlers({
+      taskImageProps,
+      setPreview,
+      uploadTaskImage,
+      taskImagePublicId,
+      clearPreview,
+      setPhotoSourceButtonsVisible,
+      cancelUpload,
+      fileInputRef: fileInputCameraRef,
+    });
   const { onFileChange: onGalleryFileChange } = useFileUploadHandlers({
     taskImageProps,
     setPreview,
@@ -174,7 +187,8 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
 
   const isMobile =
     typeof window !== "undefined" &&
-    ("ontouchstart" in window || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches));
+    ("ontouchstart" in window ||
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches));
 
   const handleCameraButton = () => {
     if (isMobile) {
@@ -216,8 +230,15 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
         body={
           remoteTask && (
             <>
-              <ImagePreview>
-                {imageSrc ? <Image src={imageSrc} alt='image preview' /> : <ImagePlaceholder />}
+              <ImagePreview
+                onClick={() => imageSrc && setIsImageModalOpen(true)}
+                style={{ cursor: imageSrc ? "pointer" : "default" }}
+              >
+                {imageSrc ? (
+                  <Image src={imageSrc} alt="image preview" />
+                ) : (
+                  <ImagePlaceholder />
+                )}
 
                 {isUploading && (
                   <ProgressBarContainer>
@@ -226,13 +247,25 @@ export const TaskImage = ({ listsData, localListId }: Props) => {
                 )}
               </ImagePreview>
 
+              {isImageModalOpen && imageSrc && (
+                <ImageModal
+                  src={imageSrc}
+                  alt="full screen preview"
+                  onClose={() => setIsImageModalOpen(false)}
+                />
+              )}
+
               <ImageInput ref={fileInputCameraRef} {...fileInputCameraProps} />
-              <ImageInput ref={fileInputGalleryRef} {...fileInputGalleryProps} />
+              <ImageInput
+                ref={fileInputGalleryRef}
+                {...fileInputGalleryProps}
+              />
 
               {typeof window !== "undefined" &&
                 !(
                   "ontouchstart" in window ||
-                  (window.matchMedia && window.matchMedia("(pointer: coarse)").matches)
+                  (window.matchMedia &&
+                    window.matchMedia("(pointer: coarse)").matches)
                 ) && (
                   <CameraModal
                     isOpen={isCameraModalOpen}

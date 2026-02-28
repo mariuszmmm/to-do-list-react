@@ -524,6 +524,17 @@ const langEn: typeof langPl = {
     tryAgain: "Try again later.",
     home: "Home",
   },
+  userInvitationPage: {
+    title: "Account activation",
+    subTitle: "Set a password for your account",
+    message: {
+      success: "Your account has been activated.",
+      error: "The link has expired or has been used.",
+    },
+    closeTab: "Close this tab and return to the previously opened browser.",
+    tryAgain: "Try again later.",
+    home: "Home",
+  },
   modal: {
     buttons: {
       confirmButton: "Confirm",
@@ -600,6 +611,16 @@ const langEn: typeof langPl = {
         success: "Account has been deleted.",
         error: {
           default: "Error deleting account.",
+        },
+      },
+    },
+    userInvitation: {
+      title: "Account activation",
+      message: {
+        loading: "Activating account...",
+        success: "Account activated, you can now log in.",
+        error: {
+          default: "Error activating account.",
         },
       },
     },

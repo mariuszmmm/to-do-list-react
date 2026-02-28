@@ -26,13 +26,17 @@ export const ImagePreview = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin: 16px 0;
   border: 1px solid ${({ theme }) => theme.colors.border};
   padding: 12px;
   border-radius: 4px;
   background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   position: relative;
   aspect-ratio: 1;
+  width: 100%;
+  max-width: 576px;
+  align-self: center;
+  overflow: hidden;
 
   img {
     width: 100%;
@@ -73,7 +77,10 @@ interface ProgressBarFillProps {
 
 export const ProgressBarFill = styled.div<ProgressBarFillProps>`
   height: 100%;
-  background-color: ${({ $isDownloading }) => ($isDownloading ? "#150ed7" : "#4CAF50")};
+  background-color: ${({ theme, $isDownloading }) =>
+    $isDownloading
+      ? theme.colors.progressBar.fill2
+      : theme.colors.progressBar.fill};
   width: ${({ $width }) => $width}%;
   transition: width 0.1s ease;
 `;

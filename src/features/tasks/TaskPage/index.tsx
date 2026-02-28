@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux/redux";
 import { DateInfo, Name } from "./styled";
@@ -10,14 +10,18 @@ import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
 import { Image, ImagePreview } from "../../../common/Image";
+import { ImageModal } from "../../../common/ImageModal";
 
 const TaskPage = () => {
   const { id: taskId } = useParams();
   const navigate = useNavigate();
-  const task = useAppSelector((state) => (taskId ? selectTaskById(state, taskId) : null));
+  const task = useAppSelector((state) =>
+    taskId ? selectTaskById(state, taskId) : null,
+  );
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "taskPage",
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { imageUrl } = task?.image || {};
 
   useEffect(() => {
@@ -34,9 +38,21 @@ const TaskPage = () => {
           task && (
             <>
               {task.image && imageUrl && (
-                <ImagePreview>
-                  <Image src={imageUrl} alt='preview' key={imageUrl} />
-                </ImagePreview>
+                <>
+                  <ImagePreview
+                    onClick={() => setIsModalOpen(true)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <Image src={imageUrl} alt="preview" key={imageUrl} />
+                  </ImagePreview>
+                  {isModalOpen && (
+                    <ImageModal
+                      src={imageUrl}
+                      alt={task.content}
+                      onClose={() => setIsModalOpen(false)}
+                    />
+                  )}
+                </>
               )}
               <DateInfo>
                 <Name>{t("done.title")}:</Name>
@@ -60,7 +76,13 @@ const TaskPage = () => {
               )}
 
               <FormButtonWrapper $taskDetails>
-                <FormButton type='button' width={"200px"} onClick={() => navigate(-1)} $singleInput $cancel>
+                <FormButton
+                  type="button"
+                  width={"200px"}
+                  onClick={() => navigate(-1)}
+                  $singleInput
+                  $cancel
+                >
                   {t("backButton")}
                 </FormButton>
               </FormButtonWrapper>

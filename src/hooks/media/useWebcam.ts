@@ -48,12 +48,18 @@ export const useWebcam = () => {
     } catch (err) {
       const error = err as DOMException;
 
-      if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+      if (
+        error.name === "NotAllowedError" ||
+        error.name === "PermissionDeniedError"
+      ) {
         setError({
           type: "permission-denied",
           message: error.message,
         });
-      } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+      } else if (
+        error.name === "NotFoundError" ||
+        error.name === "DevicesNotFoundError"
+      ) {
         setError({
           type: "camera-not-found",
           message: error.message,
@@ -96,7 +102,10 @@ export const useWebcam = () => {
       return null;
     }
 
-    if (videoRef.current.videoWidth === 0 || videoRef.current.videoHeight === 0) {
+    if (
+      videoRef.current.videoWidth === 0 ||
+      videoRef.current.videoHeight === 0
+    ) {
       setError({
         type: "unknown",
         message: "Camera frame not ready",
@@ -136,11 +145,27 @@ export const useWebcam = () => {
   }, []);
 
   useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+        setIsAvailable(null);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
     const checkCameraAvailability = async () => {
-      if (navigator.mediaDevices && typeof navigator.mediaDevices.enumerateDevices === "function") {
+      if (
+        navigator.mediaDevices &&
+        typeof navigator.mediaDevices.enumerateDevices === "function"
+      ) {
         try {
           const devices = await navigator.mediaDevices.enumerateDevices();
-          const hasVideoDevice = devices.some((device) => device.kind === "videoinput");
+          const hasVideoDevice = devices.some(
+            (device) => device.kind === "videoinput",
+          );
           if (hasVideoDevice) {
             setIsAvailable(true);
             setError(null);
