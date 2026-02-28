@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { ModalOverlay, ModalContent, FullImage } from "./styled";
 import { useEffect } from "react";
 
@@ -9,7 +8,6 @@ interface ImageModalProps {
 }
 
 export const ImageModal = ({ src, alt, onClose }: ImageModalProps) => {
-  const { t } = useTranslation();
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
