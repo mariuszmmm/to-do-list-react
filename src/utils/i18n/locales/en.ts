@@ -525,13 +525,11 @@ const langEn: typeof langPl = {
     home: "Home",
   },
   userInvitationPage: {
-    title: "Account activation",
+    title: "Account activation - To-do list",
     subTitle: "Set a password for your account",
     message: {
-      success: "Your account has been activated.",
       error: "The link has expired or has been used.",
     },
-    closeTab: "Close this tab and return to the previously opened browser.",
     tryAgain: "Try again later.",
     home: "Home",
   },
@@ -618,7 +616,8 @@ const langEn: typeof langPl = {
       title: "Account activation",
       message: {
         loading: "Activating account...",
-        success: "Account activated, you can now log in.",
+        success:
+          "Your account has been activated. You can now log in to the application using your email address: <strong>{{email}}</strong> and the password set during the activation process.",
         error: {
           default: "Error activating account.",
         },

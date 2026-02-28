@@ -25,24 +25,16 @@ const UserInvitationPage = () => {
             body={<UserInvitationForm setStatus={setStatus} />}
           />
         </>
-      ) : (
+      ) : status === "linkExpired" ? (
         <Container>
           <Text>
             <b>
-              <Trans
-                i18nKey={
-                  status === "accountRecovered"
-                    ? "userInvitationPage.message.success"
-                    : "userInvitationPage.message.error"
-                }
-              />
+              <Trans i18nKey="userInvitationPage.message.error" />
             </b>
           </Text>
-          <Text style={{ marginTop: "20px" }}>
-            {status === "accountRecovered" ? t("closeTab") : t("tryAgain")}
-          </Text>
+          <Text style={{ marginTop: "20px" }}>{t("tryAgain")}</Text>
         </Container>
-      )}
+      ) : null}
     </>
   );
 };

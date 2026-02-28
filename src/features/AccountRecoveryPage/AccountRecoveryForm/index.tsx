@@ -9,7 +9,10 @@ import { InputWrapper } from "../../../common/InputWrapper";
 import { InputButton } from "../../../common/InputButton";
 import { EyeIcon, EyeSlashIcon } from "../../../common/icons";
 import { auth } from "../../../api/auth";
-import { clearSessionStorage, getRecoveryTokenFromSessionStorage } from "../../../utils/storage/sessionStorage";
+import {
+  clearSessionStorage,
+  getRecoveryTokenFromSessionStorage,
+} from "../../../utils/storage/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
 import { useTranslation } from "react-i18next";
 import { RecoveryStatus } from "../../../types";
@@ -117,8 +120,8 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         <InputWrapper>
           <Input
             value={password}
-            name='password'
-            type='password'
+            name="password"
+            type={showPassword ? "text" : "password"}
             placeholder={t("form.inputPlaceholders.newPassword")}
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -130,12 +133,12 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
-            type='button'
+            type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>
         </InputWrapper>
-        <FormButton type='submit' $singleInput>
+        <FormButton type="submit" $singleInput>
           {t("form.buttons.save")}
         </FormButton>
         {!!message && <Info $warning>{message}</Info>}

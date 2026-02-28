@@ -533,14 +533,11 @@ const langDe: typeof langPl = {
     home: "Startseite",
   },
   userInvitationPage: {
-    title: "Kontoaktivierung",
+    title: "Kontoaktivierung - To-do list",
     subTitle: "Legen Sie ein Passwort für Ihr Konto fest",
     message: {
-      success: "Ihr Konto wurde aktiviert.",
       error: "Der Link ist abgelaufen oder wurde bereits verwendet.",
     },
-    closeTab:
-      "Schließe diesen Tab und kehre zum zuvor geöffneten Browser zurück.",
     tryAgain: "Versuchen Sie es später erneut.",
     home: "Startseite",
   },
@@ -629,7 +626,8 @@ const langDe: typeof langPl = {
       title: "Kontoaktivierung",
       message: {
         loading: "Konto wird aktiviert...",
-        success: "Konto aktiviert, Sie können sich jetzt anmelden.",
+        success:
+          "Ihr Konto wurde aktiviert. Sie können sich ab sofort mit Ihrer E-Mail-Adresse: <strong>{{email}}</strong> und dem bei der Aktivierung festgelegten Passwort in der App anmelden.",
         error: {
           default: "Fehler bei der Kontoaktivierung.",
         },

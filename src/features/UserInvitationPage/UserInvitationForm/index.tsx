@@ -1,4 +1,5 @@
 import { SubmitEventHandler, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useValidation } from "../../../hooks/validation/useValidation";
 import { useAppDispatch } from "../../../hooks/redux/redux";
 import { Form } from "../../../common/Form";
@@ -29,6 +30,7 @@ export const UserInvitationForm = ({ setStatus }: Props) => {
     keyPrefix: "accountPage",
   });
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { passwordValidation } = useValidation({
@@ -54,18 +56,22 @@ export const UserInvitationForm = ({ setStatus }: Props) => {
       const token = getInviteTokenFromSessionStorage();
       if (!token) throw new Error("No token");
 
-      await auth.acceptInvite(token, password, true);
+      const user = await auth.acceptInvite(token, password, true);
 
       dispatch(
         openModal({
           title: { key: "modal.userInvitation.title" },
-          message: { key: "modal.userInvitation.message.success" },
+          message: {
+            key: "modal.userInvitation.message.success",
+            values: { email: user.email },
+          },
           type: "success",
         }),
       );
       setPassword("");
       setStatus("accountRecovered");
       clearSessionStorage();
+      navigate("/");
     } catch (error) {
       dispatch(
         openModal({
@@ -86,7 +92,7 @@ export const UserInvitationForm = ({ setStatus }: Props) => {
           <Input
             value={password}
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder={t("form.inputPlaceholders.newPassword")}
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}

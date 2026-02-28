@@ -47,10 +47,11 @@ export const HeaderContent = styled.h1`
 `;
 
 export const ModalDescription = styled.p`
-  padding: 20px;
+  padding: 24px 20px;
   margin: 0;
   word-break: break-word;
   white-space: pre-wrap;
+  line-height: 1.5;
 `;
 
 export const ModalButtonContainer = styled.div`

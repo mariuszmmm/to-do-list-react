@@ -527,13 +527,11 @@ const langPl = {
     home: "Strona główna",
   },
   userInvitationPage: {
-    title: "Aktywacja konta",
+    title: "Aktywacja konta - To-do list",
     subTitle: "Ustaw hasło do swojego konta",
     message: {
-      success: "Twoje konto zostało aktywowane.",
       error: "Link wygasł lub został użyty.",
     },
-    closeTab: "Zamknij tę kartę i wróć do wcześniej otwartej przeglądarki.",
     tryAgain: "Spróbuj ponownie później.",
     home: "Strona główna",
   },
@@ -621,7 +619,8 @@ const langPl = {
       title: "Aktywacja konta",
       message: {
         loading: "Trwa aktywacja konta...",
-        success: "Konto zostało aktywowane, możesz się teraz zalogować.",
+        success:
+          "Twoje konto zostało aktywowane. Od teraz możesz logować się w aplikacji za pomocą adresu e-mail: <strong>{{email}}</strong> oraz hasła ustawionego w procesie aktywacji.",
         error: {
           default: "Błąd podczas aktywacji konta.",
         },
