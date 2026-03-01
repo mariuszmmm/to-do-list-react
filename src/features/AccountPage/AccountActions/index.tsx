@@ -8,7 +8,6 @@ import {
 } from "../accountSlice";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
-import { getSavedAccounts } from "../../../utils/auth/multiAccount";
 
 export const AccountActions = () => {
   const accountMode = useAppSelector(selectAccountMode);
@@ -33,7 +32,6 @@ export const AccountActions = () => {
   };
   const handlePasswordChange = () => dispatch(setAccountMode("passwordChange"));
   const handleAccountSwitch = () => dispatch(setAccountMode("accountSwitch"));
-  const hasSavedAccounts = getSavedAccounts().length > 0;
 
   return (
     <ButtonsContainer>
