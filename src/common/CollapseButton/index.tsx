@@ -13,7 +13,10 @@ export const CollapseButton = styled.button`
   color: ${({ theme }) => theme.colors.button.secendaryText};
   font-size: 20px;
   line-height: 1;
-  transition: color 0.2s ease, filter 0.2s ease;
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     cursor: pointer;

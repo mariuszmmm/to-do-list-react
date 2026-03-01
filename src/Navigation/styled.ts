@@ -122,6 +122,7 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   display: inline-block;
   text-align: center;
   min-width: fit-content;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     text-decoration: underline;
@@ -151,6 +152,7 @@ export const NavButton = styled.button<ButtonProps>`
   cursor: pointer;
   text-underline-offset: 5px;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     text-decoration: underline;

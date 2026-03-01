@@ -2,7 +2,12 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
 import { Info } from "../../../common/Info";
-import { selectAccountMode, selectLoggedUserEmail, selectMessage, setAccountMode } from "../accountSlice";
+import {
+  selectAccountMode,
+  selectLoggedUserEmail,
+  selectMessage,
+  setAccountMode,
+} from "../accountSlice";
 import { useTranslation } from "react-i18next";
 import { AutoRefreshToggle } from "../AutoRefreshToggle";
 
@@ -19,16 +24,33 @@ export const AccountFormActions = () => {
     <>
       <ButtonsContainer $extra>
         {!loggedUserEmail
-          ? (accountMode === "login" || accountMode === "accountRecovery") && (
+          ? (accountMode === "login" ||
+              accountMode === "accountRecovery" ||
+              accountMode === "accountSwitch") && (
               <Button
                 $special
-                onClick={() => dispatch(setAccountMode(accountMode === "login" ? "accountRecovery" : "login"))}
+                onClick={() =>
+                  dispatch(
+                    setAccountMode(
+                      accountMode === "accountRecovery" ||
+                        accountMode === "accountSwitch"
+                        ? "login"
+                        : "accountRecovery",
+                    ),
+                  )
+                }
               >
-                {accountMode === "login" ? t("buttons.resetPassword") : t("buttons.cancel")}
+                {accountMode === "login"
+                  ? t("buttons.resetPassword")
+                  : t("buttons.cancel")}
               </Button>
             )
-          : accountMode === "passwordChange" && (
-              <Button $special onClick={() => dispatch(setAccountMode("logged"))}>
+          : (accountMode === "passwordChange" ||
+              accountMode === "accountSwitch") && (
+              <Button
+                $special
+                onClick={() => dispatch(setAccountMode("logged"))}
+              >
                 {t("buttons.cancel")}
               </Button>
             )}

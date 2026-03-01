@@ -20,15 +20,15 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       .header {
-        background-color: #359b09;
+        background-color: #007380;
         padding: 30px;
         text-align: center;
         color: #ffffff;
       }
-      .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
       }
       .content {
         padding: 40px 30px;
@@ -43,7 +43,7 @@
       .button {
         display: inline-block;
         padding: 14px 32px;
-        background-color: #359b09;
+        background-color: #007380;
         color: #ffffff !important;
         text-decoration: none;
         border-radius: 8px;
@@ -62,17 +62,31 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>To-Do List</h1>
+        <img src="{{ .SiteURL }}/favicon.png" alt="To-Do List Logo" />
       </div>
       <div class="content">
-        <p>
-          Zostałeś zaproszony do korzystania z aplikacji <br /><b>To-Do List</b
-          >.
+        <p>Zostałeś zaproszony do korzystania z aplikacji <b>To-Do List</b>.</p>
+        <p
+          style="
+            font-size: 15px;
+            color: #555555;
+            margin: 20px 0;
+            line-height: 1.6;
+            text-align: center;
+            font-style: italic;
+          "
+        >
+          To-Do List to prosty sposób na organizację Twoich codziennych list i
+          zadań.<br />
+          Błyskawicznie dodawaj zadania (również głosowo!), wzbogacaj je o
+          zdjęcia<br />
+          i układaj listy za pomocą wygodnego przeciągania elementów.<br />
+          Dzięki automatycznej synchronizacji w czasie rzeczywistym<br />
+          Twoje plany są zawsze aktualne na wszystkich urządzeniach.<br />
+          Gdziekolwiek jesteś, Twoja lista jest zawsze pod ręką,<br />
+          abyś o niczym nie zapomniał i miał wszystko pod kontrolą.
         </p>
-        <p>
-          Kliknij w poniższy przycisk, aby ustawić hasło do swojego konta i
-          zacząć zarządzać swoimi zadaniami.
-        </p>
+        <p>Kliknij w poniższy przycisk, aby ustawić hasło do swojego konta.</p>
         <a href="{{ .SiteURL }}/#invite_token={{ .Token }}" class="button"
           >Ustaw hasło i aktywuj konto</a
         >

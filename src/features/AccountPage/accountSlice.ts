@@ -31,14 +31,15 @@ const accountSlice = createSlice({
         | "accountRecovery"
         | "accountDelete"
         | "dataRemoval"
-      >
+        | "accountSwitch"
+      >,
     ) => {
       state.accountMode = mode;
       state.message = "";
     },
     setIsWaitingForConfirmation: (
       state,
-      { payload }: PayloadAction<boolean>
+      { payload }: PayloadAction<boolean>,
     ) => {
       state.isWaitingForConfirmation = payload;
     },
@@ -50,7 +51,7 @@ const accountSlice = createSlice({
         email: string | null;
         name?: string;
         roles?: AccountState["loggedUserRoles"];
-      } | null>
+      } | null>,
     ) => {
       if (payload === null || payload.email === null) {
         state.loggedUserEmail = null;
@@ -74,7 +75,7 @@ const accountSlice = createSlice({
         totalUsers: number;
         userDevices: number;
         allDevices: number;
-      }>
+      }>,
     ) => {
       state.presenceUsers = action.payload.users;
       state.userDevicesCount = action.payload.userDevices;
@@ -98,6 +99,8 @@ export const selectAccountMode = (state: RootState) =>
   selectAccountState(state).accountMode;
 export const selectIsWaitingForConfirmation = (state: RootState) =>
   selectAccountState(state).isWaitingForConfirmation;
+export const selectLoggedUserName = (state: RootState) =>
+  selectAccountState(state).loggedUserName;
 export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
 export const selectIsAdmin = (state: RootState) =>

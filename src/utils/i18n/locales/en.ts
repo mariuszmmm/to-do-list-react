@@ -140,6 +140,42 @@ const langEn: typeof langPl = {
     subTitle: "Selected list (preview)",
   },
   infoPage: {
+    howToStart: {
+      title: "How to Start?",
+      subTitle: "First steps:",
+      steps: {
+        step1: {
+          title: "1. Start Creating",
+          description:
+            "In the 'What to do?' field, enter the task content. You can also dictate the task – click the microphone icon. You can edit tasks (pencil), delete them (trash), and mark them as completed.",
+        },
+        step2: {
+          title: "2. Log In",
+          description:
+            "Create an account so you don't lose your data. In the login window, check the 'Stay logged in' option, so the app remembers you for longer and you won't have to enter your password every visit.",
+        },
+        step3: {
+          title: "3. Save in the Cloud",
+          description:
+            "As a logged-in user, you can save your current list to the database by clicking the 'Save list' button. Your data will be secure and available on all your devices.",
+        },
+        step4: {
+          title: "4. Manage Lists",
+          description:
+            "On the 'Lists' page, you will find all your saved collections. You can sort them, delete them, or preview their content at the bottom of the page. Click 'Edit selected list' to load it into the main view.",
+        },
+        step5: {
+          title: "5. Add Photos",
+          description:
+            "You can attach a photo or graphic to each task. Simply click the camera icon on the selected task to open the image management panel.",
+        },
+        step6: {
+          title: "6. Install the App",
+          description:
+            "On your phone, you can use To-Do List like a regular app. Click the 'three dots' in the corner of your browser and select 'Add to Home screen'. The app icon will appear on your desktop.",
+        },
+      },
+    },
     aboutApp: {
       title: "About the App",
       topics: {
@@ -174,7 +210,7 @@ const langEn: typeof langPl = {
         links: {
           subTitle: "Application Versions:",
           description: {
-            newApp: "Current Production Build (Netlify):",
+            newApp: "Latest version (Netlify):",
             oldApp: "Archived Version (GitHub Pages):",
           },
         },
@@ -205,6 +241,17 @@ const langEn: typeof langPl = {
   accountPage: {
     title: "User Panel",
     notLoggedIn: "You are not logged in",
+    switcher: {
+      title: "Saved accounts",
+      active: "Active",
+      switch: "Switch",
+      forget: "Remove from device",
+      addAccount: "Log in another account",
+      confirmForget:
+        "Are you sure you want to remove this account from this device (forget)?",
+      unnamedAccount: "Unnamed account",
+      switchListTitle: "Switch account",
+    },
     buttons: {
       register: "Register",
       login: "Login",

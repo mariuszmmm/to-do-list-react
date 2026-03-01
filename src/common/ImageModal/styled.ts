@@ -12,6 +12,7 @@ export const ModalOverlay = styled.div`
   align-items: center;
   z-index: 2000;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export const ModalContent = styled.div`
@@ -22,6 +23,7 @@ export const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export const FullImage = styled.img`

@@ -8,4 +8,5 @@ export const CheckboxContainer = styled.div`
   user-select: none;
   margin-bottom: 4px;
   width: fit-content;
+  -webkit-tap-highlight-color: transparent;
 `;

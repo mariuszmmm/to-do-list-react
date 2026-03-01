@@ -6,4 +6,6 @@ export type Settings = {
   isSessionInfoOpen?: boolean;
   isActivitySummaryOpen?: boolean;
   isPresenceListOpen?: boolean;
+  isSwitcherOpen?: boolean;
+  isSystemAdminOpen?: boolean;
 };

@@ -43,6 +43,7 @@ export const ImagePreview = styled.div`
   max-width: 576px;
   align-self: center;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 
   img {
     width: 100%;

@@ -137,6 +137,42 @@ const langPl = {
     subTitle: "Wybrana lista (podgląd)",
   },
   infoPage: {
+    howToStart: {
+      title: "Jak zacząć?",
+      subTitle: "Pierwsze kroki:",
+      steps: {
+        step1: {
+          title: "1. Zacznij tworzyć",
+          description:
+            "W polu „Co jest do zrobienia?” wpisz treść zadania. Możesz też podyktować zadanie – kliknij ikonę mikrofonu. Zadania możesz edytować (ołówek), usuwać (kosz) i oznaczać jako ukończone.",
+        },
+        step2: {
+          title: "2. Zaloguj się",
+          description:
+            "Załóż konto, aby nie stracić swoich danych. W oknie logowania zaznacz opcję „Pozostań zalogowany”, dzięki czemu aplikacja zapamięta Cię na dłużej i nie będiesz musiał wpisywać hasła przy każdej wizycie.",
+        },
+        step3: {
+          title: "3. Zapisuj w chmurze",
+          description:
+            "Jako zalogowany użytkownik możesz zapisać swoją bieżącą listę w bazie danych, klikając przycisk „Zapisz listę”. Twoje dane będą bezpieczne i dostępne na wszystkich Twoich urządzeniach.",
+        },
+        step4: {
+          title: "4. Zarządzaj listami",
+          description:
+            "Na stronie „Listy” znajdziesz wszystkie swoje zapisane zestawienia. Możesz je tam sortować, usuwać lub podejrzeć ich zawartość na dole strony. Kliknij „Edytuj wybraną listę”, aby załadować ją do głównego widoku.",
+        },
+        step5: {
+          title: "5. Dodaj zdjęcia",
+          description:
+            "Do każdego zadania możesz dołączyć zdjęcie lub grafikę. Po prostu kliknij ikonę aparatu przy wybranym zadaniu, aby otworzyć panel zarządzania obrazami.",
+        },
+        step6: {
+          title: "6. Zainstaluj aplikację",
+          description:
+            "Na telefonie możesz używać To-Do List jak zwykłej aplikacji. Kliknij „trzy kropki” w rogu przeglądarki i wybierz „Dodaj do ekranu głównego”. Ikona aplikacji pojawi się na Twoim pulpicie.",
+        },
+      },
+    },
     aboutApp: {
       title: "O aplikacji",
       topics: {
@@ -171,7 +207,7 @@ const langPl = {
         links: {
           subTitle: "Dostępne wersje aplikacji:",
           description: {
-            newApp: "Najnowsza wersja stabilna (Netlify):",
+            newApp: "Wersja najnowsza (Netlify):",
             oldApp: "Wersja archiwalna (GitHub Pages):",
           },
         },
@@ -202,6 +238,17 @@ const langPl = {
   accountPage: {
     title: "Panel użytkownika",
     notLoggedIn: "Jesteś niezalogowany",
+    switcher: {
+      title: "Zapisane konta",
+      active: "Aktywne",
+      switch: "Przełącz",
+      forget: "Usuń z urządzenia",
+      addAccount: "Zaloguj inne konto",
+      confirmForget:
+        "Czy na pewno chcesz usunąć to konto z tego urządzenia (zapomnieć)?",
+      unnamedAccount: "Konto bez nazwy",
+      switchListTitle: "Przełącz konto",
+    },
     buttons: {
       register: "Rejestracja",
       login: "Logowanie",

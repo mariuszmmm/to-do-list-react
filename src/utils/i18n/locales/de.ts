@@ -140,6 +140,42 @@ const langDe: typeof langPl = {
     subTitle: "Aufgabenliste (Vorschau)",
   },
   infoPage: {
+    howToStart: {
+      title: "Wie fange ich an?",
+      subTitle: "Erste Schritte:",
+      steps: {
+        step1: {
+          title: "1. Erstellen beginnen",
+          description:
+            "Geben Sie im Feld „Was ist zu tun?“ den Aufgabeninhalt ein. Sie können die Aufgabe auch diktieren – klicken Sie auf das Mikrofonsymbol. Aufgaben können bearbeitet (Bleistift), gelöscht (Papierkorb) und als erledigt markiert werden.",
+        },
+        step2: {
+          title: "2. Einloggen",
+          description:
+            "Erstellen Sie ein Konto, damit Ihre Daten nicht verloren gehen. Aktivieren Sie im Anmeldefenster die Option „Angemeldet bleiben“, damit sich die App länger an Sie erinnert und Sie nicht bei jedem Besuch Ihr Passwort eingeben müssen.",
+        },
+        step3: {
+          title: "3. In der Cloud speichern",
+          description:
+            "Als angemeldeter Benutzer können Sie Ihre aktuelle Liste in der Datenbank speichern, indem Sie auf die Schaltfläche „Liste speichern“ klicken. Ihre Daten sind sicher und auf all Ihren Geräten verfügbar.",
+        },
+        step4: {
+          title: "4. Listen verwalten",
+          description:
+            "Auf der Seite „Listen“ finden Sie alle Ihre gespeicherten Zusammenstellungen. Dort können Sie sie sortieren, löschen oder deren Inhalt am Ende der Seite in der Vorschau anzeigen. Klicken Sie auf „Ausgewählte Liste bearbeiten“, um sie in die Hauptansicht zu laden.",
+        },
+        step5: {
+          title: "5. Fotos hinzufügen",
+          description:
+            "Sie können jeder Aufgabe ein Foto oder eine Grafik hinzufügen. Klicken Sie einfach auf das Kamerasymbol bei der ausgewählten Aufgabe, um das Bildverwaltungs-Panel zu öffnen.",
+        },
+        step6: {
+          title: "6. App installieren",
+          description:
+            "Auf Ihrem Telefon können Sie die To-Do List wie eine normale App verwenden. Klicken Sie auf die „drei Punkte“ in der Ecke Ihres Browsers und wählen Sie „Zum Startbildschirm hinzufügen“. Das App-Symbol erscheint auf Ihrem Desktop.",
+        },
+      },
+    },
     aboutApp: {
       title: "Über die App",
       topics: {
@@ -174,7 +210,7 @@ const langDe: typeof langPl = {
         links: {
           subTitle: "Anwendungsversionen:",
           description: {
-            newApp: "Aktuelle Produktionsversion (Netlify):",
+            newApp: "Neueste Version (Netlify):",
             oldApp: "Archivierte Version (GitHub Pages):",
           },
         },
@@ -205,6 +241,17 @@ const langDe: typeof langPl = {
   accountPage: {
     title: "Benutzerbereich",
     notLoggedIn: "Du bist nicht eingeloggt",
+    switcher: {
+      title: "Gespeicherte Konten",
+      active: "Aktiv",
+      switch: "Wechseln",
+      forget: "Vom Gerät entfernen",
+      addAccount: "Anderes Konto anmelden",
+      confirmForget:
+        "Möchtest Sie dieses Konto wirklich von diesem Gerät entfernen (vergessen)?",
+      unnamedAccount: "Konto ohne Namen",
+      switchListTitle: "Konto wechseln",
+    },
     buttons: {
       register: "Registrieren",
       login: "Anmelden",

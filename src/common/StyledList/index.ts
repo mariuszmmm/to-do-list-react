@@ -5,7 +5,7 @@ interface StyledListItemProps {
   selected?: boolean;
   hidden?: boolean;
   $sort?: boolean;
-  $type?: "lists" | "tasks" | "tasksView" | "sort" | "archived";
+  $type?: "lists" | "tasks" | "tasksView" | "sort" | "archived" | "switcher";
   $isDragging?: boolean;
 }
 
@@ -51,7 +51,9 @@ export const StyledListItem = styled.li<StyledListItemProps>`
       ? "auto 1fr auto"
       : $type === "tasksView"
         ? "auto 1fr"
-        : "auto"};
+        : $type === "switcher"
+          ? "1fr auto"
+          : "auto"};
 
   ${({ selected, $type }) =>
     selected &&
@@ -136,6 +138,23 @@ export const StyledListItem = styled.li<StyledListItemProps>`
     $type === "lists" &&
     css`
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    `}
+
+  ${({ $type }) =>
+    $type === "switcher" &&
+    css`
+      padding: 15px 5px !important;
+      border: none;
+      border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
+      border-radius: 0;
+      margin: 0;
+      background-color: transparent;
+
+      &:hover {
+        box-shadow: none;
+        background-color: transparent;
+      }
     `}
 `;
 

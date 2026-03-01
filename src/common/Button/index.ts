@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface ButtonProps {
   $special?: boolean;
   $selected?: boolean;
+  $danger?: boolean;
   $error?: boolean;
   width?: string;
 }
@@ -22,6 +23,7 @@ export const Button = styled.button<ButtonProps>`
   transition: filter 0.3s;
   user-select: none;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 
   &[data-icon] {
     flex-direction: row;
@@ -35,7 +37,7 @@ export const Button = styled.button<ButtonProps>`
   ${({ $special }) =>
     $special &&
     css`
-      margin: 0;
+      margin: 0 0 0 10px;
       min-width: auto;
     `};
 
@@ -46,15 +48,15 @@ export const Button = styled.button<ButtonProps>`
       text-underline-offset: 5px;
     `};
 
+  ${({ $danger }) =>
+    $danger &&
+    css`
+      color: ${({ theme }) => theme.colors.status.error};
+    `};
+
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     margin: 2px 10px 0;
     align-items: center;
-
-    ${({ $special }) =>
-      $special &&
-      css`
-        margin: 0;
-      `};
   }
 
   &:hover {

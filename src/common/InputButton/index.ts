@@ -10,6 +10,7 @@ export const InputButton = styled.button<{ $editedTask?: boolean }>`
   right: 0;
   ${({ $editedTask }) => ($editedTask ? "bottom: 2px;" : "top: 2px; ")}
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   &:disabled {
     cursor: not-allowed;

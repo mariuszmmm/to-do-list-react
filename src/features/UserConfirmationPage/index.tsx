@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../api/auth";
-import { getConfimationTokenFromSessionStorage } from "../../utils/storage/sessionStorage";
+import { getConfirmationTokenFromSessionStorage } from "../../utils/storage/sessionStorage";
 import { useAppDispatch } from "../../hooks/redux/redux";
 import { openModal } from "../../Modal/modalSlice";
 import { Text } from "../../common/Text";
@@ -16,7 +16,9 @@ const UserConfirmationPage = () => {
   });
   const dispatch = useAppDispatch();
 
-  console.log("UserConfirmationPage   t ", { tekst: i18n.t("modal.confirmation.title") });
+  console.log("UserConfirmationPage   t ", {
+    tekst: i18n.t("modal.confirmation.title"),
+  });
 
   useEffect(() => {
     const confirmation = async () => {
@@ -29,7 +31,7 @@ const UserConfirmationPage = () => {
           }),
         );
 
-        const token = getConfimationTokenFromSessionStorage();
+        const token = getConfirmationTokenFromSessionStorage();
         if (!token) throw new Error("No token");
 
         await auth.confirm(token);
@@ -64,11 +66,17 @@ const UserConfirmationPage = () => {
           <Text>
             <b>
               <Trans
-                i18nKey={status === "error" ? "confirmationPage.message.error" : "confirmationPage.message.success"}
+                i18nKey={
+                  status === "error"
+                    ? "confirmationPage.message.error"
+                    : "confirmationPage.message.success"
+                }
               />
             </b>
           </Text>
-          <Text style={{ marginTop: "20px" }}>{status === "success" ? t("closeTab") : t("tryAgain")}</Text>
+          <Text style={{ marginTop: "20px" }}>
+            {status === "success" ? t("closeTab") : t("tryAgain")}
+          </Text>
         </Container>
       ) : null}
     </>

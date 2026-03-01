@@ -4,7 +4,7 @@
 
 # Lista rzeczy do zrobienia
 
-[**Wypróbuj teraz**](https://to-do-list-typescript-react.netlify.app/) i odkryj wszystkie możliwości aplikacji!
+[**Wypróbuj teraz**](https://to-do-list.myprojects.pl/) i odkryj wszystkie możliwości aplikacji!
 
 </br>
 
@@ -28,10 +28,10 @@
 
 ## 🚀 Deployment
 
-- [**Nowa wersja :**](https://to-do-list-typescript-react.netlify.app/)</br>
+- [**Nowa wersja :**](https://to-do-list.myprojects.pl/)</br>
   Funkcjonalności wymagające komunikacji z bazą danych i obsługą użytkownika zostały wdrożone za pomocą <b>Netlify</b> – platformy oferującej obsługę funkcji <b>serverless</b> i <b>uwierzytelnianie</b>. Dzięki <b>Netlify GoTrue</b> aplikacja umożliwia zarządzanie kontem użytkownika, w tym rejestrację, logowanie, resetowanie i zmianę hasła oraz usuwanie konta. Dodatkowo, aplikacja umożliwia przechowywanie list zadań w bazie danych <b>MongoDB</b>, co pozwala na ich późniejsze pobieranie, edytowanie oraz zapisywanie.
   Aplikacja wspiera tłumaczenie całej strony na trzy języki: <b>polski (pl)</b>, <b>angielski (en)</b> i <b>niemiecki (de)</b> dzięki zastosowaniu <b>react-i18next</b>. Zostały również wdrożone nowe funkcje, takie jak dynamiczne tłumaczenie komunikatów błędów za pomocą <b>Cloud Translation API</b>, które zapewniają, że komunikaty serwera będą tłumaczone na bieżąco w zależności od wybranego języka użytkownika.
-  Nowością jest także przejście na <b>TanStack Query</b> (dawniej <b>React Query</b>) do obsługi zapytań i mutacji w aplikacji, co znacząco upraszcza zarządzanie stanem i operacjami asynchronicznymi. Cała aplikacja została również dostosowana do pracy z <b>TypeScript</b>, co poprawia stabilność kodu i ułatwia jego utrzymanie.<br/>https://to-do-list-typescript-react.netlify.app
+  Nowością jest także przejście na <b>TanStack Query</b> (dawniej <b>React Query</b>) do obsługi zapytań i mutacji w aplikacji, co znacząco upraszcza zarządzanie stanem i operacjami asynchronicznymi. Cała aplikacja została również dostosowana do pracy z <b>TypeScript</b>, co poprawia stabilność kodu i ułatwia jego utrzymanie.<br/>https://to-do-list.myprojects.pl
 
 - [**Wersja podstawowa :**](https://mariuszmmm.github.io/to-do-list-react)</br>
   Aktualnie podstawowa wersja aplikacji znajduje się na branchu <b>gh-pages</b> i jest dostępna pod adresem:</br>https://mariuszmmm.github.io/to-do-list-react

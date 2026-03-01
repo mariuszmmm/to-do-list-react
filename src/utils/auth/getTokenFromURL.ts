@@ -1,5 +1,5 @@
 import {
-  saveConfimationTokenInSessionStorage,
+  saveConfirmationTokenInSessionStorage,
   saveEmailChangeTokenInSessionStorage,
   saveInviteTokenInSessionStorage,
   saveRecoveryTokenInSessionStorage,
@@ -15,7 +15,7 @@ export const handleAuthTokensFromUrl = () => {
 
   const confirmationToken = params.get("confirmation_token");
   if (confirmationToken) {
-    saveConfimationTokenInSessionStorage(confirmationToken);
+    saveConfirmationTokenInSessionStorage(confirmationToken);
     const confirmationUrl = process.env.REACT_APP_CONFIRMATION_URL;
     if (confirmationUrl) window.location.href = confirmationUrl;
     return;

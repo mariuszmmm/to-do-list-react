@@ -8,7 +8,9 @@ const autoRefreshKey = "autoRefreshEnabled" as const;
 
 export const clearLocalStorage = () => localStorage.clear();
 
-export const saveSettingsInLocalStorage = (settings: Partial<Settings> | Settings) => {
+export const saveSettingsInLocalStorage = (
+  settings: Partial<Settings> | Settings,
+) => {
   const existing = localStorage.getItem(settingsKey);
 
   if (existing) {
@@ -34,7 +36,9 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
   return parsed;
 };
 
-export const saveListMetadataInLocalStorage = (taskListMetaData: TaskListMetaData | null) => {
+export const saveListMetadataInLocalStorage = (
+  taskListMetaData: TaskListMetaData | null,
+) => {
   if (!taskListMetaData) {
     localStorage.removeItem(listMetadataKey);
     return;
@@ -42,7 +46,9 @@ export const saveListMetadataInLocalStorage = (taskListMetaData: TaskListMetaDat
   localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
 };
 
-export const getListMetadataFromLocalStorage = (): TaskListMetaData | undefined => {
+export const getListMetadataFromLocalStorage = ():
+  | TaskListMetaData
+  | undefined => {
   const data = localStorage.getItem(listMetadataKey);
   if (!data) return;
 
@@ -62,9 +68,9 @@ export const saveTasksInLocalStorage = (tasks: Task[] | null) => {
   localStorage.setItem(tasksKey, JSON.stringify(tasks));
 };
 
-export const getTasksFromLocalStorage = (): Task[] => {
+export const getTasksFromLocalStorage = (): Task[] | undefined => {
   const data = localStorage.getItem(tasksKey);
-  if (!data) return [];
+  if (!data) return;
   const parsed = JSON.parse(data) as Task[];
   return parsed;
 };
@@ -73,9 +79,9 @@ export const saveArchivedListsInLocalStorage = (lists: List[]) => {
   localStorage.setItem(archivedListsKey, JSON.stringify(lists));
 };
 
-export const getArchivedListsFromLocalStorage = (): List[] => {
+export const getArchivedListsFromLocalStorage = (): List[] | undefined => {
   const data = localStorage.getItem(archivedListsKey);
-  if (!data) return [];
+  if (!data) return;
   const parsed = JSON.parse(data) as List[];
   return parsed;
 };
@@ -85,6 +91,8 @@ export const getAutoRefreshSettingFromLocalStorage = (): boolean => {
   return stored === null ? true : stored === "true";
 };
 
-export const saveAutoRefreshSettingInLocalStorage = (enabled: boolean): void => {
+export const saveAutoRefreshSettingInLocalStorage = (
+  enabled: boolean,
+): void => {
   localStorage.setItem(autoRefreshKey, JSON.stringify(enabled));
 };

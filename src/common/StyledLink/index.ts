@@ -12,6 +12,7 @@ export const StyledLink = styled(Link)<StyledLinkProps>`
   white-space: pre-wrap;
   line-height: 1.4;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   ${({ disabled, $edit }) =>
     disabled &&

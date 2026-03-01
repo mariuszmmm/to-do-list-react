@@ -1,6 +1,6 @@
 import { Task, TaskListMetaData } from "../../types";
 
-const confimationTokenKey = "confirmation_token" as const;
+const confirmationTokenKey = "confirmation_token" as const;
 const recoveryTokenKey = "recovery_token" as const;
 const inviteTokenKey = "invite_token" as const;
 const emailChangeTokenKey = "email_change_token" as const;
@@ -9,16 +9,16 @@ const tasksKey = "tasks" as const;
 
 export const clearSessionStorage = () => sessionStorage.clear();
 
-export const saveConfimationTokenInSessionStorage = (token: string) =>
-  sessionStorage.setItem(confimationTokenKey, JSON.stringify(token));
+export const saveConfirmationTokenInSessionStorage = (token: string) =>
+  sessionStorage.setItem(confirmationTokenKey, JSON.stringify(token));
 
-export const getConfimationTokenFromSessionStorage = (): string | null => {
-  const data = sessionStorage.getItem(confimationTokenKey);
+export const getConfirmationTokenFromSessionStorage = (): string | null => {
+  const data = sessionStorage.getItem(confirmationTokenKey);
   return data ? JSON.parse(data) : null;
 };
 
-export const removeConfimationTokenFromSessionStorage = () =>
-  sessionStorage.removeItem(confimationTokenKey);
+export const removeConfirmationTokenFromSessionStorage = () =>
+  sessionStorage.removeItem(confirmationTokenKey);
 
 export const saveRecoveryTokenInSessionStorage = (token: string) =>
   sessionStorage.setItem(recoveryTokenKey, JSON.stringify(token));
@@ -85,9 +85,9 @@ export const saveTasksInSessionStorage = (tasks: Task[] | null) => {
   sessionStorage.setItem(tasksKey, JSON.stringify(tasks));
 };
 
-export const getTasksFromSessionStorage = (): Task[] => {
+export const getTasksFromSessionStorage = (): Task[] | undefined => {
   const data = sessionStorage.getItem(tasksKey);
-  if (!data) return [];
+  if (!data) return;
   const parsed = JSON.parse(data) as Task[];
   return parsed;
 };

@@ -1,0 +1,110 @@
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  getSavedAccounts,
+  switchAccount,
+  removeAccount,
+  SavedAccount,
+} from "../../../utils/auth/multiAccount";
+import { useAppSelector, useAppDispatch } from "../../../hooks/redux/redux";
+import { selectLoggedUserEmail } from "../accountSlice";
+import {
+  openModal,
+  closeModal,
+  selectModalConfirmed,
+} from "../../../Modal/modalSlice";
+import {
+  AccountContainer,
+  AccountCard,
+  AccountInfo,
+  AccountAvatar,
+  AccountText,
+  AccountEmail,
+  AccountName,
+  ActionButtons,
+  SwitcherButton,
+  getAvatarColor,
+} from "./styled";
+
+export const AccountSwitcher = () => {
+  const { t } = useTranslation("translation", { keyPrefix: "accountPage" });
+  const dispatch = useAppDispatch();
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const confirmed = useAppSelector(selectModalConfirmed);
+
+  const [accounts, setAccounts] = useState<SavedAccount[]>([]);
+  const [accountToRemove, setAccountToRemove] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAccounts(getSavedAccounts());
+  }, [loggedUserEmail]);
+
+  useEffect(() => {
+    if (accountToRemove) {
+      if (confirmed === true) {
+        removeAccount(accountToRemove);
+        setAccounts(getSavedAccounts());
+        dispatch(closeModal());
+        setAccountToRemove(null);
+      } else if (confirmed === false) {
+        setAccountToRemove(null);
+      }
+    }
+  }, [confirmed, accountToRemove, dispatch]);
+
+  const handleSwitch = (email: string) => {
+    switchAccount(email);
+  };
+
+  const handleRemove = (email: string) => {
+    setAccountToRemove(email);
+    dispatch(
+      openModal({
+        title: { key: "modal.accountDelete.title" },
+        message: t("switcher.confirmForget") as string,
+        type: "confirm",
+      }),
+    );
+  };
+
+  if (accounts.length === 0) {
+    return null;
+  }
+
+  const otherAccounts = accounts.filter((acc) => acc.email !== loggedUserEmail);
+
+  if (otherAccounts.length === 0) {
+    return null;
+  }
+
+  return (
+    <AccountContainer>
+      {otherAccounts.map((acc) => {
+        const initial = (acc.name || acc.email)[0].toUpperCase();
+        const bgColor = getAvatarColor(acc.email);
+        return (
+          <AccountCard key={acc.email}>
+            <AccountInfo>
+              <AccountAvatar aria-hidden="true" $bgColor={bgColor}>
+                {initial}
+              </AccountAvatar>
+              <AccountText>
+                <AccountEmail>{acc.email}</AccountEmail>
+                {acc.name && <AccountName>{acc.name}</AccountName>}
+              </AccountText>
+            </AccountInfo>
+
+            <ActionButtons>
+              <SwitcherButton onClick={() => handleSwitch(acc.email)}>
+                {t("switcher.switch")}
+              </SwitcherButton>
+              <SwitcherButton $danger onClick={() => handleRemove(acc.email)}>
+                {t("switcher.forget")}
+              </SwitcherButton>
+            </ActionButtons>
+          </AccountCard>
+        );
+      })}
+    </AccountContainer>
+  );
+};

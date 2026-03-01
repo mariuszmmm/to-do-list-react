@@ -20,15 +20,15 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       .header {
-        background-color: #359b09;
+        background-color: #007380;
         padding: 30px;
         text-align: center;
         color: #ffffff;
       }
-      .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
       }
       .content {
         padding: 40px 30px;
@@ -43,7 +43,7 @@
       .button {
         display: inline-block;
         padding: 14px 32px;
-        background-color: #359b09;
+        background-color: #007380;
         color: #ffffff !important;
         text-decoration: none;
         border-radius: 8px;
@@ -62,16 +62,13 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>Witaj w To-Do List!</h1>
+        <img src="{{ .SiteURL }}/favicon.png" alt="To-Do List Logo" />
       </div>
       <div class="content">
-        <p>
-          Dziękujemy za rejestrację w naszej aplikacji. Cieszymy się, że jesteś
-          z nami!
-        </p>
-        <p>
-          Aby aktywować swoje konto i zacząć korzystać z wszystkich funkcji,
-          potwierdź proszę swój adres e-mail, klikając w poniższy przycisk.
+        <p>Dziękujemy za rejestrację.</p>
+        <p style="margin: 20px 0; line-height: 1.6">
+          Aby aktywować swoje konto i zacząć korzystać z aplikacji,<br />
+          potwierdź swój adres e-mail, klikając w poniższy przycisk.
         </p>
         <a href="{{ .SiteURL }}/#confirmation_token={{ .Token }}" class="button"
           >Potwierdź adres e-mail</a

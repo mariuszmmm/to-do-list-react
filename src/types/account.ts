@@ -11,7 +11,8 @@ export interface AccountState {
     | "accountRegister"
     | "accountRecovery"
     | "accountDelete"
-    | "dataRemoval";
+    | "dataRemoval"
+    | "accountSwitch";
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
   loggedUserName: string;

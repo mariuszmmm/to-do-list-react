@@ -4,7 +4,7 @@ import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
 import { StyledSpan, AnimatedSpan } from "../../common/StyledList";
 import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
-import { AccountButtons } from "./AccountButtons";
+import { AccountActions } from "./AccountActions";
 import { AccountForm } from "./AccountForm";
 import { AccountFormActions } from "./AccountFormActions";
 import { BackupManager } from "./BackupManager";
@@ -15,6 +15,7 @@ import { Settings } from "../../types";
 import {
   selectAllDevicesCount,
   selectLoggedUserEmail,
+  selectLoggedUserName,
   selectIsAdmin,
   selectTotalUsersCount,
   selectUserDevicesCount,
@@ -28,13 +29,36 @@ import {
   getSettingsFromLocalStorage,
   saveSettingsInLocalStorage,
 } from "../../utils/storage/localStorage";
+import { AccountAvatar, getAvatarColor } from "./AccountSwitcher/styled";
+import styled from "styled-components";
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const EmailText = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const loggedUserName = useAppSelector(selectLoggedUserName);
   const isAdmin = useAppSelector(selectIsAdmin);
   const userDevices = useAppSelector(selectUserDevicesCount);
   const totalUsersCount = useAppSelector(selectTotalUsersCount);
   const allDevicesCount = useAppSelector(selectAllDevicesCount);
+
+  const avatarBgColor = loggedUserEmail ? getAvatarColor(loggedUserEmail) : "";
+  const initial = loggedUserEmail
+    ? (loggedUserName || loggedUserEmail)[0].toUpperCase()
+    : "";
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
@@ -54,7 +78,7 @@ const AccountPage = () => {
     () => getSettingsFromLocalStorage()?.isPresenceListOpen || false,
   );
   const [isSystemAdminOpen, setIsSystemAdminOpen] = useState(
-    () => (getSettingsFromLocalStorage() as any)?.isSystemAdminOpen || false,
+    () => getSettingsFromLocalStorage()?.isSystemAdminOpen || false,
   );
 
   const persistSettings = (
@@ -153,8 +177,17 @@ const AccountPage = () => {
       <Header title={t("title")} />
 
       <Section
-        title={loggedUserEmail || t("notLoggedIn")}
-        extraHeaderContent={<AccountButtons />}
+        title={
+          loggedUserEmail ? (
+            <TitleWrapper>
+              <AccountAvatar $bgColor={avatarBgColor}>{initial}</AccountAvatar>
+              <EmailText>{loggedUserEmail}</EmailText>
+            </TitleWrapper>
+          ) : (
+            t("notLoggedIn")
+          )
+        }
+        extraHeaderContent={<AccountActions />}
         body={<AccountForm />}
         extraContent={
           <>

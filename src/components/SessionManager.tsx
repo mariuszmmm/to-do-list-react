@@ -2,7 +2,11 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch } from "../hooks/redux/redux";
 import { auth } from "../api/auth";
-import { setAccountMode, setLoggedUser } from "../features/AccountPage/accountSlice";
+import {
+  setAccountMode,
+  setLoggedUser,
+} from "../features/AccountPage/accountSlice";
+import { saveCurrentAccount } from "../utils/auth/multiAccount";
 
 export type SessionManagerProps = {
   authRoutes: string[];
@@ -15,8 +19,24 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
   const authRoute = authRoutes.includes(pathname);
 
   useEffect(() => {
+    if (user && !authRoute) {
+      const syncSession = async () => {
+        try {
+          if (user.token && user.token.access_token) {
+          }
+        } catch (e) {
+          console.error("Session sync error:", e);
+        }
+      };
+      syncSession();
+    }
+  }, [user, authRoute]);
+
+  useEffect(() => {
     if (!authRoute) {
       if (user && user.email && !!user.token) {
+        saveCurrentAccount();
+
         dispatch(setAccountMode("logged"));
         dispatch(
           setLoggedUser({
@@ -31,7 +51,7 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authRoute, user, dispatch]);
+  }, [authRoute, user?.email, user?.token?.access_token, dispatch]);
 
   useEffect(() => {
     const handleStorageEvent = (event: StorageEvent) => {
@@ -42,7 +62,6 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
 
     window.addEventListener("storage", handleStorageEvent);
     return () => window.removeEventListener("storage", handleStorageEvent);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

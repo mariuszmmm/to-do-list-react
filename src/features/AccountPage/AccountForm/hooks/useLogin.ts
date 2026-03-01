@@ -5,12 +5,14 @@ import { openModal } from "../../../../Modal/modalSlice";
 import { setAccountMode, setLoggedUser } from "../../accountSlice";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
+import { saveCurrentAccount } from "../../../../utils/auth/multiAccount";
 
 export const useLogin = () => {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) => auth.login(email, password, true),
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      auth.login(email, password, true),
 
     onMutate: () => {
       dispatch(
@@ -23,6 +25,8 @@ export const useLogin = () => {
     },
 
     onSuccess: (response) => {
+      saveCurrentAccount();
+
       dispatch(
         openModal({
           title: { key: "modal.login.title" },
@@ -49,7 +53,9 @@ export const useLogin = () => {
 
     onError: async (error: any) => {
       const msg = error.json?.error_description || error.json;
-      const translatedText = msg ? await translateText(msg, i18n.language) : null;
+      const translatedText = msg
+        ? await translateText(msg, i18n.language)
+        : null;
 
       dispatch(
         openModal({

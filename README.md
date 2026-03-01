@@ -4,7 +4,7 @@
 
 # To-Do List Application
 
-[**Try it now**](https://to-do-list-typescript-react.netlify.app/) and discover all the possibilities of the application!
+[**Try it now**](https://to-do-list.myprojects.pl/) and discover all the possibilities of the application!
 
 </br>
 
@@ -28,10 +28,10 @@
 
 ## 🚀 Deployment
 
-- [**New version :**](https://to-do-list-typescript-react.netlify.app/)</br>
+- [**New version :**](https://to-do-list.myprojects.pl/)</br>
   Features requiring communication with the database and user management have been implemented using <b>Netlify</b> – a platform offering serverless functions and authentication support. With <b>Netlify GoTrue</b>, the application allows users to manage their accounts, including registration, login, password reset and change, as well as account deletion. Additionally, the application enables storing task lists in the <b>MongoDB</b> database, which allows for later retrieval, editing, and saving.
   The application supports translating the entire site into three languages: <b>Polish (pl)</b>, <b>English (en)</b>, and <b>German (de)</b>, using <b>react-i18next</b>. New features have also been implemented, such as dynamic translation of error messages using <b>Cloud Translation API</b>, which ensures that server messages are translated in real-time based on the user’s selected language.
-  Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list-typescript-react.netlify.app
+  Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list.myprojects.pl
 
 - [**Basic version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
   Currently, the basic version of the application is located on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
@@ -126,6 +126,7 @@ To run the to-do-list-react application locally, follow these steps:
 
 3. <b>Configure Environment Variables:</b><br>
    Create a .env file in the root directory and define the following variables:
+
 ```commandline
     ABLY_API_KEY="your_ably_api_key_here"
 

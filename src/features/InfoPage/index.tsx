@@ -11,6 +11,7 @@ const InfoPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "infoPage",
   });
+  const translate = t as any;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -18,6 +19,27 @@ const InfoPage = () => {
 
   return (
     <>
+      <Header title={t("howToStart.title")} />
+      <Section
+        body={
+          <>
+            <Header sub title={`🚀 ${t("howToStart.subTitle")}`} />
+            <List>
+              {[1, 2, 3, 4, 5, 6].map((num) => (
+                <ListItem key={num}>
+                  <strong>
+                    {translate(`howToStart.steps.step${num}.title`)}
+                  </strong>
+                  :
+                  <br />
+                  {translate(`howToStart.steps.step${num}.description`)}
+                </ListItem>
+              ))}
+            </List>
+          </>
+        }
+      />
+      <br />
       <Header title={t("aboutApp.title")} />
       <Section
         body={
@@ -82,11 +104,11 @@ const InfoPage = () => {
                 <Trans i18nKey="infoPage.aboutApp.topics.links.description.newApp" />
                 <br />
                 <StyledLink
-                  to="https://to-do-list-typescript-react.netlify.app"
+                  to="https://to-do-list.myprojects.pl"
                   target="_blank"
                 >
                   {" "}
-                  https://to-do-list-typescript-react.netlify.app
+                  https://to-do-list.myprojects.pl
                 </StyledLink>
               </ListItem>
               <ListItem>

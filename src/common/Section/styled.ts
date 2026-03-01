@@ -40,6 +40,7 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
     flex-direction: ${({ $onlyOpenButton }) =>
       $onlyOpenButton ? "row" : "column"};
   }
+  -webkit-tap-highlight-color: transparent;
 `;
 
 interface SectionBodyProps {

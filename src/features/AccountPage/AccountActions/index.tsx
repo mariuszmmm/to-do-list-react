@@ -1,9 +1,15 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useTranslation } from "react-i18next";
 import { openModal } from "../../../Modal/modalSlice";
-import { selectAccountMode, setAccountMode, selectLoggedUserEmail } from "../accountSlice";
+import {
+  selectAccountMode,
+  setAccountMode,
+  selectLoggedUserEmail,
+} from "../accountSlice";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
+import { getSavedAccounts } from "../../../utils/auth/multiAccount";
+
 export const AccountActions = () => {
   const accountMode = useAppSelector(selectAccountMode);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -26,6 +32,8 @@ export const AccountActions = () => {
     );
   };
   const handlePasswordChange = () => dispatch(setAccountMode("passwordChange"));
+  const handleAccountSwitch = () => dispatch(setAccountMode("accountSwitch"));
+  const hasSavedAccounts = getSavedAccounts().length > 0;
 
   return (
     <ButtonsContainer>
@@ -34,15 +42,29 @@ export const AccountActions = () => {
           <Button onClick={handleLogin} $selected={accountMode === "login"}>
             {t("buttons.login")}
           </Button>
-          <Button onClick={handleRegister} $selected={accountMode === "accountRegister"}>
+          <Button
+            onClick={handleRegister}
+            $selected={accountMode === "accountRegister"}
+          >
             {t("buttons.register")}
           </Button>
         </>
       ) : (
         <>
-          <Button onClick={handleAccountDelete}>{t("buttons.accountDelete")}</Button>
-          <Button onClick={handlePasswordChange} $selected={accountMode === "passwordChange"}>
+          <Button
+            onClick={handleAccountSwitch}
+            $selected={accountMode === "accountSwitch"}
+          >
+            {t("switcher.switchListTitle", "Przełącz konto")}
+          </Button>
+          <Button
+            onClick={handlePasswordChange}
+            $selected={accountMode === "passwordChange"}
+          >
             {t("buttons.passwordChange")}
+          </Button>
+          <Button onClick={handleAccountDelete} $danger>
+            {t("buttons.accountDelete")}
           </Button>
         </>
       )}

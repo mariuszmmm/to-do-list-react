@@ -6,6 +6,7 @@ interface ButtonProps {
   width?: string;
   $cancel?: boolean;
   $remove?: boolean;
+  $noDisplay?: boolean;
   $image?: boolean;
 }
 
@@ -19,14 +20,25 @@ export const FormButton = styled.button<ButtonProps>`
         : $image
           ? theme.colors.button.image
           : theme.colors.button.background};
-  color: ${({ theme, $image }) => ($image ? theme.colors.button.blackText : theme.colors.button.primaryText)};
+  color: ${({ theme, $image }) =>
+    $image ? theme.colors.button.blackText : theme.colors.button.primaryText};
   border: none;
   min-width: 110px;
   border-radius: 5px;
   transition: filter 0.25s;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
   width: ${({ width }) => width || "auto"};
   height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${({ $noDisplay }) =>
+    $noDisplay &&
+    css`
+      display: none;
+    `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
     grid-column: 1 / -1;

@@ -15,6 +15,7 @@ const TaskButton = styled.button`
   user-select: none;
   cursor: pointer;
   pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     grid-row: 2 / 3;

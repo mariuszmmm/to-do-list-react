@@ -3,6 +3,7 @@ import { auth } from "../../../../api/auth";
 import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setLoggedUser } from "../../accountSlice";
+import { removeAccount } from "../../../../utils/auth/multiAccount";
 
 export const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -11,7 +12,12 @@ export const useLogout = () => {
     mutationFn: async () => {
       const user = auth.currentUser();
       if (!user) throw new Error("No user found");
-      return await user.logout();
+      const email = user.email;
+      const logoutResult = await user.logout();
+
+      if (email) removeAccount(email);
+
+      return logoutResult;
     },
     onMutate: () => {
       dispatch(

@@ -20,15 +20,15 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       .header {
-        background-color: #359b09;
+        background-color: #007380;
         padding: 30px;
         text-align: center;
         color: #ffffff;
       }
-      .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
       }
       .content {
         padding: 40px 30px;
@@ -43,7 +43,7 @@
       .button {
         display: inline-block;
         padding: 14px 32px;
-        background-color: #359b09;
+        background-color: #007380;
         color: #ffffff !important;
         text-decoration: none;
         border-radius: 8px;
@@ -62,16 +62,13 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>Odzyskiwanie hasła</h1>
+        <img src="{{ .SiteURL }}/favicon.png" alt="To-Do List Logo" />
       </div>
       <div class="content">
-        <p>
-          Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w aplikacji
-          <br /><b>To-Do List</b>.
-        </p>
-        <p>
-          Jeśli to Ty wysłałeś prośbę, kliknij w poniższy przycisk, aby ustawić
-          nowe hasło. Jeśli to nie Ty, zignoruj tę wiadomość.
+        <p>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.</p>
+        <p style="margin: 20px 0; line-height: 1.6">
+          Jeśli to Ty wysłałeś prośbę, kliknij w poniższy przycisk,<br />
+          aby ustawić nowe hasło. Jeśli to nie Ty, zignoruj tę wiadomość.
         </p>
         <a href="{{ .SiteURL }}/#recovery_token={{ .Token }}" class="button"
           >Zresetuj hasło</a

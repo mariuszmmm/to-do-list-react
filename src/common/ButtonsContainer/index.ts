@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface ButtonsContainerProps {
   $sub?: boolean;
   $extra?: boolean;
+  $compactSwitcher?: boolean;
 }
 
 export const ButtonsContainer = styled.div<ButtonsContainerProps>`
@@ -11,7 +12,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
   justify-content: right;
   align-items: start;
   align-content: flex-start;
-  row-gap: 15px;
+  gap: 15px;
 
   ${({ $sub }) =>
     $sub &&
@@ -20,12 +21,29 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
       width: 100%;
     `};
 
+  ${({ $compactSwitcher, theme }) =>
+    $compactSwitcher &&
+    css`
+      flex-wrap: nowrap;
+      align-items: center;
+      flex-shrink: 0;
+      padding-left: 10px;
+      gap: 10px;
+
+      @media (max-width: ${theme.breakpoint.mobileMid}) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin: 0;
+      }
+    `};
+
   ${({ $extra }) =>
     $extra &&
     css`
       flex-direction: column;
       justify-content: left;
-      margin-top: 15px;
+      margin-top: 10px;
     `};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
@@ -44,7 +62,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
           `
         : css`
             margin: 10px 40px 0;
-          `}
+          `};
 
     ${({ $sub }) =>
       $sub &&

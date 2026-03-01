@@ -13,6 +13,7 @@ export const Wrapper = styled.button`
   color: inherit;
   padding: 0;
   color: ${({ theme }) => theme.colors.themeSwitch.text};
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export const Switch = styled.div`

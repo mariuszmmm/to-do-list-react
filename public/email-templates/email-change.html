@@ -20,15 +20,15 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       .header {
-        background-color: #359b09;
+        background-color: #007380;
         padding: 30px;
         text-align: center;
         color: #ffffff;
       }
-      .header h1 {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
       }
       .content {
         padding: 40px 30px;
@@ -43,7 +43,7 @@
       .button {
         display: inline-block;
         padding: 14px 32px;
-        background-color: #359b09;
+        background-color: #007380;
         color: #ffffff !important;
         text-decoration: none;
         border-radius: 8px;
@@ -62,16 +62,16 @@
   <body>
     <div class="container">
       <div class="header">
-        <h1>Zmiana adresu e-mail</h1>
+        <img src="{{ .SiteURL }}/favicon.png" alt="To-Do List Logo" />
       </div>
       <div class="content">
         <p>
           Otrzymaliśmy prośbę o zmianę adresu e-mail dla Twojego konta w
           aplikacji <br /><b>To-Do List</b>.
         </p>
-        <p>
-          Kliknij w poniższy przycisk, aby potwierdzić nowy adres e-mail i
-          dokończyć proces zmiany.
+        <p style="margin: 20px 0; line-height: 1.6">
+          Kliknij w poniższy przycisk, aby potwierdzić nowy adres e-mail<br />
+          i dokończyć proces zmiany.
         </p>
         <a href="{{ .SiteURL }}/#email_change_token={{ .Token }}" class="button"
           >Potwierdź zmianę adresu</a
