@@ -47,7 +47,6 @@ export const getNetlifyUsage = async (): Promise<NetlifyUsage | null> => {
       },
     );
 
-    console.log("[getNetlifyUsage] Site response", siteResponse.data);
     const siteData: any = siteResponse.data;
     const accountSlug = siteData.account_slug;
 

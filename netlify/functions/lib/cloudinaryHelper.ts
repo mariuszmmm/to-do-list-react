@@ -51,11 +51,6 @@ export const deleteCloudinaryImagesByListId = async (
 export const getCloudinaryUsage = async () => {
   try {
     const usage = await cloudinary.api.usage();
-    console.log(
-      "[getCloudinaryUsage] Raw usage from Cloudinary:",
-      JSON.stringify(usage, null, 2),
-    );
-
     const storageUsed = usage.storage?.usage || 0;
     const defaultFreeLimit = 25 * 1024 * 1024 * 1024;
     const storageLimit = usage.storage?.limit || defaultFreeLimit;

@@ -1,4 +1,10 @@
 import { closeAblyConnection } from "../sync/ably";
+import {
+  getTasksData,
+  setTasksData,
+  removeTasksData,
+  FullTasksData,
+} from "../storage/localStorage";
 
 const MULTI_ACCOUNT_KEY = "saved_accounts";
 const GOTRUE_KEY = "gotrue.user";
@@ -8,6 +14,7 @@ export interface SavedAccount {
   name?: string;
   sessionData: any;
   lastUsed: number;
+  tasksData?: FullTasksData;
 }
 
 export const getSavedAccounts = (): SavedAccount[] => {
@@ -41,6 +48,7 @@ export const saveCurrentAccount = () => {
       email,
       name,
       sessionData: gotrueData,
+      tasksData: getTasksData(),
       lastUsed: Date.now(),
     };
 
@@ -80,10 +88,17 @@ export const switchAccount = (email: string) => {
       JSON.stringify(accountToSwitch.sessionData),
     );
 
-    // 4. Ubijamy istniejace polaczenie Ably (WebSocket rzuciłby wyjatkiem, jeśli został by dla starszego usera)
+    // 4. Przywracamy zadania powiązane z tym kontem
+    if (accountToSwitch.tasksData) {
+      setTasksData(accountToSwitch.tasksData);
+    } else {
+      removeTasksData();
+    }
+
+    // 5. Ubijamy istniejace polaczenie Ably
     closeAblyConnection();
 
-    // 5. Hard reload dla zresetowania całego Reacta (SessionManager podniesie logowanie, Ably wstanie pod nowym użytkownikiem)
+    // 6. Hard reload dla zresetowania całego Reacta
     window.location.reload();
   } catch (error) {
     console.error("Błąd w trakcie przełączania konta:", error);
@@ -114,6 +129,7 @@ export const clearSessionForNewAccount = () => {
   saveCurrentAccount();
 
   localStorage.removeItem(GOTRUE_KEY);
+  removeTasksData();
   closeAblyConnection();
   window.location.reload();
 };

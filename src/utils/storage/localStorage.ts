@@ -1,10 +1,61 @@
 import { List, Settings, Task, TaskListMetaData } from "../../types";
+import {
+  getListMetadataFromSessionStorage,
+  getTasksFromSessionStorage,
+  saveListMetadataInSessionStorage,
+  saveTasksInSessionStorage,
+} from "./sessionStorage";
 
 const settingsKey = "settings" as const;
-const listMetadataKey = "taskListMetaData" as const;
-const tasksKey = "tasks" as const;
-const archivedListsKey = "archivedLists" as const;
+export const listMetadataKey = "taskListMetaData" as const;
+export const tasksKey = "tasks" as const;
+export const archivedListsKey = "archivedLists" as const;
 const autoRefreshKey = "autoRefreshEnabled" as const;
+
+export interface FullTasksData {
+  tasks: Task[] | null;
+  meta: TaskListMetaData | null;
+  archived: List[] | null;
+}
+
+export const getTasksData = (): FullTasksData => ({
+  tasks: getTasksFromLocalStorage() || getTasksFromSessionStorage() || null,
+  meta:
+    getListMetadataFromLocalStorage() ||
+    getListMetadataFromSessionStorage() ||
+    null,
+  archived: getArchivedListsFromLocalStorage() || null,
+});
+
+export const setTasksData = (data: FullTasksData | null) => {
+  if (!data) {
+    removeTasksData();
+    return;
+  }
+
+  // Na podstawie logiki saga, zsynchronizowane listy trafiają do sessionStorage, a lokalne do localStorage
+  if (data.meta?.synced) {
+    saveTasksInSessionStorage(data.tasks);
+    saveListMetadataInSessionStorage(data.meta);
+    saveTasksInLocalStorage(null);
+    saveListMetadataInLocalStorage(null);
+  } else {
+    saveTasksInLocalStorage(data.tasks);
+    saveListMetadataInLocalStorage(data.meta);
+    saveTasksInSessionStorage(null);
+    saveListMetadataInSessionStorage(null);
+  }
+
+  saveArchivedListsInLocalStorage(data.archived || []);
+};
+
+export const removeTasksData = () => {
+  localStorage.removeItem(tasksKey);
+  localStorage.removeItem(listMetadataKey);
+  localStorage.removeItem(archivedListsKey);
+  sessionStorage.removeItem(tasksKey);
+  sessionStorage.removeItem(listMetadataKey);
+};
 
 export const clearLocalStorage = () => localStorage.clear();
 
