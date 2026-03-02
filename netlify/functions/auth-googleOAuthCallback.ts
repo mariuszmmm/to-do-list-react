@@ -1,3 +1,4 @@
+import type { Handler } from "@netlify/functions";
 import { checkEventBody, checkHttpMethod } from "./lib/validators";
 import { jsonResponse, logError } from "./lib/response";
 import { connectToDB } from "../config/mongoose";
@@ -97,7 +98,7 @@ const handler: Handler = async (event, context) => {
             { upsert: true },
           );
 
-          // Log this as a system event
+          // Log this as a system event and clear backup error status
           try {
             const logEntry = {
               status: "success",
@@ -109,6 +110,20 @@ const handler: Handler = async (event, context) => {
               value: logEntry,
               updatedAt: new Date(),
             });
+
+            // Clear the backup error status so the modal won't show anymore
+            await SystemConfig.findOneAndUpdate(
+              { key: "lastAutoBackupStatus" },
+              {
+                value: {
+                  status: "success",
+                  details: "Authorization refreshed via Google OAuth",
+                  timestamp: new Date().toISOString(),
+                },
+                updatedAt: new Date(),
+              },
+              { upsert: true },
+            );
 
             // Notify admins in real-time
             await publishSystemLog({

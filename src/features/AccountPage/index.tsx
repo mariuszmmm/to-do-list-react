@@ -158,6 +158,19 @@ const AccountPage = () => {
         if (token) {
           getSystemStatusApi(token).then((response) => {
             if (response.success && response.data?.status?.status === "error") {
+              const errorTimestamp = response.data.status.timestamp;
+              const lastSeenTimestamp = localStorage.getItem(
+                "backup_error_last_seen",
+              );
+
+              if (errorTimestamp && lastSeenTimestamp === errorTimestamp) {
+                return; // Ten błąd był już pokazany — nie pokazuj ponownie
+              }
+
+              if (errorTimestamp) {
+                localStorage.setItem("backup_error_last_seen", errorTimestamp);
+              }
+
               dispatch(
                 openModal({
                   title: { key: "modal.backupAuthError.title" },

@@ -22,6 +22,16 @@ handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
 setInputAutoFocusFlagIfRoot();
 
+// Fix dla mobile PWA (BFCache): window.location.reload() na iOS/Android może
+// przywrócić stronę z cache zamiast resetować moduły JS (w tym singleton GoTrue).
+// pageshow z event.persisted=true oznacza właśnie takie przywrócenie z BFCache.
+// W takim wypadku wymuszamy prawdziwy reload, by GoTrue odczytał nowe konto z localStorage.
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
 

@@ -7,15 +7,20 @@ export const getData = async (context: HandlerContext, logPrefix: string) => {
   try {
     const email = context.clientContext?.user.email as string;
 
-    let foundUser = await UserData.findOne({ email, account: "active" }).exec();
+    let foundUser = await UserData.findOne({ email }).exec();
 
     if (!foundUser) {
-      console.warn(`${logPrefix} User not found in DB, creating empty record: ${email}`);
       foundUser = await UserData.create({
         email,
         account: "active",
         lists: [],
       });
+    } else if (foundUser.account === "deleted") {
+      console.warn(
+        `${logPrefix} User account is deleted, reactivating: ${email}`,
+      );
+      foundUser.account = "active";
+      await foundUser.save();
     }
 
     const lists = mapListsToResponse(foundUser.lists);

@@ -208,7 +208,6 @@ export const AccountForm = () => {
               accountMode === "passwordChange"
             }
             $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
-            $remove={accountMode === "logged"}
           >
             {accountMode === "accountRegister"
               ? t("form.buttons.register")

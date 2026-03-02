@@ -5,6 +5,7 @@ export const AccountContainer = styled.div`
   flex-direction: column;
   gap: 12px;
   margin: 10px 0 25px;
+  min-width: 0;
 `;
 
 export const AccountCard = styled.div`
@@ -17,6 +18,7 @@ export const AccountCard = styled.div`
   border-radius: 12px;
   transition: all 0.25s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: 0;
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.border.secendary};
@@ -84,25 +86,15 @@ export const AccountAvatar = styled.div<AccountAvatarProps>`
   text-transform: uppercase;
 `;
 
-export const AccountText = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-`;
-
 export const AccountEmail = styled.span`
+  display: block;
+  min-width: 0;
   font-weight: ${({ theme }) => theme.fontWeight.semiBold};
   color: ${({ theme }) => theme.colors.textPrimary};
   font-size: 1.05rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`;
-
-export const AccountName = styled.span`
-  font-size: 0.85rem;
-  color: ${({ theme }) => theme.colors.textSecendary};
-  margin-top: 2px;
 `;
 
 export const ActionButtons = styled.div`

@@ -45,8 +45,7 @@ export const AccountFormActions = () => {
                   : t("buttons.cancel")}
               </Button>
             )
-          : (accountMode === "passwordChange" ||
-              accountMode === "accountSwitch") && (
+          : accountMode === "passwordChange" && (
               <Button
                 $special
                 onClick={() => dispatch(setAccountMode("logged"))}

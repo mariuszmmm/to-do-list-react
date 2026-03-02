@@ -18,9 +18,7 @@ import {
   AccountCard,
   AccountInfo,
   AccountAvatar,
-  AccountText,
   AccountEmail,
-  AccountName,
   ActionButtons,
   SwitcherButton,
   getAvatarColor,
@@ -88,10 +86,7 @@ export const AccountSwitcher = () => {
               <AccountAvatar aria-hidden="true" $bgColor={bgColor}>
                 {initial}
               </AccountAvatar>
-              <AccountText>
-                <AccountEmail>{acc.email}</AccountEmail>
-                {acc.name && <AccountName>{acc.name}</AccountName>}
-              </AccountText>
+              <AccountEmail>{acc.email}</AccountEmail>
             </AccountInfo>
 
             <ActionButtons>

@@ -73,10 +73,18 @@ export const LogsSection = ({ logs }: LogsSectionProps) => {
                 <LogStatsSeparator>
                   {log.key.includes("cleanup_tasks")
                     ? t("database.results.modifiedCount")
-                    : t("storage.results.cleaned")}
-                  : <strong>{log.stats.cleaned}</strong>{" "}
+                    : log.key.includes("cleanup_logs")
+                      ? t("database.results.deletedCount")
+                      : t("storage.results.cleaned")}
+                  :{" "}
+                  <strong>
+                    {log.key.includes("cleanup_logs")
+                      ? log.stats.deleted
+                      : log.stats.cleaned}
+                  </strong>
                   {log.stats.orphansFound !== undefined && (
                     <>
+                      {" "}
                       | {t("storage.results.orphansFound")}:{" "}
                       <strong>{log.stats.orphansFound}</strong>
                     </>

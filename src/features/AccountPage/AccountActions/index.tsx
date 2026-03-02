@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useTranslation } from "react-i18next";
 import { openModal } from "../../../Modal/modalSlice";
@@ -8,6 +9,7 @@ import {
 } from "../accountSlice";
 import { ButtonsContainer } from "../../../common/ButtonsContainer";
 import { Button } from "../../../common/Button";
+import { getSavedAccounts } from "../../../utils/auth/multiAccount";
 
 export const AccountActions = () => {
   const accountMode = useAppSelector(selectAccountMode);
@@ -16,6 +18,12 @@ export const AccountActions = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
+
+  const [hasSavedAccounts, setHasSavedAccounts] = useState(false);
+
+  useEffect(() => {
+    setHasSavedAccounts(getSavedAccounts().length > 0);
+  }, [loggedUserEmail]);
 
   const handleLogin = () => dispatch(setAccountMode("login"));
   const handleRegister = () => dispatch(setAccountMode("accountRegister"));
@@ -30,13 +38,35 @@ export const AccountActions = () => {
       }),
     );
   };
-  const handlePasswordChange = () => dispatch(setAccountMode("passwordChange"));
-  const handleAccountSwitch = () => dispatch(setAccountMode("accountSwitch"));
+  const handlePasswordChange = () =>
+    dispatch(
+      setAccountMode(
+        accountMode === "passwordChange" ? "logged" : "passwordChange",
+      ),
+    );
+  const handleAccountSwitch = () =>
+    dispatch(
+      setAccountMode(
+        accountMode === "accountSwitch"
+          ? loggedUserEmail
+            ? "logged"
+            : "login"
+          : "accountSwitch",
+      ),
+    );
 
   return (
     <ButtonsContainer>
       {!loggedUserEmail ? (
         <>
+          {hasSavedAccounts && (
+            <Button
+              onClick={handleAccountSwitch}
+              $selected={accountMode === "accountSwitch"}
+            >
+              {t("switcher.title")}
+            </Button>
+          )}
           <Button onClick={handleLogin} $selected={accountMode === "login"}>
             {t("buttons.login")}
           </Button>

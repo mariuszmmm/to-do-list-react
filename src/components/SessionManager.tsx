@@ -19,20 +19,6 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
   const authRoute = authRoutes.includes(pathname);
 
   useEffect(() => {
-    if (user && !authRoute) {
-      const syncSession = async () => {
-        try {
-          if (user.token && user.token.access_token) {
-          }
-        } catch (e) {
-          console.error("Session sync error:", e);
-        }
-      };
-      syncSession();
-    }
-  }, [user, authRoute]);
-
-  useEffect(() => {
     if (!authRoute) {
       if (user && user.email && !!user.token) {
         saveCurrentAccount();
