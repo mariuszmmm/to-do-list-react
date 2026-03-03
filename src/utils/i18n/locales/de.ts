@@ -796,10 +796,12 @@ const langDe: typeof langPl = {
     sendMessage: {
       title: "Nachricht senden",
       labels: {
+        name: "Name:",
         email: "E-Mail:",
         message: "Nachricht:",
       },
       placeholders: {
+        name: "Geben Sie Ihren Namen ein",
         email: "Geben Sie Ihre E-Mail-Adresse ein",
         message: "Geben Sie Ihre Nachricht ein",
       },
@@ -811,6 +813,16 @@ const langDe: typeof langPl = {
         },
       },
       button: "Absenden",
+      autoReply: {
+        lang: "de",
+        greeting: "Vielen Dank für Ihre Nachricht!",
+        intro:
+          "Ihre Nachricht ist bei uns eingegangen. Wir werden uns so schnell wie möglich bei Ihnen melden – in der Regel innerhalb von 1–2 Werktagen.",
+        messageLabel: "Ihre Nachricht",
+        regards: "Mit freundlichen Grüßen,\nMariusz Matusiewicz",
+        footer:
+          "Diese Nachricht wurde automatisch durch das Kontaktformular der To-Do List App generiert. Bitte antworten Sie nicht direkt auf diese E-Mail.",
+      },
     },
     backupAuthError: {
       title: "Automatischer Backup-Fehler",

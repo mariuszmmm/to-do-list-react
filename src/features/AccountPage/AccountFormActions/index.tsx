@@ -24,16 +24,13 @@ export const AccountFormActions = () => {
     <>
       <ButtonsContainer $extra>
         {!loggedUserEmail
-          ? (accountMode === "login" ||
-              accountMode === "accountRecovery" ||
-              accountMode === "accountSwitch") && (
+          ? (accountMode === "login" || accountMode === "accountRecovery") && (
               <Button
                 $special
                 onClick={() =>
                   dispatch(
                     setAccountMode(
-                      accountMode === "accountRecovery" ||
-                        accountMode === "accountSwitch"
+                      accountMode === "accountRecovery"
                         ? "login"
                         : "accountRecovery",
                     ),

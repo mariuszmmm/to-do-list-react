@@ -8,27 +8,45 @@ import { useTranslation } from "react-i18next";
 import { Form, FieldWrapper, Label } from "./styled";
 import { TextArea } from "../../../common/TextArea";
 
+const APP_NAME = "To-Do List App";
+
 const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
 
 export const ContactForm = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const { t } = useTranslation("translation", { keyPrefix: "modal" });
   const dispatch = useAppDispatch();
 
   const sendEmail = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const templateParams = {
-      from_email: email,
-      owner: "To-do list app creator",
-      message: message,
-    };
+    // Honeypot – jeśli bot wypełnił ukryte pole, cicho odrzucamy
+    if (honeypot) return;
+
     if (!PUBLIC_KEY || !SERVICE_ID || !TEMPLATE_ID) {
       throw new Error("EmailJS configuration is missing");
     }
+
+    const templateParams = {
+      from_name: name,
+      from_email: email,
+      reply_to: email,
+      message: message,
+      app_name: APP_NAME,
+      // Auto-odpowiedź – treść w języku wybranym przez użytkownika
+      auto_lang: t("sendMessage.autoReply.lang"),
+      auto_subject: APP_NAME,
+      auto_greeting: t("sendMessage.autoReply.greeting"),
+      auto_intro: t("sendMessage.autoReply.intro"),
+      auto_message_label: t("sendMessage.autoReply.messageLabel"),
+      auto_regards: t("sendMessage.autoReply.regards"),
+      auto_footer: t("sendMessage.autoReply.footer"),
+    };
 
     dispatch(
       openModal({
@@ -49,6 +67,7 @@ export const ContactForm = () => {
               message: t("sendMessage.message.success"),
             }),
           );
+          setName("");
           setEmail("");
           setMessage("");
         } else {
@@ -69,6 +88,17 @@ export const ContactForm = () => {
 
   return (
     <Form onSubmit={sendEmail}>
+      <FieldWrapper>
+        <Label>{t("sendMessage.labels.name")}</Label>
+        <Input
+          type="text"
+          name="name"
+          value={name}
+          placeholder={t("sendMessage.placeholders.name")}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </FieldWrapper>
       <FieldWrapper>
         <Label>{t("sendMessage.labels.email")}</Label>
         <Input
@@ -91,6 +121,17 @@ export const ContactForm = () => {
         />
       </FieldWrapper>
       <FormButton>{t("sendMessage.button")}</FormButton>
+      {/* Honeypot – pułapka na boty, niewidoczna dla użytkowników */}
+      <input
+        type="text"
+        name="website"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        style={{ display: "none" }}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
     </Form>
   );
 };

@@ -789,10 +789,12 @@ const langPl = {
     sendMessage: {
       title: "Wysłanie wiadomości",
       labels: {
+        name: "Imię:",
         email: "Adres e-mail:",
         message: "Wiadomość:",
       },
       placeholders: {
+        name: "Wpisz swoje imię",
         email: "Wpisz adres e-mail",
         message: "Wpisz wiadomość",
       },
@@ -804,6 +806,16 @@ const langPl = {
         },
       },
       button: "Wyślij",
+      autoReply: {
+        lang: "pl",
+        greeting: "Dziękujemy za kontakt!",
+        intro:
+          "Twoja wiadomość dotarła do nas pomyślnie. Odpiszemy jak najszybciej – zazwyczaj w ciągu 1–2 dni roboczych.",
+        messageLabel: "Twoja wiadomość",
+        regards: "Z poważaniem,\nMariusz Matusiewicz",
+        footer:
+          "Ta wiadomość została wygenerowana automatycznie przez formularz kontaktowy aplikacji To-Do List App. Prosimy nie odpowiadać bezpośrednio na tę wiadomość.",
+      },
     },
     backupAuthError: {
       title: "Błąd automatycznej kopii zapasowej",
