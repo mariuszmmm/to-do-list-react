@@ -105,13 +105,15 @@ const handler: Handler = async (event) => {
     const { backupData, fileName } = await getAllUsersForBackup(
       "system-automated-backup",
     );
+
+    const fileNameWithPrefix = `AutoBackup_${fileName}`;
     const fileContent = JSON.stringify(backupData);
     const folderName = "To-do-list_Backups";
 
     // 3. Upload Backup
     console.log(`${logPrefix} Uploading backup to Google Drive...`);
     const uploadResponse = await uploadBackupToGoogleDrive(
-      `AutoBackup_${fileName}`,
+      fileNameWithPrefix,
       fileContent,
       accessToken,
     );
@@ -121,7 +123,9 @@ const handler: Handler = async (event) => {
       throw new Error(`Upload failed: ${uploadResponse.message}`);
     }
 
-    console.log(`${logPrefix} Backup uploaded successfully: ${fileName}`);
+    console.log(
+      `${logPrefix} Backup uploaded successfully: ${fileNameWithPrefix}`,
+    );
 
     // 4. Cleanup old backups (older than 10 days)
     console.log(`${logPrefix} Cleaning up old backups...`);
@@ -149,12 +153,12 @@ const handler: Handler = async (event) => {
 
     await updateStatus(
       "success",
-      `Automated backup completed successfully: ${fileName}`,
+      `Automated backup completed successfully: ${fileNameWithPrefix}`,
     );
 
     return jsonResponse(200, {
       message: "Automated backup completed successfully",
-      fileName,
+      fileName: fileNameWithPrefix,
       cleanedOldBackups: true,
     });
   } catch (error) {

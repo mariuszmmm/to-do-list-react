@@ -4,7 +4,7 @@ export const AccountContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 10px 0 25px;
+  margin: 10px 0;
   min-width: 0;
 `;
 
