@@ -86,7 +86,7 @@ export const getGoogleAccessToken = async (
         value: { token: accessToken, expiresAt },
         updatedAt: new Date(),
       },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     console.log("[getGoogleAccessToken] Successfully cached new access token.");
