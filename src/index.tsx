@@ -17,20 +17,33 @@ import { handleAuthTokensFromUrl } from "./utils/auth/getTokenFromURL";
 import { handleGoogleOAuthCodeFromUrl } from "./utils/googleDrive/getGoogleOAuthCode";
 import { useAppSelector } from "./hooks";
 import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
+import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
 setInputAutoFocusFlagIfRoot();
 
+// Zgłoszenie przeglądarce (mobilnej), że te dane powinny być trwałe (persistent storage)
+// Ogranicza to szansę na automatyczne "sprzątanie" localStorage/IndexedDB.
+// if (navigator.storage && navigator.storage.persist) {
+//   navigator.storage.persist().then((persistent) => {
+//     if (persistent) {
+//       console.log("Storage will not be cleared except by explicit user action");
+//     } else {
+//       console.log("Storage may be cleared by the UA under storage pressure.");
+//     }
+//   });
+// }
+
 // Fix dla mobile PWA (BFCache): window.location.reload() na iOS/Android może
 // przywrócić stronę z cache zamiast resetować moduły JS (w tym singleton GoTrue).
 // pageshow z event.persisted=true oznacza właśnie takie przywrócenie z BFCache.
 // W takim wypadku wymuszamy prawdziwy reload, by GoTrue odczytał nowe konto z localStorage.
-window.addEventListener("pageshow", (event) => {
-  if (event.persisted) {
-    window.location.reload();
-  }
-});
+// window.addEventListener("pageshow", (event) => {
+//   if (event.persisted) {
+//     window.location.reload();
+//   }
+// });
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
@@ -52,20 +65,49 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-root.render(
-  process.env.NODE_ENV === "development" ? (
-    <React.StrictMode>
+const initApp = async () => {
+  // UWAGA: Przed startem Reacta sprawdzamy, czy musimy odzyskać sesje z IndexedDB.
+
+  const savedAccounts = localStorage.getItem("saved_accounts");
+  const gotrueUser = localStorage.getItem("gotrue.user");
+
+  if (!savedAccounts || !gotrueUser) {
+    console.log(
+      "Inicjalizacja: Brak sesji w localStorage. Próba odzyskania z IndexedDB...",
+    );
+
+    const keysToRestore = [
+      "saved_accounts",
+      "gotrue.user",
+      "tasks",
+      "list-metadata",
+      "settings",
+      "archived-lists",
+      "autoRefreshEnabled",
+    ];
+
+    for (const key of keysToRestore) {
+      await restoreFromIndexedDB(key, true);
+    }
+  }
+
+  root.render(
+    process.env.NODE_ENV === "development" ? (
+      <React.StrictMode>
+        <Provider store={store}>
+          <AppProviders>
+            <App />
+          </AppProviders>
+        </Provider>
+      </React.StrictMode>
+    ) : (
       <Provider store={store}>
         <AppProviders>
           <App />
         </AppProviders>
       </Provider>
-    </React.StrictMode>
-  ) : (
-    <Provider store={store}>
-      <AppProviders>
-        <App />
-      </AppProviders>
-    </Provider>
-  ),
-);
+    ),
+  );
+};
+
+initApp();

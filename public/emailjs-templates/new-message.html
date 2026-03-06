@@ -1,0 +1,223 @@
+<style>
+  @media screen and (max-width: 620px) {
+    .outer-table {
+      padding: 0 0 100px 0 !important;
+    }
+    .inner-header {
+      padding: 20px 15px !important;
+    }
+    .inner-section {
+      padding: 0 !important;
+    }
+    .inner-message {
+      padding: 20px 10px !important;
+    }
+    .message-box {
+      padding: 12px 15px !important;
+    }
+    h1 {
+      font-size: 18px !important;
+    }
+    p {
+      font-size: 14px !important;
+    }
+  }
+</style>
+<table
+  class="outer-table"
+  style="padding: 20px 0 150px 0"
+  width="100%"
+  cellspacing="0"
+  cellpadding="0"
+>
+  <tbody>
+    <tr>
+      <td align="center">
+        <table
+          style="
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
+          "
+          width="600"
+          cellspacing="0"
+          cellpadding="0"
+        >
+          <!-- HEADER -->
+          <tbody>
+            <tr>
+              <td
+                class="inner-header"
+                style="
+                  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+                  padding: 28px 36px;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    color: #fff;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                  "
+                >
+                  <span style="font-family: arial, helvetica, sans-serif"
+                    >Nowa wiadomość z formularza</span
+                  >
+                </p>
+                <h1
+                  style="
+                    margin: 8px 0 0 0;
+                    color: #fff;
+                    font-size: 22px;
+                    font-weight: bold;
+                  "
+                >
+                  <span style="font-family: arial, helvetica, sans-serif"
+                    >{{app_name}}</span
+                  >
+                </h1>
+              </td>
+            </tr>
+            <!-- DANE NADAWCY -->
+            <tr>
+              <td class="inner-section" style="padding: 28px 6px 0 6px">
+                <table width="100%" cellspacing="0" cellpadding="0">
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px 14px;
+                          background: #f8faff;
+                          border-radius: 8px 8px 0 0;
+                          border-bottom: 1px solid #e8edf2;
+                        "
+                      >
+                        <p
+                          style="
+                            margin: 0;
+                            font-size: 11px;
+                            color: #1a73e8;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                            font-weight: bold;
+                          "
+                        >
+                          <span
+                            style="font-family: arial, helvetica, sans-serif"
+                            >Imię</span
+                          >
+                        </p>
+                        <p
+                          style="
+                            margin: 4px 0 0 0;
+                            font-size: 16px;
+                            color: #333;
+                            font-weight: 600;
+                          "
+                        >
+                          <span
+                            style="font-family: arial, helvetica, sans-serif"
+                            >{{from_name}}</span
+                          >
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px 14px;
+                          background: #f8faff;
+                          border-radius: 0 0 8px 8px;
+                        "
+                      >
+                        <p
+                          style="
+                            margin: 0;
+                            font-size: 11px;
+                            color: #1a73e8;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                            font-weight: bold;
+                          "
+                        >
+                          <span
+                            style="font-family: arial, helvetica, sans-serif"
+                            >Email</span
+                          >
+                        </p>
+                        <p
+                          style="
+                            margin: 4px 0 0 0;
+                            font-size: 16px;
+                            color: #333;
+                          "
+                        >
+                          <span
+                            style="font-family: arial, helvetica, sans-serif"
+                            >{{from_email}}</span
+                          >
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <!-- WIADOMOŚĆ -->
+            <tr>
+              <td class="inner-message" style="padding: 24px 12px 36px 12px">
+                <p
+                  style="
+                    margin: 0 0 10px 0;
+                    font-size: 11px;
+                    color: #1a73e8;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    font-weight: bold;
+                  "
+                >
+                  <span style="font-family: arial, helvetica, sans-serif"
+                    >Treść wiadomości</span
+                  >
+                </p>
+                <div
+                  class="message-box"
+                  style="
+                    background: #f8faff;
+                    border-left: 4px solid #1a73e8;
+                    border-radius: 0 8px 8px 0;
+                    padding: 16px 20px;
+                  "
+                >
+                  <p
+                    style="
+                      margin: 0;
+                      color: #444;
+                      font-size: 15px;
+                      line-height: 1.7;
+                    "
+                  >
+                    <span style="font-family: arial, helvetica, sans-serif"
+                      >{{message}}</span
+                    >
+                  </p>
+                </div>
+                <p style="margin: 20px 0 0 0; font-size: 13px; color: #aaa">
+                  <span style="font-family: arial, helvetica, sans-serif"
+                    >💡 Aby odpowiedzieć, kliknij "Odpowiedz" &ndash; mail trafi
+                    bezpośrednio do {{from_name}}.</span
+                  >
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

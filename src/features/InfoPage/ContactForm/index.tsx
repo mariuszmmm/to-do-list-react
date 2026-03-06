@@ -9,6 +9,8 @@ import { Form, FieldWrapper, Label } from "./styled";
 import { TextArea } from "../../../common/TextArea";
 
 const APP_NAME = "To-Do List App";
+const APP_URL = "to-do-list.myprojects.pl";
+const APP_AUTHOR_URL = "myprojects.pl";
 
 const PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 const SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
@@ -38,7 +40,8 @@ export const ContactForm = () => {
       reply_to: email,
       message: message,
       app_name: APP_NAME,
-      // Auto-odpowiedź – treść w języku wybranym przez użytkownika
+      app_url: APP_URL,
+      app_author_url: APP_AUTHOR_URL,
       auto_lang: t("sendMessage.autoReply.lang"),
       auto_subject: APP_NAME,
       auto_greeting: t("sendMessage.autoReply.greeting"),

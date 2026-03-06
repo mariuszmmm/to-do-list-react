@@ -5,6 +5,7 @@ import {
   removeTasksData,
   FullTasksData,
 } from "../storage/localStorage";
+import { syncToIndexedDB } from "../storage/storageSync";
 
 const MULTI_ACCOUNT_KEY = "saved_accounts";
 const GOTRUE_KEY = "gotrue.user";
@@ -59,6 +60,7 @@ export const saveCurrentAccount = () => {
     }
 
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(currentAccounts));
+    syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
   } catch (error) {
     console.error(
       "Błąd podczas zapisywania aktualnego konta do localStorage:",
@@ -83,10 +85,12 @@ export const switchAccount = (email: string) => {
     // 3. Odswiezenie `lastUsed` wybranego konta i podmiana głownego klucza auth
     accountToSwitch.lastUsed = Date.now();
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
+    syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
     localStorage.setItem(
       GOTRUE_KEY,
       JSON.stringify(accountToSwitch.sessionData),
     );
+    syncToIndexedDB(GOTRUE_KEY, accountToSwitch.sessionData);
 
     // 4. Przywracamy zadania powiązane z tym kontem
     if (accountToSwitch.tasksData) {
@@ -110,6 +114,7 @@ export const removeAccount = (email: string) => {
     const accounts = getSavedAccounts();
     const filteredAccounts = accounts.filter((acc) => acc.email !== email);
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(filteredAccounts));
+    syncToIndexedDB(MULTI_ACCOUNT_KEY, filteredAccounts);
 
     // Jesli usuwamy obecne aktywne konto z pamieci narzedzia multikont...
     const gotrueRaw = localStorage.getItem(GOTRUE_KEY);
@@ -129,6 +134,7 @@ export const clearSessionForNewAccount = () => {
   saveCurrentAccount();
 
   localStorage.removeItem(GOTRUE_KEY);
+  syncToIndexedDB(GOTRUE_KEY, null);
   removeTasksData();
   closeAblyConnection();
   window.location.reload();

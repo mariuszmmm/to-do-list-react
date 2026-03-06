@@ -54,6 +54,7 @@ export const StyledListItem = styled.li<StyledListItemProps>`
         : $type === "switcher"
           ? "1fr auto"
           : "auto"};
+  align-items: ${({ $type }) => ($type === "tasks" ? "stretch" : "center")};
 
   ${({ selected, $type }) =>
     selected &&
@@ -163,6 +164,7 @@ export const StyledListContent = styled.div<StyledListContentProps>`
   margin: 0;
   margin: 0 5px;
   cursor: inherit;
+  align-self: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     grid-row: 1 / 2;

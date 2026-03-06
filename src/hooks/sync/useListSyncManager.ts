@@ -18,10 +18,20 @@ import { UseMutationResult } from "@tanstack/react-query";
 
 interface UseListSyncManagerParams {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List; deviceId: string }, unknown>;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
 }
-const areTasksAndMetaDataEqual = (remoteList: List, localMeta: TaskListMetaData, localTasks: Task[]): boolean => {
-  const metaDataMatch = remoteList.id === localMeta.id && remoteList.name === localMeta.name;
+const areTasksAndMetaDataEqual = (
+  remoteList: List,
+  localMeta: TaskListMetaData,
+  localTasks: Task[],
+): boolean => {
+  const metaDataMatch =
+    remoteList.id === localMeta.id && remoteList.name === localMeta.name;
 
   const remoteTasks = remoteList.taskList;
   if (remoteTasks.length !== localTasks.length) {
@@ -46,7 +56,10 @@ const areTasksAndMetaDataEqual = (remoteList: List, localMeta: TaskListMetaData,
  * Hook for synchronizing local and remote task lists, handling save logic, and conflict resolution.
  * Manages state updates, debounced saves, and Redux integration for collaborative editing.
  */
-export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncManagerParams) => {
+export const useListSyncManager = ({
+  listsData,
+  saveListMutation,
+}: UseListSyncManagerParams) => {
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const tasks = useAppSelector(selectTasks);
   const listStatus = useAppSelector(selectListStatus);
@@ -56,7 +69,9 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
   const dispatch = useAppDispatch();
   const deviceId = getOrCreateDeviceId();
   const { isError } = saveListMutation;
-  const debouncedMutateRef = useRef<DebouncedFunc<(payload: { list: List; deviceId: string }) => void> | null>(null);
+  const debouncedMutateRef = useRef<DebouncedFunc<
+    (payload: { list: List; deviceId: string }) => void
+  > | null>(null);
 
   useEffect(() => {
     tasksRef.current = tasks;
@@ -70,24 +85,36 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
     if (!listsData) {
       if (!isRemoteSaveable && !isIdenticalToRemote) return;
 
-      dispatch(setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }));
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
+      );
       return;
     }
 
-    const remoteList = listsData.lists.find((list) => list.id === taskListMetaData.id); ///////
+    const remoteList = listsData.lists.find(
+      (list) => list.id === taskListMetaData.id,
+    ); ///////
 
     if (!remoteList) {
       if (!isRemoteSaveable && !isIdenticalToRemote) return;
 
-      dispatch(setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }));
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
+      );
 
       return;
     }
 
-    const isIdentical = areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks);
+    const isIdentical = areTasksAndMetaDataEqual(
+      remoteList,
+      taskListMetaData,
+      tasks,
+    );
 
     if (isError && isRemoteSaveable) {
-      dispatch(setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }));
+      dispatch(
+        setListStatus({ isRemoteSaveable: false, isIdenticalToRemote: false }),
+      );
     } else {
       if (isRemoteSaveable && isIdenticalToRemote === isIdentical) return;
 
@@ -111,10 +138,16 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
     const { isRemoteSaveable } = listStatus;
     if (!listsData || !isRemoteSaveable) return;
 
-    const remoteList = listsData.lists.find((list) => list.id === taskListMetaData.id);
+    const remoteList = listsData.lists.find(
+      (list) => list.id === taskListMetaData.id,
+    );
     if (!remoteList) return;
 
-    const isIdentical = areTasksAndMetaDataEqual(remoteList, taskListMetaData, tasks);
+    const isIdentical = areTasksAndMetaDataEqual(
+      remoteList,
+      taskListMetaData,
+      tasks,
+    );
 
     if (isIdentical) {
       dispatch(updateTasksStatus({ status: "synced" }));
@@ -123,19 +156,23 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
     // const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
-    // const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
+    const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
 
-    // process.env.NODE_ENV === "development" &&
-    //   console.log("Syncing with remote data...", {
-    //     deviceId,
-    //     deletedTasks,
-    //   });
+    process.env.NODE_ENV === "development" &&
+      console.log("Syncing with remote data...", {
+        deviceId,
+        deletedIds,
+        deletedTasks,
+        listsData,
+      });
 
     const localOnlyTasks = tasks.filter((localTask) => {
       if (localTask.status === "synced") return false;
 
       const isInDeleted = deletedIds.includes(localTask.id);
-      const isInRemote = remoteList.taskList.some((task) => task.id === localTask.id);
+      const isInRemote = remoteList.taskList.some(
+        (task) => task.id === localTask.id,
+      );
 
       if (!isInRemote && !isInDeleted) return true;
 
@@ -149,10 +186,15 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
     const remoteOnlyTasks = remoteList.taskList.map((remoteTask) => {
       const taskInLocal = tasks.find((local) => local.id === remoteTask.id);
       if (!taskInLocal) return remoteTask;
-      return taskInLocal.updatedAt > remoteTask.updatedAt ? taskInLocal : remoteTask;
+      return taskInLocal.updatedAt > remoteTask.updatedAt
+        ? taskInLocal
+        : remoteTask;
     });
 
-    const sourceMeta = taskListMetaData.updatedAt > remoteList.updatedAt ? taskListMetaData : remoteList;
+    const sourceMeta =
+      taskListMetaData.updatedAt > remoteList.updatedAt
+        ? taskListMetaData
+        : remoteList;
 
     const newMeta: TaskListMetaData = {
       id: sourceMeta.id,
@@ -161,10 +203,12 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
       updatedAt: sourceMeta.updatedAt,
       synced: true,
     };
-    const newTasks: Task[] = [...remoteOnlyTasks, ...localOnlyTasks].map((task) => ({
-      ...task,
-      status: task.status !== "deleted" ? "updated" : task.status,
-    }));
+    const newTasks: Task[] = [...remoteOnlyTasks, ...localOnlyTasks].map(
+      (task) => ({
+        ...task,
+        status: task.status !== "deleted" ? "updated" : task.status,
+      }),
+    );
 
     dispatch(
       setTasks({
@@ -182,9 +226,12 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
 
   // Initialize debounced save function
   useEffect(() => {
-    debouncedMutateRef.current = debounce((payload: { list: List; deviceId: string }) => {
-      saveListMutation.mutate(payload);
-    }, 5000);
+    debouncedMutateRef.current = debounce(
+      (payload: { list: List; deviceId: string }) => {
+        saveListMutation.mutate(payload);
+      },
+      5000,
+    );
     return () => {
       debouncedMutateRef.current && debouncedMutateRef.current.cancel();
     };
@@ -194,16 +241,28 @@ export const useListSyncManager = ({ listsData, saveListMutation }: UseListSyncM
   // Trigger save when there are local changes
   useEffect(() => {
     debouncedMutateRef.current?.cancel();
-    const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } = listStatus;
+    const { isRemoteSaveable, manualSaveTriggered, isIdenticalToRemote } =
+      listStatus;
 
-    if (!listsData || (!isRemoteSaveable && !manualSaveTriggered) || (isRemoteSaveable && isIdenticalToRemote)) return;
+    if (
+      !listsData ||
+      (!isRemoteSaveable && !manualSaveTriggered) ||
+      (isRemoteSaveable && isIdenticalToRemote)
+    )
+      return;
 
-    const remoteList = listsData.lists.find((list) => list.id === taskListMetaData.id);
+    const remoteList = listsData.lists.find(
+      (list) => list.id === taskListMetaData.id,
+    );
 
     if (!remoteList && !manualSaveTriggered) return;
 
     const isIdentical = remoteList
-      ? areTasksAndMetaDataEqual(remoteList, taskListMetaDataRef.current, tasksRef.current)
+      ? areTasksAndMetaDataEqual(
+          remoteList,
+          taskListMetaDataRef.current,
+          tasksRef.current,
+        )
       : false;
 
     if (isIdentical) {

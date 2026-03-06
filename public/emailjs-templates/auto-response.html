@@ -1,0 +1,250 @@
+<style>
+  @media screen and (max-width: 620px) {
+    .outer-table {
+      padding: 0 0 100px 0 !important;
+    }
+    .inner-header {
+      padding: 20px 15px !important;
+    }
+    .inner-body {
+      padding: 12px !important;
+    }
+    .inner-divider {
+      padding: 0 20px !important;
+    }
+    .inner-footer {
+      padding: 15px 20px 24px 20px !important;
+    }
+    h2 {
+      font-size: 18px !important;
+    }
+    p,
+    span,
+    td {
+      font-size: 14px !important;
+    }
+  }
+</style>
+<table
+  class="outer-table"
+  style="padding: 20px 0 150px 0"
+  width="100%"
+  cellspacing="0"
+  cellpadding="0"
+>
+  <tbody>
+    <tr>
+      <td align="center">
+        <table
+          style="
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
+          "
+          width="600"
+          cellspacing="0"
+          cellpadding="0"
+        >
+          <!-- HEADER -->
+          <tbody>
+            <tr>
+              <td
+                class="inner-header"
+                style="
+                  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+                  padding: 28px 36px;
+                  text-align: center;
+                "
+              >
+                <a
+                  href="https://to-do-list.myprojects.pl"
+                  target="_blank"
+                  style="text-decoration: none; display: inline-block"
+                >
+                  <img
+                    style="
+                      height: 60px;
+                      width: auto;
+                      border-radius: 12px;
+                      display: block;
+                      margin: 0 auto 12px auto;
+                    "
+                    src="https://to-do-list.myprojects.pl/favicon.png"
+                    alt="To-Do List Logo"
+                  />
+                </a>
+                <p
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 22px;
+                    font-weight: bold;
+                    letter-spacing: 0.5px;
+                  "
+                >
+                  <span style="font-family: arial, helvetica, sans-serif"
+                    >{{app_name}}</span
+                  >
+                </p>
+                <p
+                  style="
+                    margin: 8px 0 0 0;
+                    color: rgba(255, 255, 255, 0.8);
+                    font-size: 14px;
+                  "
+                >
+                  <a
+                    href="https://{{app_url}}"
+                    target="_blank"
+                    style="
+                      color: rgba(255, 255, 255, 0.8);
+                      text-decoration: none;
+                    "
+                  >
+                    <i style="font-family: arial, helvetica, sans-serif"
+                      >{{app_url}}</i
+                    >
+                  </a>
+                </p>
+              </td>
+            </tr>
+            <!-- TREŚĆ -->
+            <tr>
+              <td class="inner-body" style="padding: 28px 12px 0 12px">
+                <h2
+                  style="
+                    margin: 0 0 20px 0;
+                    color: #1a73e8;
+                    font-size: 22px;
+                    font-weight: bold;
+                  "
+                >
+                  {{auto_greeting}}
+                </h2>
+                <p
+                  style="
+                    margin: 0 0 16px 0;
+                    color: #333333;
+                    font-size: 16px;
+                    line-height: 1.6;
+                  "
+                >
+                  <strong>{{from_name}}</strong>,
+                </p>
+                <p
+                  style="
+                    margin: 0 0 28px 0;
+                    color: #555555;
+                    font-size: 15px;
+                    line-height: 1.7;
+                  "
+                >
+                  {{auto_intro}}
+                </p>
+                <!-- Cytowana wiadomość -->
+                <table
+                  style="margin: 0 0 32px 0"
+                  width="100%"
+                  cellspacing="0"
+                  cellpadding="0"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          background-color: #f8faff;
+                          border-left: 4px solid #1a73e8;
+                          border-radius: 0 8px 8px 0;
+                          padding: 16px 20px;
+                        "
+                      >
+                        <p
+                          style="
+                            margin: 0 0 6px 0;
+                            color: #1a73e8;
+                            font-size: 11px;
+                            font-weight: bold;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                          "
+                        >
+                          {{auto_message_label}}
+                        </p>
+                        <p
+                          style="
+                            margin: 0;
+                            color: #555555;
+                            font-size: 14px;
+                            line-height: 1.6;
+                            font-style: italic;
+                          "
+                        >
+                          {{message}}
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p
+                  style="
+                    margin: 0 0 4px 0;
+                    color: #333333;
+                    font-size: 15px;
+                    line-height: 1.8;
+                    white-space: pre-line;
+                  "
+                >
+                  {{auto_regards}}
+                </p>
+                <p style="margin: 0 0 12px 0; font-size: 14px">
+                  <a
+                    href="https://{{app_author_url}}"
+                    target="_blank"
+                    style="
+                      color: #1a73e8;
+                      text-decoration: underline;
+                      font-weight: 500;
+                    "
+                  >
+                    <i style="font-family: arial, helvetica, sans-serif"
+                      >{{app_author_url}}</i
+                    >
+                  </a>
+                </p>
+              </td>
+            </tr>
+            <!-- DIVIDER -->
+            <tr>
+              <td class="inner-divider" style="padding: 0 40px">
+                <hr
+                  style="border: none; border-top: 1px solid #e8edf2; margin: 0"
+                />
+              </td>
+            </tr>
+            <!-- FOOTER -->
+            <tr>
+              <td
+                class="inner-footer"
+                style="padding: 24px 40px 36px 40px; text-align: center"
+              >
+                <p
+                  style="
+                    margin: 0;
+                    color: #aaaaaa;
+                    font-size: 11px;
+                    line-height: 1.6;
+                  "
+                >
+                  {{auto_footer}}
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
