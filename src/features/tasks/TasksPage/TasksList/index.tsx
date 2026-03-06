@@ -32,7 +32,8 @@ import {
 import { useDndList } from "../../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../../hooks/ui/useDndItem";
 import type { DraggableAttributes } from "@dnd-kit/core";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
 import {
   StyledList,
   StyledListContent,
@@ -177,73 +178,97 @@ export const TasksList = ({ taskForm, listsData }: Props) => {
     );
   }
 
-  return (
-    <StyledList>
-      {tasksLst.map((task, index) => (
-        <StyledListItem
-          key={task.id}
-          hidden={task.done && hideDone}
-          $edit={editedTaskContent?.id === task.id}
-          $type={"tasks"}
-        >
-          <TaskActions>
-            <ToggleButton
-              onClick={() =>
-                dispatch(
-                  toggleTaskDone({
-                    taskId: task.id,
-                    stateForUndo: { tasks, taskListMetaData },
-                  }),
-                )
-              }
-              disabled={!!editedTaskContent || speech.isActive}
-            >
-              {task.done ? "✔" : ""}
-            </ToggleButton>
-          </TaskActions>
-          <StyledListContent $type={"tasks"}>
-            {!query ? (
-              <TaskNumber
-                $edit={editedTaskContent?.id === task.id}
-              >{`${index + 1}. `}</TaskNumber>
-            ) : (
-              ""
-            )}
-            <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
-              <StyledLink
-                to={`/tasks/${task.id}`}
-                $edit={editedTaskContent?.id === task.id}
-                disabled={!!editedTaskContent}
-              >
-                {task.content}
-              </StyledLink>
-            </StyledSpan>
-          </StyledListContent>
-          <TaskActions>
-            <EditButton
-              onClick={() => dispatch(setTaskToEdit(task.id))}
-              disabled={!!editedTaskContent || speech.isActive}
-            >
-              ✏️
-            </EditButton>
-            <RemoveButton
-              onClick={() =>
-                dispatch(
-                  removeTask({
-                    taskId: task.id,
-                    stateForUndo: { tasks, taskListMetaData },
-                    isRemoteSaveable,
-                  }),
-                )
-              }
-              disabled={!!editedTaskContent || speech.isActive}
-            >
-              🗑️
-            </RemoveButton>
+  const TaskRow = ({ task, index }: { task: Task; index: number }) => {
+    const rowRef = useRef<HTMLLIElement>(null);
+    const [isLong, setIsLong] = useState(false);
 
-            {loggedUserEmail && (
-              <ImageButton
-                $hasImage={!!task.image}
+    useLayoutEffect(() => {
+      const checkHeight = () => {
+        if (rowRef.current) {
+          setIsLong(rowRef.current.offsetHeight > window.innerHeight);
+        }
+      };
+
+      checkHeight();
+      window.addEventListener("resize", checkHeight);
+      return () => window.removeEventListener("resize", checkHeight);
+    }, []);
+
+    return (
+      <StyledListItem
+        key={task.id}
+        ref={rowRef}
+        hidden={task.done && hideDone}
+        $edit={editedTaskContent?.id === task.id}
+        $type={"tasks"}
+      >
+        <TaskActions $isLong={isLong}>
+          <ToggleButton
+            onClick={() =>
+              dispatch(
+                toggleTaskDone({
+                  taskId: task.id,
+                  stateForUndo: { tasks, taskListMetaData },
+                }),
+              )
+            }
+            disabled={!!editedTaskContent || speech.isActive}
+          >
+            {task.done ? "✔" : ""}
+          </ToggleButton>
+        </TaskActions>
+        <StyledListContent $type={"tasks"}>
+          {!query ? (
+            <TaskNumber $edit={editedTaskContent?.id === task.id}>
+              {`${index + 1}. `}
+            </TaskNumber>
+          ) : (
+            ""
+          )}
+          <StyledSpan $done={task.done} disabled={!!editedTaskContent}>
+            <StyledLink
+              to={`/tasks/${task.id}`}
+              $edit={editedTaskContent?.id === task.id}
+              disabled={!!editedTaskContent}
+            >
+              {task.content}
+            </StyledLink>
+          </StyledSpan>
+        </StyledListContent>
+        <TaskActions $isLong={isLong}>
+          <EditButton
+            onClick={() => dispatch(setTaskToEdit(task.id))}
+            disabled={!!editedTaskContent || speech.isActive}
+          >
+            ✏️
+          </EditButton>
+          <RemoveButton
+            onClick={() =>
+              dispatch(
+                removeTask({
+                  taskId: task.id,
+                  stateForUndo: { tasks, taskListMetaData },
+                  isRemoteSaveable,
+                }),
+              )
+            }
+            disabled={!!editedTaskContent || speech.isActive}
+          >
+            🗑️
+          </RemoveButton>
+
+          {loggedUserEmail && (
+            <ImageButton
+              $hasImage={!!task.image}
+              disabled={
+                !!editedTaskContent ||
+                speech.isActive ||
+                !isRemoteSaveable ||
+                !remoteList?.taskList.some((t) => t.id === task.id)
+              }
+            >
+              <StyledLink
+                to={`/tasks/image/${task.id}`}
                 disabled={
                   !!editedTaskContent ||
                   speech.isActive ||
@@ -251,21 +276,19 @@ export const TasksList = ({ taskForm, listsData }: Props) => {
                   !remoteList?.taskList.some((t) => t.id === task.id)
                 }
               >
-                <StyledLink
-                  to={`/tasks/image/${task.id}`}
-                  disabled={
-                    !!editedTaskContent ||
-                    speech.isActive ||
-                    !isRemoteSaveable ||
-                    !remoteList?.taskList.some((t) => t.id === task.id)
-                  }
-                >
-                  📷
-                </StyledLink>
-              </ImageButton>
-            )}
-          </TaskActions>
-        </StyledListItem>
+                📷
+              </StyledLink>
+            </ImageButton>
+          )}
+        </TaskActions>
+      </StyledListItem>
+    );
+  };
+
+  return (
+    <StyledList>
+      {tasksLst.map((task, index) => (
+        <TaskRow key={task.id} task={task} index={index} />
       ))}
     </StyledList>
   );

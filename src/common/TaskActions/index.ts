@@ -1,6 +1,10 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const TaskActions = styled.div`
+interface TaskActionsProps {
+  $isLong?: boolean;
+}
+
+export const TaskActions = styled.div<TaskActionsProps>`
   display: flex;
   flex-wrap: wrap-reverse;
   justify-content: center;
@@ -9,13 +13,17 @@ export const TaskActions = styled.div`
   max-width: 70px;
   cursor: default;
   pointer-events: auto;
-
-  /* Inteligentne pozycjonowanie: pływa w centrum widoku */
-  position: sticky;
-  top: 65px;
-  bottom: 15px;
-  margin: auto 0;
   align-self: center;
+
+  /* Sticky aktywuje się tylko dla długich zadań */
+  ${({ $isLong }) =>
+    $isLong &&
+    css`
+      position: sticky;
+      top: 65px;
+      bottom: 15px;
+      margin: auto 0;
+    `}
 
   &:has([disabled]) {
     cursor: not-allowed;
