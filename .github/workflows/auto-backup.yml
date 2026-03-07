@@ -11,7 +11,15 @@ jobs:
     steps:
       - name: Trigger Automated Backup
         run: |
-          curl -X POST "${{ secrets.NETLIFY_SITE_URL }}/backup-autoAllUsersToGoogleDrive" \
-          -H "Content-Type: application/json" \
-          -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
-          -d '{}'
+          NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
+          if [ -z "$NETLIFY_URL" ]; then
+            echo "❌ Error: NETLIFY_SITE_URL secret is not set"
+            exit 1
+          fi
+          echo "⏳ Calling backup-autoAllUsersToGoogleDrive..."
+          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/backup-autoAllUsersToGoogleDrive" \
+            -H "Content-Type: application/json" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -d '{}')
+          echo "Response:"
+          echo "$RESPONSE" | jq '.' 2>/dev/null || echo "$RESPONSE"
