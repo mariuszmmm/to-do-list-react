@@ -4,14 +4,16 @@ on:
   workflow_dispatch:
   schedule:
     # - cron: "*/30 * * * *" # Every 30 minutes (for testing)
-    - cron: "0 0 * * *" # Every day at midnight (daily)
-    # - cron: "10 0 * * *" # Every day at 00:10 (daily)
+    # - cron: "0 0 * * *" # Every day at midnight (daily)
+    - cron: "10 0 * * *" # Every day at 00:10 (daily)
     # - cron: "20 0 * * *" # Every day at 00:20 (daily)
     # - cron: "20 0 * * *" # Every day at 00:20 (daily)
+    # - cron: "*/5 * * * *" # Every 5 minutes
 
 jobs:
   cleanup-deletedTasks:
     runs-on: ubuntu-latest
+
     steps:
       - name: Call Netlify cleanup-deletedTasks function
         run: |
