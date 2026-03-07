@@ -1,11 +1,16 @@
 import { useEffect, useRef } from "react";
 import { useTime } from "../../context/TimeContext";
 import { useAppDispatch, useAppSelector } from "../redux/redux";
-import { selectLoggedUserEmail, setLoggedUser, setAccountMode } from "../../features/AccountPage/accountSlice";
+import {
+  selectLoggedUserEmail,
+  setLoggedUser,
+  setAccountMode,
+} from "../../features/AccountPage/accountSlice";
 import { openModal } from "../../Modal/modalSlice";
 import { auth } from "../../api/auth";
 import { getTokenExpiresIn } from "../../utils/auth/tokenUtils";
 import { getAutoRefreshSettingFromLocalStorage } from "../../utils/storage/localStorage";
+import { syncToIndexedDB } from "../../utils/storage/storageSync";
 
 export const useTokenValidation = () => {
   const dispatch = useAppDispatch();
@@ -40,7 +45,10 @@ export const useTokenValidation = () => {
           user
             .jwt()
             .catch((error) => {
-              console.error("[useTokenValidation] Error during automatic token refresh:", error);
+              console.error(
+                "[useTokenValidation] Error during automatic token refresh:",
+                error,
+              );
             })
             .finally(() => {
               isRefreshingRef.current = false;
@@ -51,6 +59,7 @@ export const useTokenValidation = () => {
           isRefreshingRef.current = true;
           user
             .logout()
+            .then(() => syncToIndexedDB("gotrue.user", null))
             .catch((error) => {
               console.error("[useTokenValidation] Error during logout:", error);
             })

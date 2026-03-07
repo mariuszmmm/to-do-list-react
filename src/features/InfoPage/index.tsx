@@ -23,7 +23,7 @@ const InfoPage = () => {
       <Section
         body={
           <>
-            <Header sub title={`🚀 ${t("howToStart.subTitle")}`} />
+            <Header sub2 title={`🚀 ${t("howToStart.subTitle")}`} />
             <List>
               {[1, 2, 3, 4, 5, 6].map((num) => (
                 <ListItem key={num}>
@@ -45,7 +45,7 @@ const InfoPage = () => {
         body={
           <>
             <Header
-              sub
+              sub2
               title={`⚙️ ${t("aboutApp.topics.features.subTitle")} `}
             />
             <List>
@@ -82,7 +82,7 @@ const InfoPage = () => {
             </List>
             <br />
             <Header
-              sub
+              sub2
               title={`🛠️ ${t("aboutApp.topics.technologies.subTitle")}`}
             />
             <List>
@@ -97,7 +97,7 @@ const InfoPage = () => {
               <ListItem>- Styled Components, CSS Grid, Flexbox</ListItem>
             </List>
             <br />
-            <Header sub title={`🌐 ${t("aboutApp.topics.links.subTitle")}`} />
+            <Header sub2 title={`🌐 ${t("aboutApp.topics.links.subTitle")}`} />
             <List>
               <ListItem>
                 🚀{" "}
@@ -107,7 +107,6 @@ const InfoPage = () => {
                   to="https://to-do-list.myprojects.pl"
                   target="_blank"
                 >
-                  {" "}
                   https://to-do-list.myprojects.pl
                 </StyledLink>
               </ListItem>
@@ -119,7 +118,6 @@ const InfoPage = () => {
                   to="https://mariuszmmm.github.io/to-do-list-react"
                   target="_blank"
                 >
-                  {" "}
                   https://mariuszmmm.github.io/to-do-list-react
                 </StyledLink>
               </ListItem>
@@ -140,14 +138,13 @@ const InfoPage = () => {
               <Trans i18nKey="infoPage.aboutAuthor.description.part2" />
             </Text>
             <br />
-            <Header sub title={`🔗 ${t("aboutAuthor.links.subTitle")}`} />
+            <Header sub2 title={`🔗 ${t("aboutAuthor.links.subTitle")}`} />
             <List>
               <ListItem>
                 🏡{" "}
                 <Trans i18nKey="infoPage.aboutAuthor.links.description.personalHomepage" />
                 <br />
                 <StyledLink to="https://myprojects.pl/" target="_blank">
-                  {" "}
                   https://myprojects.pl
                 </StyledLink>
               </ListItem>
@@ -156,7 +153,6 @@ const InfoPage = () => {
                 <Trans i18nKey="infoPage.aboutAuthor.links.description.github" />
                 <br />
                 <StyledLink to="https://github.com/mariuszmmm" target="_blank">
-                  {" "}
                   https://github.com/mariuszmmm
                 </StyledLink>
               </ListItem>

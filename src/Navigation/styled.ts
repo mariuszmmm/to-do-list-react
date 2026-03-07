@@ -50,13 +50,15 @@ export const LangMobileWrapper = styled.div`
 
 export const Nav = styled.nav`
   background-color: ${({ theme }) => theme.colors.nav.background};
-  transition: background-color 0.5s ease-in-out;
+  /* transition: background-color 0.5s ease-in-out; */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50px;
   user-select: none;
   position: fixed;
+  top: 0;
+  left: 0;
   min-width: 300px;
   width: 100%;
   z-index: 1000;

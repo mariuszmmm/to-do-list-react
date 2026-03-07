@@ -136,13 +136,15 @@ const handler: Handler = async (event, context) => {
       return jsonResponse(400, { message: msg });
     }
 
+    const fileNameWithPrefix = `Backup_${fileName}`;
     const fileContent = JSON.stringify(backupData);
 
     try {
       const uploadResponse = await uploadBackupToGoogleDrive(
-        `Backup_${fileName}`,
+        fileNameWithPrefix,
         fileContent,
         accessToken,
+        "Manual-Backup",
       );
 
       if (!uploadResponse.success) {
@@ -160,7 +162,7 @@ const handler: Handler = async (event, context) => {
 
       await updateStatus(
         "success",
-        `Manual backup completed successfully: ${fileName}`,
+        `Manual backup completed successfully:\n ${fileNameWithPrefix}`,
       );
 
       return jsonResponse(200, {

@@ -417,7 +417,7 @@ const langPl = {
         success: "Zakończono pomyślnie",
         types: {
           autobackup: "Auto-Backup (Google Drive)",
-          manualbackup: "Backup (Google Drive)",
+          manualbackup: "Manual-Backup (Google Drive)",
           backup_disk_all: "Pełny Backup (Plik)",
           backup_disk_user: "Backup Użytkownika (Plik)",
           restore_gd: "Przywracanie (Google Drive)",
@@ -821,6 +821,11 @@ const langPl = {
       title: "Błąd automatycznej kopii zapasowej",
       message:
         "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/>Wymagana jest ponowna autoryzacja konta Google i aktualizacja zmiennej <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> w panelu Netlify.",
+    },
+    offline: {
+      title: "Brak połączenia",
+      message:
+        "Brak dostępu do internetu. Aplikacja działa w trybie offline – możesz przeglądać i edytować zadania. Dane zostaną zsynchronizowane po powrocie online.",
     },
   },
   prepareText: {

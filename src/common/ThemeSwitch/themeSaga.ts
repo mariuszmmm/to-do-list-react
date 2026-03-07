@@ -3,7 +3,8 @@ import { selectIsDarkTheme, toggleTheme } from "./themeSlice";
 import { saveSettingsInLocalStorage } from "../../utils/storage/localStorage";
 
 function* saveSettingsInLocalStorageHandler() {
-  const isDarkTheme: ReturnType<typeof selectIsDarkTheme> = yield select(selectIsDarkTheme);
+  const isDarkTheme: ReturnType<typeof selectIsDarkTheme> =
+    yield select(selectIsDarkTheme);
 
   yield call(saveSettingsInLocalStorage, { isDarkTheme });
   yield call(updateThemeColorMeta, isDarkTheme);
@@ -12,7 +13,7 @@ function* saveSettingsInLocalStorageHandler() {
 function updateThemeColorMeta(isDarkTheme: boolean) {
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   if (themeColorMeta) {
-    const color = isDarkTheme ? "#151515ff" : "#007380";
+    const color = isDarkTheme ? "#005c67" : "#007380";
     themeColorMeta.setAttribute("content", color);
   }
 }

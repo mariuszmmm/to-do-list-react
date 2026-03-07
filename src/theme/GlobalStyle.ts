@@ -18,11 +18,9 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.textPrimary};
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     min-width: 360px;
-    overflow-y: scroll;
     font-size: 1rem;
     transition: background-color 0.5s ease-in-out;
     min-height: 100dvh;
-    height: 100%;
     overscroll-behavior: none;  
     margin: 0;
   }

@@ -419,7 +419,7 @@ const langEn: typeof langPl = {
         success: "Completed successfully",
         types: {
           autobackup: "Auto-Backup (GD)",
-          manualbackup: "Manual Backup (GD)",
+          manualbackup: "Manual-Backup (GD)",
           backup_disk_all: "Full Backup (Disk)",
           backup_disk_user: "User Backup (Disk)",
           restore_gd: "Restore from GD",
@@ -817,6 +817,11 @@ const langEn: typeof langPl = {
       title: "Automated Backup Error",
       message:
         "Automated backups have stopped due to Google Drive authorization issues. <br/><br/>You need to re-authorize your Google account and update the <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> variable in Netlify.",
+    },
+    offline: {
+      title: "No connection",
+      message:
+        "No internet access. The app is running in offline mode – you can browse and edit tasks. Data will sync when you're back online.",
     },
   },
   prepareText: {

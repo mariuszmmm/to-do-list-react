@@ -3,49 +3,70 @@
   <head>
     <meta charset="utf-8" />
     <title>Lista zadań</title>
-    <!-- <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <meta name="theme-color" content="#000000" />
-    <!-- <style>
-      :root {
-        --bg-color: #151515;
-      }
-      html,
-      body {
-        background-color: var(--bg-color);
-      }
-    </style> -->
-    <!-- <script>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, interactive-widget=resizes-content"
+    />
+
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Ten skrypt ustawia kolor paska systemowego telefonu PRZED załadowaniem React.
+         Kolory muszą być zsynchronizowane z src/common/ThemeSwitch/themeSaga.ts:
+         - tryb jasny / nowy użytkownik: #007380
+         - tryb ciemny: #005c67 -->
+    <script>
       (function () {
         try {
           var settings = JSON.parse(localStorage.getItem("settings"));
-          if (settings && settings.isDarkTheme === false) {
-            var bgColor = "#eee";
-            var themeColor = "#007380";
-            document.documentElement.style.setProperty("--bg-color", bgColor);
-            document
-              .querySelector('meta[name="theme-color"]')
-              .setAttribute("content", themeColor);
+          var isDark = settings && settings.isDarkTheme === true;
+
+          // 1. Kolor paska systemowego (to co miałeś)
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) {
+            meta.setAttribute("content", isDark ? "#005c67" : "#007380");
           }
+
+          // 2. Kolor tła strony (eliminacja rozbłysku)
+          // Używamy kolorów z Twojego theme.ts:
+          // Ciemny: #151515, Jasny: #FBFBFE (lub biały)
+          var bgColor = isDark ? "#151515" : "#ffffff";
+          document.documentElement.style.backgroundColor = bgColor;
+
+          // Dodatkowo ustawiamy kolor tekstu, żeby nic nie "migało"
+          document.documentElement.style.color = isDark ? "#eeeeee" : "#222222";
         } catch (e) {}
       })();
-    </script> -->
+    </script>
 
-    <meta property="og:image" content="%PUBLIC_URL%/share.png" />
+    <meta property="og:image" content="%PUBLIC_URL%/screenshots/desktop.png" />
     <meta property="og:title" content="Lista zadań" />
+    <meta
+      property="og:description"
+      content="Nowoczesna i intuicyjna aplikacja do zarządzania codziennymi zadaniami."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://to-do-list.myprojects.pl/" />
     <meta
       name="description"
       content="Nowoczesna i intuicyjna aplikacja do zarządzania codziennymi zadaniami."
     />
 
-    <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%PUBLIC_URL%/apple-touch-icon.png"
+    />
+    <meta name="apple-mobile-web-app-title" content="Lista zadań" />
+    <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,16 +79,6 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700;1,800&family=Roboto+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <!-- <script>
-      (function () {
-        var setAppHeight = function () {
-          var doc = document.documentElement;
-          doc.style.setProperty("--app-height", window.innerHeight + "px");
-        };
-        window.addEventListener("resize", setAppHeight);
-        setAppHeight();
-      })();
-    </script> -->
   </head>
 
   <body>

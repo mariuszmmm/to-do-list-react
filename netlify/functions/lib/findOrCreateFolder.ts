@@ -1,16 +1,18 @@
 export const findOrCreateFolder = async (
   folderName: string,
-  accessToken: string
+  accessToken: string,
+  parentId?: string,
 ): Promise<string | null> => {
   try {
+    const parentQuery = parentId ? ` and '${parentId}' in parents` : "";
     const searchResponse = await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id,name)`,
+      `https://www.googleapis.com/drive/v3/files?q=name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false${parentQuery}&fields=files(id,name)`,
       {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
 
     if (!searchResponse.ok) {
@@ -24,6 +26,15 @@ export const findOrCreateFolder = async (
       return searchData.files[0].id;
     }
 
+    const body: any = {
+      name: folderName,
+      mimeType: "application/vnd.google-apps.folder",
+    };
+
+    if (parentId) {
+      body.parents = [parentId];
+    }
+
     const createResponse = await fetch(
       "https://www.googleapis.com/drive/v3/files",
       {
@@ -32,11 +43,8 @@ export const findOrCreateFolder = async (
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: folderName,
-          mimeType: "application/vnd.google-apps.folder",
-        }),
-      }
+        body: JSON.stringify(body),
+      },
     );
 
     if (!createResponse.ok) {

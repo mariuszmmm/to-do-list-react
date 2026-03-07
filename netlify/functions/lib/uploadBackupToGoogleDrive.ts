@@ -4,6 +4,7 @@ export const uploadBackupToGoogleDrive = async (
   fileName: string,
   fileContent: string,
   accessToken: string,
+  subFolderName?: string,
 ): Promise<{
   success: boolean;
   statusCode: number;
@@ -12,18 +13,28 @@ export const uploadBackupToGoogleDrive = async (
   message: string;
 }> => {
   try {
-    const folderId = await findOrCreateFolder(
+    const rootFolderId = await findOrCreateFolder(
       "To-do-list_Backups",
       accessToken,
     );
+
+    let targetFolderId = rootFolderId;
+
+    if (subFolderName && rootFolderId) {
+      targetFolderId = await findOrCreateFolder(
+        subFolderName,
+        accessToken,
+        rootFolderId,
+      );
+    }
 
     const fileMetadata: any = {
       name: fileName,
       mimeType: "application/json",
     };
 
-    if (folderId) {
-      fileMetadata.parents = [folderId];
+    if (targetFolderId) {
+      fileMetadata.parents = [targetFolderId];
     }
 
     const boundary = "===============7330845974216740156==";

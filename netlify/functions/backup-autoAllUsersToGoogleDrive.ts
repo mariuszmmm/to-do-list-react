@@ -116,6 +116,7 @@ const handler: Handler = async (event) => {
       fileNameWithPrefix,
       fileContent,
       accessToken,
+      "Auto-Backup",
     );
 
     if (!uploadResponse.success) {
@@ -129,9 +130,12 @@ const handler: Handler = async (event) => {
 
     // 4. Cleanup old backups (older than 10 days)
     console.log(`${logPrefix} Cleaning up old backups...`);
-    const folderId = await findOrCreateFolder(folderName, accessToken);
-    if (folderId) {
-      const files = await listFilesID(folderId, accessToken);
+    const rootFolderId = await findOrCreateFolder(folderName, accessToken);
+    const autoBackupFolderId = rootFolderId
+      ? await findOrCreateFolder("Auto-Backup", accessToken, rootFolderId)
+      : null;
+    if (autoBackupFolderId) {
+      const files = await listFilesID(autoBackupFolderId, accessToken);
       const tenDaysAgo = new Date();
       tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
@@ -153,7 +157,7 @@ const handler: Handler = async (event) => {
 
     await updateStatus(
       "success",
-      `Automated backup completed successfully: ${fileNameWithPrefix}`,
+      `Automated backup completed successfully:\n ${fileNameWithPrefix}`,
     );
 
     return jsonResponse(200, {

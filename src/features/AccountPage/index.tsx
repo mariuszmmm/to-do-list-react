@@ -217,7 +217,7 @@ const AccountPage = () => {
         }
       />
 
-      {loggedUserEmail && isAdmin && (
+      {loggedUserEmail && (
         <Section
           title={t("sessionInfo.title")}
           extraHeaderContent={renderToggleButton(

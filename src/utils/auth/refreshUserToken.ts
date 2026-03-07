@@ -1,9 +1,12 @@
 import { auth } from "../../api/auth";
+import { syncToIndexedDB } from "../storage/storageSync";
 
 export const refreshUserToken = async () => {
   const user = auth.currentUser();
 
-  const waitingForConfirmation = sessionStorage.getItem("waitingForConfirmation");
+  const waitingForConfirmation = sessionStorage.getItem(
+    "waitingForConfirmation",
+  );
   if (waitingForConfirmation) {
     return null;
   }
@@ -20,6 +23,7 @@ export const refreshUserToken = async () => {
 
     if (error.status === 401 || error.message === "No user found") {
       await user?.logout();
+      await syncToIndexedDB("gotrue.user", null);
       window.location.reload();
     }
     return null;

@@ -18,6 +18,7 @@ import { handleGoogleOAuthCodeFromUrl } from "./utils/googleDrive/getGoogleOAuth
 import { useAppSelector } from "./hooks";
 import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 import { restoreFromIndexedDB } from "./utils/storage/storageSync";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
@@ -72,10 +73,6 @@ const initApp = async () => {
   const gotrueUser = localStorage.getItem("gotrue.user");
 
   if (!savedAccounts || !gotrueUser) {
-    console.log(
-      "Inicjalizacja: Brak sesji w localStorage. Próba odzyskania z IndexedDB...",
-    );
-
     const keysToRestore = [
       "saved_accounts",
       "gotrue.user",
@@ -108,6 +105,9 @@ const initApp = async () => {
       </Provider>
     ),
   );
+
+  // Rejestracja Service Workera dla PWA (offline i instalacja)
+  serviceWorkerRegistration.register();
 };
 
 initApp();

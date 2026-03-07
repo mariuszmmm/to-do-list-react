@@ -19,6 +19,7 @@ import { Modal } from "./Modal";
 import { TokenManager } from "./components/TokenManager";
 import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";
+import { OfflineManager } from "./components/OfflineManager";
 import { SessionManager } from "./components/SessionManager";
 
 import { refreshData } from "./utils/sync/refreshData";
@@ -29,6 +30,7 @@ import {
   useAppSelector,
   useDataFetchingError,
   useSaveListMutation,
+  useOnlineStatus,
 } from "./hooks";
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
@@ -36,10 +38,11 @@ import { TaskImage } from "./features/tasks/TaskImage";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const isOnline = useOnlineStatus();
   const { data, isLoading, isError, refetch } = useQuery<ListsData>({
     queryKey: ["listsData"],
     queryFn: refreshData,
-    enabled: !!loggedUserEmail,
+    enabled: !!loggedUserEmail && isOnline,
     refetchInterval: 5 * 60 * 1000,
   });
   const safeData = !!loggedUserEmail ? data : undefined;
@@ -75,6 +78,7 @@ const App = () => {
                 listsData={safeData}
                 saveListMutation={saveListMutation}
               />
+              <OfflineManager refetch={refetch} />
             </>
           );
         }

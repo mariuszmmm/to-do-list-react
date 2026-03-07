@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../../../hooks";
 import { openModal } from "../../../../Modal/modalSlice";
 import { setLoggedUser } from "../../accountSlice";
 import { removeAccount } from "../../../../utils/auth/multiAccount";
+import { syncToIndexedDB } from "../../../../utils/storage/storageSync";
 
 export const useLogout = () => {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ export const useLogout = () => {
       if (!user) throw new Error("No user found");
       const email = user.email;
       const logoutResult = await user.logout();
+      await syncToIndexedDB("gotrue.user", null);
 
       if (email) removeAccount(email);
 

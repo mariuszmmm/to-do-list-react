@@ -230,6 +230,7 @@ export const LogDetailsText = styled.div`
   opacity: 0.8;
   font-size: 0.85rem;
   margin-top: 4px;
+  white-space: pre-line;
 `;
 
 export const LogStatsSeparator = styled.div`

@@ -11,7 +11,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
   flex-wrap: wrap;
   justify-content: right;
   align-items: start;
-  align-content: flex-start;
+  align-content: center;
   gap: 15px;
 
   ${({ $sub }) =>
@@ -43,6 +43,7 @@ export const ButtonsContainer = styled.div<ButtonsContainerProps>`
     css`
       flex-direction: column;
       justify-content: left;
+      align-content: flex-start;
       margin-top: 10px;
     `};
 
