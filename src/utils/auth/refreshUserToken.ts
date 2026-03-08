@@ -21,7 +21,11 @@ export const refreshUserToken = async () => {
   } catch (error: any) {
     console.error("[refreshUserToken] Błąd podczas odświeżania tokena:", error);
 
-    if (error.status === 401 || error.message === "No user found") {
+    if (
+      error.status === 401 ||
+      error.status === 400 ||
+      error.message === "No user found"
+    ) {
       await user?.logout();
       await syncToIndexedDB("gotrue.user", null);
       window.location.reload();

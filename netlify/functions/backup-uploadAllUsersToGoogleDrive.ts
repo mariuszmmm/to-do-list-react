@@ -13,7 +13,6 @@ import {
 } from "./lib/validators";
 import { jsonResponse, logError } from "./lib/response";
 import { publishSystemLog } from "./lib/ablyHelper";
-import UserData from "../models/UserData";
 
 const handler: Handler = async (event, context) => {
   const logPrefix = "[uploadAllUsersToGoogleDrive]";
@@ -79,38 +78,13 @@ const handler: Handler = async (event, context) => {
         /"/g,
         "",
       );
-      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(
-        /"/g,
-        "",
-      );
+      const refreshToken =
+        process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(/"/g, "") || "";
 
-      if (clientId && clientSecret && refreshToken) {
+      if (clientId && clientSecret) {
         accessToken =
           (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
           undefined;
-      } else if (clientId && clientSecret) {
-        // Fallback: try to fetch refresh token from the DB for this specific admin
-        try {
-          const userDoc = await UserData.findOne({ email });
-          const dbRefreshToken = userDoc?.googleRefreshToken;
-
-          if (dbRefreshToken) {
-            console.log(
-              `${logPrefix} Found refresh token in DB, attempting exchange...`,
-            );
-            accessToken =
-              (await getGoogleAccessToken(
-                clientId,
-                clientSecret,
-                dbRefreshToken,
-              )) || undefined;
-          }
-        } catch (dbError) {
-          console.error(
-            `${logPrefix} DB fetch error for refresh token:`,
-            dbError,
-          );
-        }
       }
 
       if (!accessToken) {

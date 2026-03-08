@@ -77,12 +77,12 @@ const handler: Handler = async (event, context) => {
     try {
       const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
       const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN || "";
 
-      if (!clientId || !clientSecret || !refreshToken) {
+      if (!clientId || !clientSecret) {
         results.googleDrive = {
           status: "error",
-          details: "Missing Google configuration (ID/Secret/Token)",
+          details: "Missing Google configuration (ID/Secret)",
         };
       } else {
         const token = await getGoogleAccessToken(

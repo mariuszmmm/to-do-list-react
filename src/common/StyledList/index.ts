@@ -297,3 +297,12 @@ export const ListMetaText = styled.div`
   column-gap: 4px;
   row-gap: 2px;
 `;
+
+export const StatusIndicator = styled.span<{ $online?: boolean }>`
+  color: ${({ $online, theme }) =>
+    $online
+      ? theme.colors.status.success
+      : theme.colors.status.warning} !important;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  letter-spacing: 0.5px;
+`;

@@ -73,7 +73,7 @@ export const themeLight = {
       changed: colorNames.yellow,
       pending: colorNames.blue,
       info: colorNames.blue,
-      success: colorNames.forestGreen,
+      success: lighten(0.15, colorNames.forestGreen),
       default: colorNames.black,
     },
     border: {

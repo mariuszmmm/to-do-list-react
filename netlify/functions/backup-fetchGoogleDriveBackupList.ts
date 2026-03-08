@@ -39,9 +39,9 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
     if (!googleAccessToken) {
       const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
       const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN || "";
 
-      if (clientId && clientSecret && refreshToken) {
+      if (clientId && clientSecret) {
         googleAccessToken =
           (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
           undefined;
@@ -90,9 +90,30 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
         `${logPrefix} Using folderId: ${folderId} (${folderData.files[0].name})`,
       );
 
-      // 2. List JSON files in that folder
+      // 2. Find subfolders (Auto-Backup, Manual-Backup) inside the root folder
+      const subfoldersResponse = await fetch(
+        `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false&fields=files(id)`,
+        {
+          headers: { Authorization: `Bearer ${googleAccessToken}` },
+        },
+      );
+
+      const subfoldersData = subfoldersResponse.ok
+        ? await subfoldersResponse.json()
+        : { files: [] };
+      const allFolderIds = [
+        folderId,
+        ...(subfoldersData.files || []).map((f: any) => f.id),
+      ];
+      const parentsQuery = allFolderIds
+        .map((id) => `'${id}' in parents`)
+        .join(" or ");
+
+      // 3. List JSON files in those folders
+      const q = `(${parentsQuery}) and mimeType='application/json' and trashed=false`;
+      const encodedQ = encodeURIComponent(q);
       const backupsResponse = await fetch(
-        `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and mimeType='application/json' and trashed=false&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime,size)`,
+        `https://www.googleapis.com/drive/v3/files?q=${encodedQ}&orderBy=modifiedTime desc&fields=files(id,name,modifiedTime,size)&pageSize=100`,
         {
           headers: { Authorization: `Bearer ${googleAccessToken}` },
         },
@@ -108,7 +129,7 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
 
       const backupsData = await backupsResponse.json();
       console.log(
-        `${logPrefix} Found ${backupsData.files?.length || 0} backups in folder.`,
+        `${logPrefix} Found ${backupsData.files?.length || 0} backups across folders.`,
       );
 
       return jsonResponse(200, {

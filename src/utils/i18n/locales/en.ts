@@ -8,6 +8,8 @@ const langEn: typeof langPl = {
   },
   listFrom: "List from",
   currentList: "current",
+  online: "online",
+  offline: "offline",
   currentDate: { description: "Today is " },
   currentTaskCount: {
     tasks: "{{count}}\u00A0task",
@@ -478,7 +480,7 @@ const langEn: typeof langPl = {
         error: "Error downloading your lists",
       },
       downloadAllUsers: {
-        button: "Download all",
+        button: "Download everything",
         tooltip: "Download all users' lists to your computer",
         downloading: "Downloading all users' lists...",
         success: "All users' lists have been downloaded!",
@@ -495,7 +497,7 @@ const langEn: typeof langPl = {
         error: "Error while restoring your lists",
       },
       restoreAllUsers: {
-        button: "Restore all",
+        button: "Restore everything",
         tooltip: "Restore all users from backup",
         processing: "Processing...",
         success:
@@ -527,6 +529,7 @@ const langEn: typeof langPl = {
         notAuthorized: "Not authorized to Google Drive",
       },
       listGoogleDriveBackups: {
+        loading: "Fetching backup list...",
         selectBackup: "Select a backup to restore",
         buttons: {
           prev: "Back",

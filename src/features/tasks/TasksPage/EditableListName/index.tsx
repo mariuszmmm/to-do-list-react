@@ -15,7 +15,7 @@ import {
   selectEditedTask,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
-import { StyledSpan } from "../../../../common/StyledList";
+import { StatusIndicator, StyledSpan } from "../../../../common/StyledList";
 import { formatCurrentDate } from "../../../../utils/formatting/formatCurrentDate";
 
 export const EditableListName = () => {
@@ -78,7 +78,9 @@ export const EditableListName = () => {
               </>
             )}
             <strong>•</strong>&nbsp;
-            {`${isRemoteSaveable ? "online" : "offline"}`}
+            <StatusIndicator $online={isRemoteSaveable}>
+              {i18n.t(isRemoteSaveable ? "online" : "offline")}
+            </StatusIndicator>
           </StyledSpan>
           <ListName>{name}</ListName>
         </>

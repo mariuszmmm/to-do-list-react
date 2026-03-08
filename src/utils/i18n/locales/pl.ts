@@ -6,6 +6,8 @@ const langPl = {
   },
   listFrom: "Lista z dnia",
   currentList: "bieżąca",
+  online: "online",
+  offline: "offline",
   currentDate: { description: "Dziś jest " },
   currentTaskCount: {
     tasks: "{{count}}\u00A0zadanie",
@@ -476,7 +478,7 @@ const langPl = {
         error: "Błąd podczas pobierania Twoich list",
       },
       downloadAllUsers: {
-        button: "Pobierz wszystkich",
+        button: "Pobierz wszystko",
         tooltip: "Pobierz listy wszystkich użytkowników na komputer",
         downloading: "Pobieranie wszystkich list użytkowników...",
         success: "Listy wszystkich użytkowników zostały pobrane!",
@@ -497,7 +499,7 @@ const langPl = {
         error: "Błąd podczas przywracania Twoich list",
       },
       restoreAllUsers: {
-        button: "Przywróć wszystkich",
+        button: "Przywróć wszystko",
         tooltip: "Przywróć wszystkich użytkowników z kopii zapasowej",
         processing: "Przetwarzanie...",
         success:
@@ -529,6 +531,7 @@ const langPl = {
         notAuthorized: "Brak autoryzacji do Google Drive",
       },
       listGoogleDriveBackups: {
+        loading: "Pobieranie listy kopii zapasowych...",
         selectBackup: "Wybierz kopię do przywrócenia",
         buttons: {
           prev: "Wstecz",

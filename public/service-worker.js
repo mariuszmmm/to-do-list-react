@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 // Nazwa cache - warto ją zmieniać przy dużych aktualizacjach
-const CACHE_NAME = "todo-list-v2";
+const CACHE_NAME = "todo-list-v3";
 
 // Pliki do natychmiastowego zapisania w cache przy instalacji SW
 const urlsToCache = [
@@ -51,9 +51,24 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Pomijamy requesty do API (Netlify functions) i zewnętrznych serwisów
+  const apiRoutes = [
+    "/data",
+    "/image",
+    "/translate",
+    "/get-system-status",
+    "/cleanup-orphan-images",
+    "/diagnose-system",
+    "/resetPassword",
+  ];
+
+  // Pomijamy requesty do API (Netlify functions), zewnętrznych serwisów oraz dynamicznych tras
   if (
     url.pathname.startsWith("/.netlify/") ||
+    url.pathname.startsWith("/auth-") ||
+    url.pathname.startsWith("/backup-") ||
+    url.pathname.startsWith("/user-") ||
+    url.pathname.startsWith("/test-") ||
+    apiRoutes.includes(url.pathname) ||
     url.hostname !== self.location.hostname
   ) {
     return;

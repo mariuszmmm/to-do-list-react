@@ -1,5 +1,5 @@
 import { List } from "../../../types";
-import { useAppDispatch } from "../../../hooks/redux/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useDndList } from "../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../hooks/ui/useDndItem";
 import {
@@ -9,6 +9,7 @@ import {
   StyledListContent,
   StyledListItem,
   StyledSpan,
+  StatusIndicator,
 } from "../../../common/StyledList";
 import {
   EditButton,
@@ -26,6 +27,7 @@ import { useTranslation } from "react-i18next";
 import { DraggableAttributes } from "@dnd-kit/core";
 import { TaskActions } from "../../../common/TaskActions";
 import { StyledLink } from "../../../common/StyledLink";
+import { selectListStatus } from "../../tasks/tasksSlice";
 
 type Props = {
   lists: List[];
@@ -42,6 +44,7 @@ export const TaskLists = ({
 }: Props) => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation");
+  const { isRemoteSaveable } = useAppSelector(selectListStatus);
 
   const { withDnd } = useDndList<List>({
     items: lists,
@@ -82,9 +85,13 @@ export const TaskLists = ({
                     {t("currentTaskCount.tasks", {
                       count: list.taskList.length,
                     })}
-                    &nbsp;)
+                    &nbsp;)&nbsp;
                   </>
                 )}
+                <strong>•</strong>&nbsp;
+                <StatusIndicator $online={isRemoteSaveable}>
+                  {t(isRemoteSaveable ? "online" : "offline")}
+                </StatusIndicator>
               </StyledSpan>
             </ListMetaText>
           </ListMeta>

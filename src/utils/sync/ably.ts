@@ -26,6 +26,7 @@ const getEmailFromToken = (token: string): string | null => {
 export const getAblyInstance = (): Ably.Realtime => {
   if (!ablyInstance) {
     ablyInstance = new Ably.Realtime({
+      queryTime: true,
       authCallback: async (tokenParams, callback) => {
         try {
           const deviceId = getOrCreateDeviceId();

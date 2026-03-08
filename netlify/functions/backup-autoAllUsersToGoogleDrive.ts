@@ -71,12 +71,11 @@ const handler: Handler = async (event) => {
       /"/g,
       "",
     );
-    const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(
-      /"/g,
-      "",
-    );
+    // Przekazanie domyślnego pustego tokena i oddanie w ręce getGoogleAccessToken logiki jego podmiany na ten z DB
+    const refreshToken =
+      process.env.GOOGLE_BACKUP_REFRESH_TOKEN?.replace(/"/g, "") || "";
 
-    if (!clientId || !clientSecret || !refreshToken) {
+    if (!clientId || !clientSecret) {
       console.error(`${logPrefix} Missing Google Drive configuration.`);
       await updateStatus("error", "Missing Google Drive configuration");
       return jsonResponse(500, {

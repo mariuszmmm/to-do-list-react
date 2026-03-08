@@ -46,6 +46,23 @@ export const getGoogleAccessToken = async (
       }
     }
 
+    // 2.5 Prioritize Refresh Token from DB (set by "Autoryzuj Google" button) overriding the .env token
+    let activeRefreshToken = refreshToken;
+    try {
+      const refreshedTokenDoc = await SystemConfig.findOne({
+        key: "google_drive_refresh_token",
+      });
+      if (refreshedTokenDoc && refreshedTokenDoc.value) {
+        // console.log("[getGoogleAccessToken] Found central refresh token in DB.");
+        activeRefreshToken = refreshedTokenDoc.value;
+      }
+    } catch (dbErr) {
+      console.warn(
+        "[getGoogleAccessToken] Could not fetch DB refresh token fallback:",
+        dbErr,
+      );
+    }
+
     console.log(
       "[getGoogleAccessToken] Cache expired or missing. Obtaining new token from Google API...",
     );
@@ -57,7 +74,7 @@ export const getGoogleAccessToken = async (
       body: new URLSearchParams({
         client_id: clientId,
         client_secret: clientSecret,
-        refresh_token: refreshToken,
+        refresh_token: activeRefreshToken,
         grant_type: "refresh_token",
       }),
     });

@@ -2,7 +2,6 @@ import type { Handler } from "@netlify/functions";
 import { checkEventBody, checkHttpMethod } from "./lib/validators";
 import { jsonResponse, logError } from "./lib/response";
 import { connectToDB } from "../config/mongoose";
-import UserData from "../models/UserData";
 import SystemConfig from "../models/SystemConfig";
 import { publishSystemLog } from "./lib/ablyHelper";
 
@@ -89,55 +88,55 @@ const handler: Handler = async (event, context) => {
       try {
         await connectToDB();
 
-        // Get user from Netlify Identity context
-        const userEmail = context.clientContext?.user?.email;
-        if (userEmail) {
-          await UserData.findOneAndUpdate(
-            { email: userEmail },
-            { googleRefreshToken: tokenData.refresh_token },
+        // 1. Zapisujemy w głównej tabeli SystemConfig zamiast ograniczać do context.user
+        // (ponieważ callback z Google nie wymusza i z reguły nie posiada w nagłówku tokenu Netlify - przepadał)
+        await SystemConfig.findOneAndUpdate(
+          { key: "google_drive_refresh_token" },
+          { value: tokenData.refresh_token, updatedAt: new Date() },
+          { upsert: true },
+        );
+
+        // Usuwamy przestarzały, godzinny cache by móc zaraz potem posłużyć się świeżym generowanym tokenem
+        await SystemConfig.deleteOne({ key: "google_drive_access_token" });
+
+        // Dodajemy log informacyjny
+        try {
+          const logEntry = {
+            status: "success",
+            details:
+              "Google OAuth refresh token updated securely in SystemConfig",
+            timestamp: new Date().toISOString(),
+          };
+          await SystemConfig.create({
+            key: `log_oauth_${Date.now()}`,
+            value: logEntry,
+            updatedAt: new Date(),
+          });
+
+          await SystemConfig.findOneAndUpdate(
+            { key: "lastAutoBackupStatus" },
+            {
+              value: {
+                status: "success",
+                details: "Authorization refreshed via Google OAuth",
+                timestamp: new Date().toISOString(),
+              },
+              updatedAt: new Date(),
+            },
             { upsert: true },
           );
 
-          // Log this as a system event and clear backup error status
-          try {
-            const logEntry = {
-              status: "success",
-              details: `Google OAuth refresh token updated for ${userEmail}`,
-              timestamp: new Date().toISOString(),
-            };
-            await SystemConfig.create({
-              key: `log_oauth_${Date.now()}`,
-              value: logEntry,
-              updatedAt: new Date(),
-            });
-
-            // Clear the backup error status so the modal won't show anymore
-            await SystemConfig.findOneAndUpdate(
-              { key: "lastAutoBackupStatus" },
-              {
-                value: {
-                  status: "success",
-                  details: "Authorization refreshed via Google OAuth",
-                  timestamp: new Date().toISOString(),
-                },
-                updatedAt: new Date(),
-              },
-              { upsert: true },
-            );
-
-            // Notify admins in real-time
-            await publishSystemLog({
-              key: "log_oauth",
-              ...logEntry,
-            });
-          } catch (logErr) {
-            console.error(`${logPrefix} Failed to create system log:`, logErr);
-          }
-
-          console.log(
-            `${logPrefix} Refresh token saved to DB for ${userEmail}`,
-          );
+          await publishSystemLog({
+            key: "log_oauth",
+            ...logEntry,
+          });
+        } catch (logErr) {
+          console.error(`${logPrefix} Failed to create system log:`, logErr);
         }
+
+        console.log(
+          `${logPrefix} Refresh token successfully saved to the central Database (SystemConfig).`,
+        );
       } catch (dbError) {
         console.error(
           `${logPrefix} Error saving refresh token to DB:`,

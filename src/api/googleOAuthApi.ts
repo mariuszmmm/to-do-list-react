@@ -8,7 +8,7 @@ export async function exchangeGoogleOAuthCodeApi(code: string) {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(
-      errorData.message || `Failed to exchange code: ${response.statusText}`
+      errorData.message || `Failed to exchange code: ${response.statusText}`,
     );
   }
 
@@ -17,7 +17,7 @@ export async function exchangeGoogleOAuthCodeApi(code: string) {
 
 export async function refreshGoogleTokenApi(
   refreshToken: string,
-  userToken: string
+  userToken: string,
 ): Promise<{ accessToken: string; expiresIn: number }> {
   const response = await fetch("/auth-refreshGoogleToken", {
     method: "POST",
@@ -30,7 +30,7 @@ export async function refreshGoogleTokenApi(
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(
-      errorData.message || `Failed to refresh token: ${response.statusText}`
+      errorData.message || `Failed to refresh token: ${response.statusText}`,
     );
   }
 

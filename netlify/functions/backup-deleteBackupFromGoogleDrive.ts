@@ -40,9 +40,9 @@ const handler: Handler = async (event, context): Promise<HandlerResponse> => {
     if (!accessToken) {
       const clientId = process.env.GOOGLE_DRIVE_CLIENT_ID;
       const clientSecret = process.env.GOOGLE_DRIVE_CLIENT_SECRET;
-      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN;
+      const refreshToken = process.env.GOOGLE_BACKUP_REFRESH_TOKEN || "";
 
-      if (clientId && clientSecret && refreshToken) {
+      if (clientId && clientSecret) {
         accessToken =
           (await getGoogleAccessToken(clientId, clientSecret, refreshToken)) ||
           undefined;

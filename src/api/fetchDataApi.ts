@@ -18,7 +18,11 @@ export const getDataApi = async (token: string) => {
     });
 };
 
-export const addDataApi = async (token: string, list: List, deviceId: string) => {
+export const addDataApi = async (
+  token: string,
+  list: List,
+  deviceId: string,
+) => {
   try {
     const response = await axios.patch(
       "/data",
@@ -38,7 +42,11 @@ export const addDataApi = async (token: string, list: List, deviceId: string) =>
   }
 };
 
-export const updateDataApi = async (token: string, lists: List[], deviceId: string) => {
+export const updateDataApi = async (
+  token: string,
+  lists: List[],
+  deviceId: string,
+) => {
   return fetch("/data", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
@@ -58,7 +66,12 @@ export const updateDataApi = async (token: string, lists: List[], deviceId: stri
     });
 };
 
-export const removeDataApi = async (token: string, version: Version, listId: string, deviceId: string) => {
+export const removeDataApi = async (
+  token: string,
+  version: Version,
+  listId: string,
+  deviceId: string,
+) => {
   return fetch("/data", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },

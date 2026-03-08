@@ -50,6 +50,12 @@ export type ApiResponse<T> = {
   message: string;
 };
 
+export type SystemConfigData = {
+  key: string;
+  value: any;
+  updatedAt: string;
+};
+
 export type BackupData = {
   version: string;
   timestamp: string;
@@ -61,10 +67,13 @@ export type BackupData = {
   users?: Array<{
     email: string;
     account: string;
+    googleRefreshToken?: string;
     lists: List[];
     listsCount: number;
     tasksCount: number;
   }>;
+  systemSettings?: SystemConfigData[];
+  systemLogs?: SystemConfigData[];
   totalUsers?: number;
   totalLists: number;
   totalTasks: number;

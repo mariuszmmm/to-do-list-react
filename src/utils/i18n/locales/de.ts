@@ -8,6 +8,8 @@ const langDe: typeof langPl = {
   },
   listFrom: "Liste vom",
   currentList: "aktuell",
+  online: "online",
+  offline: "offline",
   currentDate: { description: "Heute ist " },
   currentTaskCount: {
     tasks: "{{count}}\u00A0Aufgabe",
@@ -479,7 +481,7 @@ const langDe: typeof langPl = {
         error: "Fehler beim Herunterladen Ihrer Listen",
       },
       downloadAllUsers: {
-        button: "Alle herunterladen",
+        button: "Alles herunterladen",
         tooltip: "Listen aller Benutzer auf den Computer herunterladen",
         downloading: "Alle Benutzerlisten werden heruntergeladen...",
         success: "Alle Benutzerlisten wurden heruntergeladen!",
@@ -501,7 +503,7 @@ const langDe: typeof langPl = {
         error: "Fehler beim Wiederherstellen deiner Listen",
       },
       restoreAllUsers: {
-        button: "Alle wiederherstellen",
+        button: "Alles wiederherstellen",
         tooltip: "Alle Benutzer aus dem Backup wiederherstellen",
         processing: "Wird verarbeitet...",
         success:
@@ -533,6 +535,7 @@ const langDe: typeof langPl = {
         notAuthorized: "Nicht mit Google Drive autorisiert",
       },
       listGoogleDriveBackups: {
+        loading: "Backup-Liste wird abgerufen...",
         selectBackup: "Backup zum Wiederherstellen auswählen",
         buttons: {
           prev: "Zurück",

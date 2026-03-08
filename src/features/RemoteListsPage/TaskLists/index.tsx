@@ -13,6 +13,7 @@ import {
   StyledSpan,
   ListMeta,
   ListMetaText,
+  StatusIndicator,
 } from "../../../common/StyledList";
 import {
   EditButton,
@@ -20,7 +21,7 @@ import {
   SortButton,
   ToggleButton,
 } from "../../../common/taskButtons";
-import { useAppDispatch } from "../../../hooks/redux/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useDndList } from "../../../hooks/ui/useDndList";
 import { useDndItem } from "../../../hooks/ui/useDndItem";
 import { List } from "../../../types";
@@ -33,6 +34,7 @@ import {
   setListToRemove,
   setListToSort,
 } from "../remoteListsSlice";
+import { selectListStatus } from "../../tasks/tasksSlice";
 import { useSortableRowAnimation } from "../../../hooks/ui/useSortableRowAnimation";
 import { TaskActions } from "../../../common/TaskActions";
 import { StyledLink } from "../../../common/StyledLink";
@@ -58,6 +60,7 @@ export const TaskLists = ({
 }: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const sortableLists = listsToSort ?? lists;
 
   const { withDnd } = useDndList({
@@ -115,9 +118,13 @@ export const TaskLists = ({
                 )}
                 {list.id === localListId && (
                   <>
-                    <strong>•</strong>&nbsp;{t("currentList")}
+                    <strong>•</strong>&nbsp;{t("currentList")}&nbsp;
                   </>
                 )}
+                <strong>•</strong>&nbsp;
+                <StatusIndicator $online={isRemoteSaveable}>
+                  {t(isRemoteSaveable ? "online" : "offline")}
+                </StatusIndicator>
               </StyledSpan>
             </ListMetaText>
           </ListMeta>
@@ -181,9 +188,13 @@ export const TaskLists = ({
                   )}
                   {list.id === localListId && (
                     <>
-                      <strong>•</strong>&nbsp;{t("currentList")}
+                      <strong>•</strong>&nbsp;{t("currentList")}&nbsp;
                     </>
                   )}
+                  <strong>•</strong>&nbsp;
+                  <StatusIndicator $online={isRemoteSaveable}>
+                    {t(isRemoteSaveable ? "online" : "offline")}
+                  </StatusIndicator>
                 </StyledSpan>
               </ListMetaText>
             </ListMeta>

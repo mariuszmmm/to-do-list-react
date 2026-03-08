@@ -17,6 +17,12 @@ export const handleFetchGoogleDriveBackupList = async (
     const token = await getUserToken();
     if (!token) throw new Error("No user token");
 
+    setStatus({
+      isLoading: true,
+      message: t("listGoogleDriveBackups.loading"),
+      messageType: "info",
+    });
+
     const result = await fetchGoogleDriveBackupListApi(token);
 
     if (!result.success || !result.data || !result.data.files) {
@@ -34,6 +40,11 @@ export const handleFetchGoogleDriveBackupList = async (
     }
 
     setBackupFiles(files);
+    setStatus({
+      isLoading: false,
+      message: "",
+      messageType: "info",
+    });
     setShowBackupList(true);
   } catch (error: unknown) {
     console.error("[handleFetchGoogleDriveBackupList]", error);
