@@ -53,7 +53,7 @@ export const ImageButton = styled(TaskButton)<{ $hasImage?: boolean }>`
     right: 2px;
     width: 8px;
     height: 8px;
-    background-color: ${({ theme }) => theme.colors.status.success};
+    background-color: ${({ theme }) => theme.colors.info.value};
     border-radius: 50%;
     border: 1px solid ${({ theme }) => theme.colors.button.primaryText};
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);

@@ -36,18 +36,19 @@ export const BackupItem = styled.div<BackupItemProps>`
   background-color: ${({ theme }) => theme.colors.backgroundSecendary};
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
   cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
 
   transition:
-    background-color 0.5s ease-in-out,
-    border-color 0.5s ease-in-out,
-    transform 0.2s ease-in-out;
+    background-color 0.25s ease-in-out,
+    border-color 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out;
 
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     border-color: ${({ theme }) => theme.colors.border.secendary};
-    transform: translateX(2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
 
   &:last-child {

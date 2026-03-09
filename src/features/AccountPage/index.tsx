@@ -30,22 +30,8 @@ import {
   saveSettingsInLocalStorage,
 } from "../../utils/storage/localStorage";
 import { AccountAvatar, getAvatarColor } from "./AccountSwitcher/styled";
-import styled from "styled-components";
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const EmailText = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+import { TitleWrapper, EmailText } from "./styled";
+import { formatEmailWithBreaks } from "./utils";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -194,7 +180,7 @@ const AccountPage = () => {
           loggedUserEmail ? (
             <TitleWrapper>
               <AccountAvatar $bgColor={avatarBgColor}>{initial}</AccountAvatar>
-              <EmailText>{loggedUserEmail}</EmailText>
+              <EmailText>{formatEmailWithBreaks(loggedUserEmail)}</EmailText>
             </TitleWrapper>
           ) : (
             t("notLoggedIn")

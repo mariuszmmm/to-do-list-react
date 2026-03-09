@@ -51,7 +51,29 @@ export const AccountSwitcher = () => {
   }, [confirmed, accountToRemove, dispatch]);
 
   const handleSwitch = (email: string) => {
-    switchAccount(email);
+    dispatch(
+      openModal({
+        title: { key: "modal.accountSwitch.title" },
+        message: { key: "modal.accountSwitch.message.loading" },
+        type: "loading",
+      }),
+    );
+
+    setTimeout(() => {
+      try {
+        sessionStorage.setItem("account_switch_target", email);
+        switchAccount(email);
+      } catch (err) {
+        sessionStorage.removeItem("account_switch_target");
+        dispatch(
+          openModal({
+            title: { key: "modal.accountSwitch.title" },
+            message: { key: "modal.accountSwitch.message.error.default" },
+            type: "error",
+          }),
+        );
+      }
+    }, 700);
   };
 
   const handleRemove = (email: string) => {

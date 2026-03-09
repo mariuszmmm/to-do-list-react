@@ -16,14 +16,17 @@ export const AccountCard = styled.div`
   background: ${({ theme }) => theme.colors.backgroundSecendary};
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: 12px;
-  transition: all 0.25s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   min-width: 0;
 
+  transition:
+    background-color 0.25s ease-in-out,
+    border-color 0.25s ease-in-out,
+    box-shadow 0.25s ease-in-out;
+
   &:hover {
     border-color: ${({ theme }) => theme.colors.border.secendary};
-    background: ${({ theme }) => theme.colors.backgroundPrimary};
-    transform: translateY(-2px);
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
 
@@ -114,7 +117,7 @@ export const SwitcherButton = styled.button<SwitcherButtonProps>`
   padding: 8px 16px;
   border-radius: 5px;
   font-size: 0.9rem;
-  font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+  font-weight: ${({ theme }) => theme.fontWeight.normal};
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;

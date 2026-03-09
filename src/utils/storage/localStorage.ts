@@ -58,7 +58,18 @@ export const removeTasksData = () => {
   sessionStorage.removeItem(listMetadataKey);
 };
 
-export const clearLocalStorage = () => localStorage.clear();
+export const clearLocalStorage = () => {
+  localStorage.removeItem(tasksKey);
+  localStorage.removeItem(listMetadataKey);
+  localStorage.removeItem(archivedListsKey);
+
+  syncToIndexedDB(tasksKey, null);
+  syncToIndexedDB(listMetadataKey, null);
+  syncToIndexedDB(archivedListsKey, null);
+
+  sessionStorage.removeItem(tasksKey);
+  sessionStorage.removeItem(listMetadataKey);
+};
 
 export const saveSettingsInLocalStorage = (
   settings: Partial<Settings> | Settings,

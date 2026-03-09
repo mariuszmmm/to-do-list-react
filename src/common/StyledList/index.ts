@@ -258,7 +258,7 @@ export const StyledSpan = styled.span<StyledTaskProps>`
   ${({ $error, theme }) =>
     $error &&
     css`
-      color: ${theme.colors.status.error};
+      color: ${theme.colors.info.error};
     `}
 
   strong {
@@ -266,8 +266,8 @@ export const StyledSpan = styled.span<StyledTaskProps>`
       $tokenStatus &&
       css`
         color: ${$tokenStatus === "active"
-          ? theme.colors.status.success
-          : theme.colors.status.warning};
+          ? theme.colors.info.value
+          : theme.colors.info.error};
       `}
   }
 `;
@@ -300,9 +300,7 @@ export const ListMetaText = styled.div`
 
 export const StatusIndicator = styled.span<{ $online?: boolean }>`
   color: ${({ $online, theme }) =>
-    $online
-      ? theme.colors.status.success
-      : theme.colors.status.warning} !important;
+    $online ? theme.colors.info.value : theme.colors.info.error} !important;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   letter-spacing: 0.5px;
 `;

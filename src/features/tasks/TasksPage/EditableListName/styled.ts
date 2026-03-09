@@ -10,6 +10,7 @@ export const NameContainer = styled.form<NameContainerProps>`
   gap: 4px;
   flex-wrap: wrap;
   flex-direction: column;
+  margin-top: 2px;
   width: 100%;
   min-width: 49%;
   min-height: ${({ $account }) => ($account ? "auto" : "70px")};

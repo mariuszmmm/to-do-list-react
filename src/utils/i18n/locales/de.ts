@@ -7,7 +7,7 @@ const langDe: typeof langPl = {
     info: "Über",
   },
   listFrom: "Liste vom",
-  currentList: "aktuell",
+  currentList: "aktiv",
   online: "online",
   offline: "offline",
   currentDate: { description: "Heute ist " },
@@ -669,6 +669,16 @@ const langDe: typeof langPl = {
         success: "Das Konto wurde gelöscht.",
         error: {
           default: "Fehler beim Löschen des Kontos.",
+        },
+      },
+    },
+    accountSwitch: {
+      title: "Konto wechseln",
+      message: {
+        loading: "Konto wird gewechselt...",
+        success: "Erfolgreich zum Konto gewechselt: <strong>{{email}}</strong>",
+        error: {
+          default: "Fehler beim Wechseln des Kontos.",
         },
       },
     },

@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCloudinaryImage } from "../../../../api/cloudinary/deleteImage";
-import { UploadError, UploadErrorCode } from "../../../../utils/errors/UploadError";
+import {
+  UploadError,
+  UploadErrorCode,
+} from "../../../../utils/errors/UploadError";
 import { useEffect } from "react";
 import { TaskImageProps } from "../types";
 import { ListsData } from "../../../../types";
@@ -17,35 +20,57 @@ export const useRemoveTaskImage = () => {
 
   const mutation = useMutation({
     mutationFn: async ({ publicId, taskImageProps }: RemoveArgs) => {
-      if (!taskImageProps.userEmail) throw new UploadError(UploadErrorCode.NOT_AUTHENTICATED);
+      if (!taskImageProps.userEmail)
+        throw new UploadError(UploadErrorCode.NOT_AUTHENTICATED);
       if (!taskImageProps.taskId) {
         throw new UploadError(UploadErrorCode.GENERAL_ERROR);
       }
 
-      const result = await deleteCloudinaryImage({ publicId, taskImageProps, deviceId });
+      let result;
+      try {
+        result = await deleteCloudinaryImage({
+          publicId,
+          taskImageProps,
+          deviceId,
+        });
+      } catch (err: any) {
+        throw new UploadError(UploadErrorCode.DELETE_FAILED);
+      }
 
       if (!result.success) {
         throw new UploadError(UploadErrorCode.DELETE_FAILED);
       }
 
-      return { listId: taskImageProps.listId, taskId: taskImageProps.taskId };
+      return {
+        listId: taskImageProps.listId,
+        taskId: taskImageProps.taskId,
+        updatedAt: new Date().toISOString(),
+      };
     },
 
-    onSuccess: ({ listId, taskId }) => {
-      queryClient.setQueryData(["listsData"], (oldData: ListsData | undefined) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          lists: oldData.lists.map((list) =>
-            list.id === listId
-              ? {
-                  ...list,
-                  taskList: list.taskList.map((task) => (task.id === taskId ? { ...task, image: null } : task)),
-                }
-              : list,
-          ),
-        };
-      });
+    onSuccess: ({ listId, taskId, updatedAt }) => {
+      queryClient.setQueryData(
+        ["listsData"],
+        (oldData: ListsData | undefined) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            lists: oldData.lists.map((list) =>
+              list.id === listId
+                ? {
+                    ...list,
+                    updatedAt,
+                    taskList: list.taskList.map((task) =>
+                      task.id === taskId
+                        ? { ...task, image: null, updatedAt }
+                        : task,
+                    ),
+                  }
+                : list,
+            ),
+          };
+        },
+      );
     },
   });
 

@@ -7,6 +7,7 @@ import {
   setLoggedUser,
 } from "../features/AccountPage/accountSlice";
 import { saveCurrentAccount } from "../utils/auth/multiAccount";
+import { openModal } from "../Modal/modalSlice";
 
 export type SessionManagerProps = {
   authRoutes: string[];
@@ -49,6 +50,23 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
     window.addEventListener("storage", handleStorageEvent);
     return () => window.removeEventListener("storage", handleStorageEvent);
   }, []);
+
+  useEffect(() => {
+    const switchedTo = sessionStorage.getItem("account_switch_target");
+    if (switchedTo) {
+      sessionStorage.removeItem("account_switch_target");
+      dispatch(
+        openModal({
+          title: { key: "modal.accountSwitch.title" },
+          message: {
+            key: "modal.accountSwitch.message.success",
+            values: { email: switchedTo },
+          },
+          type: "success",
+        }),
+      );
+    }
+  }, [dispatch]);
 
   return null;
 };

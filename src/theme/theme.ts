@@ -73,7 +73,7 @@ export const themeLight = {
       changed: colorNames.yellow,
       pending: colorNames.blue,
       info: colorNames.blue,
-      success: lighten(0.15, colorNames.forestGreen),
+      success: lighten(0.05, colorNames.forestGreen),
       default: colorNames.black,
     },
     border: {
@@ -134,7 +134,7 @@ export const themeDark: typeof themeLight = {
       changed: lighten(0.2, colorNames.yellow),
       pending: lighten(0.15, colorNames.blue),
       info: lighten(0.2, colorNames.blue),
-      success: lighten(0.15, colorNames.forestGreen),
+      success: lighten(0.1, colorNames.forestGreen),
       default: colorNames.gallery,
     },
     border: {

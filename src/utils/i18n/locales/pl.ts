@@ -5,7 +5,7 @@ const langPl = {
     info: "Informacje",
   },
   listFrom: "Lista z dnia",
-  currentList: "bieżąca",
+  currentList: "aktywna",
   online: "online",
   offline: "offline",
   currentDate: { description: "Dziś jest " },
@@ -662,6 +662,16 @@ const langPl = {
         success: "Konto zostało usunięte.",
         error: {
           default: "Błąd podczas usuwania konta.",
+        },
+      },
+    },
+    accountSwitch: {
+      title: "Przełączanie konta",
+      message: {
+        loading: "Trwa przełączanie konta...",
+        success: "Pomyślnie przełączono na konto: <strong>{{email}}</strong>",
+        error: {
+          default: "Błąd podczas przełączania konta.",
         },
       },
     },

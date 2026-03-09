@@ -7,7 +7,7 @@ const langEn: typeof langPl = {
     info: "Info",
   },
   listFrom: "List from",
-  currentList: "current",
+  currentList: "active",
   online: "online",
   offline: "offline",
   currentDate: { description: "Today is " },
@@ -659,6 +659,16 @@ const langEn: typeof langPl = {
         success: "Account has been deleted.",
         error: {
           default: "Error deleting account.",
+        },
+      },
+    },
+    accountSwitch: {
+      title: "Switching account",
+      message: {
+        loading: "Switching account...",
+        success: "Successfully switched to account: <strong>{{email}}</strong>",
+        error: {
+          default: "Error switching account.",
         },
       },
     },

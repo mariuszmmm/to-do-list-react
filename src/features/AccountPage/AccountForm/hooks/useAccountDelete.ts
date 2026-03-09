@@ -5,6 +5,8 @@ import { openModal } from "../../../../Modal/modalSlice";
 import { setAccountMode, setLoggedUser } from "../../accountSlice";
 import { getUserToken } from "../../../../utils/auth/getUserToken";
 import { deleteUserApi } from "../../../../api/fetchUserApi";
+import { removeAccount } from "../../../../utils/auth/multiAccount";
+import { syncToIndexedDB } from "../../../../utils/storage/storageSync";
 
 export const useAccountDelete = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +23,15 @@ export const useAccountDelete = () => {
 
       const response = await deleteUserApi(userToken);
       if (response.statusCode !== 204) throw new Error();
+
+      const email = user.email;
+      try {
+        await user.logout();
+      } catch (e) {}
+      localStorage.removeItem("gotrue.user");
+      await syncToIndexedDB("gotrue.user", null);
+      if (email) removeAccount(email);
+
       return response;
     },
 

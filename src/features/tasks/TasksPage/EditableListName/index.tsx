@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { SubmitEvent, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
@@ -40,7 +40,7 @@ export const EditableListName = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  const onNameSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimedContent = newName.trim();
 

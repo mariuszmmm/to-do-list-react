@@ -1,4 +1,4 @@
-import { FormEventHandler, useState, useRef, useEffect } from "react";
+import { SubmitEvent, useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
 import { useValidation } from "../../../hooks/validation/useValidation";
 import { useWaitingForConfirmation } from "./hooks/useWaitingForConfirmation";
@@ -90,7 +90,7 @@ export const AccountForm = () => {
     }
   }, [isWaitingForConfirmation, waitingForConfirmation]);
 
-  const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  const onFormSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     switch (accountMode) {

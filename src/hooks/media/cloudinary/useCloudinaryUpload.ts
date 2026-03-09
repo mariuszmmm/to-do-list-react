@@ -19,16 +19,24 @@ export const useCloudinaryUpload = () => {
     abortRef.current?.abort();
     abortRef.current = abortController;
 
-    const result = await uploadImageToCloudinary(file, config, {
-      signal: abortController.signal,
-      onProgress: (percent) => {
-        const now = Date.now();
-        if (percent === 100 || now - lastProgressRef.current >= 150) {
-          lastProgressRef.current = now;
-          setProgress(percent);
-        }
-      },
-    });
+    let result;
+    try {
+      result = await uploadImageToCloudinary(file, config, {
+        signal: abortController.signal,
+        onProgress: (percent) => {
+          const now = Date.now();
+          if (percent === 100 || now - lastProgressRef.current >= 150) {
+            lastProgressRef.current = now;
+            setProgress(percent);
+          }
+        },
+      });
+    } catch (err: any) {
+      if (err.name === "AbortError" || err.message === "canceled") {
+        throw new Error("canceled");
+      }
+      throw err;
+    }
 
     setProgress(100);
     return result;
