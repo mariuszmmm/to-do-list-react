@@ -69,43 +69,58 @@ export const saveCurrentAccount = () => {
   }
 };
 
-export const switchAccount = (email: string) => {
+export const switchAccount = async (email: string) => {
   try {
-    // 1. Zabezpieczenie na wszelki wypadek obecnego stanu na inne konto przed przelaczeniem
+    // 1. Zabezpieczenie obecnego stanu przed przełączeniem
     saveCurrentAccount();
 
-    // 2. Szukanie konta do ktorego chcemy się podpiąć
+    // 2. Szukanie konta do którego chcemy się przełączyć
     const accounts = getSavedAccounts();
     const accountToSwitch = accounts.find((acc) => acc.email === email);
+
     if (!accountToSwitch) {
       console.warn("Nie znaleziono żądanego konta:", email);
       return;
     }
 
-    // 3. Odswiezenie `lastUsed` wybranego konta i podmiana głownego klucza auth
+    // 3. Walidacja danych sesji
+    const isSessionDataClean =
+      accountToSwitch.sessionData && accountToSwitch.sessionData.token;
+
+    if (!isSessionDataClean) {
+      console.error("Konto posiada nieprawidłowe dane sesji:", email);
+      // Czyścimy sessionData, aby wymusić nowy login, ale zostawiamy konto na liście
+      accountToSwitch.sessionData = null;
+      localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
+      throw new Error("SESSION_MISSING");
+    }
+
+    // 4. Odświeżenie `lastUsed` i podmiana klucza auth
     accountToSwitch.lastUsed = Date.now();
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
-    syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
+    await syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
+
     localStorage.setItem(
       GOTRUE_KEY,
       JSON.stringify(accountToSwitch.sessionData),
     );
-    syncToIndexedDB(GOTRUE_KEY, accountToSwitch.sessionData);
+    await syncToIndexedDB(GOTRUE_KEY, accountToSwitch.sessionData);
 
-    // 4. Przywracamy zadania powiązane z tym kontem
+    // 5. Przywracamy zadania powiązane z tym kontem
     if (accountToSwitch.tasksData) {
       setTasksData(accountToSwitch.tasksData);
     } else {
       removeTasksData();
     }
 
-    // 5. Ubijamy istniejace polaczenie Ably
+    // 6. Ubijamy istniejące połączenie Ably
     closeAblyConnection();
 
-    // 6. Hard reload dla zresetowania całego Reacta
+    // 7. Hard reload dla zresetowania całego Reacta
     window.location.reload();
   } catch (error) {
     console.error("Błąd w trakcie przełączania konta:", error);
+    throw error; // Rzucamy dalej, aby UI (AccountSwitcher) mógł go obsłużyć
   }
 };
 
@@ -129,12 +144,12 @@ export const removeAccount = (email: string) => {
   }
 };
 
-export const clearSessionForNewAccount = () => {
+export const clearSessionForNewAccount = async () => {
   // Zachowujemy obecny stan uzytkownika przed wylogowaniem lokalnym
   saveCurrentAccount();
 
   localStorage.removeItem(GOTRUE_KEY);
-  syncToIndexedDB(GOTRUE_KEY, null);
+  await syncToIndexedDB(GOTRUE_KEY, null);
   removeTasksData();
   closeAblyConnection();
   window.location.reload();

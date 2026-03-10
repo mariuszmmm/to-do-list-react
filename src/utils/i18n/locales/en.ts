@@ -669,6 +669,8 @@ const langEn: typeof langPl = {
         success: "Successfully switched to account: <strong>{{email}}</strong>",
         error: {
           default: "Error switching account.",
+          sessionExpired:
+            "This account's session has expired. Please log in again to this account to refresh access.",
         },
       },
     },
@@ -836,6 +838,10 @@ const langEn: typeof langPl = {
       message:
         "No internet access. The app is running in offline mode – you can browse and edit tasks. Data will sync when you're back online.",
     },
+  },
+  updateNotification: {
+    message: "A new version of the app is available",
+    button: "Update",
   },
   prepareText: {
     period: "period",

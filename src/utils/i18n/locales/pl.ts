@@ -672,6 +672,8 @@ const langPl = {
         success: "Pomyślnie przełączono na konto: <strong>{{email}}</strong>",
         error: {
           default: "Błąd podczas przełączania konta.",
+          sessionExpired:
+            "Sesja tego konta wygasła. Zaloguj się ponownie na to konto, aby odświeżyć dostęp.",
         },
       },
     },
@@ -840,6 +842,10 @@ const langPl = {
       message:
         "Brak dostępu do internetu. Aplikacja działa w trybie offline – możesz przeglądać i edytować zadania. Dane zostaną zsynchronizowane po powrocie online.",
     },
+  },
+  updateNotification: {
+    message: "Dostępna jest nowa wersja aplikacji",
+    button: "Aktualizuj",
   },
   prepareText: {
     period: "kropka",

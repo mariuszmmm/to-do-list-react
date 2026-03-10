@@ -66,6 +66,21 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
         }),
       );
     }
+
+    const expiredEmail = sessionStorage.getItem("session_expired_email");
+    if (expiredEmail) {
+      sessionStorage.removeItem("session_expired_email");
+      dispatch(
+        openModal({
+          title: { key: "modal.accountSwitch.title" },
+          message: {
+            key: "modal.accountSwitch.message.error.sessionExpired",
+            values: { email: expiredEmail },
+          },
+          type: "error",
+        }),
+      );
+    }
   }, [dispatch]);
 
   return null;

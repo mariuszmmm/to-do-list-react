@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 
 // Nazwa cache - warto ją zmieniać przy dużych aktualizacjach
-const CACHE_NAME = "todo-list-v3";
+const CACHE_NAME = "todo-list-v17";
 
 // Pliki do natychmiastowego zapisania w cache przy instalacji SW
 const urlsToCache = [
@@ -18,6 +18,18 @@ const urlsToCache = [
   "/screenshots/mobile.png",
 ];
 
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+  if (event.data && event.data.type === "GET_VERSION") {
+    event.source.postMessage({
+      type: "VERSION_INFO",
+      version: CACHE_NAME,
+    });
+  }
+});
+
 // Instalacja Service Workera
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -25,7 +37,7 @@ self.addEventListener("install", (event) => {
       return cache.addAll(urlsToCache);
     }),
   );
-  self.skipWaiting();
+  // UWAGA: Usunięto tu self.skipWaiting(), aby umożliwić pokazanie powiadomienia
 });
 
 // Aktywacja i czyszczenie starych cache

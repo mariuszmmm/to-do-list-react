@@ -71,7 +71,7 @@ export const SessionInfo = ({
       `Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`,
     );
 
-    logDevBlock(isSessionInfoOpen, ...logBlock);
+    // logDevBlock(isSessionInfoOpen, ...logBlock);
 
     setSessionData({
       email: user.email,

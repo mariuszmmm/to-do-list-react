@@ -679,6 +679,8 @@ const langDe: typeof langPl = {
         success: "Erfolgreich zum Konto gewechselt: <strong>{{email}}</strong>",
         error: {
           default: "Fehler beim Wechseln des Kontos.",
+          sessionExpired:
+            "Die Sitzung dieses Kontos ist abgelaufen. Bitte melden Sie sich erneut bei diesem Konto an, um den Zugriff zu aktualisieren.",
         },
       },
     },
@@ -847,6 +849,10 @@ const langDe: typeof langPl = {
       message:
         "Kein Internetzugang. Die App läuft im Offline-Modus – Sie können Aufgaben anzeigen und bearbeiten. Daten werden synchronisiert, sobald Sie wieder online sind.",
     },
+  },
+  updateNotification: {
+    message: "Eine neue Version der App ist verfügbar",
+    button: "Aktualisieren",
   },
   prepareText: {
     period: "Punkt",

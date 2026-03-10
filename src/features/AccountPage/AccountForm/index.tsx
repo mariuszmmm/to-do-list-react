@@ -136,6 +136,7 @@ export const AccountForm = () => {
     <>
       <Form
         onSubmit={onFormSubmit}
+        autoComplete="off"
         $singleInput={
           accountMode === "accountRecovery" || accountMode === "passwordChange"
         }
@@ -151,6 +152,7 @@ export const AccountForm = () => {
           value={email}
           type="email"
           name="login"
+          autoComplete="username"
           placeholder={t("form.inputPlaceholders.email")}
           onChange={({ target }) => setEmail(target.value)}
           ref={emailInputRef}
@@ -175,7 +177,12 @@ export const AccountForm = () => {
                 : t("form.inputPlaceholders.password")
             }
             autoComplete={
-              accountMode === "passwordChange" ? "new-password" : ""
+              accountMode === "passwordChange" ||
+              accountMode === "accountRegister"
+                ? "new-password"
+                : accountMode === "login"
+                  ? "current-password"
+                  : "off"
             }
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -195,7 +202,10 @@ export const AccountForm = () => {
         {accountMode === "accountSwitch" && (
           <SwitcherWrapper>
             <AccountSwitcher />
-            <FormButton type="button" onClick={clearSessionForNewAccount}>
+            <FormButton
+              type="button"
+              onClick={async () => await clearSessionForNewAccount()}
+            >
               {t("switcher.addAccount")}
             </FormButton>
           </SwitcherWrapper>

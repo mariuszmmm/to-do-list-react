@@ -59,16 +59,22 @@ export const AccountSwitcher = () => {
       }),
     );
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         sessionStorage.setItem("account_switch_target", email);
-        switchAccount(email);
-      } catch (err) {
+        await switchAccount(email);
+      } catch (err: any) {
         sessionStorage.removeItem("account_switch_target");
+
+        const isSessionMissing = err?.message === "SESSION_MISSING";
+        const messageKey = isSessionMissing
+          ? "modal.accountSwitch.message.error.sessionExpired"
+          : "modal.accountSwitch.message.error.default";
+
         dispatch(
           openModal({
             title: { key: "modal.accountSwitch.title" },
-            message: { key: "modal.accountSwitch.message.error.default" },
+            message: { key: messageKey },
             type: "error",
           }),
         );

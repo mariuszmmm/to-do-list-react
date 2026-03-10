@@ -20,6 +20,22 @@ import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
+// Dynamiczne pobieranie wersji bezpośrednio z aktywnego Service Workera
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.ready.then((reg) => {
+    reg.active?.postMessage({ type: "GET_VERSION" });
+  });
+
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data?.type === "VERSION_INFO") {
+      console.log(
+        `%c App Version: ${event.data.version} `,
+        "background: #222; color: #bada55; font-weight: bold; padding: 2px 4px; border-radius: 4px;",
+      );
+    }
+  });
+}
+
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
 setInputAutoFocusFlagIfRoot();

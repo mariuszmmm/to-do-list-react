@@ -35,6 +35,7 @@ import {
 import { ThemeSwitch } from "./common/ThemeSwitch";
 import { HeaderControls } from "./common/HeaderControls";
 import { TaskImage } from "./features/tasks/TaskImage";
+import { UpdateNotification } from "./common/UpdateNotification";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -128,6 +129,7 @@ const App = () => {
         </Routes>
       </Container>
       <Modal />
+      <UpdateNotification />
     </HashRouter>
   );
 };

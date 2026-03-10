@@ -13,22 +13,37 @@ export const refreshUserToken = async () => {
 
   try {
     if (!user) {
-      throw new Error("No user found");
+      // Jeśli nie ma użytkownika, nie ma sensu odświeżać ani przeładowywać strony
+      return null;
     }
     const token = await user.jwt();
-
     return token;
   } catch (error: any) {
     console.error("[refreshUserToken] Błąd podczas odświeżania tokena:", error);
 
-    if (
-      error.status === 401 ||
-      error.status === 400 ||
-      error.message === "No user found"
-    ) {
-      await user?.logout();
-      await syncToIndexedDB("gotrue.user", null);
-      window.location.reload();
+    // Przeładowujemy tylko jeśli mamy stan błędu sugerujący nieaktualną sesję
+    // i faktycznie mamy kogo wylogować.
+    if (user && (error.status === 401 || error.status === 400)) {
+      const email = user.email;
+      try {
+        if (email) {
+          sessionStorage.setItem("session_expired_email", email);
+        }
+        await user.logout();
+        await syncToIndexedDB("gotrue.user", null);
+        window.location.reload();
+      } catch (logoutError) {
+        console.error(
+          "[refreshUserToken] Błąd podczas wylogowywania:",
+          logoutError,
+        );
+        // Na wypadek zawieszenia logoutu, usuwamy dane ręcznie i przeładowujemy
+        if (email) {
+          sessionStorage.setItem("session_expired_email", email);
+        }
+        localStorage.removeItem("gotrue.user");
+        window.location.reload();
+      }
     }
     return null;
   }
