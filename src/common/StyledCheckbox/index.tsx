@@ -21,11 +21,11 @@ export const StyledCheckbox = styled.input<{ $isChecked: boolean }>`
   &::after {
     content: "";
     display: ${({ $isChecked }) => ($isChecked ? "block" : "none")};
-    width: 6px;
-    height: 10px;
+    width: 10px;
+    height: 14px;
     border: solid ${({ theme }) => theme.colors.button.primaryText};
-    border-width: 0 2px 2px 0;
+    border-width: 0 3px 3px 0;
     transform: rotate(45deg);
-    margin-top: -3px;
+    margin-top: -5px;
   }
 `;

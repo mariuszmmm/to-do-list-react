@@ -1,7 +1,5 @@
 import { call, put, race, select, take, takeEvery } from "redux-saga/effects";
 import {
-  getListMetadataFromLocalStorage,
-  getTasksFromLocalStorage,
   saveListMetadataInLocalStorage,
   saveSettingsInLocalStorage,
   saveTasksInLocalStorage,
@@ -28,27 +26,42 @@ import {
   clearTaskList,
   selectListStatus,
 } from "./tasksSlice";
-import { selectListToLoad, setListToLoad } from "../RemoteListsPage/remoteListsSlice";
-import { addArchivedList, setArchivedListToLoad } from "../ArchivedListPage/archivedListsSlice";
+import {
+  selectListToLoad,
+  setListToLoad,
+} from "../RemoteListsPage/remoteListsSlice";
+import {
+  addArchivedList,
+  setArchivedListToLoad,
+} from "../ArchivedListPage/archivedListsSlice";
 import { cancel, closeModal, confirm, openModal } from "../../Modal/modalSlice";
 import { Task, Version } from "../../types";
 import { nanoid } from "nanoid";
-import { saveListMetadataInSessionStorage, saveTasksInSessionStorage } from "../../utils/storage/sessionStorage";
+import {
+  saveListMetadataInSessionStorage,
+  saveTasksInSessionStorage,
+} from "../../utils/storage/sessionStorage";
 
 function* saveSettingsInLocalStorageHandler() {
-  const showSearch: ReturnType<typeof selectShowSearch> = yield select(selectShowSearch);
-  const hideDone: ReturnType<typeof selectHideDone> = yield select(selectHideDone);
+  const showSearch: ReturnType<typeof selectShowSearch> =
+    yield select(selectShowSearch);
+  const hideDone: ReturnType<typeof selectHideDone> =
+    yield select(selectHideDone);
 
   yield call(saveSettingsInLocalStorage, { showSearch, hideDone });
 }
 
-function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof setArchivedListToLoad>) {
+function* setListToLoadHandler(
+  action: ReturnType<typeof setListToLoad | typeof setArchivedListToLoad>,
+) {
   const isArchived = action.type === setArchivedListToLoad.type;
   const isRemote = action.type === setListToLoad.type;
 
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> = yield select(selectTaskListMetaData);
-  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> = yield select(selectListStatus);
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+    yield select(selectTaskListMetaData);
+  const { isRemoteSaveable }: ReturnType<typeof selectListStatus> =
+    yield select(selectListStatus);
 
   let listToLoadData: {
     id: string;
@@ -71,7 +84,8 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
       })),
     };
   } else {
-    const listToLoad: ReturnType<typeof selectListToLoad> = yield select(selectListToLoad);
+    const listToLoad: ReturnType<typeof selectListToLoad> =
+      yield select(selectListToLoad);
     if (!listToLoad) return;
     listToLoadData = listToLoad;
   }
@@ -83,7 +97,10 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
   if (isArchived) {
     updatedAt = new Date().toISOString();
     tasksToLoad = isRemoteSaveable
-      ? [...tasks.map((task) => ({ ...task, status: "deleted" as const })), ...listToLoadData.taskList]
+      ? [
+          ...tasks.map((task) => ({ ...task, status: "deleted" as const })),
+          ...listToLoadData.taskList,
+        ]
       : [...listToLoadData.taskList];
   } else {
     updatedAt = listToLoadData.date;
@@ -96,7 +113,9 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
     setTasks({
       isLoad: true,
       taskListMetaData: {
-        ...(listToLoadData.id ? { id: listToLoadData.id } : { id: taskListMetaData.id }),
+        ...(listToLoadData.id
+          ? { id: listToLoadData.id }
+          : { id: taskListMetaData.id }),
         name: listName,
         date: listToLoadData.date,
         updatedAt,
@@ -120,33 +139,26 @@ function* setListToLoadHandler(action: ReturnType<typeof setListToLoad | typeof 
 }
 
 function* saveTasksInLocalStorageHandler() {
-  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> = yield select(selectTaskListMetaData);
-
-  const metaDataFromStorage = getListMetadataFromLocalStorage();
-  const tasksFromStorage = getTasksFromLocalStorage();
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+    yield select(selectTaskListMetaData);
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
 
-  if (taskListMetaData.synced) {
-    if (!!metaDataFromStorage) {
-      yield call(saveListMetadataInLocalStorage, null);
-    }
-    if (!!tasksFromStorage) {
-      yield call(saveTasksInLocalStorage, null);
-    }
-    if (!!taskListMetaData) yield call(saveListMetadataInSessionStorage, taskListMetaData);
-    if (!!tasks) yield call(saveTasksInSessionStorage, tasks);
-
-    return;
-  }
-
-  if (!!taskListMetaData) yield call(saveListMetadataInLocalStorage, taskListMetaData);
+  // Zawsze zapisujemy do localStorage dla trwałości danych
+  if (!!taskListMetaData)
+    yield call(saveListMetadataInLocalStorage, taskListMetaData);
   if (!!tasks) yield call(saveTasksInLocalStorage, tasks);
+
+  // Czyścimy ewentualne pozostałości w sessionStorage
+  yield call(saveListMetadataInSessionStorage, null);
+  yield call(saveTasksInSessionStorage, null);
 }
 
 function* archiveTasksHandler() {
-  const tasksToArchive: ReturnType<typeof selectTasksToArchive> = yield select(selectTasksToArchive);
+  const tasksToArchive: ReturnType<typeof selectTasksToArchive> =
+    yield select(selectTasksToArchive);
   const tasks: ReturnType<typeof selectTasks> = yield select(selectTasks);
-  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> = yield select(selectTaskListMetaData);
+  const taskListMetaData: ReturnType<typeof selectTaskListMetaData> =
+    yield select(selectTaskListMetaData);
 
   yield put(
     openModal({
@@ -180,7 +192,10 @@ function* archiveTasksHandler() {
 }
 
 export function* tasksSaga() {
-  yield takeEvery([toggleShowSearch.type, toggleHideDone.type], saveSettingsInLocalStorageHandler);
+  yield takeEvery(
+    [toggleShowSearch.type, toggleHideDone.type],
+    saveSettingsInLocalStorageHandler,
+  );
 
   yield takeEvery(
     [
@@ -201,5 +216,8 @@ export function* tasksSaga() {
 
   yield takeEvery(setTaskListToArchive.type, archiveTasksHandler);
 
-  yield takeEvery([setListToLoad.type, setArchivedListToLoad.type], setListToLoadHandler);
+  yield takeEvery(
+    [setListToLoad.type, setArchivedListToLoad.type],
+    setListToLoadHandler,
+  );
 }

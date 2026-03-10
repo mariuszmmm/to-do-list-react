@@ -26,9 +26,16 @@ type Props = {
   isLoading: boolean;
   isError: boolean;
   authRoutes: string[];
+  isOnline: boolean;
 };
 
-const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
+const Navigation = ({
+  listsData,
+  isLoading,
+  isError,
+  authRoutes,
+  isOnline,
+}: Props) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
@@ -42,7 +49,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
     <>
       {!authRoute && (
         <Nav>
-          <NavList $isLists={!!user && !isError}>
+          <NavList $isLists={!!user && !isError && isOnline}>
             <NavListItem $first $main>
               <LangSwitcherDesktop />
               <LangSwitcherMobile />
@@ -57,7 +64,7 @@ const Navigation = ({ listsData, isLoading, isError, authRoutes }: Props) => {
                 {t("tasksPage")}
               </StyledNavLink>
             </NavListItem>
-            {!!user && !isError && (
+            {!!user && !isError && isOnline && (
               <NavListItem $main>
                 {isLoading ? (
                   <Loader isDarkTheme={isDarkTheme} />

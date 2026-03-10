@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CircleCheckIcon,
@@ -28,12 +29,32 @@ export const Modal = () => {
     useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
+  const isClickable =
+    type !== "loading" && type !== "confirm" && type !== "yes/no";
+
   return (
-    <ModalBackground>
+    <ModalBackground
+      onClick={() => {
+        if (isClickable) {
+          dispatch(closeModal());
+        }
+      }}
+      $clickable={isClickable}
+    >
       <ModalContainer>
-        <ModalBody>
+        <ModalBody onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
             {(type === "info" || type === "yes/no") && (
               <CircleInfoIcon key="info-icon" />

@@ -1,7 +1,6 @@
 import { UserInvitationForm } from "./UserInvitationForm";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import { auth } from "../../api/auth";
 import { Container } from "../../common/Container";
 import { Text } from "../../common/Text";
 import { useState } from "react";
@@ -13,7 +12,8 @@ const UserInvitationPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "userInvitationPage",
   });
-  const user = auth.currentUser();
+  // Don't use current user if we are in invitation process to avoid showing background session email
+  const [invitedEmail, setInvitedEmail] = useState<string | null>(null);
 
   return (
     <>
@@ -21,8 +21,13 @@ const UserInvitationPage = () => {
         <>
           <Header title={t("title")} />
           <Section
-            title={user?.email || t("subTitle")}
-            body={<UserInvitationForm setStatus={setStatus} />}
+            title={invitedEmail || t("subTitle")}
+            body={
+              <UserInvitationForm
+                setStatus={setStatus}
+                setInvitedEmail={setInvitedEmail}
+              />
+            }
           />
         </>
       ) : status === "linkExpired" ? (

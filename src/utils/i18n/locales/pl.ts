@@ -840,7 +840,7 @@ const langPl = {
     offline: {
       title: "Brak połączenia",
       message:
-        "Brak dostępu do internetu. Aplikacja działa w trybie offline – możesz przeglądać i edytować zadania. Dane zostaną zsynchronizowane po powrocie online.",
+        "Brak internetu. Masz dostęp do zadań lokalnych i możesz je edytować – zmiany zostaną zsynchronizowane po ponownym połączeniu z siecią.",
     },
   },
   updateNotification: {

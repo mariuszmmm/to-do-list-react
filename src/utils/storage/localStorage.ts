@@ -1,8 +1,6 @@
 import { List, Settings, Task, TaskListMetaData } from "../../types";
 import { syncToIndexedDB } from "./storageSync";
 import {
-  getListMetadataFromSessionStorage,
-  getTasksFromSessionStorage,
   saveListMetadataInSessionStorage,
   saveTasksInSessionStorage,
 } from "./sessionStorage";
@@ -20,11 +18,8 @@ export interface FullTasksData {
 }
 
 export const getTasksData = (): FullTasksData => ({
-  tasks: getTasksFromLocalStorage() || getTasksFromSessionStorage() || null,
-  meta:
-    getListMetadataFromLocalStorage() ||
-    getListMetadataFromSessionStorage() ||
-    null,
+  tasks: getTasksFromLocalStorage() || null,
+  meta: getListMetadataFromLocalStorage() || null,
   archived: getArchivedListsFromLocalStorage() || null,
 });
 
@@ -34,18 +29,14 @@ export const setTasksData = (data: FullTasksData | null) => {
     return;
   }
 
-  // Na podstawie logiki saga, zsynchronizowane listy trafiają do sessionStorage, a lokalne do localStorage
-  if (data.meta?.synced) {
-    saveTasksInSessionStorage(data.tasks);
-    saveListMetadataInSessionStorage(data.meta);
-    saveTasksInLocalStorage(null);
-    saveListMetadataInLocalStorage(null);
-  } else {
-    saveTasksInLocalStorage(data.tasks);
-    saveListMetadataInLocalStorage(data.meta);
-    saveTasksInSessionStorage(null);
-    saveListMetadataInSessionStorage(null);
-  }
+  // Zawsze zapisujemy do localStorage dla bezpieczeństwa i trwałości danych.
+  // Użytkownik widzi nazwę listy w UI, więc wie gdzie się znajduje.
+  saveTasksInLocalStorage(data.tasks);
+  saveListMetadataInLocalStorage(data.meta);
+
+  // Czyścimy sessionStorage z zadań, jeśli tam były
+  saveTasksInSessionStorage(null);
+  saveListMetadataInSessionStorage(null);
 
   saveArchivedListsInLocalStorage(data.archived || []);
 };

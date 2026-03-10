@@ -19,9 +19,13 @@ import { RecoveryStatus } from "../../../types";
 
 interface Props {
   setStatus: (status: RecoveryStatus) => void;
+  setRecoveredEmail: (email: string | null) => void;
 }
 
-export const AccountRecoveryForm = ({ setStatus }: Props) => {
+export const AccountRecoveryForm = ({
+  setStatus,
+  setRecoveredEmail,
+}: Props) => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -46,6 +50,11 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
         if (!token) throw new Error("No token");
 
         await auth.recover(token);
+
+        const recoveredUser = auth.currentUser();
+        if (recoveredUser?.email) {
+          setRecoveredEmail(recoveredUser.email);
+        }
 
         dispatch(
           openModal({

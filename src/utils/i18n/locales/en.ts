@@ -836,7 +836,7 @@ const langEn: typeof langPl = {
     offline: {
       title: "No connection",
       message:
-        "No internet access. The app is running in offline mode – you can browse and edit tasks. Data will sync when you're back online.",
+        "No internet access. You have access to local tasks and can edit them – changes will be synchronized once the connection is restored.",
     },
   },
   updateNotification: {

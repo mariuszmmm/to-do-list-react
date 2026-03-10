@@ -46,7 +46,7 @@ const App = () => {
     enabled: !!loggedUserEmail && isOnline,
     refetchInterval: 5 * 60 * 1000,
   });
-  const safeData = !!loggedUserEmail ? data : undefined;
+  const safeData = !!loggedUserEmail && isOnline ? data : undefined;
   const authRoutes = [
     "/user-confirmation",
     "/account-recovery",
@@ -69,6 +69,7 @@ const App = () => {
                 isLoading={isLoading}
                 isError={isError}
                 authRoutes={authRoutes}
+                isOnline={isOnline}
               />
               <TokenManager />
               <AblyManager

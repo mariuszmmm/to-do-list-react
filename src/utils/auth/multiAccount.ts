@@ -154,3 +154,20 @@ export const clearSessionForNewAccount = async () => {
   closeAblyConnection();
   window.location.reload();
 };
+
+export const markSessionAsExpired = (email: string) => {
+  try {
+    const currentAccounts = getSavedAccounts();
+    const existingIndex = currentAccounts.findIndex(
+      (acc) => acc.email === email,
+    );
+
+    if (existingIndex >= 0) {
+      currentAccounts[existingIndex].sessionData = null;
+      localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(currentAccounts));
+      syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
+    }
+  } catch (error) {
+    console.error("Błąd podczas oznaczania sesji jako wygasłej:", error);
+  }
+};

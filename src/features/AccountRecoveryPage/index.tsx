@@ -1,7 +1,6 @@
 import { AccountRecoveryForm } from "./AccountRecoveryForm";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import { auth } from "../../api/auth";
 import { Container } from "../../common/Container";
 import { Text } from "../../common/Text";
 import { useState } from "react";
@@ -13,7 +12,8 @@ const AccountRecoveryPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "accountRecoveryPage",
   });
-  const user = auth.currentUser();
+  // Don't use current user if we are in recovery process to avoid showing background session email
+  const [recoveredEmail, setRecoveredEmail] = useState<string | null>(null);
 
   return (
     <>
@@ -21,8 +21,13 @@ const AccountRecoveryPage = () => {
         <>
           <Header title={t("title")} />
           <Section
-            title={user?.email || t("subTitle")}
-            body={<AccountRecoveryForm setStatus={setStatus} />}
+            title={recoveredEmail || t("subTitle")}
+            body={
+              <AccountRecoveryForm
+                setStatus={setStatus}
+                setRecoveredEmail={setRecoveredEmail}
+              />
+            }
           />
         </>
       ) : (
@@ -39,10 +44,7 @@ const AccountRecoveryPage = () => {
             </b>
           </Text>
           <Text style={{ marginTop: "20px" }}>
-            {status === "accountRecovered"
-              ? t("closeTab")
-              : t("tryAgain")
-            }
+            {status === "accountRecovered" ? t("closeTab") : t("tryAgain")}
           </Text>
         </Container>
       )}

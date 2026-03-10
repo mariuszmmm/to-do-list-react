@@ -847,7 +847,7 @@ const langDe: typeof langPl = {
     offline: {
       title: "Keine Verbindung",
       message:
-        "Kein Internetzugang. Die App läuft im Offline-Modus – Sie können Aufgaben anzeigen und bearbeiten. Daten werden synchronisiert, sobald Sie wieder online sind.",
+        "Kein Internetzugang. Sie haben Zugriff auf lokale Aufgaben und können diese bearbeiten – die Änderungen werden synchronisiert, sobald die Verbindung wiederhergestellt ist.",
     },
   },
   updateNotification: {

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ModalBackground = styled.div`
+export const ModalBackground = styled.div<{ $clickable?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -9,7 +9,8 @@ export const ModalBackground = styled.div`
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(3px);
-  z-index: 1;
+  z-index: 2000;
+  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
 `;
 
 export const ModalContainer = styled.div`
@@ -32,6 +33,7 @@ export const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 5px;
+  cursor: default;
 `;
 
 export const ModalHeader = styled.header`

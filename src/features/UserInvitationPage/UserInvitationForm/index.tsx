@@ -20,9 +20,10 @@ import { RecoveryStatus } from "../../../types";
 
 interface Props {
   setStatus: (status: RecoveryStatus) => void;
+  setInvitedEmail: (email: string | null) => void;
 }
 
-export const UserInvitationForm = ({ setStatus }: Props) => {
+export const UserInvitationForm = ({ setStatus, setInvitedEmail }: Props) => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -57,6 +58,7 @@ export const UserInvitationForm = ({ setStatus }: Props) => {
       if (!token) throw new Error("No token");
 
       const user = await auth.acceptInvite(token, password, true);
+      setInvitedEmail(user.email);
 
       dispatch(
         openModal({
