@@ -1,11 +1,16 @@
-import { closeAblyConnection } from "../sync/ably";
+import { restoreFromIndexedDB, syncToIndexedDB } from "../storage/storageSync";
 import {
-  getTasksData,
-  setTasksData,
-  removeTasksData,
   FullTasksData,
+  getTasksData,
+  removeTasksData,
+  setTasksData,
 } from "../storage/localStorage";
-import { syncToIndexedDB } from "../storage/storageSync";
+
+declare global {
+  interface Window {
+    ably: any;
+  }
+}
 
 const MULTI_ACCOUNT_KEY = "saved_accounts";
 const GOTRUE_KEY = "gotrue.user";
@@ -14,22 +19,25 @@ export interface SavedAccount {
   email: string;
   name?: string;
   sessionData: any;
+  tasksData: FullTasksData | null;
   lastUsed: number;
-  tasksData?: FullTasksData;
 }
 
-export const getSavedAccounts = (): SavedAccount[] => {
-  try {
-    const rawData = localStorage.getItem(MULTI_ACCOUNT_KEY);
-    if (!rawData) return [];
-    return JSON.parse(rawData);
-  } catch (error) {
-    console.error("Błąd podczas odczytu zapisanym w localStorage kont:", error);
-    return [];
+const closeAblyConnection = () => {
+  if (window.ably) {
+    window.ably.close();
+    console.log("Ably connection closed because of account switch");
+  } else {
+    console.log("Ably connection not found during switch");
   }
 };
 
-export const saveCurrentAccount = () => {
+export const getSavedAccounts = (): SavedAccount[] => {
+  const data = localStorage.getItem(MULTI_ACCOUNT_KEY);
+  return data ? JSON.parse(data) : [];
+};
+
+export const saveCurrentAccount = async () => {
   try {
     const gotrueRaw = localStorage.getItem(GOTRUE_KEY);
     if (!gotrueRaw) return;
@@ -45,22 +53,28 @@ export const saveCurrentAccount = () => {
       (acc) => acc.email === email,
     );
 
-    const newAccount: SavedAccount = {
-      email,
-      name,
-      sessionData: gotrueData,
-      tasksData: getTasksData(),
-      lastUsed: Date.now(),
-    };
+    const tasksData = getTasksData();
+    const lastUsed = Date.now();
 
     if (existingIndex >= 0) {
-      currentAccounts[existingIndex] = newAccount;
+      currentAccounts[existingIndex] = {
+        ...currentAccounts[existingIndex],
+        sessionData: gotrueData,
+        tasksData,
+        lastUsed,
+      };
     } else {
-      currentAccounts.push(newAccount);
+      currentAccounts.push({
+        email,
+        name,
+        sessionData: gotrueData,
+        tasksData,
+        lastUsed,
+      });
     }
 
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(currentAccounts));
-    syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
+    await syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
   } catch (error) {
     console.error(
       "Błąd podczas zapisywania aktualnego konta do localStorage:",
@@ -72,7 +86,7 @@ export const saveCurrentAccount = () => {
 export const switchAccount = async (email: string) => {
   try {
     // 1. Zabezpieczenie obecnego stanu przed przełączeniem
-    saveCurrentAccount();
+    await saveCurrentAccount();
 
     // 2. Szukanie konta do którego chcemy się przełączyć
     const accounts = getSavedAccounts();
@@ -89,13 +103,19 @@ export const switchAccount = async (email: string) => {
 
     if (!isSessionDataClean) {
       console.error("Konto posiada nieprawidłowe dane sesji:", email);
-      // Czyścimy sessionData, aby wymusić nowy login, ale zostawiamy konto na liście
       accountToSwitch.sessionData = null;
       localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
       throw new Error("SESSION_MISSING");
     }
 
-    // 4. Odświeżenie `lastUsed` i podmiana klucza auth
+    // 4. Najpierw przygotowujemy zadania dla nowego konta w localStorage
+    if (accountToSwitch.tasksData) {
+      await setTasksData(accountToSwitch.tasksData);
+    } else {
+      await removeTasksData();
+    }
+
+    // 5. Dopiero gdy zadania są na miejscu, podmieniamy klucz auth i odświeżamy lastUsed
     accountToSwitch.lastUsed = Date.now();
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
     await syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
@@ -106,68 +126,48 @@ export const switchAccount = async (email: string) => {
     );
     await syncToIndexedDB(GOTRUE_KEY, accountToSwitch.sessionData);
 
-    // 5. Przywracamy zadania powiązane z tym kontem
-    if (accountToSwitch.tasksData) {
-      setTasksData(accountToSwitch.tasksData);
-    } else {
-      removeTasksData();
-    }
-
-    // 6. Ubijamy istniejące połączenie Ably
+    // 6. Ubijamy istniejące połączenie Ably i czyścimy sessionStorage
     closeAblyConnection();
+    sessionStorage.clear();
 
     // 7. Hard reload dla zresetowania całego Reacta
     window.location.reload();
   } catch (error) {
-    console.error("Błąd w trakcie przełączania konta:", error);
-    throw error; // Rzucamy dalej, aby UI (AccountSwitcher) mógł go obsłużyć
+    console.error("Błąd podczas przełączania kont:", error);
+    throw error;
   }
 };
 
-export const removeAccount = (email: string) => {
-  try {
-    const accounts = getSavedAccounts();
-    const filteredAccounts = accounts.filter((acc) => acc.email !== email);
-    localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(filteredAccounts));
-    syncToIndexedDB(MULTI_ACCOUNT_KEY, filteredAccounts);
+export const removeAccount = async (email: string) => {
+  let accounts = getSavedAccounts();
+  accounts = accounts.filter((acc) => acc.email !== email);
+  localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
+  await syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
+};
 
-    // Jesli usuwamy obecne aktywne konto z pamieci narzedzia multikont...
-    const gotrueRaw = localStorage.getItem(GOTRUE_KEY);
-    if (gotrueRaw) {
-      const user = JSON.parse(gotrueRaw);
-      if (user.email === email) {
-        clearSessionForNewAccount();
-      }
-    }
-  } catch (error) {
-    console.error("Błąd podczas usuwania konta", error);
+export const markSessionAsExpired = async (email: string) => {
+  const accounts = getSavedAccounts();
+  const accountIndex = accounts.findIndex((acc) => acc.email === email);
+
+  if (accountIndex >= 0) {
+    accounts[accountIndex].sessionData = null;
+    localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(accounts));
+    await syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
   }
+};
+
+export const restoreAccountsFromIndexedDB = async () => {
+  const accounts = await restoreFromIndexedDB(MULTI_ACCOUNT_KEY, true);
+  return Array.isArray(accounts) ? (accounts as SavedAccount[]) : [];
 };
 
 export const clearSessionForNewAccount = async () => {
   // Zachowujemy obecny stan uzytkownika przed wylogowaniem lokalnym
-  saveCurrentAccount();
+  await saveCurrentAccount();
 
   localStorage.removeItem(GOTRUE_KEY);
   await syncToIndexedDB(GOTRUE_KEY, null);
-  removeTasksData();
+  await removeTasksData();
   closeAblyConnection();
   window.location.reload();
-};
-
-export const markSessionAsExpired = (email: string) => {
-  try {
-    const currentAccounts = getSavedAccounts();
-    const existingIndex = currentAccounts.findIndex(
-      (acc) => acc.email === email,
-    );
-
-    if (existingIndex >= 0) {
-      currentAccounts[existingIndex].sessionData = null;
-      localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(currentAccounts));
-      syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
-    }
-  } catch (error) {
-    console.error("Błąd podczas oznaczania sesji jako wygasłej:", error);
-  }
 };

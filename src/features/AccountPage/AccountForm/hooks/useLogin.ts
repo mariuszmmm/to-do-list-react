@@ -6,6 +6,7 @@ import { setAccountMode, setLoggedUser } from "../../accountSlice";
 import { translateText } from "../../../../api/translateTextApi";
 import i18n from "../../../../utils/i18n";
 import { saveCurrentAccount } from "../../../../utils/auth/multiAccount";
+import { clearTasks } from "../../../tasks/tasksSlice";
 
 export const useLogin = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,8 @@ export const useLogin = () => {
       auth.login(email, password, true),
 
     onMutate: () => {
+      saveCurrentAccount();
+      dispatch(clearTasks());
       dispatch(
         openModal({
           title: { key: "modal.login.title" },
@@ -25,8 +28,6 @@ export const useLogin = () => {
     },
 
     onSuccess: (response) => {
-      saveCurrentAccount();
-
       dispatch(
         openModal({
           title: { key: "modal.login.title" },

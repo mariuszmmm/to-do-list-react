@@ -92,10 +92,8 @@ const initApp = async () => {
     const keysToRestore = [
       "saved_accounts",
       "gotrue.user",
-      "tasks",
-      "list-metadata",
       "settings",
-      "archived-lists",
+      "archivedLists",
       "autoRefreshEnabled",
     ];
 

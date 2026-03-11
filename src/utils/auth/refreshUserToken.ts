@@ -45,7 +45,6 @@ export const refreshUserToken = async () => {
         try {
           if (email) {
             sessionStorage.setItem("session_expired_email", email);
-            markSessionAsExpired(email);
           }
           await user.logout();
           await syncToIndexedDB("gotrue.user", null);
@@ -58,7 +57,6 @@ export const refreshUserToken = async () => {
           // Na wypadek zawieszenia logoutu, usuwamy dane ręcznie i przeładowujemy
           if (email) {
             sessionStorage.setItem("session_expired_email", email);
-            markSessionAsExpired(email);
           }
           localStorage.removeItem("gotrue.user");
           window.location.reload();

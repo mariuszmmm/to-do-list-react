@@ -13,6 +13,7 @@ import {
   closeModal,
   selectModalConfirmed,
 } from "../../../Modal/modalSlice";
+import { clearTasks } from "../../tasks/tasksSlice";
 import {
   AccountContainer,
   AccountCard,

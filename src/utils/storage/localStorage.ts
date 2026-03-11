@@ -1,9 +1,5 @@
 import { List, Settings, Task, TaskListMetaData } from "../../types";
 import { syncToIndexedDB } from "./storageSync";
-import {
-  saveListMetadataInSessionStorage,
-  saveTasksInSessionStorage,
-} from "./sessionStorage";
 
 const settingsKey = "settings" as const;
 export const listMetadataKey = "taskListMetaData" as const;
@@ -23,28 +19,27 @@ export const getTasksData = (): FullTasksData => ({
   archived: getArchivedListsFromLocalStorage() || null,
 });
 
-export const setTasksData = (data: FullTasksData | null) => {
-  if (!data) {
-    removeTasksData();
-    return;
-  }
+export const setTasksData = async (data: FullTasksData | null) => {
+  // Najpierw całkowicie czyścimy obecne dane z localStorage, sessionStorage i IndexedDB
+  await removeTasksData();
 
-  // Zawsze zapisujemy do localStorage dla bezpieczeństwa i trwałości danych.
-  // Użytkownik widzi nazwę listy w UI, więc wie gdzie się znajduje.
-  saveTasksInLocalStorage(data.tasks);
-  saveListMetadataInLocalStorage(data.meta);
+  if (!data) return;
 
-  // Czyścimy sessionStorage z zadań, jeśli tam były
-  saveTasksInSessionStorage(null);
-  saveListMetadataInSessionStorage(null);
-
-  saveArchivedListsInLocalStorage(data.archived || []);
+  // Zapisujemy nowe dane, jeśli istnieją
+  if (data.tasks) await saveTasksInLocalStorage(data.tasks);
+  if (data.meta) await saveListMetadataInLocalStorage(data.meta);
+  if (data.archived) await saveArchivedListsInLocalStorage(data.archived);
 };
 
-export const removeTasksData = () => {
+export const removeTasksData = async () => {
   localStorage.removeItem(tasksKey);
   localStorage.removeItem(listMetadataKey);
   localStorage.removeItem(archivedListsKey);
+
+  await syncToIndexedDB(tasksKey, null);
+  await syncToIndexedDB(listMetadataKey, null);
+  await syncToIndexedDB(archivedListsKey, null);
+
   sessionStorage.removeItem(tasksKey);
   sessionStorage.removeItem(listMetadataKey);
 };
@@ -90,16 +85,15 @@ export const getSettingsFromLocalStorage = (): Settings | null => {
 };
 
 // Funkcja pomocnicza specjalnie dla metadata z localStorage (dla listy)
-export const saveListMetadataInLocalStorage = (
+export const saveListMetadataInLocalStorage = async (
   taskListMetaData: TaskListMetaData | null,
 ) => {
   if (!taskListMetaData) {
     localStorage.removeItem(listMetadataKey);
-    syncToIndexedDB(listMetadataKey, null);
-    return;
+    return await syncToIndexedDB(listMetadataKey, null);
   }
   localStorage.setItem(listMetadataKey, JSON.stringify(taskListMetaData));
-  syncToIndexedDB(listMetadataKey, taskListMetaData);
+  return await syncToIndexedDB(listMetadataKey, taskListMetaData);
 };
 
 export const getListMetadataFromLocalStorage = ():
@@ -119,14 +113,13 @@ export const getListMetadataFromLocalStorage = ():
 // Zapis pobranych danych z Google Drive (Zadania).
 // Jeśli remoteDate (w timestamp) będzie nowsza niż aktualna, zastąpi to dane lokalne.
 // Potem (w thunku) możemy po prostu wrzucić to z powrotem do Reduxa.
-export const saveTasksInLocalStorage = (tasks: Task[] | null) => {
+export const saveTasksInLocalStorage = async (tasks: Task[] | null) => {
   if (!tasks) {
     localStorage.removeItem(tasksKey);
-    syncToIndexedDB(tasksKey, null);
-    return;
+    return await syncToIndexedDB(tasksKey, null);
   }
   localStorage.setItem(tasksKey, JSON.stringify(tasks));
-  syncToIndexedDB(tasksKey, tasks);
+  return await syncToIndexedDB(tasksKey, tasks);
 };
 
 export const getTasksFromLocalStorage = (): Task[] | undefined => {
@@ -136,9 +129,9 @@ export const getTasksFromLocalStorage = (): Task[] | undefined => {
   return JSON.parse(data);
 };
 
-export const saveArchivedListsInLocalStorage = (lists: List[]) => {
+export const saveArchivedListsInLocalStorage = async (lists: List[]) => {
   localStorage.setItem(archivedListsKey, JSON.stringify(lists));
-  syncToIndexedDB(archivedListsKey, lists);
+  return await syncToIndexedDB(archivedListsKey, lists);
 };
 
 export const getArchivedListsFromLocalStorage = (): List[] | undefined => {

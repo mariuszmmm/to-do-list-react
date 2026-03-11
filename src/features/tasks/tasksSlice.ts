@@ -404,6 +404,10 @@ const tasksSlice = createSlice({
     switchTasksSort: (state) => {
       state.isTasksSorting = !state.isTasksSorting;
     },
+    clearTasks: () => {
+      clearLocalStorage();
+      return getInitialState();
+    },
     clearStorage: () => {
       clearLocalStorage();
       return getInitialState();
@@ -435,6 +439,7 @@ export const {
   updateTasksStatus,
   setTasksToSort,
   switchTasksSort,
+  clearTasks,
   clearStorage,
   setChangeSource,
 } = tasksSlice.actions;

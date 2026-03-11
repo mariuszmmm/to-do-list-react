@@ -11,6 +11,7 @@ import { auth } from "../../api/auth";
 import { getTokenExpiresIn } from "../../utils/auth/tokenUtils";
 import { getAutoRefreshSettingFromLocalStorage } from "../../utils/storage/localStorage";
 import { syncToIndexedDB } from "../../utils/storage/storageSync";
+import { refreshUserToken } from "../../utils/auth/refreshUserToken";
 
 export const useTokenValidation = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +35,7 @@ export const useTokenValidation = () => {
     const autoRefreshEnabled = getAutoRefreshSettingFromLocalStorage();
 
     // Jeśli token wygasł (lub zaraz wygaśnie) i jeszcze nie próbowaliśmy go odświeżyć przy starcie,
-    // to wymuszamy odświeżenie (jwt() automatycznie odświeży token jeśli trzeba).
+    // to wymuszamy odświeżenie (refreshUserToken() automatycznie odświeży token jeśli trzeba).
     if (
       tokenRemainingMs <= 0 &&
       !hasAttemptedInitialRefreshRef.current &&
@@ -43,8 +44,7 @@ export const useTokenValidation = () => {
       hasAttemptedInitialRefreshRef.current = true;
       if (!isRefreshingRef.current) {
         isRefreshingRef.current = true;
-        user
-          .jwt()
+        refreshUserToken()
           .catch((error) => {
             console.error(
               "[useTokenValidation] Initial refresh attempt failed:",
@@ -67,8 +67,7 @@ export const useTokenValidation = () => {
       if (autoRefreshEnabled) {
         if (!isRefreshingRef.current) {
           isRefreshingRef.current = true;
-          user
-            .jwt()
+          refreshUserToken()
             .catch((error) => {
               console.error(
                 "[useTokenValidation] Error during automatic token refresh:",
