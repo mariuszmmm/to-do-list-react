@@ -1,6 +1,6 @@
 import { auth } from "../../api/auth";
 import { syncToIndexedDB } from "../storage/storageSync";
-import { saveCurrentAccount, markSessionAsExpired } from "./multiAccount";
+import { saveCurrentAccount } from "./multiAccount";
 
 let refreshPromise: Promise<string | null> | null = null;
 

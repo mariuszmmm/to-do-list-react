@@ -4,6 +4,7 @@ import { FormButton } from "../../../common/FormButton";
 import { CameraModalOverlay, CameraContainer, CameraVideo, CameraModalButtons } from "../../../common/CameraModal";
 import { Info } from "../../../common/Info";
 import { WebcamError } from "../../../hooks/media/useWebcam";
+import { useScrollLock } from "../../../hooks";
 
 interface CameraModalProps {
   isOpen: boolean;
@@ -29,6 +30,9 @@ const CameraModalComponent = ({
   const { t } = useTranslation("translation", {
     keyPrefix: "taskImagePage",
   });
+
+  useScrollLock(isOpen);
+
 
   return (
     <CameraModalOverlay $isOpen={isOpen}>

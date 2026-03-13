@@ -605,6 +605,18 @@ const langDe: typeof langPl = {
       yesButton: "Ja",
       noButton: "Nein",
     },
+    notifications: {
+      title: "Benachrichtigung planen",
+      label: "Aufgabenerinnerung 🕒",
+      button: "🔍 Liste ansehen",
+      confirm: "Planen",
+      taskContent: "Aufgabe",
+      dateLabel: "Datum und Uhrzeit auswählen:",
+      pastDateError: "Benachrichtigungen können nicht in der Vergangenheit geplant werden. Bitte wählen Sie ein zukünftiges Datum.",
+      permissionBlocked: "Benachrichtigungen sind in Ihrem Browser blockiert. Bitte schalten Sie diese frei, indem Sie auf das Schlosssymbol neben der Adressleiste klicken, um Aufgaben planen zu können.",
+      notLoggedIn: "Sie müssen angemeldet sein, um eine Benachrichtigung einzustellen.",
+      error: "Fehler beim Planen der Benachrichtigung.",
+    },
     login: {
       title: "Anmeldung",
       message: {

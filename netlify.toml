@@ -103,6 +103,21 @@
   status = 200
 
 [[redirects]]
+  from = "/cleanup-temp-images"
+  to = "/.netlify/functions/cleanup-temp-images"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-deletedTasks"
+  to = "/.netlify/functions/cleanup-deletedTasks"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-logs"
+  to = "/.netlify/functions/cleanup-logs"
+  status = 200
+
+[[redirects]]
   from = "/diagnose-system"
   to = "/.netlify/functions/diagnose-system"
   status = 200
@@ -115,6 +130,11 @@
 [[redirects]]
   from = "/test-reset-backup-status"
   to = "/.netlify/functions/test-reset-backup-status"
+  status = 200
+
+[[redirects]]
+  from = "/schedule-notification"
+  to = "/.netlify/functions/schedule-notification"
   status = 200
 
 [[redirects]]

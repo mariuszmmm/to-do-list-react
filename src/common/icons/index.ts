@@ -9,6 +9,7 @@ import { ReactComponent as Eye } from "../../images/eye.svg";
 import { ReactComponent as EyeSlash } from "../../images/eye-slash.svg";
 import { ReactComponent as ArrowUp } from "../../images/arrow-up.svg";
 import { ReactComponent as Microphone } from "../../images/microphone.svg";
+import { ReactComponent as Bell } from "../../images/bell.svg";
 
 interface MicrophoneIconProps {
   $isActive?: boolean;
@@ -167,4 +168,10 @@ export const DragHandleIcon = styled.div`
   &:active {
     cursor: grabbing;
   }
+`;
+
+export const BellIcon = styled(Bell)`
+  width: 1.2rem;
+  height: 1.2rem;
+  color: ${({ theme }) => theme.colors.button.primaryText};
 `;

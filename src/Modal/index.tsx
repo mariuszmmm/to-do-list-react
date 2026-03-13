@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   CircleCheckIcon,
@@ -6,7 +5,7 @@ import {
   CircleLoadingIcon,
   CircleWarningIcon,
 } from "../common/icons";
-import { useAppDispatch, useAppSelector } from "../hooks/redux/redux";
+import { useAppDispatch, useAppSelector, useScrollLock } from "../hooks";
 import { cancel, closeModal, confirm, selectModalState } from "./modalSlice";
 import {
   ModalBackground,
@@ -29,15 +28,8 @@ export const Modal = () => {
     useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
+  useScrollLock(isOpen);
 
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
 
   if (!isOpen) return null;
 

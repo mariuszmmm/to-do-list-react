@@ -3,7 +3,7 @@ import type { HandlerResponse } from "@netlify/functions";
 export const jsonResponse = (
   statusCode: number,
   body: Record<string, unknown> = {},
-  additionalHeaders?: Record<string, string>
+  additionalHeaders?: Record<string, string>,
 ): HandlerResponse => {
   return {
     statusCode,
@@ -15,7 +15,7 @@ export const jsonResponse = (
 export const logError = (
   message: string,
   error: unknown,
-  logPrefix = "[logError]"
+  logPrefix = "[logError]",
 ): void => {
   let errorName = "Error";
   if (error instanceof Error) {

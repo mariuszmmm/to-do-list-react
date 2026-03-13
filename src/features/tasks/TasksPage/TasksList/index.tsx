@@ -1,4 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
+import OneSignal from "react-onesignal";
+
 import { useQueryParameter } from "../../../../hooks/navigation/useQueryParameter";
 import { StyledLink } from "../../../../common/StyledLink";
 import searchQueryParamName from "../../../../utils/navigation/searchQueryParamName";
@@ -8,6 +10,7 @@ import {
   RemoveButton,
   SortButton,
   ToggleButton,
+  NotificationButton,
 } from "../../../../common/taskButtons";
 import {
   selectHideDone,
@@ -23,7 +26,9 @@ import {
   selectTasksToSort,
   setTasksToSort,
   setTasks,
+  setNotificationTask,
 } from "../../tasksSlice";
+import { useTranslation } from "react-i18next";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -54,6 +59,7 @@ type Props = {
 };
 
 export const TasksList = ({ taskForm, listsData }: Props) => {
+  const { t } = useTranslation();
   const query = useQueryParameter(searchQueryParamName);
   const tasks = useAppSelector(selectTasks);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
@@ -69,6 +75,38 @@ export const TasksList = ({ taskForm, listsData }: Props) => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const dispatch = useAppDispatch();
   const { speech } = taskForm;
+
+  const handleNotificationClick = async (task: Task) => {
+    try {
+      // 1. Sprawdzamy czy uprawnienia są zablokowane na poziomie systemu/przeglądarki
+      if (Notification.permission === "denied") {
+        alert(t("modal.notifications.permissionBlocked"));
+        return;
+      }
+
+      if (window.isSecureContext) {
+        let isOptedIn = OneSignal.User.PushSubscription.optedIn;
+
+        if (!isOptedIn) {
+          // force: true wymusza pokazanie promptu, nawet jeśli został niedawno odrzucony
+          await (OneSignal.Slidedown as any).promptPush({ force: true });
+          
+          // Krótka pauza na odświeżenie stanu przez SDK
+          await new Promise(resolve => setTimeout(resolve, 500));
+          isOptedIn = OneSignal.User.PushSubscription.optedIn;
+        }
+
+        if (isOptedIn) {
+          dispatch(setNotificationTask(task));
+        }
+      } else {
+        dispatch(setNotificationTask(task));
+      }
+    } catch (e) {
+      console.warn("OneSignal notification click error:", e);
+      dispatch(setNotificationTask(task));
+    }
+  };
 
   const remoteList = listsData?.lists.find(
     (list) => list.id === taskListMetaData.id,
@@ -279,6 +317,20 @@ export const TasksList = ({ taskForm, listsData }: Props) => {
                 📷
               </StyledLink>
             </ImageButton>
+          )}
+
+          {loggedUserEmail && (
+            <NotificationButton
+              onClick={() => handleNotificationClick(task)}
+              disabled={
+                !!editedTaskContent ||
+                speech.isActive ||
+                !isRemoteSaveable ||
+                !remoteList?.taskList.some((t) => t.id === task.id)
+              }
+            >
+              🔔
+            </NotificationButton>
           )}
         </TaskActions>
       </StyledListItem>

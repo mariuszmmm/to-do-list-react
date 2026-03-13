@@ -95,6 +95,8 @@ const initApp = async () => {
       "settings",
       "archivedLists",
       "autoRefreshEnabled",
+      "tasks",
+      "taskListMetaData",
     ];
 
     for (const key of keysToRestore) {

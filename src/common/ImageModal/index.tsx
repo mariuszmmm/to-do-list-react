@@ -1,5 +1,6 @@
-import { ModalOverlay, ModalContent, FullImage } from "./styled";
 import { useEffect } from "react";
+import { ModalOverlay, ModalContent, FullImage } from "./styled";
+import { useScrollLock } from "../../hooks";
 
 interface ImageModalProps {
   src: string;
@@ -8,6 +9,8 @@ interface ImageModalProps {
 }
 
 export const ImageModal = ({ src, alt, onClose }: ImageModalProps) => {
+  useScrollLock(true);
+
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -16,13 +19,12 @@ export const ImageModal = ({ src, alt, onClose }: ImageModalProps) => {
     };
 
     window.addEventListener("keydown", handleEsc);
-    document.body.style.overflow = "hidden";
 
     return () => {
       window.removeEventListener("keydown", handleEsc);
-      document.body.style.overflow = "unset";
     };
   }, [onClose]);
+
 
   return (
     <ModalOverlay onClick={onClose}>

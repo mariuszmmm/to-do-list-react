@@ -78,7 +78,7 @@ export const AccountRecoveryForm = ({
     };
 
     recover();
-  }, [dispatch, setStatus]);
+  }, [dispatch, setStatus, setRecoveredEmail]);
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { passwordValidation } = useValidation({

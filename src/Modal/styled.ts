@@ -4,23 +4,24 @@ export const ModalBackground = styled.div<{ $clickable?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
-  min-height: fit-content;
   height: 100%;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(3px);
   z-index: 2000;
   cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const ModalContainer = styled.div`
   max-width: 900px;
   min-width: 360px;
-  padding: 160px 20px 0;
+  padding: 160px 20px 40px;
   margin: 0 auto;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    padding: 156px 2% 2%;
+    padding: 100px 2% 40px;
   }
 
   @media (max-height: 400px) {

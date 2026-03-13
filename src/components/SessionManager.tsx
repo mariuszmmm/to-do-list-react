@@ -22,7 +22,10 @@ export const SessionManager = ({ authRoutes }: SessionManagerProps) => {
   useEffect(() => {
     if (!authRoute) {
       if (user && user.email && !!user.token) {
-        saveCurrentAccount();
+        const isSwitching = !!sessionStorage.getItem("account_switch_target");
+        if (!isSwitching) {
+          saveCurrentAccount();
+        }
 
         dispatch(setAccountMode("logged"));
         dispatch(

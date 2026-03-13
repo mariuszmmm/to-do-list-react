@@ -39,6 +39,7 @@ interface TaskState {
     isIdenticalToRemote: boolean;
   };
   changeSource?: ChangeSource;
+  notificationTask: Task | null;
 }
 
 const getNewTaskListMetaData = () => ({
@@ -65,6 +66,7 @@ const getInitialState = (): TaskState => ({
     isRemoteSaveable: false,
     isIdenticalToRemote: false,
   },
+  notificationTask: null,
 });
 
 const tasksSlice = createSlice({
@@ -415,6 +417,27 @@ const tasksSlice = createSlice({
     setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
       state.changeSource = payload;
     },
+    setNotificationTask: (state, { payload }: PayloadAction<Task | null>) => {
+      state.notificationTask = payload;
+    },
+    updateTaskNotification: (
+      state,
+      {
+        payload: { taskId, notificationDate, notificationId },
+      }: PayloadAction<{
+        taskId: string;
+        notificationDate: string | null;
+        notificationId: string | null;
+      }>,
+    ) => {
+      const index = state.tasks.findIndex((task) => task.id === taskId);
+      if (index === -1) return;
+      state.tasks[index].notificationDate = notificationDate;
+      state.tasks[index].notificationId = notificationId;
+      state.tasks[index].updatedAt = new Date().toISOString();
+      state.tasks[index].status = "edited";
+      state.changeSource = "local";
+    },
   },
 });
 
@@ -442,6 +465,8 @@ export const {
   clearTasks,
   clearStorage,
   setChangeSource,
+  setNotificationTask,
+  updateTaskNotification,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;
@@ -489,5 +514,7 @@ export const selectActiveTasksByQuery = createSelector(
 );
 export const selectChangeSource = (state: RootState) =>
   selectTasksState(state).changeSource;
+export const selectNotificationTask = (state: RootState) =>
+  selectTasksState(state).notificationTask;
 
 export default tasksSlice.reducer;

@@ -599,6 +599,18 @@ const langPl = {
       yesButton: "Tak",
       noButton: "Nie",
     },
+    notifications: {
+      title: "Zaplanuj powiadomienie",
+      label: "Przypomnienie o zadaniu 🕒",
+      button: "🔍 Zobacz listę",
+      confirm: "Zaplanuj",
+      taskContent: "Zadanie",
+      dateLabel: "Wybierz datę i godzinę:",
+      pastDateError: "Nie można zaplanować powiadomienia w przeszłości. Wybierz datę z przyszłości.",
+      permissionBlocked: "Powiadomienia są zablokowane w Twojej przeglądarce. Proszę odblokuj je klikając w ikonę kłódki przy pasku adresu, aby móc planować zadania.",
+      notLoggedIn: "Musisz być zalogowany, aby ustawić powiadomienie.",
+      error: "Wystąpił błąd podczas planowania powiadomienia.",
+    },
     login: {
       title: "Logowanie",
       message: {

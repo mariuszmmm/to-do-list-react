@@ -59,11 +59,21 @@ const handler: Handler = async (event, context) => {
       stats: (config.value as any)?.stats,
     }));
 
-    // Fetch Cloudinary usage
-    const storageStats = await getCloudinaryUsage();
+    // Safe Cloudinary fetching
+    let storageStats = null;
+    try {
+      storageStats = await getCloudinaryUsage();
+    } catch (e) {
+      console.warn("[getSystemStatus] Cloudinary stats failed");
+    }
 
-    // Fetch Netlify usage
-    const netlifyStats = await getNetlifyUsage();
+    // Safe Netlify fetching
+    let netlifyStats = null;
+    try {
+      netlifyStats = await getNetlifyUsage();
+    } catch (e) {
+      console.warn("[getSystemStatus] Netlify stats failed");
+    }
 
     // Database Size Stats
     let dbSizeStats = null;
@@ -97,8 +107,11 @@ const handler: Handler = async (event, context) => {
       logs,
     });
   } catch (error) {
-    logError("Error fetching system status", error, logPrefix);
-    return jsonResponse(500, { message: "Internal server error" });
+    logError("Error in getSystemStatus wrapper", error, logPrefix);
+    return jsonResponse(200, { 
+      message: "Partial system status", 
+      error: "Some diagnostics failed to load"
+    });
   }
 };
 

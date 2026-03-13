@@ -5,6 +5,8 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     color: ${({ theme }) => theme.colors.textPrimary};
+    /* Wymuszanie globalnego motywu na natywne przeglądarkowe widżety (np. DatePicker w Android) */
+    color-scheme: ${({ theme }) => (theme.colors.textPrimary === "#151515ff" ? "light" : "dark")};
     overscroll-behavior: none;
     height: 100%;
   }

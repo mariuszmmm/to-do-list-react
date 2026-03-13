@@ -279,7 +279,7 @@ export const runCleanupApi = async (
   try {
     // Najpierw uruchom czyszczenie tymczasowych obrazów
     await axios.post(
-      "/.netlify/functions/cleanup-temp-images",
+      "/cleanup-temp-images",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -288,7 +288,7 @@ export const runCleanupApi = async (
 
     // Następnie uruchom czyszczenie "osieroconych" obrazów
     const response = await axios.post(
-      "/.netlify/functions/cleanup-orphan-images",
+      "/cleanup-orphan-images",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -312,7 +312,7 @@ export const runDeletedTasksCleanupApi = async (
 ): Promise<ApiResponse<any>> => {
   try {
     const response = await axios.post(
-      "/.netlify/functions/cleanup-deletedTasks",
+      "/cleanup-deletedTasks",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -355,7 +355,7 @@ export const runLogsCleanupApi = async (
 ): Promise<ApiResponse<any>> => {
   try {
     const response = await axios.post(
-      "/.netlify/functions/cleanup-logs",
+      "/cleanup-logs",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },

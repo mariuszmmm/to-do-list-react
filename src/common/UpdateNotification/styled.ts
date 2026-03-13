@@ -2,11 +2,11 @@ import styled, { keyframes } from "styled-components";
 
 const slideUp = keyframes`
   from {
-    transform: translateY(100%);
+    transform: translateX(-50%) translateY(100%);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
 `;
@@ -15,20 +15,18 @@ export const NotificationWrapper = styled.div`
   position: fixed;
   bottom: 20px;
   left: 50%;
-  transform: translateX(-50%);
   z-index: 10000;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-
   background-color: ${({ theme }) => theme.colors.backgroundSecendary};
   color: ${({ theme }) => theme.colors.textPrimary};
   padding: 12px 20px;
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   border: 1px solid ${({ theme }) => theme.colors.nav.background};
+  transform: translateX(-50%) translateY(0);
 
   animation: ${slideUp} 0.4s ease-out;
 

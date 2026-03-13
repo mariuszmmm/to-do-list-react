@@ -597,6 +597,18 @@ const langEn: typeof langPl = {
       yesButton: "Yes",
       noButton: "No",
     },
+    notifications: {
+      title: "Schedule notification",
+      label: "Task Reminder 🕒",
+      button: "🔍 View List",
+      confirm: "Schedule",
+      taskContent: "Task",
+      dateLabel: "Select date and time:",
+      pastDateError: "Cannot schedule notification in the past. Please select a future date.",
+      permissionBlocked: "Notifications are blocked in your browser. Please unlock them by clicking the lock icon next to the address bar to be able to schedule tasks.",
+      notLoggedIn: "You must be logged in to set a notification.",
+      error: "An error occurred while scheduling the notification.",
+    },
     login: {
       title: "Login",
       message: {

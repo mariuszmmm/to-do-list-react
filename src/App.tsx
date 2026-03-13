@@ -16,11 +16,13 @@ import ArchivedListsPage from "./features/ArchivedListPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
+import { NotificationModal } from "./features/tasks/TasksPage/NotificationModal";
 import { TokenManager } from "./components/TokenManager";
 import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";
 import { OfflineManager } from "./components/OfflineManager";
 import { SessionManager } from "./components/SessionManager";
+import { NotificationManager } from "./components/NotificationManager";
 
 import { refreshData } from "./utils/sync/refreshData";
 import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
@@ -80,6 +82,7 @@ const App = () => {
                 listsData={safeData}
                 saveListMutation={saveListMutation}
               />
+              <NotificationManager />
               <OfflineManager refetch={refetch} />
             </>
           );
@@ -130,6 +133,7 @@ const App = () => {
         </Routes>
       </Container>
       <Modal />
+      <NotificationModal />
       <UpdateNotification />
     </HashRouter>
   );

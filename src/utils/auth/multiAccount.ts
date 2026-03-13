@@ -56,6 +56,11 @@ export const saveCurrentAccount = async () => {
     const tasksData = getTasksData();
     const lastUsed = Date.now();
 
+    console.log(`[saveCurrentAccount] Zapisywanie danych dla: ${email}`, {
+      taskCount: tasksData.tasks?.length || 0,
+      listName: tasksData.meta?.name
+    });
+
     if (existingIndex >= 0) {
       currentAccounts[existingIndex] = {
         ...currentAccounts[existingIndex],
@@ -126,14 +131,15 @@ export const switchAccount = async (email: string) => {
     );
     await syncToIndexedDB(GOTRUE_KEY, accountToSwitch.sessionData);
 
-    // 6. Ubijamy istniejące połączenie Ably i czyścimy sessionStorage
+    // 6. Ubijamy istniejące połączenie Ably
     closeAblyConnection();
-    sessionStorage.clear();
 
-    // 7. Hard reload dla zresetowania całego Reacta
+    // 7. Przeładowujemy stronę natychmiast
+    // NIE czyścimy sessionStorage.clear(), bo potrzebujemy tam account_switch_target dla modala sukcesu
     window.location.reload();
   } catch (error) {
     console.error("Błąd podczas przełączania kont:", error);
+    sessionStorage.removeItem("account_switch_target");
     throw error;
   }
 };

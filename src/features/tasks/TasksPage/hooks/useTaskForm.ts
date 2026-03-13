@@ -73,7 +73,7 @@ export const useTaskForm = () => {
   }, [inputValue, textAreaValue, editedTask, dispatch, tasks, taskListMetaData, speech]);
 
   const onSubmit = useCallback(
-    (e: React.FormEvent) => {
+    (e: React.SyntheticEvent) => {
       e.preventDefault();
       if (speech.isListening) {
         speech.stop();

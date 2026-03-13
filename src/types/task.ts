@@ -11,6 +11,8 @@ export type Task = {
   status?: "new" | "edited" | "updated" | "deleted" | "synced";
   deletedAt?: string | null;
   image?: Image | null;
+  notificationDate?: string | null;
+  notificationId?: string | null;
 };
 
 export type EditedTask = { id: string; content: string } | null;

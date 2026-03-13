@@ -71,3 +71,7 @@ export const RemoveButton = styled(TaskButton)`
 export const SortButton = styled(TaskButton)`
   background: ${({ theme }) => theme.colors.button.sort};
 `;
+
+export const NotificationButton = styled(TaskButton)`
+  background: ${({ theme }) => theme.colors.button.notification};
+`;

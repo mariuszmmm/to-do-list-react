@@ -1,9 +1,20 @@
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+
 /* eslint-disable no-restricted-globals */
+const CACHE_NAME = "todo-list-v18";
 
-// Nazwa cache - warto ją zmieniać przy dużych aktualizacjach
-const CACHE_NAME = "todo-list-v17";
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+  if (event.data && event.data.type === "GET_VERSION") {
+    event.source.postMessage({
+      type: "VERSION_INFO",
+      version: CACHE_NAME,
+    });
+  }
+});
 
-// Pliki do natychmiastowego zapisania w cache przy instalacji SW
 const urlsToCache = [
   "/",
   "/index.html",
@@ -17,18 +28,6 @@ const urlsToCache = [
   "/screenshots/desktop.png",
   "/screenshots/mobile.png",
 ];
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-  if (event.data && event.data.type === "GET_VERSION") {
-    event.source.postMessage({
-      type: "VERSION_INFO",
-      version: CACHE_NAME,
-    });
-  }
-});
 
 // Instalacja Service Workera
 self.addEventListener("install", (event) => {

@@ -24,7 +24,7 @@ export const ContactForm = () => {
   const { t } = useTranslation("translation", { keyPrefix: "modal" });
   const dispatch = useAppDispatch();
 
-  const sendEmail = (event: React.FormEvent) => {
+  const sendEmail = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     // Honeypot – jeśli bot wypełnił ukryte pole, cicho odrzucamy

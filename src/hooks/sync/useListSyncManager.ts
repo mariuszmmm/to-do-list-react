@@ -156,15 +156,15 @@ export const useListSyncManager = ({
 
     // const deviceId = listsData.deviceId || "";
     const deletedIds = listsData.deletedTasksIds ?? [];
-    const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
+    // const deletedTasks = tasks.filter((task) => deletedIds.includes(task.id));
 
-    process.env.NODE_ENV === "development" &&
-      console.log("Syncing with remote data...", {
-        deviceId,
-        deletedIds,
-        deletedTasks,
-        listsData,
-      });
+    // process.env.NODE_ENV === "development" &&
+    //   console.log("Syncing with remote data...", {
+    //     deviceId,
+    //     deletedIds,
+    //     deletedTasks,
+    //     listsData,
+    //   });
 
     const localOnlyTasks = tasks.filter((localTask) => {
       if (localTask.status === "synced") return false;
