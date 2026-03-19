@@ -40,12 +40,14 @@ import {
   ModalCancelButtonUnified,
   ScheduledHeaderWrapper,
   ScheduledHeader,
+  CounterBadge,
   RefreshButton,
   ScheduledHeaderRow,
   ScheduledInfo,
   ScheduledDate,
   ScheduledText,
   ScheduledListName,
+  ScheduledUserEmail,
 } from "./styled";
 import { RemoveButton } from "../../../../common/taskButtons";
 import {
@@ -329,7 +331,10 @@ export const NotificationModal = () => {
           try {
             await OneSignal.login(masterId);
           } catch (e) {
-            console.warn("[OneSignal] Login conflict or error (likely safe to ignore):", e);
+            console.warn(
+              "[OneSignal] Login conflict or error (likely safe to ignore):",
+              e,
+            );
           }
         }
       }
@@ -418,12 +423,13 @@ export const NotificationModal = () => {
           <ScheduledList>
             <ScheduledHeaderWrapper>
               <ScheduledHeader>
-                {t("modal.notifications.scheduledTitle")}{" "}
-                {scheduledNotifications && scheduledNotifications.length > 0 && (
-                  <span style={{ opacity: 0.6, fontSize: "0.9em" }}>
-                    ({scheduledNotifications.length})
-                  </span>
-                )}
+                {t("modal.notifications.scheduledTitle")}
+                {scheduledNotifications &&
+                  scheduledNotifications.length > 0 && (
+                    <CounterBadge>
+                      {scheduledNotifications.length}
+                    </CounterBadge>
+                  )}
               </ScheduledHeader>
               <RefreshButton
                 type="button"
@@ -459,8 +465,14 @@ export const NotificationModal = () => {
             {scheduledNotifications &&
               [...scheduledNotifications]
                 .sort((a, b) => {
-                  const timeA = typeof a.send_after === "number" ? a.send_after * 1000 : new Date(a.send_after).getTime();
-                  const timeB = typeof b.send_after === "number" ? b.send_after * 1000 : new Date(b.send_after).getTime();
+                  const timeA =
+                    typeof a.send_after === "number"
+                      ? a.send_after * 1000
+                      : new Date(a.send_after).getTime();
+                  const timeB =
+                    typeof b.send_after === "number"
+                      ? b.send_after * 1000
+                      : new Date(b.send_after).getTime();
                   return timeA - timeB;
                 })
                 .map((notif) => (
@@ -505,7 +517,10 @@ const ScheduledNotificationItem = ({
             <CalendarIconSVG />
             {formatDisplayDate(notif.send_after)}
           </ScheduledDate>
-          <ScheduledListName title={notif.data?.listName}>
+          {notif.data?.userEmail && (
+            <ScheduledUserEmail>{notif.data.userEmail}</ScheduledUserEmail>
+          )}
+          <ScheduledListName>
             {notif.data?.listName || t("modal.notifications.listLabel")}
           </ScheduledListName>
         </ScheduledInfo>

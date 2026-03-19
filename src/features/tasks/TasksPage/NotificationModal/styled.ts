@@ -119,6 +119,25 @@ export const ScheduledHeader = styled.h3`
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: ${({ theme }) => theme.fontWeight.bold};
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+export const CounterBadge = styled.span`
+  background: ${({ theme }) => theme.colors.button.check};
+  color: ${({ theme }) =>
+    theme.colors.textPrimary === "#151515ff" ? "#fff" : "#fff"};
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  min-width: 18px;
+  height: 18px;
 `;
 
 export const RefreshButton = styled.button`
@@ -206,6 +225,7 @@ export const ScheduledText = styled.div`
   color: ${({ theme }) => theme.colors.textPrimary};
   word-break: break-word;
   line-height: 1.4;
+  margin-left: 4px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
     font-size: 0.85rem;
@@ -214,7 +234,7 @@ export const ScheduledText = styled.div`
 
 export const ScheduledListName = styled.div`
   font-size: 0.7rem;
-  color: ${({ theme }) => theme.colors.textSecendary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-weight: ${({ theme }) => theme.fontWeight.semiBold};
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -229,4 +249,12 @@ export const ScheduledListName = styled.div`
   white-space: nowrap;
   max-width: 100%;
   display: inline-block;
+  margin-top: -2px;
+`;
+
+export const ScheduledUserEmail = styled(ScheduledListName)`
+  text-transform: none;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-weight: ${({ theme }) => theme.fontWeight.normal};
+  opacity: 0.8;
 `;

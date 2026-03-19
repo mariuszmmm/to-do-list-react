@@ -67,9 +67,11 @@ const handler: Handler = async (event, context) => {
     const currLang = (lang as "en" | "de" | "pl") || "pl";
     const currentLabels = labels[currLang] || labels.pl;
 
-    let finalContent = listName
-      ? `${currentLabels.list}: ${listName}\n${content}`
-      : content;
+    // let finalContent = listName
+    //   ? `${currentLabels.list}: ${listName}\n${content}`
+    //   : content;
+
+    let finalContent = content;
 
     const emailSubject = currentLabels.subject;
     const emailBody = `
@@ -165,7 +167,7 @@ const handler: Handler = async (event, context) => {
         },
         send_after: date,
         include_subscription_ids: [subscriptionId],
-        data: { taskId, masterId, listName },
+        data: { taskId, masterId, listName, userEmail },
         web_push_topic: taskId,
         persist: true,
         chrome_web_icon: "https://to-do-list.myprojects.pl/logo-256x256.png",

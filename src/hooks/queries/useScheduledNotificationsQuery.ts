@@ -20,12 +20,15 @@ export const useScheduledNotificationsQuery = () => {
       const token = await getUserToken();
       if (!token || !masterId) return [];
 
-      const response = await axios.get(`/.netlify/functions/get-scheduled-notifications`, {
-        params: { masterId },
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `/.netlify/functions/get-scheduled-notifications`,
+        {
+          params: { masterId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       return response.data;
     },
