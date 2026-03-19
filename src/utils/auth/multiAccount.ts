@@ -23,6 +23,10 @@ export interface SavedAccount {
   lastUsed: number;
 }
 
+/**
+ * Zamyka aktywne połączenie systemowe Ably przy przełączaniu kont.
+ * Jest to konieczne, aby uniknąć konfliktów w kanałach czasu rzeczywistego (WebSocket).
+ */
 const closeAblyConnection = () => {
   if (window.ably) {
     window.ably.close();
@@ -32,11 +36,19 @@ const closeAblyConnection = () => {
   }
 };
 
+/**
+ * Pobiera listę zapisanych kont z localStorage.
+ */
 export const getSavedAccounts = (): SavedAccount[] => {
   const data = localStorage.getItem(MULTI_ACCOUNT_KEY);
   return data ? JSON.parse(data) : [];
 };
 
+/**
+ * Zapisuje stan aktualnie zalogowanego konta. 
+ * Pobiera dane sesji z Auth (GoTrue), aktualną listę zadań i metadane, 
+ * a następnie aktualizuje listę 'saved_accounts'.
+ */
 export const saveCurrentAccount = async () => {
   try {
     const gotrueRaw = localStorage.getItem(GOTRUE_KEY);
@@ -78,6 +90,7 @@ export const saveCurrentAccount = async () => {
       });
     }
 
+    // Synchronizujemy zarówno localStorage jak i IndexedDB dla trwałości danych
     localStorage.setItem(MULTI_ACCOUNT_KEY, JSON.stringify(currentAccounts));
     await syncToIndexedDB(MULTI_ACCOUNT_KEY, currentAccounts);
   } catch (error) {
@@ -88,6 +101,13 @@ export const saveCurrentAccount = async () => {
   }
 };
 
+/**
+ * Przełącza aplikację na inne zapisane wcześniej konto.
+ * 1. Zabezpiecza obecny stan.
+ * 2. Przenosi zadania nowego konta do głównego storage'u.
+ * 3. Podmienia tokeny sesji.
+ * 4. Odświeża stronę, aby zainicjować aplikację z nowym kontekstem.
+ */
 export const switchAccount = async (email: string) => {
   try {
     // 1. Zabezpieczenie obecnego stanu przed przełączeniem
@@ -135,7 +155,6 @@ export const switchAccount = async (email: string) => {
     closeAblyConnection();
 
     // 7. Przeładowujemy stronę natychmiast
-    // NIE czyścimy sessionStorage.clear(), bo potrzebujemy tam account_switch_target dla modala sukcesu
     window.location.reload();
   } catch (error) {
     console.error("Błąd podczas przełączania kont:", error);
@@ -144,6 +163,9 @@ export const switchAccount = async (email: string) => {
   }
 };
 
+/**
+ * Usuwa konto z listy zapamiętanych kont.
+ */
 export const removeAccount = async (email: string) => {
   let accounts = getSavedAccounts();
   accounts = accounts.filter((acc) => acc.email !== email);
@@ -151,6 +173,10 @@ export const removeAccount = async (email: string) => {
   await syncToIndexedDB(MULTI_ACCOUNT_KEY, accounts);
 };
 
+/**
+ * Oznacza sesję danego konta jako wygasłą (np. przy błędzie 401).
+ * Usuwa dane sesji, ale zachowuje konto na liście do ponownego zalogowania.
+ */
 export const markSessionAsExpired = async (email: string) => {
   const accounts = getSavedAccounts();
   const accountIndex = accounts.findIndex((acc) => acc.email === email);
@@ -162,11 +188,18 @@ export const markSessionAsExpired = async (email: string) => {
   }
 };
 
+/**
+ * Funkcja pomocnicza do odzyskania listy kont z IndexedDB, 
+ * jeśli localStorage został wyczyszczony.
+ */
 export const restoreAccountsFromIndexedDB = async () => {
   const accounts = await restoreFromIndexedDB(MULTI_ACCOUNT_KEY, true);
   return Array.isArray(accounts) ? (accounts as SavedAccount[]) : [];
 };
 
+/**
+ * Czyści sesję obecnego konta bez wylogowywania (przygotowanie pod logowanie na nowe konto).
+ */
 export const clearSessionForNewAccount = async () => {
   // Zachowujemy obecny stan uzytkownika przed wylogowaniem lokalnym
   await saveCurrentAccount();

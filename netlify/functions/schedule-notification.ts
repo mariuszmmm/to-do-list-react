@@ -26,34 +26,121 @@ const handler: Handler = async (event, context) => {
       content,
       date,
       subscriptionId,
+      userEmail,
       heading,
       buttonText,
       listName,
       lang,
+      masterId,
+      displayImage,
     } = JSON.parse(event.body || "{}");
 
     if (!subscriptionId) {
       return jsonResponse(400, { message: "Missing subscriptionId payload" });
     }
 
+    if (!masterId) {
+      console.warn(`${logPrefix} Missing masterId in payload`);
+    }
+
     const labels = {
-      pl: { heading: "Przypomnienie", list: "Lista", button: "Pokaż listę" },
-      en: { heading: "Reminder", list: "List", button: "Show list" },
-      de: { heading: "Erinnerung", list: "Liste", button: "Liste anzeigen" },
+      pl: {
+        heading: "Przypomnienie",
+        list: "Lista",
+        button: "Pokaż listę",
+        subject: "🔔 Przypomnienie o zadaniu",
+      },
+      en: {
+        heading: "Reminder",
+        list: "List",
+        button: "Show list",
+        subject: "🔔 Task Reminder",
+      },
+      de: {
+        heading: "Erinnerung",
+        list: "Liste",
+        button: "Liste anzeigen",
+        subject: "🔔 Aufgaben-Erinnerung",
+      },
     };
 
     const currLang = (lang as "en" | "de" | "pl") || "pl";
     const currentLabels = labels[currLang] || labels.pl;
 
-    const finalContent = listName
+    let finalContent = listName
       ? `${currentLabels.list}: ${listName}\n${content}`
       : content;
 
+    const emailSubject = currentLabels.subject;
+    const emailBody = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f7f6; }
+            .wrapper { background-color: #f4f7f6; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(49, 38, 38, 0.1); }
+            .header { background: #007380; padding: 30px 20px; text-align: center; }
+            .header img { height: 50px; margin-bottom: 10px; }
+            .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; }
+            .content { padding: 40px 30px; text-align: left; }
+            .content h2 { margin-top: 0; font-size: 20px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+            .list-name { color: #888; font-size: 14px; margin-bottom: 15px; }
+            .task-text { font-size: 17px; color: #444; background: #f9f9f9; padding: 20px; border-left: 4px solid #007380; border-radius: 4px; margin: 20px 0; white-space: pre-wrap; }
+            .cta-box { text-align: center; margin: 30px 0; }
+            .button { background-color: #007380; color: #ffffff !important; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.3s; }
+            .task-image-container { margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 30px; }
+            .task-image { max-width: 100%; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+            .footer { background: #fafafa; padding: 20px; text-align: center; font-size: 13px; color: #888; border-top: 1px solid #eee; }
+          </style>
+        </head>
+        <body>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <img src="https://to-do-list.myprojects.pl/logo-256x256.png" alt=" Logo">
+                <h1>To-Do List</h1>
+              </div>
+              <div class="content">
+                <h2>${heading || currentLabels.heading}</h2>
+                ${listName ? `<div class="list-name"><strong>${listName}</strong></div>` : ""}
+                <div class="task-text">${content}</div>
+                
+                <div class="cta-box">
+                  <a href="https://to-do-list.myprojects.pl" class="button">${buttonText || currentLabels.button}</a>
+                </div>
+
+                ${
+                  displayImage
+                    ? `
+                    <div class="task-image-container">
+                      <p style="color: #888; font-size: 14px; margin-bottom: 15px;">Załączone zdjęcie zadania:</p>
+                      <img src="${displayImage}" class="task-image" />
+                    </div>
+                    `
+                    : ""
+                }
+              </div>
+              <div class="footer">
+                Wysłano z aplikacji To-Do List.<br>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    if (finalContent.length > 300) {
+      finalContent = finalContent.substring(0, 300) + "...";
+    }
+
     console.log(
-      `${logPrefix} Sending to OneSignal targeted Subscription: ${subscriptionId}`,
+      `${logPrefix} Scheduling Push (${subscriptionId}) and Email (${userEmail || "not provided"})`,
     );
 
-    const response = await axios.post(
+    // 1. Wysyłka PUSH
+    const pushPromise = axios.post(
       "https://onesignal.com/api/v1/notifications",
       {
         app_id: ONESIGNAL_APP_ID,
@@ -77,13 +164,11 @@ const handler: Handler = async (event, context) => {
           de: finalContent,
         },
         send_after: date,
-        target_channel: "push",
-        // Skupiamy się WYŁĄCZNIE na ID subskrypcji konkretnego urządzenia.
         include_subscription_ids: [subscriptionId],
-        data: { taskId },
+        data: { taskId, masterId, listName },
         web_push_topic: taskId,
         persist: true,
-        chrome_web_icon: "https://to-do-list.myprojects.pl/favicon-96x96.png",
+        chrome_web_icon: "https://to-do-list.myprojects.pl/logo-256x256.png",
         chrome_web_badge: "https://to-do-list.myprojects.pl/favicon-96x96.png",
         web_push_options: {
           requireInteraction: true,
@@ -104,18 +189,42 @@ const handler: Handler = async (event, context) => {
       },
     );
 
-    console.log(
-      `${logPrefix} OneSignal Response:`,
-      JSON.stringify(response.data, null, 2),
-    );
+    // 2. Wysyłka EMAIL (opcjonalnie, jeśli podano email)
+    let emailPromise: Promise<any> = Promise.resolve(null);
+    if (userEmail) {
+      emailPromise = axios
+        .post(
+          "https://onesignal.com/api/v1/notifications",
+          {
+            app_id: ONESIGNAL_APP_ID,
+            include_email_tokens: [userEmail],
+            email_subject: emailSubject,
+            email_body: emailBody,
+            send_after: date,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+            },
+          },
+        )
+        .catch((err) => {
+          console.warn(
+            `${logPrefix} Email send failed, but continuing:`,
+            err.response?.data || err.message,
+          );
+          return null;
+        });
+    }
+
+    const [pushResponse] = await Promise.all([pushPromise, emailPromise]);
 
     return jsonResponse(200, {
       message: "Notification scheduled",
-      notificationId: response.data.id || "",
-      recipients: response.data.recipients || 0,
-      errors: response.data.errors,
-      onesignalResponse: response.data,
-      debugPayload: { subscriptionId },
+      notificationId: pushResponse.data.id || "",
+      recipients: pushResponse.data.recipients || 0,
+      onesignalResponse: pushResponse.data,
     });
   } catch (error: any) {
     logError("Failed to schedule notification via OneSignal", error, logPrefix);

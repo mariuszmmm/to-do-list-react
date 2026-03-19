@@ -1,4 +1,4 @@
-import Ably from "ably";
+import * as Ably from "ably";
 import { getUserToken } from "../auth/getUserToken";
 import { getOrCreateDeviceId } from "../storage/deviceId";
 
@@ -23,8 +23,22 @@ const getEmailFromToken = (token: string): string | null => {
   }
 };
 
+let currentAblyEmail: string | null = null;
+
 export const getAblyInstance = (): Ably.Realtime => {
+  const userToken = localStorage.getItem("gotrue.user") 
+    ? JSON.parse(localStorage.getItem("gotrue.user")!).token?.access_token 
+    : null;
+  const email = userToken ? getEmailFromToken(userToken) : null;
+
+  // Jeśli użytkownik się zmienił, zamknij stare połączenie
+  if (ablyInstance && email !== currentAblyEmail) {
+    console.log(`[Ably] User changed from ${currentAblyEmail} to ${email}, resetting instance...`);
+    closeAblyConnection();
+  }
+
   if (!ablyInstance) {
+    currentAblyEmail = email;
     ablyInstance = new Ably.Realtime({
       queryTime: true,
       authCallback: async (tokenParams, callback) => {
@@ -44,7 +58,7 @@ export const getAblyInstance = (): Ably.Realtime => {
             }
 
             const response = await fetch(
-              `/auth-ablyAuth?deviceId=${deviceId}`,
+              `/auth-ablyAuth?deviceId=${deviceId}&email=${encodeURIComponent(email)}`,
               {
                 method: "GET",
                 headers: {
@@ -90,6 +104,11 @@ export const getAblyInstance = (): Ably.Realtime => {
         }
       },
     });
+
+    // Ekspozycja globalna dla multiAccount.ts
+    if (typeof window !== "undefined") {
+      window.ably = ablyInstance;
+    }
   }
 
   return ablyInstance;
@@ -103,6 +122,10 @@ export const closeAblyConnection = () => {
       console.error("[Ably] Error closing connection:", err);
     } finally {
       ablyInstance = null;
+      currentAblyEmail = null;
+      if (typeof window !== "undefined") {
+        window.ably = null;
+      }
     }
   }
 };

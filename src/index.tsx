@@ -20,7 +20,11 @@ import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-// Dynamiczne pobieranie wersji bezpośrednio z aktywnego Service Workera
+/**
+ * Sekcja obsługi Service Workera.
+ * Pobiera informację o wersji aplikacji bezpośrednio z aktywnego Service Workera
+ * i wyświetla ją w konsoli przeglądarki w celach debugowania.
+ */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.ready.then((reg) => {
     reg.active?.postMessage({ type: "GET_VERSION" });
@@ -36,31 +40,12 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Obsługa tokenów uwierzytelniających i kodów OAuth z adresu URL (np. po powrocie z logowania Google)
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
+
+// Ustawienie flagi dla automatycznego fokusu na inputach przy starcie (jeśli jesteśmy na stronie głównej)
 setInputAutoFocusFlagIfRoot();
-
-// Zgłoszenie przeglądarce (mobilnej), że te dane powinny być trwałe (persistent storage)
-// Ogranicza to szansę na automatyczne "sprzątanie" localStorage/IndexedDB.
-// if (navigator.storage && navigator.storage.persist) {
-//   navigator.storage.persist().then((persistent) => {
-//     if (persistent) {
-//       console.log("Storage will not be cleared except by explicit user action");
-//     } else {
-//       console.log("Storage may be cleared by the UA under storage pressure.");
-//     }
-//   });
-// }
-
-// Fix dla mobile PWA (BFCache): window.location.reload() na iOS/Android może
-// przywrócić stronę z cache zamiast resetować moduły JS (w tym singleton GoTrue).
-// pageshow z event.persisted=true oznacza właśnie takie przywrócenie z BFCache.
-// W takim wypadku wymuszamy prawdziwy reload, by GoTrue odczytał nowe konto z localStorage.
-// window.addEventListener("pageshow", (event) => {
-//   if (event.persisted) {
-//     window.location.reload();
-//   }
-// });
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 const queryClient = new QueryClient();
@@ -82,12 +67,19 @@ const AppProviders = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+/**
+ * Główna funkcja inicjalizująca aplikację.
+ * Zawiera krytyczną logikę odzyskiwania danych z IndexedDB przed renderowaniem Reacta,
+ * co zapobiega utracie sesji po odświeżeniu lub w trybie PWA.
+ */
 const initApp = async () => {
-  // UWAGA: Przed startem Reacta sprawdzamy, czy musimy odzyskać sesje z IndexedDB.
-
   const savedAccounts = localStorage.getItem("saved_accounts");
   const gotrueUser = localStorage.getItem("gotrue.user");
 
+  /**
+   * Jeśli w localStorage brakuje kluczowych danych (np. użytkownika lub kont),
+   * próbujemy je przywrócić z IndexedDB (magazyn o większej trwałości).
+   */
   if (!savedAccounts || !gotrueUser) {
     const keysToRestore = [
       "saved_accounts",
@@ -104,15 +96,16 @@ const initApp = async () => {
     }
   }
 
+  // Renderowanie głównego drzewa komponentów
   root.render(
     process.env.NODE_ENV === "development" ? (
-      <React.StrictMode>
+      <>
         <Provider store={store}>
           <AppProviders>
             <App />
           </AppProviders>
         </Provider>
-      </React.StrictMode>
+      </>
     ) : (
       <Provider store={store}>
         <AppProviders>
@@ -122,7 +115,7 @@ const initApp = async () => {
     ),
   );
 
-  // Rejestracja Service Workera dla PWA (offline i instalacja)
+  // Opcjonalna rejestracja Service Workera dla funkcjonalności offline i instalacji jako PWA
   serviceWorkerRegistration.register();
 };
 

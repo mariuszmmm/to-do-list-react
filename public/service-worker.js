@@ -1,19 +1,24 @@
+/* eslint-disable no-restricted-globals */
+
+/**
+ * MEGA-STUB v24: Jawna rejestracja wszystkich zdarzeń na samym początku pliku.
+ * Niektóre przeglądarki wymagają, aby te wywołania były statyczne i natychmiastowe.
+ */
+self.addEventListener("message", function(event) {
+    if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+    if (event.data && event.data.type === "GET_VERSION") {
+        event.source.postMessage({ type: "VERSION_INFO", version: "todo-list-v24" });
+    }
+});
+self.addEventListener("push", function(event) {});
+self.addEventListener("notificationclick", function(event) {});
+self.addEventListener("notificationclose", function(event) {});
+self.addEventListener("fetch", function(event) {});
+
+// Import SDK OneSignal po zarejestrowaniu stubów
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-/* eslint-disable no-restricted-globals */
-const CACHE_NAME = "todo-list-v18";
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-  if (event.data && event.data.type === "GET_VERSION") {
-    event.source.postMessage({
-      type: "VERSION_INFO",
-      version: CACHE_NAME,
-    });
-  }
-});
+const CACHE_NAME = "todo-list-v24";
 
 const urlsToCache = [
   "/",
@@ -25,21 +30,16 @@ const urlsToCache = [
   "/apple-touch-icon.png",
   "/web-app-manifest-192x192.png",
   "/web-app-manifest-512x512.png",
-  "/screenshots/desktop.png",
-  "/screenshots/mobile.png",
 ];
 
-// Instalacja Service Workera
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(urlsToCache);
     }),
   );
-  // UWAGA: Usunięto tu self.skipWaiting(), aby umożliwić pokazanie powiadomienia
 });
 
-// Aktywacja i czyszczenie starych cache
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -56,12 +56,8 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Strategia: Cache First + dynamiczne cachowanie wszystkich zasobów statycznych
-// Pliki JS/CSS React są automatycznie cachowane przy pierwszej wizycie z internetem.
-// Przy kolejnych wejściach (nawet offline) aplikacja ładuje się z cache.
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
-
   const apiRoutes = [
     "/data",
     "/image",
@@ -71,26 +67,18 @@ self.addEventListener("fetch", (event) => {
     "/diagnose-system",
     "/resetPassword",
   ];
-
-  // Pomijamy requesty do API (Netlify functions), zewnętrznych serwisów oraz dynamicznych tras
   if (
     url.pathname.startsWith("/.netlify/") ||
-    url.pathname.startsWith("/auth-") ||
-    url.pathname.startsWith("/backup-") ||
-    url.pathname.startsWith("/user-") ||
-    url.pathname.startsWith("/test-") ||
     apiRoutes.includes(url.pathname) ||
     url.hostname !== self.location.hostname
-  ) {
+  )
     return;
-  }
 
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request)
           .then((networkResponse) => {
-            // Cachuj udane odpowiedzi GET (pliki JS, CSS, obrazki itp.)
             if (
               event.request.method === "GET" &&
               networkResponse.status === 200
@@ -100,15 +88,10 @@ self.addEventListener("fetch", (event) => {
             return networkResponse;
           })
           .catch(() => {
-            // Sieć niedostępna – dla nawigacji fallback do index.html
-            if (event.request.mode === "navigate") {
+            if (event.request.mode === "navigate")
               return cache.match("/index.html");
-            }
-            // Dla zasobów statycznych – zwróć to co jest w cache (lub nic)
             return cachedResponse;
           });
-
-        // Zwróć cache od razu (nie czekamy na sieć) – szybszy start offline
         return cachedResponse || fetchPromise;
       });
     }),

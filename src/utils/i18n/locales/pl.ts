@@ -77,6 +77,8 @@ const langPl = {
     dateEdited: "Data edycji",
     dateDone: "Data ukończenia",
     backButton: "Powrót",
+    showMore: "Pokaż więcej",
+    showLess: "Pokaż mniej",
   },
   taskImagePage: {
     title: "Zdjęcie zadania",
@@ -610,6 +612,14 @@ const langPl = {
       permissionBlocked: "Powiadomienia są zablokowane w Twojej przeglądarce. Proszę odblokuj je klikając w ikonę kłódki przy pasku adresu, aby móc planować zadania.",
       notLoggedIn: "Musisz być zalogowany, aby ustawić powiadomienie.",
       error: "Wystąpił błąd podczas planowania powiadomienia.",
+      scheduledTitle: "Zaplanowane przypomnienia:",
+      confirmDelete: "Czy na pewno chcesz usunąć to powiadomienie?",
+      deleteError: "Błąd podczas usuwania powiadomienia.",
+      cancelTooltip: "Anuluj przypomnienie",
+      loading: "Ładowanie...",
+      refresh: "Odśwież",
+      listLabel: "Lista",
+      fetchError: "Błąd podczas pobierania powiadomień.",
     },
     login: {
       title: "Logowanie",
@@ -698,6 +708,12 @@ const langPl = {
         error: {
           default: "Błąd podczas aktywacji konta.",
         },
+      },
+    },
+    masterIdUnification: {
+      title: "Unifikacja kont",
+      message: {
+        info: "Twoje urządzenia zostały pomyślnie połączone w jeden profil. Twoje zaplanowane powiadomienia będą teraz dostępne na wszystkich Twoich urządzeniach.",
       },
     },
     dataRemoval: {

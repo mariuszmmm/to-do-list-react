@@ -2,10 +2,11 @@ import { get, set, del } from "idb-keyval";
 
 /**
  * Zapisuje wartość do bazy IndexedDB jako kopię zapasową dla localStorage.
- * Używane głownie po to, by przetrwać automatyczne czyszczenie localStorage przez Safari/iOS.
+ * Jest to kluczowy mechanizm "Security Net", który pozwala przetrwać agresywne 
+ * czyszczenie localStorage przez niektóre przeglądarki (np. Safari na iOS po 7 dniach braku interakcji).
  *
- * @param key Klucz pod jakim zapisyjemy dane (zazwyczaj ten sam co w localStorage)
- * @param value Wartość do zapisania (zostanie zserializowana do JSON, jeśli to obiekt)
+ * @param key Klucz pod jakim zapisujemy dane (zazwyczaj zgodny z kluczem w localStorage)
+ * @param value Wartość do zapisania (obiekty są automatycznie serializowane do JSON)
  */
 export const syncToIndexedDB = async (
   key: string,
@@ -13,32 +14,49 @@ export const syncToIndexedDB = async (
 ): Promise<void> => {
   try {
     if (value === null || value === undefined) {
+      // Jeśli wartość jest pusta, usuwamy klucz również z IndexedDB
       await del(key);
     } else {
-      // Przygotowujemy dane do zapisu w taki sam sposób jak w localStorage
+      // Przygotowujemy dane do zapisu: stringi zostają bez zmian, obiekty zamieniamy na JSON
       const valueToSave =
         typeof value === "string" ? value : JSON.stringify(value);
       await set(key, valueToSave);
     }
-  } catch (error) {
-    console.error(`Błąd podczas zapisu do IndexedDB (klucz: ${key}):`, error);
+  } catch (error: any) {
+    /**
+     * Podobnie jak przy odczycie, ignorujemy błędy otwierania bazy danych
+     * tuż po jej wyczyszczeniu przez użytkownika.
+     */
+    if (error?.name === "UnknownError" || error?.message?.includes("Internal error")) {
+      return;
+    }
+
+    // Pozostałe błędy logujemy jako ostrzeżenie tylko w trybie deweloperskim
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`[IndexedDB Sync] Błąd zapisu klucza "${key}":`, error);
+    }
   }
 };
 
 /**
- * Pobiera wartość z IndexedDB i opcjonalnie natychmiast wrzuca ją z powrotem do localStorage.
- * Używane przy starcie aplikacji (np. index.tsx), gdy localStorage zgubiło dane.
+ * Próbuje odzyskać wartość z IndexedDB i opcjonalnie wrzuca ją z powrotem do localStorage.
+ * Wywoływane głównie podczas startu aplikacji (index.tsx), jeśli localStorage jest pusty.
  *
  * @param key Klucz do odzyskania
- * @param restoreToLocalStorage Czy automatycznie zapisać odzyskaną wartość do localStorage?
- * @returns Zwraca wartość (string), null jeśli brak.
+ * @param restoreToLocalStorage Czy automatycznie zasilić localStorage odzyskaną wartością?
+ * @returns Zwraca wartość (string) lub null, jeśli klucz nie istnieje lub wystąpił błąd.
  */
 export const restoreFromIndexedDB = async (
   key: string,
   restoreToLocalStorage: boolean = true,
 ): Promise<string | null> => {
   try {
+    /**
+     * Używamy idb-keyval do prostego dostępu klucz-wartość w IndexedDB.
+     * UWAGA: get() może zwrócić UnknownError, jeśli baza jest właśnie czyszczona lub blokowana.
+     */
     const value = await get<string>(key);
+    
     if (value !== undefined && value !== null) {
       if (restoreToLocalStorage) {
         localStorage.setItem(key, value);
@@ -46,8 +64,20 @@ export const restoreFromIndexedDB = async (
       return value;
     }
     return null;
-  } catch (error) {
-    console.error(`Błąd podczas odczytu z IndexedDB (klucz: ${key}):`, error);
+  } catch (error: any) {
+    /**
+     * Specyficzna obsługa błędów dla przeglądarek (np. Edge/Chrome).
+     * Błąd "UnknownError" przy otwieraniu "backing store" zdarza się często tuż po 
+     * ręcznym wyczyszczeniu danych przez użytkownika w DevTools.
+     */
+    if (error?.name === "UnknownError" || error?.message?.includes("Internal error")) {
+      // Nie wyrzucamy błędu – prawdopodobnie baza jest właśnie inicjalizowana na nowo
+      return null;
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      console.error(`[IndexedDB Restore] Błąd odczytu klucza "${key}":`, error);
+    }
     return null;
   }
 };

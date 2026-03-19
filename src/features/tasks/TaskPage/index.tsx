@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux/redux";
 import { DateInfo, Name } from "./styled";
+import { Button } from "../../../common/Button";
 import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
 import { selectTaskById } from "../tasksSlice";
@@ -26,18 +27,37 @@ const TaskPage = () => {
     keyPrefix: "taskPage",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { imageUrl } = task?.image || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const taskContent = task ? task.content : t("noContent");
+  const isTruncated = taskContent.length > 300;
+  const displayedContent =
+    isTruncated && !isExpanded
+      ? taskContent.slice(0, 300) + "..."
+      : taskContent;
+
   return (
     <>
       <Header title={t("title")} />
       <Section
         taskDetails
-        title={task ? task.content : t("noContent")}
+        title={
+          <span>
+            {displayedContent}
+            {isTruncated && (
+              <>
+                <Button $special onClick={() => setIsExpanded(!isExpanded)}>
+                  {isExpanded ? ` ${t("showLess")}` : ` ${t("showMore")}`}
+                </Button>
+              </>
+            )}
+          </span>
+        }
         body={
           task && (
             <>

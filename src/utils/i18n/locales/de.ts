@@ -79,6 +79,8 @@ const langDe: typeof langPl = {
     dateEdited: "Bearbeitungsdatum",
     dateDone: "Abschlussdatum",
     backButton: "Zurück",
+    showMore: "Mehr anzeigen",
+    showLess: "Weniger anzeigen",
   },
   taskImagePage: {
     title: "Aufgabenbild",
@@ -616,6 +618,14 @@ const langDe: typeof langPl = {
       permissionBlocked: "Benachrichtigungen sind in Ihrem Browser blockiert. Bitte schalten Sie diese frei, indem Sie auf das Schlosssymbol neben der Adressleiste klicken, um Aufgaben planen zu können.",
       notLoggedIn: "Sie müssen angemeldet sein, um eine Benachrichtigung einzustellen.",
       error: "Fehler beim Planen der Benachrichtigung.",
+      scheduledTitle: "Geplante Erinnerungen:",
+      confirmDelete: "Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?",
+      deleteError: "Fehler beim Löschen der Benachrichtigung.",
+      cancelTooltip: "Erinnerung abbrechen",
+      loading: "Wird geladen...",
+      refresh: "Aktualisieren",
+      listLabel: "Liste",
+      fetchError: "Fehler beim Abrufen der Benachrichtigungen.",
     },
     login: {
       title: "Anmeldung",
@@ -705,6 +715,12 @@ const langDe: typeof langPl = {
         error: {
           default: "Fehler bei der Kontoaktivierung.",
         },
+      },
+    },
+    masterIdUnification: {
+      title: "Kontozusammenführung",
+      message: {
+        info: "Ihre Geräte wurden erfolgreich zu einem Profil verknüpft. Ihre geplanten Benachrichtigungen sind nun auf allen Ihren Geräten verfügbar.",
       },
     },
     dataRemoval: {

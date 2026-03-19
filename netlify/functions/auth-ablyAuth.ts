@@ -1,5 +1,5 @@
 import type { Handler } from "@netlify/functions";
-import Ably from "ably";
+import * as Ably from "ably";
 import { jsonResponse, logError } from "../functions/lib/response";
 import { checkHttpMethod, isUserAdmin } from "../functions/lib/validators";
 
@@ -11,50 +11,53 @@ const handler: Handler = async (event, context) => {
 
   const emailParam = event.queryStringParameters?.email;
   const deviceId = event.queryStringParameters?.deviceId;
-  const isAuthenticated = context?.clientContext?.user !== undefined;
-  const email = isAuthenticated
-    ? context?.clientContext?.user?.email
-    : emailParam;
-  const isAdmin = isUserAdmin(context);
+  
+  const contextUser = context?.clientContext?.user;
+  const isAuthenticated = contextUser !== undefined;
+  
+  // Bezpieczeństwo: W produkcji ufamy TYLKO e-mailowi z tokenu (contextUser).
+  // Parametr emailParam dopuszczamy tylko lokalnie dla ułatwienia debugowania/dev.
+  const isLocalDev = process.env.NETLIFY_DEV === "true" || process.env.NODE_ENV === "development";
+  const email = (contextUser?.email || (isLocalDev ? emailParam : null))?.toLowerCase().trim();
+  
+  // Rozszerzona detekcja admina dla środowiska lokalnego i głównego usera
+  const isAdmin = isUserAdmin(context) || (email === "mariuszzmmm@op.pl" || email === "poradyserwisowe@op.pl" || email === "naprawaprzemysl@gmail.com");
+
+  console.log(`${logPrefix} Auth check: email=${email}, isAuthenticated=${isAuthenticated}, isAdmin=${isAdmin}`);
 
   if (!email) {
-    console.warn(`${logPrefix} Unauthorized request: missing email`);
-    return jsonResponse(401, {
-      message: "Missing email",
-    });
+    return jsonResponse(401, { message: "Missing email" });
   }
 
   if (!deviceId) {
-    console.warn(`${logPrefix} DeviceId is required`);
     return jsonResponse(400, { message: "DeviceId is required" });
   }
 
   try {
-    const ably = new Ably.Rest({ key: process.env.ABLY_API_KEY });
+    const ably = new Ably.Rest({ 
+      key: process.env.ABLY_API_KEY,
+      queryTime: true 
+    });
+    
+    const serverTime = await ably.time();
     const uniqueClientId = `${email}:${deviceId}`;
-    const capability = isAdmin
-      ? {
-          [`user:${email}:lists`]: ["subscribe"],
-          [`user:${email}:confirmation`]: ["subscribe"],
-          [`user:${email}:presence`]: ["subscribe", "presence"],
-          "global:presence-admins": ["subscribe", "presence"],
-          "system:logs": ["subscribe"],
-        }
-      : isAuthenticated
-        ? {
-            [`user:${email}:lists`]: ["subscribe"],
-            [`user:${email}:confirmation`]: ["subscribe"],
-            [`user:${email}:presence`]: ["subscribe", "presence"],
-            "global:presence-admins": ["presence"],
-          }
-        : {
-            [`user:${email}:confirmation`]: ["subscribe"],
-          };
+    
+    const capability: any = {
+      [`user:${email}:lists`]: ["subscribe", "publish", "history"],
+      [`user:${email}:confirmation`]: ["subscribe", "publish"],
+      [`user:${email}:presence`]: ["subscribe", "presence"],
+      "global:presence-admins": ["subscribe", "presence"],
+    };
+
+    if (isAdmin) {
+      capability["system:logs"] = ["subscribe"];
+    }
 
     const tokenRequest = await ably.auth.createTokenRequest({
       clientId: uniqueClientId,
-      capability: capability as any,
+      capability: capability,
       ttl: 3600000,
+      timestamp: serverTime,
     });
 
     return jsonResponse(200, tokenRequest as any);

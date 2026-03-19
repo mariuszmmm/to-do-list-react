@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { ModalButtonContainer, ModalConfirmButton } from "../../../../Modal/styled";
+import {
+  ModalButtonContainer,
+  ModalConfirmButton,
+  ModalCancelButton,
+} from "../../../../Modal/styled";
 
 export const NotificationForm = styled.form`
   display: flex;
@@ -72,11 +76,157 @@ export const HiddenDateInput = styled.input`
   }
 `;
 
-
 export const SaveButton = styled(ModalConfirmButton)`
   background-color: ${({ theme }) => theme.colors.button.check};
+  width: 140px; /* Stała, jednakowa szerokość dla obu przycisków */
+`;
+
+export const ModalCancelButtonUnified = styled(ModalCancelButton)`
+  width: 140px; /* Stała, jednakowa szerokość dla obu przycisków */
 `;
 
 export const ButtonContainer = styled(ModalButtonContainer)`
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+`;
+
+export const ScheduledList = styled.div`
+  border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
+  padding: 15px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
+    padding: 10px;
+  }
+`;
+
+export const ScheduledHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+`;
+
+export const ScheduledHeader = styled.h3`
+  font-size: 0.75rem;
+  margin: 0;
+  color: ${({ theme }) => theme.colors.textSecendary};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+`;
+
+export const RefreshButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.button.check};
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 100px;
+  font-size: 0.7rem;
+  font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+  border-radius: 20px;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.backgroundSecendary};
+    border-color: ${({ theme }) => theme.colors.button.check};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const ScheduledItem = styled.div`
+  background: ${({ theme }) => theme.colors.backgroundSecendary};
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.border.primary};
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.button.check};
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const ScheduledHeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 10px;
+`;
+
+export const ScheduledInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+`;
+
+export const ScheduledDate = styled.div`
+  color: ${({ theme }) => theme.colors.button.check};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  background: ${({ theme }) =>
+    theme.colors.textPrimary === "#151515ff"
+      ? "rgba(34, 140, 34, 0.06)"
+      : "rgba(34, 140, 34, 0.15)"};
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+`;
+
+export const ScheduledText = styled.div`
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  word-break: break-word;
+  line-height: 1.4;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
+    font-size: 0.85rem;
+  }
+`;
+
+export const ScheduledListName = styled.div`
+  font-size: 0.7rem;
+  color: ${({ theme }) => theme.colors.textSecendary};
+  font-weight: ${({ theme }) => theme.fontWeight.semiBold};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: ${({ theme }) =>
+    theme.colors.textPrimary === "#151515ff"
+      ? "rgba(0, 0, 0, 0.03)"
+      : "rgba(255, 255, 255, 0.04)"};
+  padding: 2px 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  display: inline-block;
 `;

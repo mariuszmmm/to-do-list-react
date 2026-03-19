@@ -12,6 +12,7 @@ export const scheduleNotification = async (
     buttonText?: string;
     listName?: string;
     lang?: string;
+    masterId?: string | null;
   },
 ) => {
   console.log("[NotificationAPI] Scheduling notification: ", payload);

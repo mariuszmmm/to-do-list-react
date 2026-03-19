@@ -79,6 +79,8 @@ const langEn: typeof langPl = {
     dateEdited: "Date edited",
     dateDone: "Date completed",
     backButton: "Back",
+    showMore: "Show more",
+    showLess: "Show less",
   },
   taskImagePage: {
     title: "Task Image",
@@ -608,6 +610,14 @@ const langEn: typeof langPl = {
       permissionBlocked: "Notifications are blocked in your browser. Please unlock them by clicking the lock icon next to the address bar to be able to schedule tasks.",
       notLoggedIn: "You must be logged in to set a notification.",
       error: "An error occurred while scheduling the notification.",
+      scheduledTitle: "Scheduled reminders:",
+      confirmDelete: "Are you sure you want to delete this notification?",
+      deleteError: "Error while deleting notification.",
+      cancelTooltip: "Cancel reminder",
+      loading: "Loading...",
+      refresh: "Refresh",
+      listLabel: "List",
+      fetchError: "Error while fetching notifications.",
     },
     login: {
       title: "Login",
@@ -695,6 +705,12 @@ const langEn: typeof langPl = {
         error: {
           default: "Error activating account.",
         },
+      },
+    },
+    masterIdUnification: {
+      title: "Account Unification",
+      message: {
+        info: "Your devices have been successfully linked into one profile. Your scheduled notifications will now be accessible across all your devices.",
       },
     },
     dataRemoval: {

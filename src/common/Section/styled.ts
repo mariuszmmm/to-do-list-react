@@ -51,7 +51,7 @@ interface SectionBodyProps {
 export const SectionBody = styled.div<SectionBodyProps>`
   display: grid;
   grid-template-rows: ${({ hidden }) => (hidden ? "0fr" : "1fr")};
-  overflow: hidden;
+  overflow: ${({ hidden }) => (hidden ? "hidden" : "visible")};
   opacity: ${({ hidden }) => (hidden ? "0" : "1")};
 
   transition:
