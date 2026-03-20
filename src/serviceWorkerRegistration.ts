@@ -41,9 +41,7 @@ export function register(config?: Config) {
          */
         checkValidServiceWorker(swUrl, config);
 
-        navigator.serviceWorker.ready.then(() => {
-          console.log("Service Worker is ready on localhost");
-        });
+        navigator.serviceWorker.ready.then(() => {});
       } else {
         /**
          * Na produkcji po prostu rejestrujemy Service Workera.

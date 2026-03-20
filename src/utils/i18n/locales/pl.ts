@@ -175,6 +175,11 @@ const langPl = {
           description:
             "Na telefonie możesz używać To-Do List jak zwykłej aplikacji. Kliknij „trzy kropki” w rogu przeglądarki i wybierz „Dodaj do ekranu głównego”. Ikona aplikacji pojawi się na Twoim pulpicie.",
         },
+        step7: {
+          title: "7. Zaplanuj powiadomienia",
+          description:
+            "Nie chcesz zapomnieć o zadaniu? Kliknij ikonę dzwonka przy wybranym zadaniu i zaplanuj przypomnienie. Aplikacja wyśle Ci powiadomienie Push lub wiadomość e-mail w wybranym momencie.",
+        },
       },
     },
     aboutApp: {
@@ -203,6 +208,8 @@ const langPl = {
               "<strong>Synchronizacja w czasie rzeczywistym</strong>: <br/>natychmiastowe aktualizacje na różnych urządzeniach dzięki Ably.",
             part10:
               "<strong>Zarchiwizowane listy i kopie zapasowe</strong>: <br/>archiwizacja list oraz kopie zapasowe na Google Drive lub dysk lokalny.",
+            part11:
+              "<strong>Zaplanowane powiadomienia</strong>: <br/>możliwość ustawiania przypomnień o zadaniach poprzez powiadomienia Push i e-mail (Dzięki OneSignal).",
           },
         },
         technologies: {
@@ -222,7 +229,7 @@ const langPl = {
       name: "Mariusz Matusiewicz",
       description: {
         part1:
-          "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. W mojej głowie ciągle pojawiają się pomysły na kolejne funkcjonalności do aplikacji, nad którymi pracuję, co świetnie napędza mnie do dalszego działania.",
+          "Tworzenie frontendu to moja pasja, zwłaszcza z wykorzystaniem biblioteki <strong>React</strong>. Uwielbiam zgłębiać nowe technologie i stale rozwijać swoje umiejętności. W mojej głowie ciągle pojawiają się pomysły na kolejne funkcjonalności do aplikacji, nad którymi pracuję, co świetnie napędza mnie do dalszego działania.",
         part2:
           "Poza programowaniem kocham góry. Wędrówki to dla mnie najlepszy sposób na odpoczynek i naładowanie baterii. Szczególnie bliskie mojemu sercu są <strong>Bieszczady</strong> – ich spokój i naturalne piękno inspirują mnie za każdym razem, gdy tam wracam. Łącząc zamiłowanie do technologii z ciekawością świata, z entuzjazmem podejmuję nowe wyzwania i tworzę projekty, z których mogę być dumny. 😊🚀",
       },
@@ -242,6 +249,9 @@ const langPl = {
   accountPage: {
     title: "Panel użytkownika",
     notLoggedIn: "Jesteś niezalogowany",
+    environmentReset: {
+      title: "Reset konfiguracji",
+    },
     switcher: {
       title: "Zapisane konta",
       active: "Aktywne",
@@ -413,7 +423,7 @@ const langPl = {
         runButton: "Uruchom testy API",
         running: "Trwa testowanie...",
         success: "Diagnostyka zakończona sukcesem!",
-        error: "Błąd podczas przeprowadzania diagnostyki.",
+        error: "Błąd",
       },
       logs: {
         title: "Ostatnie zdarzenia systemowe",
@@ -600,6 +610,9 @@ const langPl = {
       addButton: "Dodaj",
       yesButton: "Tak",
       noButton: "Nie",
+      loading: "Ładowanie...",
+      environmentResetTrigger: "Resetuj konfigurację urządzenia",
+      environmentResetConfirm: "Potwierdzam reset",
     },
     notifications: {
       title: "Zaplanuj powiadomienie",
@@ -608,8 +621,10 @@ const langPl = {
       confirm: "Zaplanuj",
       taskContent: "Zadanie",
       dateLabel: "Wybierz datę i godzinę:",
-      pastDateError: "Nie można zaplanować powiadomienia w przeszłości. Wybierz datę z przyszłości.",
-      permissionBlocked: "Powiadomienia są zablokowane w Twojej przeglądarce. Proszę odblokuj je klikając w ikonę kłódki przy pasku adresu, aby móc planować zadania.",
+      pastDateError:
+        "Nie można zaplanować powiadomienia w przeszłości. Wybierz datę z przyszłości.",
+      permissionBlocked:
+        "Powiadomienia są zablokowane w Twojej przeglądarce. Proszę odblokuj je klikając w ikonę kłódki przy pasku adresu, aby móc planować zadania.",
       notLoggedIn: "Musisz być zalogowany, aby ustawić powiadomienie.",
       error: "Wystąpił błąd podczas planowania powiadomienia.",
       scheduledTitle: "Zaplanowane przypomnienia:",
@@ -620,6 +635,21 @@ const langPl = {
       refresh: "Odśwież",
       listLabel: "Lista",
       fetchError: "Błąd podczas pobierania powiadomień.",
+      noScheduled: "Brak zaplanowanych powiadomień.",
+    },
+    environmentReset: {
+      title: "Resetowanie parametrów lokalnych",
+      warningBody:
+        "Jeśli system na TYM urządzeniu działa nieprawidłowo, ta operacja pozwoli na odświeżenie jego konfiguracji technicznej. \n\n• Powiadomienia zaplanowane w chmurze nadal będą aktywne.\n• Dane użytkownika i zadania pozostaną nienaruszone.\n\nUżyj tej opcji tylko w celach diagnostycznych.",
+      operationsTitle: "Zakres operacji diagnostycznych:",
+      operations: {
+        sw: "Wyrejestrowanie skryptów pomocniczych (SW)",
+        cache: "Wyczyszczenie pamięci podręcznej (Cache)",
+        indexedDB: "Odświeżenie bazy OneSignal SDK",
+        storage: "Czyszczenie lokalnych ustawień technicznych",
+        cookies: "Usunięcie ciasteczek diagnostycznych",
+        reload: "Przeładowanie środowiska aplikacji",
+      },
     },
     login: {
       title: "Logowanie",
@@ -863,7 +893,7 @@ const langPl = {
     backupAuthError: {
       title: "Błąd automatycznej kopii zapasowej",
       message:
-        "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/>Wymagana jest ponowna autoryzacja konta Google i aktualizacja zmiennej <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> w panelu Netlify.",
+        "Automatyczne kopie zapasowe przestały być wykonywane z powodu problemów z autoryzacją Google Drive. <br/><br/>Przejdź do sekcji kopii zapasowych poniżej i kliknij przycisk <strong>Autoryzuj Google</strong>, aby odnowić dostęp.",
     },
     offline: {
       title: "Brak połączenia",

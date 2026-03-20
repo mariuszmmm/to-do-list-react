@@ -33,7 +33,6 @@ export const getAblyInstance = (): Ably.Realtime => {
 
   // Jeśli użytkownik się zmienił, zamknij stare połączenie
   if (ablyInstance && email !== currentAblyEmail) {
-    console.log(`[Ably] User changed from ${currentAblyEmail} to ${email}, resetting instance...`);
     closeAblyConnection();
   }
 
@@ -104,11 +103,6 @@ export const getAblyInstance = (): Ably.Realtime => {
         }
       },
     });
-
-    // Ekspozycja globalna dla multiAccount.ts
-    if (typeof window !== "undefined") {
-      window.ably = ablyInstance;
-    }
   }
 
   return ablyInstance;
@@ -123,9 +117,6 @@ export const closeAblyConnection = () => {
     } finally {
       ablyInstance = null;
       currentAblyEmail = null;
-      if (typeof window !== "undefined") {
-        window.ably = null;
-      }
     }
   }
 };

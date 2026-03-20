@@ -20,26 +20,6 @@ import { selectIsDarkTheme } from "./common/ThemeSwitch/themeSlice";
 import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-/**
- * Sekcja obsługi Service Workera.
- * Pobiera informację o wersji aplikacji bezpośrednio z aktywnego Service Workera
- * i wyświetla ją w konsoli przeglądarki w celach debugowania.
- */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.ready.then((reg) => {
-    reg.active?.postMessage({ type: "GET_VERSION" });
-  });
-
-  navigator.serviceWorker.addEventListener("message", (event) => {
-    if (event.data?.type === "VERSION_INFO") {
-      console.log(
-        `%c App Version: ${event.data.version} `,
-        "background: #222; color: #bada55; font-weight: bold; padding: 2px 4px; border-radius: 4px;",
-      );
-    }
-  });
-}
-
 // Obsługa tokenów uwierzytelniających i kodów OAuth z adresu URL (np. po powrocie z logowania Google)
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
@@ -100,11 +80,13 @@ const initApp = async () => {
   root.render(
     process.env.NODE_ENV === "development" ? (
       <>
-        <Provider store={store}>
-          <AppProviders>
-            <App />
-          </AppProviders>
-        </Provider>
+        <React.StrictMode>
+          <Provider store={store}>
+            <AppProviders>
+              <App />
+            </AppProviders>
+          </Provider>
+        </React.StrictMode>
       </>
     ) : (
       <Provider store={store}>

@@ -1,10 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { getUserToken } from "../../utils/auth/getUserToken";
 
 export const useCancelNotificationMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async (notificationId: string) => {
       const token = await getUserToken();

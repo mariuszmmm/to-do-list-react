@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getUserToken } from "../../utils/auth/getUserToken";
-import { getLocalMasterId } from "../../utils/notifications/masterId";
+import { useAppSelector } from "../redux/redux";
+import { selectLoggedUserEmail } from "../../features/AccountPage/accountSlice";
 
 export interface ScheduledNotification {
   id: string;
@@ -11,19 +12,23 @@ export interface ScheduledNotification {
   data: any;
 }
 
+/**
+ * Hook pobierający listę zaplanowanych powiadomień.
+ * Wykorzystuje adres e-mail zalogowanego użytkownika jako identyfikator.
+ */
 export const useScheduledNotificationsQuery = () => {
-  const masterId = getLocalMasterId();
+  const email = useAppSelector(selectLoggedUserEmail);
 
   return useQuery<ScheduledNotification[]>({
-    queryKey: ["scheduledNotifications", masterId],
+    queryKey: ["scheduledNotifications", email],
     queryFn: async () => {
       const token = await getUserToken();
-      if (!token || !masterId) return [];
+      if (!token || !email) return [];
 
       const response = await axios.get(
         `/.netlify/functions/get-scheduled-notifications`,
         {
-          params: { masterId },
+          params: { email },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -32,7 +37,7 @@ export const useScheduledNotificationsQuery = () => {
 
       return response.data;
     },
-    enabled: !!masterId,
-    refetchInterval: 30000, // Odświeżaj co 30 sekund
+    enabled: !!email,
+    refetchInterval: 60000, // Odświeżaj co 60 sekund
   });
 };

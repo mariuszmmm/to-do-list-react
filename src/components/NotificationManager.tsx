@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import OneSignal from "react-onesignal";
-import { getLocalMasterId, syncMasterId } from "../utils/notifications/masterId";
 
 /**
  * Komponent NotificationManager odpowiada za niskopoziomową inicjalizację SDK OneSignal.
@@ -27,19 +26,14 @@ export const NotificationManager = () => {
           const existingMain = regs.find(r => r.active?.scriptURL.endsWith(mainWorkerUrl));
 
           if (!existingMain) {
-            console.log("OneSignal: Brak głównego workera, rejestracja...");
             // Jeśli nie ma naszego workera, ale są inne (np. stare od OneSignal), czyścimy je
             for (const reg of regs) {
               await reg.unregister();
-              console.log("OneSignal: Stary/inny worker wyrejestrowany.");
             }
 
             await navigator.serviceWorker.register(mainWorkerUrl, {
               scope: "/",
             });
-            console.log("OneSignal: Nowy worker zarejestrowany.");
-          } else {
-            console.log("OneSignal: Główny worker jest już aktywny.");
           }
         }
 
@@ -62,11 +56,6 @@ export const NotificationManager = () => {
           },
         });
 
-        console.log("OneSignal: Gotowy.");
-
-        // Po inicjalizacji, jeśli użytkownik jest zalogowany lokalnie, 
-        // synchronizujemy go z OneSignal (jeśli jeszcze nie jest)
-        // (Usunięto logowanie, zgodnie z instrukcją)
       } catch (err) {
         console.error("OneSignal: Setup failed", err);
       }

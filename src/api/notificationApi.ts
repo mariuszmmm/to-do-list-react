@@ -12,16 +12,11 @@ export const scheduleNotification = async (
     buttonText?: string;
     listName?: string;
     lang?: string;
-    masterId?: string | null;
   },
 ) => {
-  console.log("[NotificationAPI] Scheduling notification: ", payload);
-
   const response = await axios.post("/schedule-notification", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
-
-  console.log("[NotificationAPI] Server response: ", response.data);
 
   return response.data;
 };

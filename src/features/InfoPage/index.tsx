@@ -25,7 +25,7 @@ const InfoPage = () => {
           <>
             <Header sub2 title={`🚀 ${t("howToStart.subTitle")}`} />
             <List>
-              {[1, 2, 3, 4, 5, 6].map((num) => (
+              {[1, 2, 3, 4, 5, 6, 7].map((num) => (
                 <ListItem key={num}>
                   <strong>
                     {translate(`howToStart.steps.step${num}.title`)}
@@ -79,6 +79,9 @@ const InfoPage = () => {
               <ListItem>
                 <Trans i18nKey="infoPage.aboutApp.topics.features.description.part10" />
               </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part11" />
+              </ListItem>
             </List>
             <br />
             <Header
@@ -92,8 +95,8 @@ const InfoPage = () => {
               <ListItem>- TanStack Query (react-query)</ListItem>
               <ListItem>- react-i18next, Cloud Translation API</ListItem>
               <ListItem>- Netlify, Netlify GoTrue.js</ListItem>
-              <ListItem>- MongoDB, Cloudinary, Ably</ListItem>
-              <ListItem>- EmailJS, @dnd-kit</ListItem>
+              <ListItem>- MongoDB, Cloudinary, Ably, OneSignal</ListItem>
+              <ListItem>- Google Drive API, EmailJS, @dnd-kit</ListItem>
               <ListItem>- Styled Components, CSS Grid, Flexbox</ListItem>
             </List>
             <br />

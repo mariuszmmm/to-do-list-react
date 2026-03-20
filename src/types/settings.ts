@@ -8,4 +8,5 @@ export type Settings = {
   isPresenceListOpen?: boolean;
   isSwitcherOpen?: boolean;
   isSystemAdminOpen?: boolean;
+  isNotificationsOpen?: boolean;
 };

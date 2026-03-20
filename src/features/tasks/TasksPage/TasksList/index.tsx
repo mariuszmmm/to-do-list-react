@@ -25,7 +25,7 @@ import {
   setTasksToSort,
   setTasks,
 } from "../../tasksSlice";
-import { useTranslation } from "react-i18next";
+
 import {
   ArrowDownIcon,
   ArrowUpIcon,

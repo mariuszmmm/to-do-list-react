@@ -178,6 +178,11 @@ const langDe: typeof langPl = {
           description:
             "Auf Ihrem Telefon können Sie die To-Do List wie eine normale App verwenden. Klicken Sie auf die „drei Punkte“ in der Ecke Ihres Browsers und wählen Sie „Zum Startbildschirm hinzufügen“. Das App-Symbol erscheint auf Ihrem Desktop.",
         },
+        step7: {
+          title: "7. Benachrichtigungen planen",
+          description:
+            "Möchtest du eine Aufgabe nicht vergessen? Klicke auf das Glockensymbol bei einer bestimmten Aufgabe und plane eine Erinnerung. Die App sendet dir zum festgelegten Zeitpunkt eine Push-Benachrichtigung oder eine E-Mail.",
+        },
       },
     },
     aboutApp: {
@@ -206,6 +211,8 @@ const langDe: typeof langPl = {
               "<strong>Echtzeit-Synchronisation</strong>: <br/>sofortige Updates auf allen Geräten durch Ably.",
             part10:
               "<strong>Archivierte Listen und Backups</strong>: <br/>Archivieren von Listen und Backups auf Google Drive oder lokalen Speicher.",
+            part11:
+              "<strong>Geplante Benachrichtigungen</strong>: <br/>Möglichkeit, Aufgabenerinnerungen über Push-Benachrichtigungen und E-Mails festzulegen (mithilfe von OneSignal).",
           },
         },
         technologies: {
@@ -245,6 +252,9 @@ const langDe: typeof langPl = {
   accountPage: {
     title: "Benutzerbereich",
     notLoggedIn: "Du bist nicht eingeloggt",
+    environmentReset: {
+      title: "Konfigurationsreset",
+    },
     switcher: {
       title: "Gespeicherte Konten",
       active: "Aktiv",
@@ -416,7 +426,7 @@ const langDe: typeof langPl = {
         runButton: "API-Tests ausführen",
         running: "Wird getestet...",
         success: "Diagnose erfolgreich abgeschlossen!",
-        error: "Fehler während der Diagnose.",
+        error: "Fehler",
       },
       logs: {
         title: "Aktuelle Systemereignisse",
@@ -606,6 +616,9 @@ const langDe: typeof langPl = {
       addButton: "Hinzufügen",
       yesButton: "Ja",
       noButton: "Nein",
+      loading: "Wird geladen...",
+      environmentResetTrigger: "Gerätekonfiguration zurücksetzen",
+      environmentResetConfirm: "Reset bestätigen",
     },
     notifications: {
       title: "Benachrichtigung planen",
@@ -614,18 +627,37 @@ const langDe: typeof langPl = {
       confirm: "Planen",
       taskContent: "Aufgabe",
       dateLabel: "Datum und Uhrzeit auswählen:",
-      pastDateError: "Benachrichtigungen können nicht in der Vergangenheit geplant werden. Bitte wählen Sie ein zukünftiges Datum.",
-      permissionBlocked: "Benachrichtigungen sind in Ihrem Browser blockiert. Bitte schalten Sie diese frei, indem Sie auf das Schlosssymbol neben der Adressleiste klicken, um Aufgaben planen zu können.",
-      notLoggedIn: "Sie müssen angemeldet sein, um eine Benachrichtigung einzustellen.",
+      pastDateError:
+        "Benachrichtigungen können nicht in der Vergangenheit geplant werden. Bitte wählen Sie ein zukünftiges Datum.",
+      permissionBlocked:
+        "Benachrichtigungen sind in Ihrem Browser blockiert. Bitte schalten Sie diese frei, indem Sie auf das Schlosssymbol neben der Adressleiste klicken, um Aufgaben planen zu können.",
+      notLoggedIn:
+        "Sie müssen angemeldet sein, um eine Benachrichtigung einzustellen.",
       error: "Fehler beim Planen der Benachrichtigung.",
       scheduledTitle: "Geplante Erinnerungen:",
-      confirmDelete: "Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?",
+      confirmDelete:
+        "Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?",
       deleteError: "Fehler beim Löschen der Benachrichtigung.",
       cancelTooltip: "Erinnerung abbrechen",
       loading: "Wird geladen...",
       refresh: "Aktualisieren",
       listLabel: "Liste",
       fetchError: "Fehler beim Abrufen der Benachrichtigungen.",
+      noScheduled: "Keine geplanten Benachrichtigungen.",
+    },
+    environmentReset: {
+      title: "Reset lokaler Parameter",
+      warningBody:
+        "Wenn das System na DIESEM Gerät nicht ordnungsgemäß funktioniert, können Sie mit diesem Vorgang die technische Konfiguration aktualisieren. \n\n• In der Cloud geplante Benachrichtigungen bleiben weiterhin aktiv.\n• Benutzerdaten und Aufgaben bleiben unangetastet.\n\nVerwenden Sie diese Option nur zu Diagnosezwecken.",
+      operationsTitle: "Diagnostischer Umfang:",
+      operations: {
+        sw: "Abmelden von Hilfsskripten (SW)",
+        cache: "Cache-Speicher leeren",
+        indexedDB: "OneSignal SDK-Datenbank aktualisieren",
+        storage: "Lokale technische Einstellungen löschen",
+        cookies: "Diagnose-Cookies entfernen",
+        reload: "Vollständige Aktualisierung",
+      },
     },
     login: {
       title: "Anmeldung",
@@ -870,7 +902,7 @@ const langDe: typeof langPl = {
     backupAuthError: {
       title: "Automatischer Backup-Fehler",
       message:
-        "Die automatischen Sicherungen wurden aufgrund von Problemen mit der Google Drive-Autorisierung eingestellt. <br/><br/>Eine erneute Autorisierung des Google-Kontos und die Aktualisierung der Variable <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> im Netlify-Panel ist erforderlich.",
+        "Die automatischen Sicherungen wurden aufgrund von Problemen mit der Google Drive-Autorisierung eingestellt. <br/><br/>Bitte gehen Sie zum Sicherungsabschnitt unten und klicken Sie auf die Schaltfläche <strong>Google autorisieren</strong>, um den Zugriff zu erneuern.",
     },
     offline: {
       title: "Keine Verbindung",

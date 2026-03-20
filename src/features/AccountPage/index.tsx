@@ -11,6 +11,7 @@ import { BackupManager } from "./BackupManager";
 import { SystemAdmin } from "./SystemAdmin";
 import { PresenceUsersList } from "./PresenceUsersList";
 import { SessionInfo } from "./SessionInfo";
+import { EnvironmentReset } from "./EnvironmentReset";
 import { Settings } from "../../types";
 import {
   selectAllDevicesCount,
@@ -66,6 +67,9 @@ const AccountPage = () => {
   const [isSystemAdminOpen, setIsSystemAdminOpen] = useState(
     () => getSettingsFromLocalStorage()?.isSystemAdminOpen || false,
   );
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isNotificationsOpen || false,
+  );
 
   const persistSettings = (
     partial: Partial<Settings & { isSystemAdminOpen: boolean }>,
@@ -113,6 +117,14 @@ const AccountPage = () => {
     setIsSystemAdminOpen((prev: boolean) => {
       const next = !prev;
       persistSettings({ isSystemAdminOpen: next });
+      return next;
+    });
+  };
+
+  const toggleNotifications = () => {
+    setIsNotificationsOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isNotificationsOpen: next });
       return next;
     });
   };
@@ -211,7 +223,7 @@ const AccountPage = () => {
             toggleSessionInfo,
           )}
           onHeaderClick={toggleSessionInfo}
-          onlyOpenButton={isPresenceListOpen !== undefined}
+          onlyOpenButton={true}
           body={<SessionInfo isSessionInfoOpen={isSessionInfoOpen} />}
           bodyHidden={!isSessionInfoOpen}
         />
@@ -225,7 +237,7 @@ const AccountPage = () => {
             toggleActivitySummary,
           )}
           onHeaderClick={toggleActivitySummary}
-          onlyOpenButton={isPresenceListOpen !== undefined}
+          onlyOpenButton={true}
           body={
             <NameContainer $account>
               <StyledSpan $comment>
@@ -257,15 +269,28 @@ const AccountPage = () => {
           bodyHidden={!isPresenceListOpen}
         />
       )}
-
       {loggedUserEmail && (
         <Section
           title={t("backup.title")}
           extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}
           onHeaderClick={toggleBackup}
-          onlyOpenButton={isPresenceListOpen !== undefined}
+          onlyOpenButton={true}
           body={<BackupManager />}
           bodyHidden={!isBackupOpen}
+        />
+      )}
+
+      {loggedUserEmail && (
+        <Section
+          title={t("environmentReset.title")}
+          extraHeaderContent={renderToggleButton(
+            isNotificationsOpen,
+            toggleNotifications,
+          )}
+          onHeaderClick={toggleNotifications}
+          onlyOpenButton={true}
+          body={<EnvironmentReset />}
+          bodyHidden={!isNotificationsOpen}
         />
       )}
 

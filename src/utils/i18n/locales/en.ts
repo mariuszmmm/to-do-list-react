@@ -178,6 +178,11 @@ const langEn: typeof langPl = {
           description:
             "On your phone, you can use To-Do List like a regular app. Click the 'three dots' in the corner of your browser and select 'Add to Home screen'. The app icon will appear on your desktop.",
         },
+        step7: {
+          title: "7. Schedule Notifications",
+          description:
+            "Don't want to forget about a task? Click the notification bell icon on the selected task and schedule a reminder. The app will send you a Push notification or an email at the designated time.",
+        },
       },
     },
     aboutApp: {
@@ -206,6 +211,8 @@ const langEn: typeof langPl = {
               "<strong>Real-time Sync</strong>: <br/>instant updates across devices using Ably.",
             part10:
               "<strong>Archived Lists & Backup</strong>: <br/>archive lists and backup to Google Drive or local storage.",
+            part11:
+              "<strong>Scheduled Notifications</strong>: <br/>ability to set task reminders via Push notifications and email (powered by OneSignal).",
           },
         },
         technologies: {
@@ -245,6 +252,9 @@ const langEn: typeof langPl = {
   accountPage: {
     title: "User Panel",
     notLoggedIn: "You are not logged in",
+    environmentReset: {
+      title: "Configuration Reset",
+    },
     switcher: {
       title: "Saved accounts",
       active: "Active",
@@ -415,7 +425,7 @@ const langEn: typeof langPl = {
         runButton: "Run API Tests",
         running: "Testing...",
         success: "Diagnosis completed successfully!",
-        error: "Error during diagnosis.",
+        error: "Error",
       },
       logs: {
         title: "Recent System Events",
@@ -598,6 +608,9 @@ const langEn: typeof langPl = {
       addButton: "Add",
       yesButton: "Yes",
       noButton: "No",
+      loading: "Loading...",
+      environmentResetTrigger: "Reset Device Configuration",
+      environmentResetConfirm: "Confirm Reset",
     },
     notifications: {
       title: "Schedule notification",
@@ -606,8 +619,10 @@ const langEn: typeof langPl = {
       confirm: "Schedule",
       taskContent: "Task",
       dateLabel: "Select date and time:",
-      pastDateError: "Cannot schedule notification in the past. Please select a future date.",
-      permissionBlocked: "Notifications are blocked in your browser. Please unlock them by clicking the lock icon next to the address bar to be able to schedule tasks.",
+      pastDateError:
+        "Cannot schedule notification in the past. Please select a future date.",
+      permissionBlocked:
+        "Notifications are blocked in your browser. Please unlock them by clicking the lock icon next to the address bar to be able to schedule tasks.",
       notLoggedIn: "You must be logged in to set a notification.",
       error: "An error occurred while scheduling the notification.",
       scheduledTitle: "Scheduled reminders:",
@@ -618,6 +633,21 @@ const langEn: typeof langPl = {
       refresh: "Refresh",
       listLabel: "List",
       fetchError: "Error while fetching notifications.",
+      noScheduled: "No scheduled notifications.",
+    },
+    environmentReset: {
+      title: "Local Parameter Reset",
+      warningBody:
+        "If the system on THIS device is malfunctioning, this operation will allow you to refresh its technical configuration. \n\n• Cloud-scheduled notifications will still be active.\n• User data and tasks will remain untouched.\n\nUse this option only for diagnostic purposes.",
+      operationsTitle: "Diagnostic operation range:",
+      operations: {
+        sw: "Unregistering helper scripts (SW)",
+        cache: "Clearing cache memory",
+        indexedDB: "Refreshing OneSignal SDK database",
+        storage: "Clearing local technical settings",
+        cookies: "Removing diagnostic cookies",
+        reload: "App environment reload",
+      },
     },
     login: {
       title: "Login",
@@ -859,7 +889,7 @@ const langEn: typeof langPl = {
     backupAuthError: {
       title: "Automated Backup Error",
       message:
-        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/>You need to re-authorize your Google account and update the <strong>GOOGLE_BACKUP_REFRESH_TOKEN</strong> variable in Netlify.",
+        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/>Please go to the backup section below and click the <strong>Authorize Google</strong> button to renew access.",
     },
     offline: {
       title: "No connection",

@@ -51,6 +51,8 @@
 <li>EmailJS</li>
 <li>Cloudinary (Zarządzanie obrazami)</li>
 <li>Ably (Synchronizacja w czasie rzeczywistym)</li>
+<li>OneSignal (Powiadomienia Omni-channel)</li>
+<li>Google Drive API (Kopie zapasowe w chmurze)</li>
 <li>@dnd-kit (Przeciągnij i upuść)</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
@@ -90,6 +92,8 @@
   - <b>Przeciągnij i Upuść (Drag & Drop):</b> Intuicyjne sortowanie zadań i list poprzez przeciąganie (obsługiwane przez <b>@dnd-kit</b>).
   - <b>Synchronizacja w czasie rzeczywistym:</b> Natychmiastowe aktualizacje na różnych urządzeniach dzięki <b>Ably</b>.
   - <b>Archiwizacja list:</b> Możliwość archiwizowania list w celu utrzymania porządku bez utraty danych.
+  - <b>Powiadomienia o zadaniach:</b> Integracja z <b>OneSignal</b> umożliwiająca planowanie przypomnień do zadań (Push oraz e-mail).
+  - <b>Panel Administracyjny:</b> Zaawansowany moduł dla administratora systemu, pozwalający na ręczne i automatyczne tworzenie kopii zapasowych całej bazy danych na <b>Google Drive</b> oraz diagnostykę i czyszczenie systemu.
 - <b>Strona List:</b></br>
   Po zalogowaniu użytkownik ma dostęp do strony "Listy", gdzie wyświetlane są wszystkie zapisane listy pobierane z bazy danych MongoDB. Na tej stronie możliwe jest:
   - Podgląd zawartości wybranej listy,
@@ -214,6 +218,13 @@ Przykładowe widoki:
 
 - Kliknij ikonę obrazka, aby dodać zdjęcie do zadania.
 - Możesz dodać jedno zdjęcie z dysku komputera lub zrobić zdjęcie aparatem.
+
+</br>
+
+<b>Zaplanowane powiadomienia</b> (dostępne dla zalogowanych użytkowników)
+
+- Kliknij ikonę dzwonka przy wybranym zadaniu, aby zaplanować powiadomienie.
+- Wybierz datę i godzinę (z przyszłości), aby w odpowiednim momencie otrzymać powiadomienie Push lub e-mail z przypomnieniem.
 
 </br>
 

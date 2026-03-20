@@ -15,16 +15,6 @@ interface SessionData {
   tokenExpiresAt?: string;
 }
 
-const logDevBlock = (isOpen: boolean, ...args: unknown[]) => {
-  if (process.env.NODE_ENV === "development" && isOpen) {
-    console.log("\n==================== [SessionInfo] ====================");
-    args.forEach((arg) => {
-      console.log("[SessionInfo]", arg);
-    });
-    console.log("====================================================\n");
-  }
-};
-
 export const SessionInfo = ({
   isSessionInfoOpen,
 }: {
@@ -40,38 +30,12 @@ export const SessionInfo = ({
     const user = auth.currentUser();
 
     if (!user) {
-      logDevBlock(isSessionInfoOpen, "Brak użytkownika.");
       setSessionData({});
       setRemainingMs(0);
       return;
     }
 
-    const logBlock: unknown[] = [];
-    logBlock.push(`Użytkownik: ${user.email}`, {
-      createdAt: user.created_at,
-      confirmedAt: user.confirmed_at,
-      token: user.token,
-    });
-
-    if (user.token) {
-      logBlock.push({
-        Token: {
-          expiresAt: user.token.expires_at
-            ? new Date(user.token.expires_at).toLocaleString()
-            : undefined,
-          refreshToken: !!user.token.refresh_token,
-        },
-      });
-    } else {
-      logBlock.push("Brak tokena w user.token");
-    }
-
     const remaining = getTokenExpiresIn(user, now);
-    logBlock.push(
-      `Pozostały czas ważności tokena (s): ${Math.floor(remaining / 1000)}`,
-    );
-
-    // logDevBlock(isSessionInfoOpen, ...logBlock);
 
     setSessionData({
       email: user.email,

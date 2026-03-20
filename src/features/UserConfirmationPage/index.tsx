@@ -11,14 +11,10 @@ type Status = "waiting" | "success" | "error";
 
 const UserConfirmationPage = () => {
   const [status, setStatus] = useState<Status>("waiting");
-  const { t, i18n } = useTranslation("translation", {
+  const { t } = useTranslation("translation", {
     keyPrefix: "confirmationPage",
   });
   const dispatch = useAppDispatch();
-
-  console.log("UserConfirmationPage   t ", {
-    tekst: i18n.t("modal.confirmation.title"),
-  });
 
   useEffect(() => {
     const confirmation = async () => {

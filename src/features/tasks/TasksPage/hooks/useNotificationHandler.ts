@@ -3,7 +3,6 @@ import { useAppDispatch } from "../../../../hooks/redux/redux";
 import OneSignal from "react-onesignal";
 import { setNotificationTask } from "../../tasksSlice";
 import { Task } from "../../../../types";
-import { getLocalMasterId, syncMasterId } from "../../../../utils/notifications/masterId";
 
 /**
  * Hook obsługujący logikę kliknięcia w przycisk powiadomień dla konkretnego zadania.
@@ -27,7 +26,6 @@ export const useNotificationHandler = () => {
         let isOptedIn = OneSignal.User.PushSubscription.optedIn;
 
         if (!isOptedIn) {
-          console.log("OneSignal (hook): Wywołuję prompt...");
           await (OneSignal.Slidedown as any).promptPush({ force: true });
           
           let checks = 0;

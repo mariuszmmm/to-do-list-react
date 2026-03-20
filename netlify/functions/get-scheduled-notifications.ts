@@ -6,6 +6,11 @@ import { checkClientContext, checkHttpMethod } from "./lib/validators";
 const ONESIGNAL_APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID;
 const ONESIGNAL_REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY;
 
+/**
+ * Funkcja pobierająca listę ZAPLANOWANYCH powiadomień z OneSignal.
+ * OneSignal API nie oferuje bezpośredniego filtrowania po e-mailu w liście,
+ * więc pobieramy paczkę ostatnich powiadomień i filtrujemy je lokalnie.
+ */
 export const handler: Handler = async (
   event: HandlerEvent,
   context: HandlerContext,
@@ -23,13 +28,14 @@ export const handler: Handler = async (
   }
 
   try {
-    const masterId = event.queryStringParameters?.masterId;
-    if (!masterId) {
-      return jsonResponse(400, { message: "Missing masterId" });
+    const email = event.queryStringParameters?.email;
+    if (!email) {
+      return jsonResponse(400, { message: "Missing email" });
     }
 
-    console.log(`${logPrefix} Fetching notifications for masterId: ${masterId}`);
+    console.log(`${logPrefix} Fetching notifications for user: ${email}`);
 
+    // Kind 1: Zaplanowane (Scheduled)
     const response = await axios.get(
       `https://onesignal.com/api/v1/notifications?app_id=${ONESIGNAL_APP_ID}&limit=50&kind=1`,
       {
@@ -39,20 +45,19 @@ export const handler: Handler = async (
       }
     );
 
-    // OneSignal API nie pozwala na łatwe filtrowanie po aliasie w liście,
-    // więc filtrujemy lokalnie po danych załączonych do powiadomienia (data.masterId).
-    // Dodatkowo odfiltrowujemy powiadomienia, których czas wysyłki minął (starsze niż 5 min),
-    // aby nie pokazywać "wiszących" lub już wysłanych zadań.
     const nowSeconds = Math.floor(Date.now() / 1000);
     const notifications = response.data.notifications || [];
+    
+    // Filtrujemy listę, aby pokazać tylko powiadomienia tego użytkownika
     const userNotifications = notifications
       .filter((n: any) => {
-        const isUserNotif = n.data?.masterId === masterId;
-        // Zostawiamy TYLKO te, które są w przyszłości
+        // Kluczowe filtrowanie po e-mailu zapisanym w meta-danych powiadomienia
+        const isUserNotif = n.data?.userEmail === email;
+        // Zostawiamy TYLKO te, które są zaplanowane w przyszłości
         const isFuture = n.send_after > nowSeconds; 
-        // WYKLUCZAMY anulowane powiadomienia
+        // Wykluczamy anulowane
         const isNotCanceled = !n.canceled;
-        // WYKLUCZAMY już wysłane (completed_at jest ustawiane po wysłaniu)
+        // Wykluczamy już wysłane (completed_at jest niepuste po wysłaniu)
         const isNotSent = !n.completed_at;
         
         return isUserNotif && isFuture && isNotCanceled && isNotSent;

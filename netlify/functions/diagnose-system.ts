@@ -94,7 +94,7 @@ const handler: Handler = async (event, context) => {
           status: token ? "success" : "error",
           details: token
             ? "Refresh token exchange successful"
-            : "Failed to exchange refresh token",
+            : "Session expired. Click 'Authorize Google' in UI to renew.",
         };
       }
     } catch (err: any) {

@@ -51,6 +51,8 @@
 <li>EmailJS</li>
 <li>Cloudinary (Image Management)</li>
 <li>Ably (Real-time Synchronization)</li>
+<li>OneSignal (Omni-channel Notifications)</li>
+<li>Google Drive API (Cloud Backups)</li>
 <li>@dnd-kit (Drag and Drop)</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
@@ -89,6 +91,8 @@
   - <b>Drag & Drop:</b> Intuitively reorder users' tasks and lists (powered by <b>@dnd-kit</b>).
   - <b>Real-time Sync:</b> Instant updates across devices using <b>Ably</b>.
   - <b>Archived Lists:</b> Archive lists to keep your workspace clean without losing data.
+  - <b>Task Notifications:</b> Integration with <b>OneSignal</b> allowing users to schedule task reminders (Push and Email).
+  - <b>Admin Panel & Cloud Backups:</b> Advanced module for the system administrator to manage automated/manual database backups to <b>Google Drive</b>, system diagnostics, and cleanup.
 
 - <b>Lists Page:</b></br>
   After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
@@ -214,6 +218,13 @@ Example views:
 
 - Click the image icon to add an image to the task.
 - You can add one image from your computer's disk or take a photo with your camera.
+
+</br>
+
+<b>Task Notifications</b> (available for logged-in users)
+
+- Click the notification bell icon next to a task to schedule a notification.
+- Choose a future date and time to receive a Push or email reminder at the specified moment.
 
 </br>
 

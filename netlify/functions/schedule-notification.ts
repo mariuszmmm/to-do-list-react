@@ -31,16 +31,11 @@ const handler: Handler = async (event, context) => {
       buttonText,
       listName,
       lang,
-      masterId,
       displayImage,
     } = JSON.parse(event.body || "{}");
 
     if (!subscriptionId) {
       return jsonResponse(400, { message: "Missing subscriptionId payload" });
-    }
-
-    if (!masterId) {
-      console.warn(`${logPrefix} Missing masterId in payload`);
     }
 
     const labels = {
@@ -66,10 +61,6 @@ const handler: Handler = async (event, context) => {
 
     const currLang = (lang as "en" | "de" | "pl") || "pl";
     const currentLabels = labels[currLang] || labels.pl;
-
-    // let finalContent = listName
-    //   ? `${currentLabels.list}: ${listName}\n${content}`
-    //   : content;
 
     let finalContent = content;
 
@@ -141,7 +132,7 @@ const handler: Handler = async (event, context) => {
       `${logPrefix} Scheduling Push (${subscriptionId}) and Email (${userEmail || "not provided"})`,
     );
 
-    // 1. Wysyłka PUSH
+    // 1. Wysyłka PUSH (Natywna - po Subscription ID)
     const pushPromise = axios.post(
       "https://onesignal.com/api/v1/notifications",
       {
@@ -167,7 +158,7 @@ const handler: Handler = async (event, context) => {
         },
         send_after: date,
         include_subscription_ids: [subscriptionId],
-        data: { taskId, masterId, listName, userEmail },
+        data: { taskId, listName, userEmail },
         web_push_topic: taskId,
         persist: true,
         chrome_web_icon: "https://to-do-list.myprojects.pl/logo-256x256.png",
@@ -191,7 +182,7 @@ const handler: Handler = async (event, context) => {
       },
     );
 
-    // 2. Wysyłka EMAIL (opcjonalnie, jeśli podano email)
+    // 2. Wysyłka EMAIL (Natywna - po Email Token/Address)
     let emailPromise: Promise<any> = Promise.resolve(null);
     if (userEmail) {
       emailPromise = axios

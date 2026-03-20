@@ -50,10 +50,6 @@ import {
   ScheduledUserEmail,
 } from "./styled";
 import { RemoveButton } from "../../../../common/taskButtons";
-import {
-  getLocalMasterId,
-  syncMasterId,
-} from "../../../../utils/notifications/masterId";
 
 /**
  * Ikona kalendarza używana w polu daty oraz na liście zaplanowanych powiadomień.
@@ -233,7 +229,7 @@ export const NotificationModal = () => {
   useEffect(() => {
     if (task) {
       const now = new Date();
-      now.setMinutes(now.getMinutes() + 2);
+      now.setMinutes(now.getMinutes() + 5);
       setDate(formatInputDate(now.toISOString()));
     }
   }, [task]);
@@ -256,11 +252,9 @@ export const NotificationModal = () => {
    */
   const handleDeleteNotification = async (id: string) => {
     if (window.confirm(t("modal.notifications.confirmDelete"))) {
-      const masterId = getLocalMasterId();
-
-      // Optymistyczna aktualizacja: usuwamy z listy natychmiast, nie czekając na serwer
+      // Optymistyczna aktualizacja: używamy adresu e-mail jako klucza zapytania
       queryClient.setQueryData<ScheduledNotification[]>(
-        ["scheduledNotifications", masterId],
+        ["scheduledNotifications", loggedUserEmail],
         (old) => old?.filter((n) => n.id !== id) || [],
       );
 
@@ -315,30 +309,6 @@ export const NotificationModal = () => {
       }
 
       const currentToken = await getUserToken();
-      let masterId = getLocalMasterId();
-
-      // Synchronizacja tożsamości z OneSignal
-      if (!masterId) {
-        const syncResult = await syncMasterId();
-        masterId = syncResult.id;
-      }
-
-      if (masterId) {
-        // Sprawdzamy czy nie jesteśmy już zalogowani na ten identyfikator, aby uniknąć 409 Conflict
-        const currentExternalId = OneSignal.User?.externalId;
-        if (currentExternalId !== masterId) {
-          console.log(`[OneSignal] Logowanie użytkownika: ${masterId}`);
-          try {
-            await OneSignal.login(masterId);
-          } catch (e) {
-            console.warn(
-              "[OneSignal] Login conflict or error (likely safe to ignore):",
-              e,
-            );
-          }
-        }
-      }
-
       if (!currentToken) throw new Error("Missing auth token");
 
       /**
@@ -356,7 +326,6 @@ export const NotificationModal = () => {
           buttonText: t("modal.notifications.button"),
           listName: taskListMetaData.name || "",
           lang: i18n.language || "pl",
-          masterId: masterId,
           displayImage: task.image?.imageUrl || null,
         },
       });
@@ -456,9 +425,7 @@ export const NotificationModal = () => {
               (!scheduledNotifications ||
                 scheduledNotifications.length === 0) && (
                 <p style={{ opacity: 0.5, fontSize: "0.85rem" }}>
-                  {i18n.language === "pl"
-                    ? "Brak zaplanowanych powiadomień."
-                    : "No scheduled notifications."}
+                  {t("modal.notifications.noScheduled")}
                 </p>
               )}
 

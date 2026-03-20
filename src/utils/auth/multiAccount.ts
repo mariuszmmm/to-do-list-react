@@ -5,12 +5,7 @@ import {
   removeTasksData,
   setTasksData,
 } from "../storage/localStorage";
-
-declare global {
-  interface Window {
-    ably: any;
-  }
-}
+import { closeAblyConnection } from "../sync/ably";
 
 const MULTI_ACCOUNT_KEY = "saved_accounts";
 const GOTRUE_KEY = "gotrue.user";
@@ -23,18 +18,6 @@ export interface SavedAccount {
   lastUsed: number;
 }
 
-/**
- * Zamyka aktywne połączenie systemowe Ably przy przełączaniu kont.
- * Jest to konieczne, aby uniknąć konfliktów w kanałach czasu rzeczywistego (WebSocket).
- */
-const closeAblyConnection = () => {
-  if (window.ably) {
-    window.ably.close();
-    console.log("Ably connection closed because of account switch");
-  } else {
-    console.log("Ably connection not found during switch");
-  }
-};
 
 /**
  * Pobiera listę zapisanych kont z localStorage.
@@ -67,11 +50,6 @@ export const saveCurrentAccount = async () => {
 
     const tasksData = getTasksData();
     const lastUsed = Date.now();
-
-    console.log(`[saveCurrentAccount] Zapisywanie danych dla: ${email}`, {
-      taskCount: tasksData.tasks?.length || 0,
-      listName: tasksData.meta?.name
-    });
 
     if (existingIndex >= 0) {
       currentAccounts[existingIndex] = {
