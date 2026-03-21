@@ -49,13 +49,10 @@ export const UpdateNotification = () => {
       if (registration) {
         checkUpdateState(registration);
         registration.onupdatefound = () => checkUpdateState(registration);
-        registration.update().catch(() => {});
       }
     };
 
     init();
-    const handleFocus = () => init();
-    window.addEventListener("focus", handleFocus);
 
     const handleCustomEvent = (event: Event) => {
       const customEvent = event as CustomEvent;
@@ -68,7 +65,6 @@ export const UpdateNotification = () => {
 
     return () => {
       window.removeEventListener("sw-update-available", handleCustomEvent);
-      window.removeEventListener("focus", handleFocus);
     };
   }, [checkUpdateState]);
 
@@ -77,19 +73,27 @@ export const UpdateNotification = () => {
     sessionStorage.setItem("pwa_updating", "true");
     sessionStorage.setItem("pwa_last_update_time", Date.now().toString());
 
-    if ("caches" in window) {
-      const names = await caches.keys();
-      await Promise.all(names.map((name) => caches.delete(name)));
+    try {
+      if ("caches" in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map((name) => caches.delete(name)));
+      }
+    } catch (error) {
+      console.warn("UpdateNotification: Failed to clear caches", error);
     }
 
     const sendSkipWaiting = () => {
-      if (waitingWorker) {
+      if (waitingWorker && waitingWorker.state !== "redundant") {
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
-      } else {
-        navigator.serviceWorker.getRegistration().then((reg) => {
-          reg?.waiting?.postMessage({ type: "SKIP_WAITING" });
-        });
       }
+      
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        for (const reg of regs) {
+          if (reg.waiting) {
+            reg.waiting.postMessage({ type: "SKIP_WAITING" });
+          }
+        }
+      });
     };
 
     sendSkipWaiting();

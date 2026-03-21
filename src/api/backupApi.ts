@@ -373,3 +373,27 @@ export const runLogsCleanupApi = async (
     return makeErrorResponse(error);
   }
 };
+export const inviteUserApi = async (
+  token: string,
+  email: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.post(
+      "/user-invite",
+      { email },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message || "Invitation sent successfully",
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error inviting user", error);
+    return makeErrorResponse(error);
+  }
+};

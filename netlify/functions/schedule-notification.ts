@@ -42,19 +42,19 @@ const handler: Handler = async (event, context) => {
       pl: {
         heading: "Przypomnienie",
         list: "Lista",
-        button: "Pokaż listę",
+        button: "Otwórz aplikację",
         subject: "🔔 Przypomnienie o zadaniu",
       },
       en: {
         heading: "Reminder",
         list: "List",
-        button: "Show list",
+        button: "Open app",
         subject: "🔔 Task Reminder",
       },
       de: {
         heading: "Erinnerung",
         list: "Liste",
-        button: "Liste anzeigen",
+        button: "App öffnen",
         subject: "🔔 Aufgaben-Erinnerung",
       },
     };
@@ -71,55 +71,114 @@ const handler: Handler = async (event, context) => {
         <head>
           <meta charset="utf-8">
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f7f6; }
-            .wrapper { background-color: #f4f7f6; padding: 20px; }
-            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(49, 38, 38, 0.1); }
-            .header { background: #007380; padding: 30px 20px; text-align: center; }
-            .header img { height: 50px; margin-bottom: 10px; }
-            .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; }
-            .content { padding: 40px 30px; text-align: left; }
-            .content h2 { margin-top: 0; font-size: 20px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-            .list-name { color: #888; font-size: 14px; margin-bottom: 15px; }
-            .task-text { font-size: 17px; color: #444; background: #f9f9f9; padding: 20px; border-left: 4px solid #007380; border-radius: 4px; margin: 20px 0; white-space: pre-wrap; }
-            .cta-box { text-align: center; margin: 30px 0; }
-            .button { background-color: #007380; color: #ffffff !important; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.3s; }
-            .task-image-container { margin-top: 30px; text-align: center; border-top: 1px solid #eee; padding-top: 30px; }
-            .task-image { max-width: 100%; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-            .footer { background: #fafafa; padding: 20px; text-align: center; font-size: 13px; color: #888; border-top: 1px solid #eee; }
+            @media screen and (max-width: 620px) {
+              body { margin: 8px !important; }	
+              .outer-table { padding: 0 0 100px 0 !important; }
+              .inner-header { padding: 20px 15px !important; }
+              .inner-body { padding: 12px 16px 0 16px !important; }
+              .inner-divider { padding: 0 20px !important; }
+              .inner-footer { padding: 15px 20px 24px 20px !important; }
+              h2 { font-size: 18px !important; }
+              .responsive-text { font-size: 14px !important; }
+            }
           </style>
         </head>
-        <body>
-          <div class="wrapper">
-            <div class="container">
-              <div class="header">
-                <img src="https://to-do-list.myprojects.pl/logo-256x256.png" alt=" Logo">
-                <h1>To-Do List</h1>
-              </div>
-              <div class="content">
-                <h2>${heading || currentLabels.heading}</h2>
-                ${listName ? `<div class="list-name"><strong>${listName}</strong></div>` : ""}
-                <div class="task-text">${content}</div>
-                
-                <div class="cta-box">
-                  <a href="https://to-do-list.myprojects.pl" class="button">${buttonText || currentLabels.button}</a>
-                </div>
+        <body style="margin: 0; padding: 0; background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <table class="outer-table" style="padding: 20px 0 150px 0; background-color: #f4f7f6;" width="100%" cellspacing="0" cellpadding="0">
+            <tbody>
+              <tr>
+                <td align="center">
+                  <table style="background-color: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); width: 100%; max-width: 600px;" width="620" cellspacing="0" cellpadding="0">
+                    <!-- HEADER -->
+                    <tbody>
+                      <tr>
+                        <td class="inner-header" style="background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%); padding: 28px 36px; text-align: center;">
+                          <a href="https://to-do-list.myprojects.pl" target="_blank" style="text-decoration: none; display: inline-block">
+                            <img style="height: 60px; width: auto; border-radius: 12px; display: block; margin: 0 auto 12px auto;" 
+                                 src="https://to-do-list.myprojects.pl/web-app-manifest-192x192.png" alt="To-Do List Logo" />
+                          </a>
+                          <p style="margin: 0; color: #ffffff; font-size: 22px; font-weight: bold; letter-spacing: 0.5px; font-family: arial, helvetica, sans-serif">
+                            <span>To-Do List</span>
+                          </p>
+                          <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.8); font-size: 14px;">
+                            <a href="https://to-do-list.myprojects.pl" target="_blank" style="color: rgba(255, 255, 255, 0.8); text-decoration: none;">
+                              <i style="font-family: arial, helvetica, sans-serif">to-do-list.myprojects.pl</i>
+                            </a>
+                          </p>
+                        </td>
+                      </tr>
+                      <!-- TREŚĆ -->
+                      <tr>
+                        <td class="inner-body" style="padding: 28px 24px 0 24px">
+                          <h2 style="margin: 0 0 20px 0; color: #1a73e8; font-size: 22px; font-weight: bold;">
+                            ${heading || currentLabels.heading}
+                          </h2>
+                          
+                          ${
+                            listName
+                              ? `<p class="responsive-text" style="margin: 0 0 16px 0; color: #333333; font-size: 16px; line-height: 1.6;">
+                            <strong>${listName}</strong>
+                          </p>`
+                              : ""
+                          }
+                          
+                          <table style="margin: 0 0 32px 0" width="100%" cellspacing="0" cellpadding="0">
+                            <tbody>
+                              <tr>
+                                <td style="background-color: #f8faff; border-left: 4px solid #1a73e8; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+                                  <p style="margin: 0 0 6px 0; color: #1a73e8; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                                    Zadanie
+                                  </p>
+                                  <p class="responsive-text" style="margin: 0; color: #555555; font-size: 16px; line-height: 1.6; font-style: italic; white-space: pre-wrap;">${content}</p>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
 
-                ${
-                  displayImage
-                    ? `
-                    <div class="task-image-container">
-                      <p style="color: #888; font-size: 14px; margin-bottom: 15px;">Załączone zdjęcie zadania:</p>
-                      <img src="${displayImage}" class="task-image" />
-                    </div>
-                    `
-                    : ""
-                }
-              </div>
-              <div class="footer">
-                Wysłano z aplikacji To-Do List.<br>
-              </div>
-            </div>
-          </div>
+                          <div style="text-align: center; margin: 30px 0;">
+                            <a href="https://to-do-list.myprojects.pl" style="background-color: #1a73e8; color: #ffffff !important; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block; transition: background 0.3s;">
+                              ${buttonText || currentLabels.button}
+                            </a>
+                          </div>
+
+                          ${
+                            displayImage
+                              ? `
+                              <table style="margin: 0 0 32px 0; width: 100%; text-align: center;" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                  <tr>
+                                    <td style="border-top: 1px solid #e8edf2; padding-top: 30px;">
+                                      <p style="margin: 0 0 15px 0; color: #888; font-size: 14px;">Załączone zdjęcie zadania:</p>
+                                      <img src="${displayImage}" style="max-width: 100%; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              `
+                              : ""
+                          }
+                        </td>
+                      </tr>
+                      <!-- DIVIDER -->
+                      <tr>
+                        <td class="inner-divider" style="padding: 0 40px">
+                          <hr style="border: none; border-top: 1px solid #e8edf2; margin: 0" />
+                        </td>
+                      </tr>
+                      <!-- FOOTER -->
+                      <tr>
+                        <td class="inner-footer" style="padding: 24px 40px 36px 40px; text-align: center">
+                          <p style="margin: 0; color: #aaaaaa; font-size: 11px; line-height: 1.6;">
+                            Wysłano z aplikacji To-Do List.<br>
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </body>
       </html>
     `;
@@ -159,10 +218,12 @@ const handler: Handler = async (event, context) => {
         send_after: date,
         include_subscription_ids: [subscriptionId],
         data: { taskId, listName, userEmail },
+        url: "https://to-do-list.myprojects.pl",
         web_push_topic: taskId,
         persist: true,
         chrome_web_icon: "https://to-do-list.myprojects.pl/logo-256x256.png",
         chrome_web_badge: "https://to-do-list.myprojects.pl/favicon-96x96.png",
+        ...(displayImage && { chrome_web_image: displayImage }),
         web_push_options: {
           requireInteraction: true,
         },
@@ -171,6 +232,7 @@ const handler: Handler = async (event, context) => {
             id: "view-list",
             text: buttonText || currentLabels.button,
             icon: "",
+            url: "https://to-do-list.myprojects.pl",
           },
         ],
       },

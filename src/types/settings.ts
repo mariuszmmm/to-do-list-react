@@ -4,8 +4,7 @@ export type Settings = {
   hideDone?: boolean;
   isBackupOpen?: boolean;
   isSessionInfoOpen?: boolean;
-  isActivitySummaryOpen?: boolean;
-  isPresenceListOpen?: boolean;
+  isUserManagementOpen?: boolean;
   isSwitcherOpen?: boolean;
   isSystemAdminOpen?: boolean;
   isNotificationsOpen?: boolean;

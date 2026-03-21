@@ -178,7 +178,7 @@ const langPl = {
         step7: {
           title: "7. Zaplanuj powiadomienia",
           description:
-            "Nie chcesz zapomnieć o zadaniu? Kliknij ikonę dzwonka przy wybranym zadaniu i zaplanuj przypomnienie. Aplikacja wyśle Ci powiadomienie Push lub wiadomość e-mail w wybranym momencie.",
+            "Nie chcesz zapomnieć o zadaniu? Kliknij ikonę dzwonka przy wybranym zadaniu i zaplanuj przypomnienie. Aplikacja wyśle Ci powiadomienie Push i wiadomość e-mail w wybranym momencie.",
         },
       },
     },
@@ -290,16 +290,28 @@ const langPl = {
     activeUsers: {
       label: "Zalogowani użytkownicy",
       summaryTitle: "Aktywność użytkowników",
-      count: "Ilość aktywnych użytkowników: {{count}}",
-      count_few: "Ilość aktywnych użytkowników: {{count}}",
-      count_many: "Ilość aktywnych użytkowników: {{count}}",
-      count_other: "Ilość aktywnych użytkowników: {{count}}",
+      count: "Liczba aktywnych kont: {{count}}",
+      summaryLabel: "Wszystkie konta",
+      count_few: "Liczba aktywnych kont: {{count}}",
+      count_many: "Liczba aktywnych kont: {{count}}",
+      count_other: "Liczba aktywnych kont: {{count}}",
+    },
+    userManagement: {
+      title: "Zarządzanie użytkownikami",
+      invite: {
+        label: "Zaproś nowego użytkownika",
+        placeholder: "Wpisz adres e-mail",
+        button: "Wyślij zaproszenie",
+        success: "Zaproszenie zostało wysłane pomyślnie!",
+        error: "Błąd podczas wysyłania zaproszenia.",
+      },
     },
     allDevices: {
-      device: "Ilość wszystkich aktywnych urządzeń: {{count}}",
-      device_few: "Ilość wszystkich aktywnych urządzeń: {{count}}",
-      device_many: "Ilość wszystkich aktywnych urządzeń: {{count}}",
-      device_other: "Ilość wszystkich aktywnych urządzeń: {{count}}",
+      summaryLabel: "Aktywne urządzenia",
+      device: "Wszystkie aktywne urządzenia: {{count}}",
+      device_few: "Wszystkie aktywne urządzenia: {{count}}",
+      device_many: "Wszystkie aktywne urządzenia: {{count}}",
+      device_other: "Wszystkie aktywne urządzenia: {{count}}",
     },
     systemAdmin: {
       title: "System i Konserwacja",
@@ -481,23 +493,23 @@ const langPl = {
       disabledDescription: "Zostaniesz wylogowany po wygaśnięciu tokena",
     },
     backup: {
-      title: "Kopia zapasowa i przywracanie",
+      title: "Kopia zapasowa",
       downloadUserLists: {
-        button: "Pobierz moje listy",
+        button: "Pobierz moje listy na dysk",
         tooltip: "Pobierz tylko swoje listy na komputer",
         downloading: "Pobieranie Twoich list...",
         success: "Twoje listy zostały pobrane!",
         error: "Błąd podczas pobierania Twoich list",
       },
       downloadAllUsers: {
-        button: "Pobierz wszystko",
+        button: "Pobierz wszystkie dane na dysk",
         tooltip: "Pobierz listy wszystkich użytkowników na komputer",
         downloading: "Pobieranie wszystkich list użytkowników...",
         success: "Listy wszystkich użytkowników zostały pobrane!",
         error: "Błąd podczas pobierania list wszystkich użytkowników",
       },
       restoreUserLists: {
-        button: "Przywróć moje listy",
+        button: "Przywróć moje listy z dysku",
         tooltip: "Przywróć tylko swoje listy z pliku na komputerze",
         processing: "Przetwarzanie Twoich list...",
         success:
@@ -511,7 +523,7 @@ const langPl = {
         error: "Błąd podczas przywracania Twoich list",
       },
       restoreAllUsers: {
-        button: "Przywróć wszystko",
+        button: "Przywróć wszystkie dane z dysku",
         tooltip: "Przywróć wszystkich użytkowników z kopii zapasowej",
         processing: "Przetwarzanie...",
         success:
@@ -617,7 +629,7 @@ const langPl = {
     notifications: {
       title: "Zaplanuj powiadomienie",
       label: "Przypomnienie o zadaniu 🕒",
-      button: "🔍 Zobacz listę",
+      button: "🔍 Otwórz aplikację",
       confirm: "Zaplanuj",
       taskContent: "Zadanie",
       dateLabel: "Wybierz datę i godzinę:",
@@ -881,13 +893,13 @@ const langPl = {
       button: "Wyślij",
       autoReply: {
         lang: "pl",
-        greeting: "Dziękujemy za kontakt!",
+        greeting: "Dziękuję za kontakt!",
         intro:
-          "Twoja wiadomość dotarła do nas pomyślnie. Odpiszemy jak najszybciej – zazwyczaj w ciągu 1–2 dni roboczych.",
+          "Twoja wiadomość dotarła do mnie pomyślnie. Odpowiem jak najszybciej – zazwyczaj w ciągu 1–2 dni roboczych.",
         messageLabel: "Twoja wiadomość",
         regards: "Z poważaniem,\nMariusz Matusiewicz",
         footer:
-          "Ta wiadomość została wygenerowana automatycznie przez formularz kontaktowy aplikacji To-Do List App. Prosimy nie odpowiadać bezpośrednio na tę wiadomość.",
+          "Ta wiadomość została wygenerowana automatycznie przez formularz kontaktowy aplikacji To-Do List App. Proszę nie odpowiadać bezpośrednio na tę wiadomość.",
       },
     },
     backupAuthError: {

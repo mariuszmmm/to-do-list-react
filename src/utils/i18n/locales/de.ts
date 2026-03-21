@@ -181,7 +181,7 @@ const langDe: typeof langPl = {
         step7: {
           title: "7. Benachrichtigungen planen",
           description:
-            "Möchtest du eine Aufgabe nicht vergessen? Klicke auf das Glockensymbol bei einer bestimmten Aufgabe und plane eine Erinnerung. Die App sendet dir zum festgelegten Zeitpunkt eine Push-Benachrichtigung oder eine E-Mail.",
+            "Möchtest du eine Aufgabe nicht vergessen? Klicke auf das Glockensymbol bei einer bestimmten Aufgabe und plane eine Erinnerung. Die App sendet dir zum festgelegten Zeitpunkt eine Push-Benachrichtigung und eine E-Mail.",
         },
       },
     },
@@ -294,11 +294,23 @@ const langDe: typeof langPl = {
       label: "Angemeldete Benutzer",
       summaryTitle: "Übersicht der Benutzeraktivität",
       count: "Anzahl der aktiven Benutzer: {{count}}",
+      summaryLabel: "Benutzerkonten",
       count_few: "Anzahl der aktiven Benutzer: {{count}}",
       count_many: "Anzahl der aktiven Benutzer: {{count}}",
       count_other: "Anzahl der aktiven Benutzer: {{count}}",
     },
+    userManagement: {
+      title: "Nutzerverwaltung",
+      invite: {
+        label: "Neuen Nutzer einladen",
+        placeholder: "E-Mail-Adresse eingeben",
+        button: "Einladung senden",
+        success: "Einladung wurde erfolgreich versendet!",
+        error: "Fehler beim Versenden der Einladung.",
+      },
+    },
     allDevices: {
+      summaryLabel: "Aktive Geräte",
       device: "Gesamtzahl der aktiven Geräte: {{count}}",
       device_few: "Gesamtzahl der aktiven Geräte: {{count}}",
       device_many: "Gesamtzahl der aktiven Geräte: {{count}}",
@@ -484,23 +496,23 @@ const langDe: typeof langPl = {
       disabledDescription: "Du wirst abgemeldet, wenn das Token abläuft",
     },
     backup: {
-      title: "Sicherung & Wiederherstellung",
+      title: "Sicherung",
       downloadUserLists: {
-        button: "Meine Listen herunterladen",
+        button: "Meine Listen (Disk) speichern",
         tooltip: "Nur Ihre eigenen Listen auf den Computer herunterladen",
         downloading: "Ihre Listen werden heruntergeladen...",
         success: "Ihre Listen wurden heruntergeladen!",
         error: "Fehler beim Herunterladen Ihrer Listen",
       },
       downloadAllUsers: {
-        button: "Alles herunterladen",
+        button: "Alle Daten (Disk) speichern",
         tooltip: "Listen aller Benutzer auf den Computer herunterladen",
         downloading: "Alle Benutzerlisten werden heruntergeladen...",
         success: "Alle Benutzerlisten wurden heruntergeladen!",
         error: "Fehler beim Herunterladen aller Benutzerlisten",
       },
       restoreUserLists: {
-        button: "Meine Listen wiederherstellen",
+        button: "Meine Listen (Disk) laden",
         tooltip:
           "Nur deine eigenen Listen von einer Datei auf dem Computer wiederherstellen",
         processing: "Deine Listen werden verarbeitet...",
@@ -515,7 +527,7 @@ const langDe: typeof langPl = {
         error: "Fehler beim Wiederherstellen deiner Listen",
       },
       restoreAllUsers: {
-        button: "Alles wiederherstellen",
+        button: "Alle Daten (Disk) laden",
         tooltip: "Alle Benutzer aus dem Backup wiederherstellen",
         processing: "Wird verarbeitet...",
         success:
@@ -623,7 +635,7 @@ const langDe: typeof langPl = {
     notifications: {
       title: "Benachrichtigung planen",
       label: "Aufgabenerinnerung 🕒",
-      button: "🔍 Liste ansehen",
+      button: "🔍 App öffnen",
       confirm: "Planen",
       taskContent: "Aufgabe",
       dateLabel: "Datum und Uhrzeit auswählen:",
@@ -892,11 +904,11 @@ const langDe: typeof langPl = {
         lang: "de",
         greeting: "Vielen Dank für Ihre Nachricht!",
         intro:
-          "Ihre Nachricht ist bei uns eingegangen. Wir werden uns so schnell wie möglich bei Ihnen melden – in der Regel innerhalb von 1–2 Werktagen.",
+          "Ihre Nachricht ist bei mir eingegangen. Ich werde so schnell wie möglich antworten – in der Regel innerhalb von 1–2 Werktagen.",
         messageLabel: "Ihre Nachricht",
         regards: "Mit freundlichen Grüßen,\nMariusz Matusiewicz",
         footer:
-          "Diese Nachricht wurde automatisch durch das Kontaktformular der To-Do List App generiert. Bitte antworten Sie nicht direkt auf diese E-Mail.",
+          "Diese Nachricht wurde automatisch über das Kontaktformular der To-Do List App erstellt. Bitte antworten Sie nicht direkt auf diese Nachricht.",
       },
     },
     backupAuthError: {

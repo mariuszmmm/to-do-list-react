@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import OneSignal from "react-onesignal";
 
+let isOneSignalInitialized = false;
+
 /**
  * Komponent NotificationManager odpowiada za niskopoziomową inicjalizację SDK OneSignal.
  * Jest on kluczowy dla poprawnego działania powiadomień Push, szczególnie w przeglądarce Edge
@@ -9,7 +11,9 @@ import OneSignal from "react-onesignal";
 export const NotificationManager = () => {
   useEffect(() => {
     const appId = process.env.REACT_APP_ONESIGNAL_APP_ID;
-    if (!appId) return;
+    if (!appId || isOneSignalInitialized) return;
+
+    isOneSignalInitialized = true;
 
     const setup = async () => {
       try {
@@ -22,8 +26,13 @@ export const NotificationManager = () => {
           const regs = await navigator.serviceWorker.getRegistrations();
           const mainWorkerUrl = "/service-worker.js";
           
-          // Szukamy, czy nasz główny worker jest już zarejestrowany
-          const existingMain = regs.find(r => r.active?.scriptURL.endsWith(mainWorkerUrl));
+          // Szukamy, czy nasz główny worker jest już zarejestrowany w jakimkolwiek ze stanów
+          const existingMain = regs.find(
+            (r) =>
+              r.active?.scriptURL.endsWith(mainWorkerUrl) ||
+              r.waiting?.scriptURL.endsWith(mainWorkerUrl) ||
+              r.installing?.scriptURL.endsWith(mainWorkerUrl)
+          );
 
           if (!existingMain) {
             // Jeśli nie ma naszego workera, ale są inne (np. stare od OneSignal), czyścimy je

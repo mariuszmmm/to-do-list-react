@@ -42,9 +42,13 @@ export const resetNotifications = async () => {
     // 4. Czyszczenie Local i Session Storage
     [localStorage, sessionStorage].forEach((storage) => {
       Object.keys(storage).forEach((key) => {
+        const lowerKey = key.toLowerCase();
         if (
-          key.toLowerCase().includes("onesignal") ||
-          key === PUSH_INITIALIZED_KEY
+          lowerKey.includes("onesignal") ||
+          key === PUSH_INITIALIZED_KEY ||
+          key === "pwa_last_update_time" ||
+          key === "pwa_updating" ||
+          key === "account_switch_target"
         ) {
           storage.removeItem(key);
         }

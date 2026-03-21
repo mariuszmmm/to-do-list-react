@@ -63,6 +63,11 @@
   status = 200
 
 [[redirects]]
+  from = "/user-invite"
+  to = "/.netlify/functions/user-invite"
+  status = 200
+
+[[redirects]]
   from = "/translate"
   to = "/.netlify/functions/translate"
   status = 200

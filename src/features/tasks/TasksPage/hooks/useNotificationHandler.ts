@@ -27,7 +27,7 @@ export const useNotificationHandler = () => {
 
         if (!isOptedIn) {
           await (OneSignal.Slidedown as any).promptPush({ force: true });
-          
+
           let checks = 0;
           while (checks < 20) {
             await new Promise((resolve) => setTimeout(resolve, 500));

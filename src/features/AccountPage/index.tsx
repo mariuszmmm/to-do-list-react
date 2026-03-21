@@ -2,30 +2,27 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import { StyledSpan, AnimatedSpan } from "../../common/StyledList";
+import { AnimatedSpan } from "../../common/StyledList";
 import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
 import { AccountActions } from "./AccountActions";
 import { AccountForm } from "./AccountForm";
 import { AccountFormActions } from "./AccountFormActions";
 import { BackupManager } from "./BackupManager";
 import { SystemAdmin } from "./SystemAdmin";
-import { PresenceUsersList } from "./PresenceUsersList";
+import { UserManagement } from "./UserManagement";
 import { SessionInfo } from "./SessionInfo";
 import { EnvironmentReset } from "./EnvironmentReset";
 import { Settings } from "../../types";
 import {
-  selectAllDevicesCount,
   selectLoggedUserEmail,
   selectLoggedUserName,
   selectIsAdmin,
-  selectTotalUsersCount,
   selectUserDevicesCount,
 } from "./accountSlice";
 import { getSystemStatusApi } from "../../api/backupApi";
 import { openModal } from "../../Modal/modalSlice";
 import { getUserToken } from "../../utils/auth/getUserToken";
 import { useTranslation } from "react-i18next";
-import { NameContainer } from "../tasks/TasksPage/EditableListName/styled";
 import {
   getSettingsFromLocalStorage,
   saveSettingsInLocalStorage,
@@ -39,8 +36,6 @@ const AccountPage = () => {
   const loggedUserName = useAppSelector(selectLoggedUserName);
   const isAdmin = useAppSelector(selectIsAdmin);
   const userDevices = useAppSelector(selectUserDevicesCount);
-  const totalUsersCount = useAppSelector(selectTotalUsersCount);
-  const allDevicesCount = useAppSelector(selectAllDevicesCount);
 
   const avatarBgColor = loggedUserEmail ? getAvatarColor(loggedUserEmail) : "";
   const initial = loggedUserEmail
@@ -58,11 +53,8 @@ const AccountPage = () => {
   const [isSessionInfoOpen, setIsSessionInfoOpen] = useState(
     () => getSettingsFromLocalStorage()?.isSessionInfoOpen || false,
   );
-  const [isActivitySummaryOpen, setIsActivitySummaryOpen] = useState(
-    () => getSettingsFromLocalStorage()?.isActivitySummaryOpen || false,
-  );
-  const [isPresenceListOpen, setIsPresenceListOpen] = useState(
-    () => getSettingsFromLocalStorage()?.isPresenceListOpen || false,
+  const [isUserManagementOpen, setIsUserManagementOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isUserManagementOpen || false,
   );
   const [isSystemAdminOpen, setIsSystemAdminOpen] = useState(
     () => getSettingsFromLocalStorage()?.isSystemAdminOpen || false,
@@ -89,18 +81,10 @@ const AccountPage = () => {
     });
   };
 
-  const toggleActivitySummary = () => {
-    setIsActivitySummaryOpen((prev) => {
+  const toggleUserManagement = () => {
+    setIsUserManagementOpen((prev) => {
       const next = !prev;
-      persistSettings({ isActivitySummaryOpen: next });
-      return next;
-    });
-  };
-
-  const togglePresenceList = () => {
-    setIsPresenceListOpen((prev) => {
-      const next = !prev;
-      persistSettings({ isPresenceListOpen: next });
+      persistSettings({ isUserManagementOpen: next });
       return next;
     });
   };
@@ -231,42 +215,15 @@ const AccountPage = () => {
 
       {loggedUserEmail && isAdmin && (
         <Section
-          title={t("activeUsers.summaryTitle")}
+          title={t("userManagement.title")}
           extraHeaderContent={renderToggleButton(
-            isActivitySummaryOpen,
-            toggleActivitySummary,
+            isUserManagementOpen,
+            toggleUserManagement,
           )}
-          onHeaderClick={toggleActivitySummary}
+          onHeaderClick={toggleUserManagement}
           onlyOpenButton={true}
-          body={
-            <NameContainer $account>
-              <StyledSpan $comment>
-                <strong>
-                  {t("activeUsers.count", { count: totalUsersCount })}
-                </strong>
-              </StyledSpan>
-              <StyledSpan $comment>
-                <strong>
-                  {t("allDevices.device", { count: allDevicesCount })}
-                </strong>
-              </StyledSpan>
-            </NameContainer>
-          }
-          bodyHidden={!isActivitySummaryOpen}
-        />
-      )}
-
-      {loggedUserEmail && isAdmin && (
-        <Section
-          title={t("activeUsers.label")}
-          extraHeaderContent={renderToggleButton(
-            isPresenceListOpen,
-            togglePresenceList,
-          )}
-          onHeaderClick={togglePresenceList}
-          onlyOpenButton={true}
-          body={<PresenceUsersList />}
-          bodyHidden={!isPresenceListOpen}
+          body={<UserManagement />}
+          bodyHidden={!isUserManagementOpen}
         />
       )}
       {loggedUserEmail && (

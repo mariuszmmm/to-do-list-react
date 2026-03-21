@@ -56,6 +56,19 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
         </Button>
       )}
 
+      {isAdmin && (
+        <Button
+          onClick={() =>
+            handleUploadAllUsersToGoogleDrive(t, setStatus, setShowGoogleAuth)
+          }
+          disabled={status.isLoading}
+          title={t("uploadAllUsersToGoogleDrive.tooltip")}
+          data-icon="☁️"
+        >
+          {t("uploadAllUsersToGoogleDrive.button")}
+        </Button>
+      )}
+
       <Button
         onClick={() => handleRestoreUserLists(t, setStatus)}
         disabled={status.isLoading}
@@ -79,19 +92,6 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
       {isAdmin && (
         <Button
           onClick={() =>
-            handleUploadAllUsersToGoogleDrive(t, setStatus, setShowGoogleAuth)
-          }
-          disabled={status.isLoading}
-          title={t("uploadAllUsersToGoogleDrive.tooltip")}
-          data-icon="☁️"
-        >
-          {t("uploadAllUsersToGoogleDrive.button")}
-        </Button>
-      )}
-
-      {isAdmin && (
-        <Button
-          onClick={() =>
             handleFetchGoogleDriveBackupList(
               t,
               setStatus,
@@ -107,6 +107,7 @@ export const BackupActions: React.FC<BackupActionsProps> = ({
           {t("restoreBackupFromGoogleDrive.button")}
         </Button>
       )}
+
       {isAdmin && showGoogleAuth && (
         <Button
           onClick={() => handleAuthorizeGoogle(t, setStatus)}

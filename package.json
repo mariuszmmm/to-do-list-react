@@ -43,7 +43,7 @@
   "scripts": {
     "start": "netlify dev",
     "dev": "netlify dev",
-    "build": "react-scripts build",
+    "build": "react-scripts build && node -e \"const f=require('fs'),p='build/service-worker.js';f.writeFileSync(p,f.readFileSync(p,'utf8').replace(/todo-list-v\\d+/g,'todo-list-v'+Date.now()))\"",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build",

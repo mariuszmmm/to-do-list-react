@@ -146,11 +146,12 @@ export const RefreshButton = styled.button`
   color: ${({ theme }) => theme.colors.button.check};
   cursor: pointer;
   padding: 4px 8px;
+  margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-width: 100px;
+  width: 130px;
   font-size: 0.7rem;
   font-weight: ${({ theme }) => theme.fontWeight.semiBold};
   border-radius: 20px;
