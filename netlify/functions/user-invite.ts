@@ -1,65 +1,101 @@
 import type { Handler } from "@netlify/functions";
-import { jsonResponse, logError } from "./lib/response";
-import { checkAdminRole, checkHttpMethod, parseJsonBody } from "./lib/validators";
+import axios from "axios";
+import { jsonResponse } from "../functions/lib/response";
+import {
+  checkHttpMethod,
+  parseJsonBody,
+  isUserAdmin,
+} from "../functions/lib/validators";
 
-interface InviteRequestBody {
-  email: string;
-}
+export const handler: Handler = async (event, context) => {
+  const logPrefix = "[user-invite]";
 
-/**
- * Netlify Function to invite a new user using GoTrue Admin API.
- * Requires the caller to have the "admin" role.
- */
-const handler: Handler = async (event, context) => {
-  const logPrefix = "[inviteUser]";
-
-  // 1. Check HTTP Method
+  // 1. Sprawdź metodę HTTP
   const methodResponse = checkHttpMethod(event.httpMethod, "POST", logPrefix);
   if (methodResponse) return methodResponse;
 
-  // 2. Check Admin Role
-  const adminResponse = checkAdminRole(context, logPrefix);
-  if (adminResponse) return adminResponse;
+  // 2. Sprawdź kontekst Identity
+  const identity = context.clientContext?.identity;
+  const contextUser = context.clientContext?.user;
 
-  // 3. Parse Body
-  const body = parseJsonBody<InviteRequestBody>(event.body, logPrefix);
-  if ("statusCode" in body) return body as any;
-
-  const { email } = body;
-  if (!email || !email.includes("@")) {
-    return jsonResponse(400, { message: "Valid email is required." });
+  if (!identity || !identity.token || !identity.url) {
+    console.warn(`${logPrefix} No identity context found`);
+    return jsonResponse(401, {
+      message: "Netlify Identity context is missing.",
+    });
   }
+
+  // 3. Parsuj body
+  const bodyData = parseJsonBody<{ email: string }>(event.body, logPrefix);
+
+  // Jeśli parseJsonBody zwrócił HandlerResponse (błąd), to znaczy że jest błąd
+  if (bodyData && typeof bodyData === "object" && "statusCode" in bodyData) {
+    return bodyData as any;
+  }
+
+  const { email } = bodyData as { email: string };
+  if (!email) {
+    return jsonResponse(400, { message: "Email is required." });
+  }
+
+  // 4. Autoryzacja Admina (zgodnie z auth-ablyAuth.ts)
+  const userEmail = contextUser?.email?.toLowerCase().trim();
+  const isAdmin = isUserAdmin(context) || userEmail === "mariuszmmm@op.pl";
+
+  if (!isAdmin) {
+    console.warn(`${logPrefix} User ${userEmail} is not an admin`);
+    return jsonResponse(403, {
+      message: "Only administrators can invite users.",
+    });
+  }
+
+  const { token, url } = identity;
+
+  console.log(`${logPrefix} Processed by user: ${userEmail}`);
+  console.log(`${logPrefix} Sending invite to: ${email}`);
+  console.log(`${logPrefix} Target Identity URL: ${url}/invite`);
 
   try {
-    const { identity } = context.clientContext!;
-    const inviteUrl = `${identity!.url}/admin/invite`;
-    const adminAuthHeader = `Bearer ${identity!.token}`;
-
-    // 4. Call GoTrue Admin Invite API
-    const response = await fetch(inviteUrl, {
+    // Uwaga: W środowisku produkcyjnym musimy upewnić się, że token przekazywany przez frontend
+    // ma uprawnienia administratora w systemie Identity (role 'admin').
+    const response = await axios({
       method: "POST",
-      headers: { 
-        Authorization: adminAuthHeader,
-        "Content-Type": "application/json" 
+      url: `${url}/invite`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      data: {
+        email,
+      },
     });
 
-    const data = (await response.json()) as any;
+    console.log(`${logPrefix} Invite sent successfully to ${email}`);
 
-    if (!response.ok) {
-      console.warn(`${logPrefix} Failed to invite user: ${response.status} - ${data.msg || response.statusText}`);
-      return jsonResponse(response.status, { message: data.msg || response.statusText });
+    return jsonResponse(200, {
+      message: "Invitation sent successfully",
+      data: response.data,
+    });
+  } catch (error: any) {
+    const errorData = error?.response?.data;
+    const errorStatus = error?.response?.status || 500;
+
+    console.error(`${logPrefix} Error status = ${errorStatus}`);
+    console.error(`${logPrefix} Error data:`, JSON.stringify(errorData || {}));
+    console.error(`${logPrefix} axios message: ${error.message}`);
+
+    // Specjalna obsługa 401/403 z GoTrue - to najczęstszy powód problemów w produkcji/dev
+    if (errorStatus === 401 || errorStatus === 403) {
+      return jsonResponse(errorStatus, {
+        message:
+          "Identity server rejected the invitation. This usually means your token is invalid or lacks 'admin' role.",
+        error: errorData,
+      });
     }
 
-    return jsonResponse(200, { 
-      message: "Invitation sent successfully.",
-      user: data
+    return jsonResponse(errorStatus, {
+      message: "Failed to send invitation. Check server logs.",
+      error: errorData || error.message,
     });
-  } catch (error) {
-    logError("Failed to invite user", error, logPrefix);
-    return jsonResponse(500, { message: "Internal server error" });
   }
 };
-
-module.exports = { handler };

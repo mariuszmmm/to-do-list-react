@@ -11,19 +11,25 @@ const handler: Handler = async (event, context) => {
 
   const emailParam = event.queryStringParameters?.email;
   const deviceId = event.queryStringParameters?.deviceId;
-  
+
   const contextUser = context?.clientContext?.user;
   const isAuthenticated = contextUser !== undefined;
-  
+
   // Bezpieczeństwo: W produkcji ufamy TYLKO e-mailowi z tokenu (contextUser).
   // Parametr emailParam dopuszczamy tylko lokalnie dla ułatwienia debugowania/dev.
-  const isLocalDev = process.env.NETLIFY_DEV === "true" || process.env.NODE_ENV === "development";
-  const email = (contextUser?.email || (isLocalDev ? emailParam : null))?.toLowerCase().trim();
-  
-  // Rozszerzona detekcja admina dla środowiska lokalnego i głównego usera
-  const isAdmin = isUserAdmin(context) || (email === "mariuszzmmm@op.pl" || email === "poradyserwisowe@op.pl" || email === "naprawaprzemysl@gmail.com");
+  const isLocalDev =
+    process.env.NETLIFY_DEV === "true" ||
+    process.env.NODE_ENV === "development";
+  const email = (contextUser?.email || (isLocalDev ? emailParam : null))
+    ?.toLowerCase()
+    .trim();
 
-  console.log(`${logPrefix} Auth check: email=${email}, isAuthenticated=${isAuthenticated}, isAdmin=${isAdmin}`);
+  // Rozszerzona detekcja admina dla środowiska lokalnego i głównego usera
+  const isAdmin = isUserAdmin(context) || email === "mariuszmmm@op.pl";
+
+  console.log(
+    `${logPrefix} Auth check: email=${email}, isAuthenticated=${isAuthenticated}, isAdmin=${isAdmin}`,
+  );
 
   if (!email) {
     return jsonResponse(401, { message: "Missing email" });
@@ -34,14 +40,14 @@ const handler: Handler = async (event, context) => {
   }
 
   try {
-    const ably = new Ably.Rest({ 
+    const ably = new Ably.Rest({
       key: process.env.ABLY_API_KEY,
-      queryTime: true 
+      queryTime: true,
     });
-    
+
     const serverTime = await ably.time();
     const uniqueClientId = `${email}:${deviceId}`;
-    
+
     const capability: any = {
       [`user:${email}:lists`]: ["subscribe", "publish", "history"],
       [`user:${email}:confirmation`]: ["subscribe", "publish"],

@@ -15,25 +15,65 @@ export const UpdateNotification = () => {
   const accountMode = useAppSelector(selectAccountMode);
 
   const checkUpdateState = useCallback(
-    (registration: ServiceWorkerRegistration) => {
-      // Blokada po-aktualizacyjna (10 sekund), aby uniknąć pętli
-      const lastUpdate = sessionStorage.getItem("pwa_last_update_time");
-      if (lastUpdate && Date.now() - parseInt(lastUpdate) < 10000) {
-        return;
-      }
+    async (registration: ServiceWorkerRegistration) => {
+      // Funkcja cichego omijania "Phantom Updates" (fałszywych aktualizacji widmo z CDN)
+      const trySilentlySkip = async (waitingWorker: ServiceWorker) => {
+        const getWorkerVersion = (
+          worker: ServiceWorker,
+        ): Promise<string | null> => {
+          return new Promise((resolve) => {
+            if (worker.state === "redundant") return resolve(null);
+            const handler = (event: MessageEvent) => {
+              if (event.data && event.data.type === "VERSION_INFO") {
+                navigator.serviceWorker.removeEventListener("message", handler);
+                resolve(event.data.version);
+              }
+            };
+            navigator.serviceWorker.addEventListener("message", handler);
+            worker.postMessage({ type: "GET_VERSION" });
+            setTimeout(() => {
+              navigator.serviceWorker.removeEventListener("message", handler);
+              resolve(null);
+            }, 400); // krótki timeout żeby nie blokować UI
+          });
+        };
+
+        const activeWorker = registration.active;
+        if (activeWorker && waitingWorker) {
+          const activeVersion = await getWorkerVersion(activeWorker);
+          const waitingVersion = await getWorkerVersion(waitingWorker);
+          if (
+            activeVersion &&
+            waitingVersion &&
+            activeVersion === waitingVersion
+          ) {
+            // Unikalny timestamp na serwerze nie uległ zmianie (ten sam kod źródłowy).
+            // Jest to fałszywy alarm wygenerowany przez przeglądarkę i cache. Odrzucamy cicho!
+            waitingWorker.postMessage({ type: "SKIP_WAITING" });
+            return true;
+          }
+        }
+        return false;
+      };
 
       if (registration.waiting) {
-        setWaitingWorker(registration.waiting);
-        setShowNotification(true);
+        const isPhantom = await trySilentlySkip(registration.waiting);
+        if (!isPhantom) {
+          setWaitingWorker(registration.waiting);
+          setShowNotification(true);
+        }
         return;
       }
 
       if (registration.installing) {
         const worker = registration.installing;
-        worker.addEventListener("statechange", () => {
+        worker.addEventListener("statechange", async () => {
           if (worker.state === "installed") {
-            setWaitingWorker(worker);
-            setShowNotification(true);
+            const isPhantom = await trySilentlySkip(worker);
+            if (!isPhantom) {
+              setWaitingWorker(worker);
+              setShowNotification(true);
+            }
           }
         });
       }
@@ -54,11 +94,10 @@ export const UpdateNotification = () => {
 
     init();
 
-    const handleCustomEvent = (event: Event) => {
+    const handleCustomEvent = async (event: Event) => {
       const customEvent = event as CustomEvent;
-      if (customEvent.detail && customEvent.detail.waiting) {
-        setWaitingWorker(customEvent.detail.waiting);
-        setShowNotification(true);
+      if (customEvent.detail) {
+        checkUpdateState(customEvent.detail); // Przekazujemy całą rejestrację upewniając się że fałszywe powiadomienia są zbijane
       }
     };
     window.addEventListener("sw-update-available", handleCustomEvent);
@@ -71,7 +110,6 @@ export const UpdateNotification = () => {
   const handleUpdate = async () => {
     setShowNotification(false);
     sessionStorage.setItem("pwa_updating", "true");
-    sessionStorage.setItem("pwa_last_update_time", Date.now().toString());
 
     try {
       if ("caches" in window) {
@@ -86,7 +124,7 @@ export const UpdateNotification = () => {
       if (waitingWorker && waitingWorker.state !== "redundant") {
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
       }
-      
+
       navigator.serviceWorker.getRegistrations().then((regs) => {
         for (const reg of regs) {
           if (reg.waiting) {
