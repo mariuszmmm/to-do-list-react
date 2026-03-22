@@ -308,6 +308,20 @@ const langDe: typeof langPl = {
         success: "Einladung wurde erfolgreich versendet!",
         error: "Fehler beim Versenden der Einladung.",
       },
+      users: {
+        title: "Benutzerliste",
+        loading: "Laden...",
+        empty: "Keine Benutzer in der Datenbank.",
+        deleteButton: "Löschen",
+        deleteConfirm: "Sicher?",
+        deleteSuccess: "Konto wurde gelöscht.",
+        deleteError: "Fehler beim Löschen des Kontos.",
+        status: {
+          active: "Aktiv",
+          pending: "Ausstehend",
+          deleted: "Gelöscht",
+        },
+      },
     },
     allDevices: {
       summaryLabel: "Aktive Geräte",
@@ -456,6 +470,7 @@ const langDe: typeof langPl = {
           cleanup_tasks: "Gelöschte Aufgaben bereinigen",
           cleanup_logs: "Alte Logs bereinigen",
           oauth: "Google-Autorisierung",
+          user_invite: "Benutzereinladung",
         },
       },
     },

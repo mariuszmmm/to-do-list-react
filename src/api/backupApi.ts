@@ -10,6 +10,7 @@ type ApiResponse<T = undefined> = {
 
 const makeErrorResponse = <T>(error: any): ApiResponse<T> => {
   const msg =
+    error?.response?.data?.error?.msg ||
     error?.response?.data?.message ||
     error?.message ||
     "Unknown error occurred";
@@ -394,6 +395,48 @@ export const inviteUserApi = async (
     };
   } catch (error: any) {
     console.error("Error inviting user", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export type UserListItem = { email: string; account: "active" | "deleted" | "pending" };
+
+export const getUsersListApi = async (
+  token: string,
+): Promise<ApiResponse<{ users: UserListItem[] }>> => {
+  try {
+    const response = await axios.get("/user-list", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return {
+      success: true,
+      statusCode: response.status,
+      message: "OK",
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error fetching users list", error);
+    return makeErrorResponse(error);
+  }
+};
+
+export const adminDeleteUserApi = async (
+  token: string,
+  email: string,
+): Promise<ApiResponse<any>> => {
+  try {
+    const response = await axios.delete("/user-admin-delete", {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { email },
+    });
+    return {
+      success: true,
+      statusCode: response.status,
+      message: response.data.message || "User deleted successfully",
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.error("Error deleting user", error);
     return makeErrorResponse(error);
   }
 };

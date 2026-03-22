@@ -1,25 +1,24 @@
-import { useState, FormEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../hooks/redux/redux";
 import {
-  selectAllDevicesCount,
   selectPresenceUsers,
-  selectTotalUsersCount,
+  selectIsAdmin,
+  selectLoggedUserEmail,
 } from "../accountSlice";
 import {
   UserManagementContainer,
-  SummaryGrid,
   InviteSection,
   InviteInputWrapper,
   FormLabel,
   Message,
   SubTitle,
-  SummaryItem,
-  SummaryTextWrapper,
-  SummaryValue,
-  SummaryLabel,
-  IconWrapper,
   MessageWrapper,
+  UsersListItem,
+  UserInfo,
+  UserEmail,
+  UserStatusBadge,
+  DeleteButton,
 } from "./styled";
 import { Input } from "../../../common/Input";
 import { FormButton } from "../../../common/FormButton";
@@ -29,17 +28,22 @@ import {
   StyledListItem,
   StyledSpan,
 } from "../../../common/StyledList";
-import { inviteUserApi } from "../../../api/backupApi";
+import {
+  inviteUserApi,
+  getUsersListApi,
+  adminDeleteUserApi,
+  UserListItem,
+} from "../../../api/backupApi";
 import { getUserToken } from "../../../utils/auth/getUserToken";
-import { ReactComponent as UserIcon } from "../../../images/user.svg";
+import { translateText } from "../../../api/translateTextApi";
 
 export const UserManagement = () => {
-  const { t } = useTranslation("translation", {
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
-  const totalUsersCount = useAppSelector(selectTotalUsersCount);
-  const allDevicesCount = useAppSelector(selectAllDevicesCount);
   const presenceUsers = useAppSelector(selectPresenceUsers);
+  const isAdmin = useAppSelector(selectIsAdmin);
+  const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
 
   const [email, setEmail] = useState("");
   const [isInviting, setIsInviting] = useState(false);
@@ -48,7 +52,36 @@ export const UserManagement = () => {
     isError: boolean;
   } | null>(null);
 
-  const handleInvite = async (e: FormEvent) => {
+  const [users, setUsers] = useState<UserListItem[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [confirmDeleteEmail, setConfirmDeleteEmail] = useState<string | null>(
+    null,
+  );
+  const [deletingEmail, setDeletingEmail] = useState<string | null>(null);
+
+  const fetchUsers = useCallback(async () => {
+    setIsLoadingUsers(true);
+    try {
+      const token = await getUserToken();
+      if (!token) return;
+      const response = await getUsersListApi(token);
+      if (response.success && response.data?.users) {
+        setUsers(response.data.users);
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedUserEmail && isAdmin) {
+      fetchUsers();
+    }
+  }, [fetchUsers, isAdmin, loggedUserEmail]);
+
+  const handleInvite = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) return;
 
@@ -59,15 +92,36 @@ export const UserManagement = () => {
       const token = await getUserToken();
       if (token) {
         const response = await inviteUserApi(token, email);
+        console.log(response);
         if (response.success) {
           setMessage({
             text: t("userManagement.invite.success"),
             isError: false,
           });
           setEmail("");
+          fetchUsers();
         } else {
+          let errorMessage = response.message;
+          if (errorMessage) {
+            try {
+              const translated = await translateText(
+                errorMessage,
+                i18n.language,
+              );
+              if (translated) {
+                errorMessage = translated;
+              }
+            } catch (err) {
+              console.error("Translation fail", err);
+            }
+          }
+
+          if (!errorMessage) {
+            errorMessage = t("userManagement.invite.error");
+          }
+
           setMessage({
-            text: response.message || t("userManagement.invite.error"),
+            text: errorMessage,
             isError: true,
           });
         }
@@ -79,30 +133,33 @@ export const UserManagement = () => {
     }
   };
 
+  const handleDelete = async (targetEmail: string) => {
+    if (confirmDeleteEmail !== targetEmail) {
+      setConfirmDeleteEmail(targetEmail);
+      return;
+    }
+
+    setDeletingEmail(targetEmail);
+    setConfirmDeleteEmail(null);
+    try {
+      const token = await getUserToken();
+      if (!token) return;
+      const response = await adminDeleteUserApi(token, targetEmail);
+      if (response.success) {
+        setUsers((prev) => prev.filter((u) => u.email !== targetEmail));
+      }
+    } catch {
+      // silent fail
+    } finally {
+      setDeletingEmail(null);
+    }
+  };
+
+  const statusLabel = (status: UserListItem["account"]) =>
+    t(`userManagement.users.status.${status}`);
+
   return (
     <UserManagementContainer>
-      {/* Podsumowanie użytkowników i urządzeń */}
-      <SummaryGrid>
-        <SummaryItem>
-          <IconWrapper>
-            <UserIcon style={{ scale: "0.9" }} />
-          </IconWrapper>
-          <SummaryTextWrapper>
-            <SummaryLabel>{t("activeUsers.summaryLabel")}</SummaryLabel>
-            <SummaryValue>{totalUsersCount}</SummaryValue>
-          </SummaryTextWrapper>
-        </SummaryItem>
-        <SummaryItem>
-          <IconWrapper>
-            <UserIcon style={{ scale: "0.9" }} />
-          </IconWrapper>
-          <SummaryTextWrapper>
-            <SummaryLabel>{t("allDevices.summaryLabel")}</SummaryLabel>
-            <SummaryValue>{allDevicesCount}</SummaryValue>
-          </SummaryTextWrapper>
-        </SummaryItem>
-      </SummaryGrid>
-
       {/* Formularz zapraszania */}
       <InviteSection onSubmit={handleInvite}>
         <FormLabel htmlFor="invite-email">
@@ -129,14 +186,59 @@ export const UserManagement = () => {
         </MessageWrapper>
       </InviteSection>
 
+      {/* Lista wszystkich użytkowników */}
+      <div>
+        <SubTitle>{t("userManagement.users.title")}</SubTitle>
+        {isLoadingUsers ? (
+          <StyledSpan $comment>{t("userManagement.users.loading")}</StyledSpan>
+        ) : users.length === 0 ? (
+          <StyledSpan $comment>{t("userManagement.users.empty")}</StyledSpan>
+        ) : (
+          <StyledList>
+            {users.map((user) => (
+              <StyledListItem
+                key={user.email}
+                style={{ padding: 0, border: "none" }}
+              >
+                <UsersListItem>
+                  <UserInfo>
+                    <UserEmail>{user.email}</UserEmail>
+                    <UserStatusBadge $status={user.account}>
+                      {statusLabel(user.account)}
+                    </UserStatusBadge>
+                  </UserInfo>
+                  <DeleteButton
+                    type="button"
+                    $isConfirm={confirmDeleteEmail === user.email}
+                    disabled={deletingEmail === user.email}
+                    onClick={() => handleDelete(user.email)}
+                    onBlur={() => {
+                      if (confirmDeleteEmail === user.email) {
+                        setConfirmDeleteEmail(null);
+                      }
+                    }}
+                  >
+                    {deletingEmail === user.email
+                      ? "..."
+                      : confirmDeleteEmail === user.email
+                        ? t("userManagement.users.deleteConfirm")
+                        : t("userManagement.users.deleteButton")}
+                  </DeleteButton>
+                </UsersListItem>
+              </StyledListItem>
+            ))}
+          </StyledList>
+        )}
+      </div>
+
       {/* Lista zalogowanych użytkowników */}
       <div>
         <SubTitle>{t("activeUsers.label")}</SubTitle>
         <StyledList>
-          {presenceUsers.map(({ email, deviceCount }) => (
-            <StyledListItem key={email}>
+          {presenceUsers.map(({ email: presenceEmail, deviceCount }) => (
+            <StyledListItem key={presenceEmail}>
               <StyledListContent>
-                <StyledSpan $ListName>{email}</StyledSpan>
+                <StyledSpan $ListName>{presenceEmail}</StyledSpan>
                 <br />
                 <StyledSpan $comment>
                   {t("userDeviceCount.device", { count: deviceCount })}

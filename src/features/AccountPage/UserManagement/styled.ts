@@ -7,49 +7,6 @@ export const UserManagementContainer = styled.div`
   padding: 5px;
 `;
 
-export const SummaryGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-export const SummaryItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px;
-  background: ${({ theme }) => theme.colors.backgroundPrimary};
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.colors.border.primary};
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.nav.background};
-  }
-`;
-
-export const SummaryTextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-export const SummaryValue = styled.span`
-  font-size: 20px;
-  font-weight: 700;
-  color: ${({ theme }) => theme.colors.textPrimary};
-  padding-left: 5px;
-`;
-
-export const SummaryLabel = styled.span`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.textSecendary};
-`;
-
 export const InviteSection = styled.form`
   display: flex;
   flex-direction: column;
@@ -99,7 +56,10 @@ export const MessageWrapper = styled.div<{ $isVisible: boolean }>`
   opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
   margin-top: ${({ $isVisible }) => ($isVisible ? "0" : "-15px")};
   overflow: hidden;
-  transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out, margin-top 0.4s ease-in-out;
+  transition:
+    max-height 0.4s ease-in-out,
+    opacity 0.4s ease-in-out,
+    margin-top 0.4s ease-in-out;
 `;
 
 export const Message = styled.div<{ $isError?: boolean }>`
@@ -107,13 +67,17 @@ export const Message = styled.div<{ $isError?: boolean }>`
   padding: 8px 12px;
   border-radius: 6px;
   min-height: 0;
-  background: ${({ theme, $isError }) =>
+  background: ${({ $isError }) =>
     $isError ? `rgba(255, 62, 62, 0.1)` : `rgba(34, 140, 34, 0.1)`};
   color: ${({ theme, $isError }) =>
     $isError ? theme.colors.status.error : theme.colors.status.success};
   border: 1px solid
     ${({ theme, $isError }) =>
       $isError ? theme.colors.status.error : theme.colors.status.success};
+  transition:
+    background 0.4s ease-in-out,
+    color 0.4s ease-in-out,
+    border-color 0.4s ease-in-out;
 `;
 
 export const SubTitle = styled.h3`
@@ -132,18 +96,92 @@ export const SubTitle = styled.h3`
   }
 `;
 
-export const IconWrapper = styled.div<{ $color?: string }>`
+export const UsersListItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
+  border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: 10px;
-  background: ${({ theme }) => theme.colors.nav.background}33;
-  color: ${({ theme }) => theme.colors.status.info};
+  transition: border-color 0.2s;
 
-  & svg {
-    width: 20px;
-    height: 20px;
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.nav.background};
+  }
+`;
+
+export const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+`;
+
+export const UserEmail = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const UserStatusBadge = styled.span<{ $status: "active" | "pending" | "deleted" }>`
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: ${({ $status }) =>
+    $status === "active"
+      ? `rgba(34, 197, 94, 0.15)`
+      : $status === "pending"
+        ? `rgba(250, 200, 40, 0.15)`
+        : `rgba(239, 68, 68, 0.15)`};
+  color: ${({ theme, $status }) =>
+    $status === "active"
+      ? theme.colors.status.success
+      : $status === "deleted"
+        ? theme.colors.status.error
+        : "#e6c52a"};
+  border: 1px solid
+    ${({ theme, $status }) =>
+      $status === "active"
+        ? theme.colors.status.success
+        : $status === "deleted"
+          ? theme.colors.status.error
+          : "#e6c52a"};
+`;
+
+export const DeleteButton = styled.button<{ $isConfirm?: boolean }>`
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid
+    ${({ theme, $isConfirm }) =>
+      $isConfirm ? theme.colors.status.error : theme.colors.border.primary};
+  background: ${({ $isConfirm }) =>
+    $isConfirm ? `rgba(239, 68, 68, 0.12)` : "transparent"};
+  color: ${({ theme, $isConfirm }) =>
+    $isConfirm ? theme.colors.status.error : theme.colors.textSecendary};
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.status.error};
+    color: ${({ theme }) => theme.colors.status.error};
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 `;

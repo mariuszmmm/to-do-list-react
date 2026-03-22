@@ -68,6 +68,16 @@
   status = 200
 
 [[redirects]]
+  from = "/user-list"
+  to = "/.netlify/functions/user-list"
+  status = 200
+
+[[redirects]]
+  from = "/user-admin-delete"
+  to = "/.netlify/functions/user-admin-delete"
+  status = 200
+
+[[redirects]]
   from = "/translate"
   to = "/.netlify/functions/translate"
   status = 200
@@ -140,6 +150,16 @@
 [[redirects]]
   from = "/schedule-notification"
   to = "/.netlify/functions/schedule-notification"
+  status = 200
+
+[[redirects]]
+  from = "/cancel-notification"
+  to = "/.netlify/functions/cancel-notification"
+  status = 200
+
+[[redirects]]
+  from = "/get-scheduled-notifications"
+  to = "/.netlify/functions/get-scheduled-notifications"
   status = 200
 
 [[redirects]]

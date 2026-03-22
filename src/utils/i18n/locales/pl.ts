@@ -305,6 +305,20 @@ const langPl = {
         success: "Zaproszenie zostało wysłane pomyślnie!",
         error: "Błąd podczas wysyłania zaproszenia.",
       },
+      users: {
+        title: "Lista użytkowników",
+        loading: "Ładowanie...",
+        empty: "Brak użytkowników w bazie danych.",
+        deleteButton: "Usuń",
+        deleteConfirm: "Na pewno?",
+        deleteSuccess: "Konto zostało usunięte.",
+        deleteError: "Błąd podczas usuwania konta.",
+        status: {
+          active: "Aktywny",
+          pending: "Oczekuje",
+          deleted: "Usunięty",
+        },
+      },
     },
     allDevices: {
       summaryLabel: "Aktywne urządzenia",
@@ -453,6 +467,7 @@ const langPl = {
           cleanup_tasks: "Czyszczenie usuniętych zadań",
           cleanup_logs: "Czyszczenie starych logów",
           oauth: "Autoryzacja Google",
+          user_invite: "Zapraszanie użytkowników",
         },
       },
     },

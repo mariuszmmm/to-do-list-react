@@ -8,7 +8,7 @@ export const useCancelNotificationMutation = () => {
       const token = await getUserToken();
       if (!token) throw new Error("No auth token");
 
-      const response = await axios.delete(`/.netlify/functions/cancel-notification`, {
+      const response = await axios.delete(`/cancel-notification`, {
         params: { id: notificationId },
         headers: {
           Authorization: `Bearer ${token}`,

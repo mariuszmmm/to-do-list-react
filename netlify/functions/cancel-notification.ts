@@ -1,10 +1,8 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import axios from "axios";
 import { jsonResponse, logError } from "./lib/response";
 import { checkClientContext, checkHttpMethod } from "./lib/validators";
-
-const ONESIGNAL_APP_ID = process.env.REACT_APP_ONESIGNAL_APP_ID;
-const ONESIGNAL_REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY;
+import { connectToDB } from "../config/mongoose";
+import NotificationModel from "../models/Notification";
 
 export const handler: Handler = async (
   event: HandlerEvent,
@@ -18,44 +16,34 @@ export const handler: Handler = async (
   const authResponse = checkClientContext(context, logPrefix);
   if (authResponse) return authResponse;
 
-  if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
-    return jsonResponse(500, { message: "Missing OneSignal configuration" });
-  }
-
   try {
     const notificationId = event.queryStringParameters?.id;
     if (!notificationId) {
       return jsonResponse(400, { message: "Missing notification id" });
     }
 
-    console.log(`${logPrefix} Cancelling notification: ${notificationId}`);
+    console.log(`${logPrefix} Cancelling notification in DB: ${notificationId}`);
     
-    try {
-      const response = await axios.delete(
-        `https://onesignal.com/api/v1/notifications/${notificationId}?app_id=${ONESIGNAL_APP_ID}`,
-        {
-          headers: {
-            Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
-          },
-        }
-      );
+    await connectToDB();
 
-      return jsonResponse(200, { success: true, data: response.data });
-    } catch (err: any) {
-      // Jeśli powiadomienie zostało już wysłane lub nie istnieje (400/404), 
-      // traktujemy to jako sukces aplikacji (i tak zostanie usunięte z listy po odświeżeniu)
-      if (err.response?.status === 400 || err.response?.status === 404) {
-        console.log(`${logPrefix} Notification already processed or not found, treating as success.`);
+    try {
+      // Szukamy i usuwamy po ObjectId przysłanym z frontendu
+      const deletedDoc = await NotificationModel.findByIdAndDelete(notificationId);
+
+      if (!deletedDoc) {
+        console.log(`${logPrefix} Notification not found, treating as already processed/cancelled.`);
         return jsonResponse(200, { 
           success: true, 
-          message: "Notification already processed or not found",
-          onesignalError: err.response.data
+          message: "Notification already processed or not found" 
         });
       }
+
+      return jsonResponse(200, { success: true, message: "Notification cancelled" });
+    } catch (err: any) {
       throw err; // Inne błędy rzucamy dalej do głównego catcha
     }
   } catch (err: any) {
-    logError("Failed to cancel notification", err, logPrefix);
+    logError("Failed to cancel notification in DB", err, logPrefix);
     return jsonResponse(500, { 
       message: "Internal server error",
       error: err.response?.data || err.message

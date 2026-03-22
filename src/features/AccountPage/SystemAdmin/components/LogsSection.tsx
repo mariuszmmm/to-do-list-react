@@ -49,6 +49,7 @@ export const LogsSection = ({ logs }: LogsSectionProps) => {
                     cleanup_temp: "🗑️",
                     cleanup_tasks: "💨",
                     oauth: "🔑",
+                    user_invite: "✉️",
                   };
 
                   return (

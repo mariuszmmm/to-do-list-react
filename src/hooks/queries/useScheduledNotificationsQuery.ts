@@ -26,7 +26,7 @@ export const useScheduledNotificationsQuery = () => {
       if (!token || !email) return [];
 
       const response = await axios.get(
-        `/.netlify/functions/get-scheduled-notifications`,
+        `/get-scheduled-notifications`,
         {
           params: { email },
           headers: {

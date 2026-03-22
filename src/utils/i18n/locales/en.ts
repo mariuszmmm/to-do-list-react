@@ -308,6 +308,20 @@ const langEn: typeof langPl = {
         success: "Invitation sent successfully!",
         error: "Error sending invitation.",
       },
+      users: {
+        title: "User List",
+        loading: "Loading...",
+        empty: "No users in database.",
+        deleteButton: "Delete",
+        deleteConfirm: "Are you sure?",
+        deleteSuccess: "Account has been deleted.",
+        deleteError: "Error deleting account.",
+        status: {
+          active: "Active",
+          pending: "Pending",
+          deleted: "Deleted",
+        },
+      },
     },
     allDevices: {
       summaryLabel: "Active devices",
@@ -455,6 +469,7 @@ const langEn: typeof langPl = {
           cleanup_tasks: "Deleted Tasks Cleanup",
           cleanup_logs: "Old Logs Cleanup",
           oauth: "Google Authorization",
+          user_invite: "User Invitation",
         },
       },
     },
