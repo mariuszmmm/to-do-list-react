@@ -97,11 +97,18 @@ export const UsersHeader = styled.div`
 
 export const SubTitle = styled.h3`
   font-size: 18px;
-  margin: 0;
+  margin: 10px 0 15px;
   color: ${({ theme }) => theme.colors.textPrimary};
   display: flex;
   align-items: center;
   gap: 10px;
+
+  &::after {
+    content: "";
+    flex-grow: 1;
+    height: 1px;
+    background: ${({ theme }) => theme.colors.border.primary};
+  }
 `;
 
 export const UsersListItem = styled.div`
@@ -222,5 +229,3 @@ export const DeleteButton = styled.button<{ $isConfirm?: boolean }>`
     margin-left: 0;
   }
 `;
-
-

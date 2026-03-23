@@ -211,20 +211,21 @@ const cronHandler: Handler = async (event, context) => {
               web_push_topic: notif.taskId,
               persist: true,
               chrome_web_icon:
-                "https://to-do-list.myprojects.pl/logo-256x256.png?v=2",
+                "https://to-do-list.myprojects.pl/logo-256x256.png?v=3",
               chrome_web_badge:
-                "https://to-do-list.myprojects.pl/notification-badge.png?v=2",
-              // large_icon = mała ikona po prawej w zwiniętym powiadomieniu:
-              // jeśli jest zdjęcie zadania → zdjęcie, jeśli brak → logo aplikacji
-              large_icon:
-                notif.displayImage ||
-                "https://to-do-list.myprojects.pl/logo-256x256.png?v=2",
-              ...(notif.displayImage && {
-                // big_picture = duży obraz po rozwinięciu (Android ukrywa wtedy large_icon automatycznie)
-                big_picture: notif.displayImage,
-                // chrome_web_image = odpowiednik big_picture dla Web Push (desktop/Chrome)
-                chrome_web_image: notif.displayImage,
-              }),
+                "https://to-do-list.myprojects.pl/notification-badge.png?v=3",
+              // Jeśli jest zdjęcie zadania, nie ustawiamy large_icon, aby Android pokazał miniaturę zdjęcia w stanie zwiniętym,
+              // a w stanie rozwiniętym (Big Picture) nie duplikował logo/obrazka w nagłówku.
+              // Jeśli zdjęcia brak, logo aplikacji zostanie ustawione jako large_icon (widoczne po prawej w stanie zwiniętym).
+              ...(!notif.displayImage
+                ? {
+                    large_icon:
+                      "https://to-do-list.myprojects.pl/logo-256x256.png?v=3",
+                  }
+                : {
+                    big_picture: notif.displayImage,
+                    chrome_web_image: notif.displayImage,
+                  }),
               android_accent_color: "228C22", // ForestGreen z motywu aplikacji
               android_visibility: 1, // Publiczne
               web_push_options: {

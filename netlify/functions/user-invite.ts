@@ -65,10 +65,11 @@ export const handler: Handler = async (event, context) => {
     return bodyData as any;
   }
 
-  const { email } = bodyData as { email: string };
+  let { email } = bodyData as { email: string };
   if (!email) {
     return jsonResponse(400, { message: "Email is required." });
   }
+  email = email.toLowerCase().trim();
 
   // 4. Autoryzacja Admina (zgodnie z auth-ablyAuth.ts)
   const userEmail = contextUser?.email?.toLowerCase().trim();
@@ -107,11 +108,11 @@ export const handler: Handler = async (event, context) => {
     // Aktualizacja statusu w MongoDB, aby użytkownik nie był już "deleted"
     try {
       await connectToDB();
-      const dbUser = await UserData.findOne({ email: email.toLowerCase().trim() });
+      const dbUser = await UserData.findOne({ email });
       if (dbUser) {
         console.log(`${logPrefix} Updating DB user ${email} status to 'pending'`);
         await UserData.updateOne(
-          { email: email.toLowerCase().trim() },
+          { email },
           { account: "pending" }
         );
       }
@@ -170,11 +171,11 @@ export const handler: Handler = async (event, context) => {
           // Aktualizacja statusu w MongoDB również w ścieżce re-invite
           try {
             await connectToDB();
-            const dbUser = await UserData.findOne({ email: email.toLowerCase().trim() });
+            const dbUser = await UserData.findOne({ email });
             if (dbUser) {
               console.log(`${logPrefix} Updating DB user ${email} status to 'pending' (retry path)`);
               await UserData.updateOne(
-                { email: email.toLowerCase().trim() },
+                { email },
                 { account: "pending" }
               );
             }

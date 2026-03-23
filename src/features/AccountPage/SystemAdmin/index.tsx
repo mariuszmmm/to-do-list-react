@@ -15,6 +15,7 @@ import {
 } from "../../../utils/sync/ably";
 
 import { NetlifySection } from "./components/NetlifySection";
+import { VersionSection } from "./components/VersionSection";
 import { AblySection } from "./components/AblySection";
 import { DatabaseSection } from "./components/DatabaseSection";
 import { StorageSection } from "./components/StorageSection";
@@ -186,6 +187,9 @@ export const SystemAdmin = () => {
 
   return (
     <NameContainer $account>
+      {/* 0. Aplikacja i Zasoby */}
+      <VersionSection />
+
       {/* 1. Hosting i Platforma (Netlify) */}
       <NetlifySection netlifyStats={netlifyStats} />
 

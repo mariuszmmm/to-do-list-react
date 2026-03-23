@@ -95,7 +95,7 @@ export const ButtonContainer = styled(ModalButtonContainer)`
 export const ScheduledList = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border.primary};
   padding: 15px;
-  max-height: 320px;
+  max-height: 60vh;
   overflow-y: auto;
   background: ${({ theme }) => theme.colors.backgroundPrimary};
 

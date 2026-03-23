@@ -61,6 +61,16 @@ export const UserManagement = () => {
   );
   const [deletingEmail, setDeletingEmail] = useState<string | null>(null);
 
+  // Automatyczne zamykanie komunikatu po 5 sekundach
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const fetchUsers = useCallback(async () => {
     setIsLoadingUsers(true);
     try {
@@ -148,11 +158,39 @@ export const UserManagement = () => {
       if (!token) return;
       const response = await adminDeleteUserApi(token, targetEmail);
       if (response.success) {
+        setMessage({
+          text: t("userManagement.users.deleteSuccess"),
+          isError: false,
+        });
         // Zamiast ręcznej filtracji, czekamy na nową listę z serwera
         await fetchUsers();
+      } else {
+        let errorMessage = response.message;
+        if (errorMessage) {
+          try {
+            const translated = await translateText(errorMessage, i18n.language);
+            if (translated) {
+              errorMessage = translated;
+            }
+          } catch (err) {
+            console.error("Translation fail", err);
+          }
+        }
+
+        if (!errorMessage) {
+          errorMessage = t("userManagement.users.deleteError");
+        }
+
+        setMessage({
+          text: errorMessage,
+          isError: true,
+        });
       }
     } catch {
-      // silent fail
+      setMessage({
+        text: t("userManagement.users.deleteError"),
+        isError: true,
+      });
     } finally {
       setDeletingEmail(null);
     }
@@ -178,7 +216,7 @@ export const UserManagement = () => {
             required
             disabled={isInviting}
           />
-          <FormButton type="submit" disabled={isInviting || !email}>
+          <FormButton type="submit" disabled={isInviting}>
             {isInviting ? "..." : t("userManagement.invite.button")}
           </FormButton>
         </InviteInputWrapper>

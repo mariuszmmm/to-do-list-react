@@ -32,10 +32,11 @@ export const handler: Handler = async (event, context) => {
     return bodyData as any;
   }
 
-  const { email } = bodyData as { email: string };
+  let { email } = bodyData as { email: string };
   if (!email) {
     return jsonResponse(400, { message: "Email is required." });
   }
+  email = email.toLowerCase().trim();
 
   const logSystemEvent = async (status: "success" | "error", details?: string) => {
     try {
@@ -56,21 +57,24 @@ export const handler: Handler = async (event, context) => {
   try {
     await connectToDB();
 
-    // Znajdź użytkownika w bazie
-    const dbUser = await UserData.findOne({ email }).lean();
-    if (!dbUser) {
-      return jsonResponse(404, { message: "User not found in database." });
-    }
-
-    // Znajdź użytkownika w Identity za pomocą admin API
+    // 1. Znajdź użytkownika w Identity za pomocą admin API
     const listResponse = await axios.get(`${identity.url}/admin/users`, {
       headers: { Authorization: `Bearer ${identity.token}` },
     });
 
     const identityUser = (listResponse.data?.users || []).find(
-      (u: any) => u.email === email
+      (u: any) => (u.email || "").toLowerCase() === email
     );
 
+    // 2. Znajdź użytkownika w bazie
+    const dbUser = await UserData.findOne({ email }).lean();
+
+    // Jeśli nie ma go nigdzie, zwróć 404
+    if (!identityUser && !dbUser) {
+      return jsonResponse(404, { message: "User not found in Identity and database." });
+    }
+
+    // 3. Usuń z Identity, jeśli istnieje
     if (identityUser) {
       console.log(`${logPrefix} Deleting user from Identity: ${identityUser.id}`);
       await axios.delete(`${identity.url}/admin/users/${identityUser.id}`, {
@@ -80,17 +84,21 @@ export const handler: Handler = async (event, context) => {
       console.warn(`${logPrefix} User not found in Identity for: ${email}`);
     }
 
-    // Nowa logika statusów:
-    if (dbUser.account === "deleted") {
-      // Jeśli już był usunięty (soft delete), to teraz usuwamy go całkowicie (hard delete)
-      await UserData.deleteOne({ email });
-      console.log(`${logPrefix} User ${email} HARD deleted from database.`);
-      await logSystemEvent("success", `Admin HARD deleted user account from DB: ${email} (by ${userEmail})`);
+    // 4. Logika w bazie danych:
+    if (dbUser) {
+      if (dbUser.account === "deleted") {
+        // Jeśli już był usunięty (soft delete), to teraz usuwamy go całkowicie (hard delete)
+        await UserData.deleteOne({ email });
+        console.log(`${logPrefix} User ${email} HARD deleted from database.`);
+        await logSystemEvent("success", `Admin HARD deleted user account from DB: ${email} (by ${userEmail})`);
+      } else {
+        // Oznacz konto jako usunięte w bazie (soft delete)
+        await UserData.updateOne({ email }, { account: "deleted" });
+        console.log(`${logPrefix} User ${email} SOFT deleted (status set to deleted).`);
+        await logSystemEvent("success", `Admin SOFT deleted user account: ${email} (by ${userEmail})`);
+      }
     } else {
-      // Oznacz konto jako usunięte w bazie (soft delete)
-      await UserData.updateOne({ email }, { account: "deleted" });
-      console.log(`${logPrefix} User ${email} SOFT deleted (status set to deleted).`);
-      await logSystemEvent("success", `Admin SOFT deleted user account: ${email} (by ${userEmail})`);
+      console.log(`${logPrefix} User ${email} not found in DB, skipping DB deletion/update.`);
     }
 
     console.log(`${logPrefix} User ${email} deleted by admin ${userEmail}`);

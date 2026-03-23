@@ -64,7 +64,7 @@ export const NetlifySection = ({ netlifyStats }: NetlifySectionProps) => {
   };
 
   return (
-    <TopBorderSection $noBorder>
+    <TopBorderSection>
       <SectionTitle>{t("netlify.title")}</SectionTitle>
       <AnimatedExpandBlock $visible={!!netlifyStats}>
         <div>
