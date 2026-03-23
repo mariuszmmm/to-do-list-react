@@ -164,6 +164,23 @@ export const RefreshButton = styled.button`
     border-color: ${({ theme }) => theme.colors.button.check};
   }
 
+  svg {
+    transition: transform 0.3s;
+  }
+
+  &:disabled svg {
+    animation: rotate 1s linear infinite;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

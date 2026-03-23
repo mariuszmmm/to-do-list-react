@@ -67,7 +67,7 @@ function registerValidSW(swUrl: string, config?: Config) {
         () => {
           registration.update();
         },
-        60 * 60 * 1000,
+        10 * 60 * 1000,
       );
 
       registration.onupdatefound = () => {

@@ -1,24 +1,27 @@
 /* eslint-disable no-restricted-globals */
 
 /**
- * MEGA-STUB v24: Jawna rejestracja wszystkich zdarzeń na samym początku pliku.
+ * MEGA-STUB v0_DEV: Jawna rejestracja wszystkich zdarzeń na samym początku pliku.
  * Niektóre przeglądarki wymagają, aby te wywołania były statyczne i natychmiastowe.
  */
-self.addEventListener("message", function(event) {
-    if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
-    if (event.data && event.data.type === "GET_VERSION") {
-        event.source.postMessage({ type: "VERSION_INFO", version: "todo-list-v24" });
-    }
+self.addEventListener("message", function (event) {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+  if (event.data && event.data.type === "GET_VERSION") {
+    event.source.postMessage({
+      type: "VERSION_INFO",
+      version: "todo-list-v0_DEV",
+    });
+  }
 });
-self.addEventListener("push", function(event) {});
-self.addEventListener("notificationclick", function(event) {});
-self.addEventListener("notificationclose", function(event) {});
-self.addEventListener("fetch", function(event) {});
+self.addEventListener("push", function (event) {});
+self.addEventListener("notificationclick", function (event) {});
+self.addEventListener("notificationclose", function (event) {});
+self.addEventListener("fetch", function (event) {});
 
 // Import SDK OneSignal po zarejestrowaniu stubów
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
-const CACHE_NAME = "todo-list-v24";
+const CACHE_NAME = "todo-list-v0_DEV";
 
 const urlsToCache = [
   "/",

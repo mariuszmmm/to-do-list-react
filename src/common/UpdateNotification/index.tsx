@@ -34,7 +34,7 @@ export const UpdateNotification = () => {
             setTimeout(() => {
               navigator.serviceWorker.removeEventListener("message", handler);
               resolve(null);
-            }, 400); // krótki timeout żeby nie blokować UI
+            }, 1000); // Wydłużony timeout (1s) dla urządzeń mobilnych
           });
         };
 
@@ -94,16 +94,32 @@ export const UpdateNotification = () => {
 
     init();
 
+    // Dodatkowe, agresywne sprawdzanie aktualizacji przy powrocie użytkownika do aplikacji
+    const handleRevisit = async () => {
+      if (document.visibilityState === "visible") {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          await reg.update();
+          checkUpdateState(reg);
+        }
+      }
+    };
+
     const handleCustomEvent = async (event: Event) => {
       const customEvent = event as CustomEvent;
       if (customEvent.detail) {
         checkUpdateState(customEvent.detail); // Przekazujemy całą rejestrację upewniając się że fałszywe powiadomienia są zbijane
       }
     };
+
     window.addEventListener("sw-update-available", handleCustomEvent);
+    document.addEventListener("visibilitychange", handleRevisit);
+    window.addEventListener("focus", handleRevisit);
 
     return () => {
       window.removeEventListener("sw-update-available", handleCustomEvent);
+      document.removeEventListener("visibilitychange", handleRevisit);
+      window.removeEventListener("focus", handleRevisit);
     };
   }, [checkUpdateState]);
 
@@ -164,9 +180,7 @@ export const UpdateNotification = () => {
   // Zapobiega to pokazywaniu paska, gdy użytkownik jest w trakcie zmiany sesji
   if (
     !showNotification ||
-    accountMode === "login" ||
-    accountMode === "accountSwitch" ||
-    accountMode === "accountRegister"
+    accountMode === "accountSwitch"
   ) {
     return null;
   }

@@ -107,6 +107,7 @@ export const NotificationModal = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const [date, setDate] = useState("");
+  const [isActionPending, setIsActionPending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Pobieranie listy zaplanowanych powiadomień przy użyciu React Query
@@ -258,14 +259,17 @@ export const NotificationModal = () => {
         (old) => old?.filter((n) => n.id !== id) || [],
       );
 
+      setIsActionPending(true);
       try {
         await cancelNotification.mutateAsync(id);
-        // Odświeżamy listę po krótkim czasie, aby upewnić się, że stan na serwerze jest zaktualizowany
-        setTimeout(() => refetch(), 1500);
+        // Odświeżamy listę i czekamy na wynik
+        await refetch();
       } catch (err) {
         console.error("Delete notification error:", err);
         // W razie błędu przywracamy listę z serwera
-        refetch();
+        await refetch();
+      } finally {
+        setIsActionPending(false);
       }
     }
   };
@@ -311,6 +315,7 @@ export const NotificationModal = () => {
       const currentToken = await getUserToken();
       if (!currentToken) throw new Error("Missing auth token");
 
+      setIsActionPending(true);
       /**
        * Wywołanie mutacji planującej powiadomienie (wysłanie do Netlify Functions).
        */
@@ -330,11 +335,13 @@ export const NotificationModal = () => {
         },
       });
 
-      // Odświeżenie listy po sukcesie
-      setTimeout(() => refetch(), 1500);
+      // Odświeżenie listy natychmiast po sukcesie - czekamy na finish
+      await refetch();
     } catch (error) {
       console.error("[handleSubmit]", error);
       alert(t("modal.notifications.error"));
+    } finally {
+      setIsActionPending(false);
     }
   };
 
@@ -373,15 +380,15 @@ export const NotificationModal = () => {
               <ModalCancelButtonUnified
                 type="button"
                 onClick={handleClose}
-                disabled={scheduleNotification.isPending}
+                disabled={isActionPending}
               >
                 {t("modal.buttons.cancelButton")}
               </ModalCancelButtonUnified>
               <SaveButton
                 type="submit"
-                disabled={scheduleNotification.isPending}
+                disabled={isActionPending}
               >
-                {scheduleNotification.isPending
+                {isActionPending
                   ? t("tasksPage.form.buttons.loading")
                   : t("modal.notifications.confirm")}
               </SaveButton>
@@ -449,6 +456,7 @@ export const NotificationModal = () => {
                     formatDisplayDate={formatDisplayDate}
                     handleDeleteNotification={handleDeleteNotification}
                     cancelPending={cancelNotification.isPending}
+                    isActionPending={isActionPending}
                     t={t}
                   />
                 ))}
@@ -464,12 +472,14 @@ const ScheduledNotificationItem = ({
   formatDisplayDate,
   handleDeleteNotification,
   cancelPending,
+  isActionPending,
   t,
 }: {
   notif: ScheduledNotification;
   formatDisplayDate: (d: any) => string;
   handleDeleteNotification: (id: string) => void;
   cancelPending: boolean;
+  isActionPending: boolean;
   t: any;
 }) => {
   const content = notif.content || "";
@@ -494,7 +504,7 @@ const ScheduledNotificationItem = ({
         <RemoveButton
           type="button"
           onClick={() => handleDeleteNotification(notif.id)}
-          disabled={cancelPending}
+          disabled={cancelPending || isActionPending}
           title={t("modal.notifications.cancelTooltip")}
         >
           🗑️

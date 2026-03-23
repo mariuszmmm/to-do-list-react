@@ -39,6 +39,7 @@ export const SectionHeader = styled.header<SectionHeaderProps>`
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     flex-direction: ${({ $onlyOpenButton }) =>
       $onlyOpenButton ? "row" : "column"};
+    padding: 15px;
   }
   -webkit-tap-highlight-color: transparent;
 `;
@@ -71,6 +72,6 @@ export const BodyWrapper = styled.div<BodyWrapperProps>`
   padding: 20px;
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    padding: ${({ $taskList }) => ($taskList ? "20px 10px" : "20px")};
+    padding: ${({ $taskList }) => ($taskList ? "15px 10px" : "15px")};
   }
 `;

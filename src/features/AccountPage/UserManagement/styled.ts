@@ -15,6 +15,10 @@ export const InviteSection = styled.form`
   background: ${({ theme }) => theme.colors.backgroundSecendary};
   border: 2px dashed ${({ theme }) => theme.colors.border.primary};
   border-radius: 12px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+    padding: 15px;
+  }
 `;
 
 export const InviteInputWrapper = styled.div`
@@ -22,12 +26,13 @@ export const InviteInputWrapper = styled.div`
   gap: 10px;
   align-items: stretch;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     flex-direction: column;
   }
 
   & > input {
     flex-grow: 1;
+    min-width: 0;
   }
 
   & > button {
@@ -106,9 +111,15 @@ export const UsersListItem = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border.primary};
   border-radius: 10px;
   transition: border-color 0.2s;
+  flex-wrap: wrap;
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.nav.background};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMin}) {
+    padding: 10px;
+    gap: 8px;
   }
 `;
 
@@ -118,6 +129,11 @@ export const UserInfo = styled.div`
   gap: 10px;
   flex: 1;
   min-width: 0;
+  flex-wrap: wrap;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    gap: 6px;
+  }
 `;
 
 export const UserEmail = styled.span`
@@ -127,9 +143,20 @@ export const UserEmail = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 120px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
-export const UserStatusBadge = styled.span<{ $status: "active" | "pending" | "deleted" }>`
+export const UserStatusBadge = styled.span<{
+  $status: "active" | "pending" | "deleted";
+}>`
   font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
@@ -173,6 +200,7 @@ export const DeleteButton = styled.button<{ $isConfirm?: boolean }>`
   white-space: nowrap;
   flex-shrink: 0;
   transition: all 0.2s;
+  margin-left: auto;
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.status.error};
@@ -183,5 +211,11 @@ export const DeleteButton = styled.button<{ $isConfirm?: boolean }>`
   &:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    width: 100%;
+    padding: 8px;
+    margin-left: 0;
   }
 `;

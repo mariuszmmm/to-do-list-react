@@ -35,7 +35,6 @@ export const handler: Handler = async (
     const notifications = await NotificationModel.find({
       userEmail: email,
       status: "pending",
-      send_after: { $gt: nowSeconds },
     }).lean();
 
     const userNotifications = notifications.map((n: any) => ({

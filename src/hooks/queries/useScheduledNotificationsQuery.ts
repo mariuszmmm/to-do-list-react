@@ -28,7 +28,7 @@ export const useScheduledNotificationsQuery = () => {
       const response = await axios.get(
         `/get-scheduled-notifications`,
         {
-          params: { email },
+          params: { email, _t: Date.now() },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,6 +38,5 @@ export const useScheduledNotificationsQuery = () => {
       return response.data;
     },
     enabled: !!email,
-    refetchInterval: 60000, // Odświeżaj co 60 sekund
   });
 };
