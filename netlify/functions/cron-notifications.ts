@@ -30,7 +30,9 @@ const cronHandler: Handler = async (event, context) => {
       return { statusCode: 200, body: "No notifications to send" };
     }
 
-    console.log(`${logPrefix} Found ${pendingNotifications.length} notifications to send!`);
+    console.log(
+      `${logPrefix} Found ${pendingNotifications.length} notifications to send!`,
+    );
 
     for (const notif of pendingNotifications) {
       try {
@@ -60,7 +62,10 @@ const cronHandler: Handler = async (event, context) => {
         const emailSubject = currentLabels.subject;
         const buttonText = notif.buttonText || currentLabels.button;
         const heading = notif.heading || currentLabels.heading;
-        const finalContent = notif.content.length > 300 ? notif.content.substring(0, 300) + "..." : notif.content;
+        const finalContent =
+          notif.content.length > 300
+            ? notif.content.substring(0, 300) + "..."
+            : notif.content;
 
         const emailBody = `
           <!DOCTYPE html>
@@ -198,17 +203,27 @@ const cronHandler: Handler = async (event, context) => {
                 de: finalContent,
               },
               include_subscription_ids: [notif.subscriptionId],
-              data: { taskId: notif.taskId, listName: notif.listName, userEmail: notif.userEmail },
-              url: "https://to-do-list.myprojects.pl",
+              data: {
+                taskId: notif.taskId,
+                listName: notif.listName,
+                userEmail: notif.userEmail,
+              },
               web_push_topic: notif.taskId,
               persist: true,
-              chrome_web_icon: notif.displayImage || "https://to-do-list.myprojects.pl/logo-256x256.png",
-              chrome_web_badge: "https://to-do-list.myprojects.pl/favicon-96x96.png",
-              ...(notif.displayImage && { 
-                chrome_web_image: notif.displayImage,
-                // Dodatkowe mapowanie dla natywnego wyglądu na Androidzie
+              chrome_web_icon:
+                "https://to-do-list.myprojects.pl/logo-256x256.png?v=2",
+              chrome_web_badge:
+                "https://to-do-list.myprojects.pl/notification-badge.png?v=2",
+              // large_icon = mała ikona po prawej w zwiniętym powiadomieniu:
+              // jeśli jest zdjęcie zadania → zdjęcie, jeśli brak → logo aplikacji
+              large_icon:
+                notif.displayImage ||
+                "https://to-do-list.myprojects.pl/logo-256x256.png?v=2",
+              ...(notif.displayImage && {
+                // big_picture = duży obraz po rozwinięciu (Android ukrywa wtedy large_icon automatycznie)
                 big_picture: notif.displayImage,
-                large_icon: notif.displayImage,
+                // chrome_web_image = odpowiednik big_picture dla Web Push (desktop/Chrome)
+                chrome_web_image: notif.displayImage,
               }),
               android_accent_color: "228C22", // ForestGreen z motywu aplikacji
               android_visibility: 1, // Publiczne
@@ -229,14 +244,13 @@ const cronHandler: Handler = async (event, context) => {
                 "Content-Type": "application/json; charset=utf-8",
                 Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
               },
-            }
+            },
           );
         }
 
         // EMAIL za pomocą OneSignal (również natychmiast)
         let emailPromise: Promise<any> = Promise.resolve(null);
         if (notif.userEmail && notif.userEmail.includes("@")) {
-          let emailBodyParsed = emailBody;
           emailPromise = axios
             .post(
               "https://onesignal.com/api/v1/notifications",
@@ -244,37 +258,49 @@ const cronHandler: Handler = async (event, context) => {
                 app_id: ONESIGNAL_APP_ID,
                 include_email_tokens: [notif.userEmail],
                 email_subject: emailSubject,
-                email_body: emailBodyParsed,
+                email_body: emailBody,
               },
               {
                 headers: {
                   "Content-Type": "application/json; charset=utf-8",
                   Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
                 },
-              }
+              },
             )
             .catch((err) => {
-              console.warn(`${logPrefix} Email send failed for ${notif.userEmail}:`, err.response?.data || err.message);
+              console.warn(
+                `${logPrefix} Email send failed for ${notif.userEmail}:`,
+                err.response?.data || err.message,
+              );
               return null;
             });
         }
 
-        const [pushRes, emailRes] = await Promise.all([pushPromise, emailPromise]);
+        const [pushRes, emailRes] = await Promise.all([
+          pushPromise,
+          emailPromise,
+        ]);
 
         // Po wysłaniu (nawet jeśli częściowo coś failuje, traktujemy jako processed), oznacz jako "sent"
         notif.status = "sent";
         await notif.save();
 
-        console.log(`${logPrefix} Successfully sent & updated notification ID: ${notif._id}`);
-
+        console.log(
+          `${logPrefix} Successfully sent & updated notification ID: ${notif._id}`,
+        );
       } catch (innerError: any) {
-        console.error(`${logPrefix} Error processing notification ID: ${notif._id}`, innerError.response?.data || innerError.message);
+        console.error(
+          `${logPrefix} Error processing notification ID: ${notif._id}`,
+          innerError.response?.data || innerError.message,
+        );
         // Jeśli jest błąd, pozostawiamy "pending", zostanie spróbowane w kolejnym cronjobie za minutę
       }
     }
 
-    return { statusCode: 200, body: `Processed ${pendingNotifications.length} notifications` };
-
+    return {
+      statusCode: 200,
+      body: `Processed ${pendingNotifications.length} notifications`,
+    };
   } catch (err: any) {
     console.error(`${logPrefix} Fatal Error:`, err);
     return { statusCode: 500, body: "Internal server error" };
