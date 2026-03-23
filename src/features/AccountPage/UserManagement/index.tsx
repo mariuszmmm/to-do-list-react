@@ -19,9 +19,11 @@ import {
   UserEmail,
   UserStatusBadge,
   DeleteButton,
+  UsersHeader,
 } from "./styled";
 import { Input } from "../../../common/Input";
 import { FormButton } from "../../../common/FormButton";
+import { RefreshButton } from "../../../common/RefreshButton";
 import {
   StyledList,
   StyledListContent,
@@ -146,7 +148,8 @@ export const UserManagement = () => {
       if (!token) return;
       const response = await adminDeleteUserApi(token, targetEmail);
       if (response.success) {
-        setUsers((prev) => prev.filter((u) => u.email !== targetEmail));
+        // Zamiast ręcznej filtracji, czekamy na nową listę z serwera
+        await fetchUsers();
       }
     } catch {
       // silent fail
@@ -188,8 +191,18 @@ export const UserManagement = () => {
 
       {/* Lista wszystkich użytkowników */}
       <div>
-        <SubTitle>{t("userManagement.users.title")}</SubTitle>
-        {isLoadingUsers ? (
+        <UsersHeader>
+          <SubTitle>{t("userManagement.users.title")}</SubTitle>
+          <RefreshButton
+            onClick={() => fetchUsers()}
+            isLoading={isLoadingUsers}
+          >
+            {isLoadingUsers
+              ? i18n.t("modal.buttons.loading")
+              : i18n.t("modal.buttons.refreshButton")}
+          </RefreshButton>
+        </UsersHeader>
+        {isLoadingUsers && users.length === 0 ? (
           <StyledSpan $comment>{t("userManagement.users.loading")}</StyledSpan>
         ) : users.length === 0 ? (
           <StyledSpan $comment>{t("userManagement.users.empty")}</StyledSpan>

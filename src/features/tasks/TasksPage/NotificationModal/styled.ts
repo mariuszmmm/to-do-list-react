@@ -140,52 +140,7 @@ export const CounterBadge = styled.span`
   height: 18px;
 `;
 
-export const RefreshButton = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.button.check};
-  cursor: pointer;
-  padding: 4px 8px;
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: 130px;
-  font-size: 0.7rem;
-  font-weight: ${({ theme }) => theme.fontWeight.semiBold};
-  border-radius: 20px;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-  white-space: nowrap;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.backgroundSecendary};
-    border-color: ${({ theme }) => theme.colors.button.check};
-  }
-
-  svg {
-    transition: transform 0.3s;
-  }
-
-  &:disabled svg {
-    animation: rotate 1s linear infinite;
-  }
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
 
 export const ScheduledItem = styled.div`
   background: ${({ theme }) => theme.colors.backgroundSecendary};

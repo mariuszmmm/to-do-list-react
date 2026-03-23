@@ -41,7 +41,6 @@ import {
   ScheduledHeaderWrapper,
   ScheduledHeader,
   CounterBadge,
-  RefreshButton,
   ScheduledHeaderRow,
   ScheduledInfo,
   ScheduledDate,
@@ -50,6 +49,7 @@ import {
   ScheduledUserEmail,
 } from "./styled";
 import { RemoveButton } from "../../../../common/taskButtons";
+import { RefreshButton } from "../../../../common/RefreshButton";
 
 /**
  * Ikona kalendarza używana w polu daty oraz na liście zaplanowanych powiadomień.
@@ -70,26 +70,6 @@ const CalendarIconSVG = () => (
     <line x1="16" y1="2" x2="16" y2="6" />
     <line x1="8" y1="2" x2="8" y2="6" />
     <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-);
-
-/**
- * Ikona odświeżania używana w przycisku ręcznego aktualizowania listy.
- */
-const RefreshIconSVG = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M23 4v6h-6"></path>
-    <path d="M1 20v-6h6"></path>
-    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
   </svg>
 );
 
@@ -384,10 +364,7 @@ export const NotificationModal = () => {
               >
                 {t("modal.buttons.cancelButton")}
               </ModalCancelButtonUnified>
-              <SaveButton
-                type="submit"
-                disabled={isActionPending}
-              >
+              <SaveButton type="submit" disabled={isActionPending}>
                 {isActionPending
                   ? t("tasksPage.form.buttons.loading")
                   : t("modal.notifications.confirm")}
@@ -402,17 +379,13 @@ export const NotificationModal = () => {
                 {t("modal.notifications.scheduledTitle")}
                 {scheduledNotifications &&
                   scheduledNotifications.length > 0 && (
-                    <CounterBadge>
-                      {scheduledNotifications.length}
-                    </CounterBadge>
+                    <CounterBadge>{scheduledNotifications.length}</CounterBadge>
                   )}
               </ScheduledHeader>
               <RefreshButton
-                type="button"
                 onClick={() => refetch()}
-                disabled={isListLoading || isFetching}
+                isLoading={isListLoading || isFetching}
               >
-                <RefreshIconSVG />
                 {isFetching
                   ? t("modal.notifications.loading")
                   : t("modal.notifications.refresh")}

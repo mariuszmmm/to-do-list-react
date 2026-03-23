@@ -406,6 +406,7 @@ export const getUsersListApi = async (
 ): Promise<ApiResponse<{ users: UserListItem[] }>> => {
   try {
     const response = await axios.get("/user-list", {
+      params: { t: Date.now() },
       headers: { Authorization: `Bearer ${token}` },
     });
     return {

@@ -16,7 +16,7 @@ import ArchivedListsPage from "./features/ArchivedListPage";
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
-import { NotificationModal } from "./features/tasks/TasksPage/NotificationModal";
+import { NotificationModal } from "./features/tasks/TasksPage/NotificationModal/NotificationModal";
 import { TokenManager } from "./components/TokenManager";
 import { AblyManager } from "./components/AblyManager";
 import { ListSyncManager } from "./components/ListSyncManager";

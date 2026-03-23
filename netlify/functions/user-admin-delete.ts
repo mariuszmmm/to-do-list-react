@@ -80,8 +80,18 @@ export const handler: Handler = async (event, context) => {
       console.warn(`${logPrefix} User not found in Identity for: ${email}`);
     }
 
-    // Oznacz konto jako usunięte w bazie
-    await UserData.updateOne({ email }, { account: "deleted" });
+    // Nowa logika statusów:
+    if (dbUser.account === "deleted") {
+      // Jeśli już był usunięty (soft delete), to teraz usuwamy go całkowicie (hard delete)
+      await UserData.deleteOne({ email });
+      console.log(`${logPrefix} User ${email} HARD deleted from database.`);
+      await logSystemEvent("success", `Admin HARD deleted user account from DB: ${email} (by ${userEmail})`);
+    } else {
+      // Oznacz konto jako usunięte w bazie (soft delete)
+      await UserData.updateOne({ email }, { account: "deleted" });
+      console.log(`${logPrefix} User ${email} SOFT deleted (status set to deleted).`);
+      await logSystemEvent("success", `Admin SOFT deleted user account: ${email} (by ${userEmail})`);
+    }
 
     console.log(`${logPrefix} User ${email} deleted by admin ${userEmail}`);
     await logSystemEvent("success", `Admin deleted user account: ${email} (by ${userEmail})`);

@@ -85,20 +85,23 @@ export const Message = styled.div<{ $isError?: boolean }>`
     border-color 0.4s ease-in-out;
 `;
 
+export const UsersHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.primary};
+  padding-bottom: 5px;
+`;
+
 export const SubTitle = styled.h3`
   font-size: 18px;
-  margin: 10px 0 15px;
+  margin: 0;
   color: ${({ theme }) => theme.colors.textPrimary};
   display: flex;
   align-items: center;
   gap: 10px;
-
-  &::after {
-    content: "";
-    flex-grow: 1;
-    height: 1px;
-    background: ${({ theme }) => theme.colors.border.primary};
-  }
 `;
 
 export const UsersListItem = styled.div`
@@ -219,3 +222,5 @@ export const DeleteButton = styled.button<{ $isConfirm?: boolean }>`
     margin-left: 0;
   }
 `;
+
+

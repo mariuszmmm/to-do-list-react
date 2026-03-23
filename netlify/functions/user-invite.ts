@@ -8,6 +8,7 @@ import {
 } from "../functions/lib/validators";
 import { connectToDB } from "../config/mongoose";
 import SystemConfig from "../models/SystemConfig";
+import UserData from "../models/UserData";
 import { publishSystemLog } from "../functions/lib/ablyHelper";
 
 export const handler: Handler = async (event, context) => {
@@ -103,6 +104,22 @@ export const handler: Handler = async (event, context) => {
 
     console.log(`${logPrefix} Invite sent successfully to ${email}`);
 
+    // Aktualizacja statusu w MongoDB, aby użytkownik nie był już "deleted"
+    try {
+      await connectToDB();
+      const dbUser = await UserData.findOne({ email: email.toLowerCase().trim() });
+      if (dbUser) {
+        console.log(`${logPrefix} Updating DB user ${email} status to 'pending'`);
+        await UserData.updateOne(
+          { email: email.toLowerCase().trim() },
+          { account: "pending" }
+        );
+      }
+    } catch (dbError) {
+      console.error(`${logPrefix} Failed to update user status in DB:`, dbError);
+      // Nie przerywamy, bo zaproszenie w Identity poszło pomyślnie
+    }
+
     await logSystemEvent("success", `Successfully invited user: ${email}`, { email });
 
     return jsonResponse(200, {
@@ -149,6 +166,22 @@ export const handler: Handler = async (event, context) => {
           });
 
           console.log(`${logPrefix} Re-invite sent successfully to ${email}`);
+
+          // Aktualizacja statusu w MongoDB również w ścieżce re-invite
+          try {
+            await connectToDB();
+            const dbUser = await UserData.findOne({ email: email.toLowerCase().trim() });
+            if (dbUser) {
+              console.log(`${logPrefix} Updating DB user ${email} status to 'pending' (retry path)`);
+              await UserData.updateOne(
+                { email: email.toLowerCase().trim() },
+                { account: "pending" }
+              );
+            }
+          } catch (dbError) {
+            console.error(`${logPrefix} Failed to update user status in DB (retry path):`, dbError);
+          }
+
           await logSystemEvent("success", `Resent invitation to unconfirmed user: ${email}`, { email, isResend: true });
 
           return jsonResponse(200, {
