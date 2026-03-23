@@ -276,7 +276,7 @@ const cronHandler: Handler = async (event, context) => {
             });
         }
 
-        const [pushRes, emailRes] = await Promise.all([
+        await Promise.all([
           pushPromise,
           emailPromise,
         ]);
