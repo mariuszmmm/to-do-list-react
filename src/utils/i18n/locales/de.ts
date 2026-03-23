@@ -634,6 +634,7 @@ const langDe: typeof langPl = {
     buttons: {
       confirmButton: "Bestätigen",
       cancelButton: "Abbrechen",
+      cancelEdit: "Bearbeiten abbrechen",
       deleteButton: "Löschen",
       closeButton: "Schließen",
       logoutButton: "Abmelden",
@@ -666,6 +667,8 @@ const langDe: typeof langPl = {
         "Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?",
       deleteError: "Fehler beim Löschen der Benachrichtigung.",
       cancelTooltip: "Erinnerung abbrechen",
+      editTooltip: "Erinnerung bearbeiten",
+      confirmUpdate: "Aktualisieren",
       loading: "Wird geladen...",
       refresh: "Aktualisieren",
       listLabel: "Liste",

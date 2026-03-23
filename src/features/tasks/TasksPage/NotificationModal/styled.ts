@@ -121,13 +121,13 @@ export const ScheduledHeader = styled.h3`
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   display: flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
 `;
 
 export const CounterBadge = styled.span`
   background: ${({ theme }) => theme.colors.button.check};
-  color: ${({ theme }) =>
-    theme.colors.textPrimary === "#151515ff" ? "#fff" : "#fff"};
+  color: white;
   font-size: 0.65rem;
   padding: 2px 6px;
   border-radius: 10px;
@@ -138,26 +138,43 @@ export const CounterBadge = styled.span`
   line-height: 1;
   min-width: 18px;
   height: 18px;
+  flex-shrink: 0;
 `;
 
-
-
-export const ScheduledItem = styled.div`
-  background: ${({ theme }) => theme.colors.backgroundSecendary};
+export const ScheduledItem = styled.div<{
+  $isHovered?: boolean;
+  $isEditing?: boolean;
+  $isDimmed?: boolean;
+}>`
+  background: ${({ theme, $isEditing }) =>
+    $isEditing
+      ? theme.colors.textPrimary === "#151515ff"
+        ? "rgba(246, 168, 0, 0.08)"
+        : "rgba(246, 168, 0, 0.05)"
+      : theme.colors.backgroundSecendary};
+  opacity: ${({ $isDimmed }) => ($isDimmed ? 0.4 : 1)};
+  filter: ${({ $isDimmed }) => ($isDimmed ? "grayscale(40%)" : "none")};
+  pointer-events: ${({ $isDimmed }) => ($isDimmed ? "none" : "auto")};
   border-radius: 10px;
   padding: 12px;
   margin-bottom: 10px;
-  border: 1px solid ${({ theme }) => theme.colors.border.primary};
+  border: 1px solid
+    ${({ theme, $isHovered, $isEditing }) =>
+      $isEditing
+        ? theme.colors.info.value2
+        : $isHovered
+          ? theme.colors.button.check
+          : theme.colors.border.primary};
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: ${({ $isHovered, $isEditing }) =>
+    $isEditing || $isHovered
+      ? "0 4px 12px rgba(0, 0, 0, 0.15)"
+      : "0 2px 5px rgba(0, 0, 0, 0.05)"};
   transition: all 0.2s ease-in-out;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.button.check};
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
+  transform: ${({ $isEditing }) => ($isEditing ? "scale(1.01)" : "scale(1)")};
+  position: relative;
 `;
 
 export const ScheduledHeaderRow = styled.div`

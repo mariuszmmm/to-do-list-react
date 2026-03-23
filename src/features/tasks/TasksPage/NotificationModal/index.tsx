@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import {
   useAppDispatch,
   useAppSelector,
   useScheduleNotificationMutation,
+  useUpdateNotificationMutation,
   useScrollLock,
 } from "../../../../hooks";
 import {
@@ -48,7 +50,7 @@ import {
   ScheduledListName,
   ScheduledUserEmail,
 } from "./styled";
-import { RemoveButton } from "../../../../common/taskButtons";
+import { RemoveButton, EditButton } from "../../../../common/taskButtons";
 import { RefreshButton } from "../../../../common/RefreshButton";
 
 /**
@@ -88,6 +90,9 @@ export const NotificationModal = () => {
   const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const [date, setDate] = useState("");
   const [isActionPending, setIsActionPending] = useState(false);
+  const [editingNotificationId, setEditingNotificationId] = useState<
+    string | null
+  >(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Pobieranie listy zaplanowanych powiadomień przy użyciu React Query
@@ -101,6 +106,7 @@ export const NotificationModal = () => {
 
   const queryClient = useQueryClient();
   const scheduleNotification = useScheduleNotificationMutation();
+  const updateNotification = useUpdateNotificationMutation();
   const cancelNotification = useCancelNotificationMutation();
 
   // Blokujemy przewijanie tła, gdy modal jest otwarty
@@ -227,6 +233,27 @@ export const NotificationModal = () => {
     dispatch(setNotificationTask(null));
   };
 
+  const handleCancelClick = () => {
+    if (editingNotificationId) {
+      setEditingNotificationId(null);
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 5);
+      setDate(formatInputDate(now.toISOString()));
+    } else {
+      handleClose();
+    }
+  };
+
+  const handleEditNotification = (notif: ScheduledNotification) => {
+    setEditingNotificationId(notif.id);
+    const dateVal = notif.send_after;
+    const d =
+      typeof dateVal === "number"
+        ? new Date(dateVal * 1000)
+        : new Date(dateVal);
+    setDate(formatInputDate(d.toISOString()));
+  };
+
   /**
    * Anuluje zaplanowane powiadomienie.
    * Wykorzystuje optymistyczną aktualizację interfejsu (React Query).
@@ -296,24 +323,36 @@ export const NotificationModal = () => {
       if (!currentToken) throw new Error("Missing auth token");
 
       setIsActionPending(true);
-      /**
-       * Wywołanie mutacji planującej powiadomienie (wysłanie do Netlify Functions).
-       */
-      await scheduleNotification.mutateAsync({
-        token: currentToken,
-        payload: {
-          taskId: task.id,
-          content: truncatedTaskContent,
-          date: new Date(selectedDate).toISOString(),
-          userEmail: loggedUserEmail,
-          subscriptionId: subscriptionId,
-          heading: t("modal.notifications.label"),
-          buttonText: t("modal.notifications.button"),
-          listName: taskListMetaData.name || "",
-          lang: i18n.language || "pl",
-          displayImage: task.image?.imageUrl || null,
-        },
-      });
+
+      if (editingNotificationId) {
+        await updateNotification.mutateAsync({
+          token: currentToken,
+          payload: {
+            id: editingNotificationId,
+            date: new Date(selectedDate).toISOString(),
+          },
+        });
+        setEditingNotificationId(null);
+      } else {
+        /**
+         * Wywołanie mutacji planującej powiadomienie (wysłanie do Netlify Functions).
+         */
+        await scheduleNotification.mutateAsync({
+          token: currentToken,
+          payload: {
+            taskId: task.id,
+            content: truncatedTaskContent,
+            date: new Date(selectedDate).toISOString(),
+            userEmail: loggedUserEmail,
+            subscriptionId: subscriptionId,
+            heading: t("modal.notifications.label"),
+            buttonText: t("modal.notifications.button"),
+            listName: taskListMetaData.name || "",
+            lang: i18n.language || "pl",
+            displayImage: task.image?.imageUrl || null,
+          },
+        });
+      }
 
       // Odświeżenie listy natychmiast po sukcesie - czekamy na finish
       await refetch();
@@ -330,7 +369,11 @@ export const NotificationModal = () => {
       <ModalContainer>
         <ModalBody onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
-            <HeaderContent>{t("modal.notifications.title")}</HeaderContent>
+            <HeaderContent>
+              {editingNotificationId
+                ? t("modal.notifications.editTooltip")
+                : t("modal.notifications.title")}
+            </HeaderContent>
           </ModalHeader>
 
           {/* Formularz planowania nowej notyfikacji */}
@@ -340,7 +383,13 @@ export const NotificationModal = () => {
               <strong>{truncatedTaskContent}</strong>
             </p>
             <Label>
-              {t("modal.notifications.dateLabel")}
+              {editingNotificationId ? (
+                <span style={{ color: "#f6a800", fontWeight: "bold" }}>
+                  ✏️ {t("modal.notifications.editTooltip")}
+                </span>
+              ) : (
+                t("modal.notifications.dateLabel")
+              )}
               <RelativeWrapper onClick={handleFocus}>
                 <FakeInput>
                   {formatDisplayDate(date)}
@@ -359,15 +408,19 @@ export const NotificationModal = () => {
             <ButtonContainer>
               <ModalCancelButtonUnified
                 type="button"
-                onClick={handleClose}
+                onClick={handleCancelClick}
                 disabled={isActionPending}
               >
-                {t("modal.buttons.cancelButton")}
+                {editingNotificationId
+                  ? t("modal.buttons.cancelEdit")
+                  : t("modal.buttons.cancelButton")}
               </ModalCancelButtonUnified>
               <SaveButton type="submit" disabled={isActionPending}>
                 {isActionPending
                   ? t("tasksPage.form.buttons.loading")
-                  : t("modal.notifications.confirm")}
+                  : editingNotificationId
+                    ? t("modal.notifications.confirmUpdate")
+                    : t("modal.notifications.confirm")}
               </SaveButton>
             </ButtonContainer>
           </NotificationForm>
@@ -376,7 +429,7 @@ export const NotificationModal = () => {
           <ScheduledList>
             <ScheduledHeaderWrapper>
               <ScheduledHeader>
-                {t("modal.notifications.scheduledTitle")}
+                <span>{t("modal.notifications.scheduledTitle")}</span>
                 {scheduledNotifications &&
                   scheduledNotifications.length > 0 && (
                     <CounterBadge>{scheduledNotifications.length}</CounterBadge>
@@ -428,8 +481,15 @@ export const NotificationModal = () => {
                     notif={notif}
                     formatDisplayDate={formatDisplayDate}
                     handleDeleteNotification={handleDeleteNotification}
+                    handleEditNotification={handleEditNotification}
                     cancelPending={cancelNotification.isPending}
                     isActionPending={isActionPending}
+                    isEditing={notif.id === editingNotificationId}
+                    isEditMode={!!editingNotificationId}
+                    isDimmed={
+                      !!editingNotificationId &&
+                      editingNotificationId !== notif.id
+                    }
                     t={t}
                   />
                 ))}
@@ -440,27 +500,64 @@ export const NotificationModal = () => {
   );
 };
 
+const LocalEditBadge = styled.div`
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: ${({ theme }) => theme.colors.info.value2};
+  color: ${({ theme }) => theme.colors.button.primaryText};
+  font-size: 0.65rem;
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  pointer-events: none;
+`;
+
 const ScheduledNotificationItem = ({
   notif,
   formatDisplayDate,
   handleDeleteNotification,
+  handleEditNotification,
   cancelPending,
   isActionPending,
+  isEditing,
+  isEditMode,
+  isDimmed,
   t,
 }: {
   notif: ScheduledNotification;
   formatDisplayDate: (d: any) => string;
-  handleDeleteNotification: (id: string) => void;
+  handleDeleteNotification: (id: string) => Promise<void>;
+  handleEditNotification: (notif: ScheduledNotification) => void;
   cancelPending: boolean;
   isActionPending: boolean;
+  isEditing: boolean;
+  isEditMode: boolean;
+  isDimmed: boolean;
   t: any;
 }) => {
   const content = notif.content || "";
   const displayedContent =
     content.length > 300 ? content.slice(0, 300) + "..." : content;
 
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <ScheduledItem>
+    <ScheduledItem
+      $isHovered={isHovered}
+      $isEditing={isEditing}
+      $isDimmed={isDimmed}
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerLeave={() => setIsHovered(false)}
+    >
+      {isEditing && (
+        <LocalEditBadge>
+          ✏️ {t("modal.notifications.confirmUpdate")}
+        </LocalEditBadge>
+      )}
       <ScheduledHeaderRow>
         <ScheduledInfo>
           <ScheduledDate>
@@ -474,14 +571,28 @@ const ScheduledNotificationItem = ({
             {notif.data?.listName || t("modal.notifications.listLabel")}
           </ScheduledListName>
         </ScheduledInfo>
-        <RemoveButton
-          type="button"
-          onClick={() => handleDeleteNotification(notif.id)}
-          disabled={cancelPending || isActionPending}
-          title={t("modal.notifications.cancelTooltip")}
-        >
-          🗑️
-        </RemoveButton>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <EditButton
+            type="button"
+            onClick={() => handleEditNotification(notif)}
+            disabled={cancelPending || isActionPending || isEditMode}
+            title={t("modal.notifications.editTooltip")}
+          >
+            ✏️
+          </EditButton>
+          <RemoveButton
+            type="button"
+            onClick={async (e) => {
+              e.stopPropagation();
+              setIsHovered(false);
+              await handleDeleteNotification(notif.id);
+            }}
+            disabled={cancelPending || isActionPending || isEditMode}
+            title={t("modal.notifications.cancelTooltip")}
+          >
+            🗑️
+          </RemoveButton>
+        </div>
       </ScheduledHeaderRow>
       <ScheduledText>{displayedContent}</ScheduledText>
     </ScheduledItem>

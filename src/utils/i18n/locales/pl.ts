@@ -628,6 +628,7 @@ const langPl = {
     buttons: {
       confirmButton: "Potwierdź",
       cancelButton: "Anuluj",
+      cancelEdit: "Anuluj edycję",
       deleteButton: "Usuń",
       closeButton: "Zamknij",
       logoutButton: "Wyloguj",
@@ -658,6 +659,8 @@ const langPl = {
       confirmDelete: "Czy na pewno chcesz usunąć to powiadomienie?",
       deleteError: "Błąd podczas usuwania powiadomienia.",
       cancelTooltip: "Anuluj przypomnienie",
+      editTooltip: "Edytuj przypomnienie",
+      confirmUpdate: "Zaktualizuj",
       loading: "Ładowanie...",
       refresh: "Odśwież",
       listLabel: "Lista",

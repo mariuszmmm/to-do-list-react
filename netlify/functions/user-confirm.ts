@@ -67,6 +67,10 @@ const handler: Handler = async (event) => {
       if (!foundUser) {
         return jsonResponse(500, { message: "Failed to create user." });
       }
+    } else if (foundUser.account !== "active") {
+      console.log(`${logPrefix} Existing user ${email} confirmed, status change: ${foundUser.account} -> active`);
+      foundUser.account = "active";
+      await foundUser.save();
     }
 
     try {

@@ -20,3 +20,17 @@ export const scheduleNotification = async (
 
   return response.data;
 };
+
+export const updateNotification = async (
+  token: string,
+  payload: {
+    id: string;
+    date: string;
+  },
+) => {
+  const response = await axios.put("/update-notification", payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data;
+};

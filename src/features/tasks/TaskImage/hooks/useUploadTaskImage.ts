@@ -26,6 +26,20 @@ export const useUploadTaskImage = () => {
   const [phase, setPhase] = useState<UploadPhase>("idle");
 
   const mutation = useMutation({
+    retry: (failureCount, error) => {
+      if (error instanceof UploadError) {
+        if (
+          error.code === UploadErrorCode.UPLOAD_CANCELED ||
+          error.code === UploadErrorCode.NOT_AUTHENTICATED ||
+          error.code === UploadErrorCode.NO_FILE_SELECTED ||
+          error.code === UploadErrorCode.INVALID_FILE_TYPE ||
+          error.code === UploadErrorCode.FILE_TOO_LARGE
+        ) {
+          return false;
+        }
+      }
+      return failureCount < 1;
+    },
     mutationFn: async ({
       file,
       taskImageProps,

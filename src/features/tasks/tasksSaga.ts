@@ -107,7 +107,7 @@ function* setListToLoadHandler(
     tasksToLoad = [...listToLoadData.taskList];
   }
 
-  if (tasks.length > 0) yield archiveTasksHandler();
+  if (tasks.length > 0 && !taskListMetaData.synced) yield archiveTasksHandler();
 
   yield put(
     setTasks({

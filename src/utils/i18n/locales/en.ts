@@ -626,6 +626,7 @@ const langEn: typeof langPl = {
     buttons: {
       confirmButton: "Confirm",
       cancelButton: "Cancel",
+      cancelEdit: "Cancel Edit",
       deleteButton: "Delete",
       closeButton: "Close",
       logoutButton: "Logout",
@@ -656,6 +657,8 @@ const langEn: typeof langPl = {
       confirmDelete: "Are you sure you want to delete this notification?",
       deleteError: "Error while deleting notification.",
       cancelTooltip: "Cancel reminder",
+      editTooltip: "Edit reminder",
+      confirmUpdate: "Update",
       loading: "Loading...",
       refresh: "Refresh",
       listLabel: "List",

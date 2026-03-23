@@ -15,9 +15,9 @@ export const getData = async (context: HandlerContext, logPrefix: string) => {
         account: "active",
         lists: [],
       });
-    } else if (foundUser.account === "deleted") {
+    } else if (foundUser.account === "deleted" || foundUser.account === "pending") {
       console.warn(
-        `${logPrefix} User account is deleted, reactivating: ${email}`,
+        `${logPrefix} User account is ${foundUser.account}, activating: ${email}`,
       );
       foundUser.account = "active";
       await foundUser.save();

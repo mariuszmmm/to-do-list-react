@@ -163,6 +163,11 @@
   status = 200
 
 [[redirects]]
+  from = "/update-notification"
+  to = "/.netlify/functions/update-notification"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

@@ -36,7 +36,12 @@ import { UseMutationResult } from "@tanstack/react-query";
 
 type Props = {
   listsData?: ListsData;
-  saveListMutation: UseMutationResult<{ data: ListsData }, Error, { list: List; deviceId: string }, unknown>;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
 };
 
 export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
@@ -58,7 +63,11 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   });
   const { isPending, isError } = saveListMutation;
 
-  const isChanged = listStatus.isRemoteSaveable && !listStatus.isIdenticalToRemote && !isError && !isPending;
+  const isChanged =
+    listStatus.isRemoteSaveable &&
+    !listStatus.isIdenticalToRemote &&
+    !isError &&
+    !isPending;
 
   return (
     <ButtonsContainer>
@@ -68,7 +77,13 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
             dispatch(setChangeSource("local"));
             dispatch(setListStatus({ manualSaveTriggered: true }));
           }}
-          disabled={!taskListMetaData.name || !!listNameToEdit || isPending || !!editedTaskContent || isTasksSorting}
+          disabled={
+            !taskListMetaData.name ||
+            !!listNameToEdit ||
+            isPending ||
+            !!editedTaskContent ||
+            isTasksSorting
+          }
         >
           <span>
             <CircleIcon
@@ -85,7 +100,9 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
         onClick={() => {
           areTasksEmpty
             ? dispatch(clearTaskList({ tasks, taskListMetaData }))
-            : dispatch(setTaskListToArchive({ name: taskListMetaData.name, tasks }));
+            : dispatch(
+                setTaskListToArchive({ name: taskListMetaData.name, tasks }),
+              );
         }}
         disabled={!!editedTaskContent || isTasksSorting}
       >
@@ -93,13 +110,23 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       </Button>
       <Button
         onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskDone || areTasksEmpty || !!editedTaskContent || isTasksSorting}
+        disabled={
+          isEveryTaskDone ||
+          areTasksEmpty ||
+          !!editedTaskContent ||
+          isTasksSorting
+        }
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
         onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
-        disabled={isEveryTaskUndone || areTasksEmpty || !!editedTaskContent || isTasksSorting}
+        disabled={
+          isEveryTaskUndone ||
+          areTasksEmpty ||
+          !!editedTaskContent ||
+          isTasksSorting
+        }
       >
         {t("tasks.buttons.allUndone")}
       </Button>
@@ -119,16 +146,28 @@ export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
       </Button>
       <ButtonsContainer $sub>
         <Button
-          disabled={undoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
+          disabled={
+            undoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting
+          }
           onClick={() => dispatch(undoTasks())}
-          title={undoTasksStack.length === 0 || !!editedTaskContent ? "" : t("tasks.buttons.undo")}
+          title={
+            undoTasksStack.length === 0 || !!editedTaskContent
+              ? ""
+              : t("tasks.buttons.undo")
+          }
         >
           <UndoIcon />
         </Button>
         <Button
-          disabled={redoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting}
+          disabled={
+            redoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting
+          }
           onClick={() => dispatch(redoTasks())}
-          title={redoTasksStack.length === 0 || !!editedTaskContent ? "" : t("tasks.buttons.redo")}
+          title={
+            redoTasksStack.length === 0 || !!editedTaskContent
+              ? ""
+              : t("tasks.buttons.redo")
+          }
         >
           <RedoIcon />
         </Button>
