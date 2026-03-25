@@ -2,13 +2,13 @@ import type { Handler } from "@netlify/functions";
 import axios from "axios";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
-import { jsonResponse } from "../functions/lib/response";
-import { checkHttpMethod, isUserAdmin, parseJsonBody } from "../functions/lib/validators";
-import { publishSystemLog } from "../functions/lib/ablyHelper";
+import { jsonResponse } from "../shared/lib/response";
+import { checkHttpMethod, isUserAdmin, parseJsonBody } from "../shared/lib/validators";
+import { publishSystemLog } from "../shared/lib/ablyHelper";
 import SystemConfig from "../models/SystemConfig";
 
 export const handler: Handler = async (event, context) => {
-  const logPrefix = "[user-admin-delete]";
+  const logPrefix = '[user-admin-delete]';
 
   const methodResponse = checkHttpMethod(event.httpMethod, "DELETE", logPrefix);
   if (methodResponse) return methodResponse;

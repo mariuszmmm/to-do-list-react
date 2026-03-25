@@ -2,11 +2,11 @@ import type { Handler } from "@netlify/functions";
 import axios from "axios";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
-import { jsonResponse } from "../functions/lib/response";
-import { checkHttpMethod, isUserAdmin } from "../functions/lib/validators";
+import { jsonResponse } from "../shared/lib/response";
+import { checkHttpMethod, isUserAdmin } from "../shared/lib/validators";
 
 export const handler: Handler = async (event, context) => {
-  const logPrefix = "[user-list]";
+  const logPrefix = '[user-list]';
 
   const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
   if (methodResponse) return methodResponse;

@@ -1,4 +1,5 @@
 import i18n from "./utils/i18n";
+import "./utils/debug/consoleLogger";
 import { setInputAutoFocusFlagIfRoot } from "./utils/navigation/setFirstLoadFlagIfRoot";
 import { I18nextProvider } from "react-i18next";
 import React from "react";
@@ -21,6 +22,7 @@ import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 // Obsługa tokenów uwierzytelniających i kodów OAuth z adresu URL (np. po powrocie z logowania Google)
+console.log("Aplikacja startuje..."); // Inicjalizacja pierwszej linii logów
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
 

@@ -26,7 +26,7 @@ export const useScheduledNotificationsQuery = () => {
       if (!token || !email) return [];
 
       const response = await axios.get(
-        `/get-scheduled-notifications`,
+        `/notification-list-scheduled`,
         {
           params: { email, _t: Date.now() },
           headers: {

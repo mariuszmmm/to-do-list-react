@@ -8,4 +8,6 @@ export type Settings = {
   isSwitcherOpen?: boolean;
   isSystemAdminOpen?: boolean;
   isNotificationsOpen?: boolean;
+  isSystemConsoleOpen?: boolean;
+  preserveLogs?: boolean;
 };

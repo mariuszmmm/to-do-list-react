@@ -1,3 +1,4 @@
+/* global importScripts */
 /* eslint-disable no-restricted-globals */
 
 /**
@@ -13,10 +14,10 @@ self.addEventListener("message", function (event) {
     });
   }
 });
-self.addEventListener("push", function (event) {});
-self.addEventListener("notificationclick", function (event) {});
-self.addEventListener("notificationclose", function (event) {});
-self.addEventListener("fetch", function (event) {});
+self.addEventListener("push", function () {});
+self.addEventListener("notificationclick", function () {});
+self.addEventListener("notificationclose", function () {});
+self.addEventListener("fetch", function () {});
 
 // Import SDK OneSignal po zarejestrowaniu stubów
 importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
@@ -64,21 +65,51 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   const apiRoutes = [
-    "/data",
-    "/image",
-    "/translate",
-    "/get-system-status",
+    "/data-lists",
+    "/image-cloudinary",
+    "/service-translate",
+    "/system-status",
+    "/system-diagnose",
     "/cleanup-orphan-images",
-    "/diagnose-system",
+    "/cleanup-temp-images",
+    "/cleanup-logs",
+    "/cleanup-deleted-tasks",
     "/resetPassword",
   ];
+
+  // Ignoruj API, Netlify i zewnętrzne domeny (np. OneSignal, Google Fonts)
   if (
     url.pathname.startsWith("/.netlify/") ||
     apiRoutes.includes(url.pathname) ||
-    url.hostname !== self.location.hostname
+    url.hostname !== self.location.hostname ||
+    url.pathname.includes("service-worker.js") ||
+    url.pathname.includes("OneSignalSDK")
   )
     return;
 
+  // STRATEGIA: Network-First dla nawigacji (index.html)
+  // Gwarantuje, że po odświeżeniu użytkownik dostanie najnowszy kod, jeśli jest online.
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.status === 200) {
+            const cacheCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, cacheCopy);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Offline: zwróć z cache
+          return caches.match("/index.html") || caches.match("/");
+        }),
+    );
+    return;
+  }
+
+  // STRATEGIA: Stale-While-Revalidate dla pozostałych zasobów (JS, CSS, obrazy)
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(event.request).then((cachedResponse) => {
@@ -92,11 +123,8 @@ self.addEventListener("fetch", (event) => {
             }
             return networkResponse;
           })
-          .catch(() => {
-            if (event.request.mode === "navigate")
-              return cache.match("/index.html");
-            return cachedResponse;
-          });
+          .catch(() => cachedResponse); // Jeśli błąd sieci, wróć do cache
+
         return cachedResponse || fetchPromise;
       });
     }),

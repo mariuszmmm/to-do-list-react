@@ -1,4 +1,4 @@
-import { Image } from "./image";
+import { Image } from "./image-cloudinary";
 
 export type Task = {
   id: string;

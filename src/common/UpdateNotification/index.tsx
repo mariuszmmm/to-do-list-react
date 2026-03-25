@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../hooks/redux/redux";
 import { selectAccountMode } from "../../features/AccountPage/accountSlice";
@@ -14,42 +14,58 @@ export const UpdateNotification = () => {
   // Tryb konta (login, logged, itp.)
   const accountMode = useAppSelector(selectAccountMode);
 
+  // Ref do trzymania informacji o trwającym przeładowaniu, by uniknąć zapętleń
+  const isRefreshing = useRef(false);
+
   const checkUpdateState = useCallback(
     async (registration: ServiceWorkerRegistration) => {
-      // Funkcja cichego omijania "Phantom Updates" (fałszywych aktualizacji widmo z CDN)
-      const trySilentlySkip = async (waitingWorker: ServiceWorker) => {
+      console.log("[UpdateNotification] Sprawdzanie stanu aktualizacji...", {
+        waiting: !!registration.waiting,
+        installing: !!registration.installing,
+        active: !!registration.active,
+      });
+
+      // Funkcja omijania "Phantom Updates" (puste aktualizacje bez zmiany kodu)
+      const trySilentlySkip = async (worker: ServiceWorker) => {
         const getWorkerVersion = (
-          worker: ServiceWorker,
+          sw: ServiceWorker,
+          label: string,
         ): Promise<string | null> => {
           return new Promise((resolve) => {
-            if (worker.state === "redundant") return resolve(null);
+            if (sw.state === "redundant") return resolve(null);
+            
             const handler = (event: MessageEvent) => {
               if (event.data && event.data.type === "VERSION_INFO") {
                 navigator.serviceWorker.removeEventListener("message", handler);
+                console.log(`[UpdateNotification] Otrzymano wersję dla ${label}:`, event.data.version);
                 resolve(event.data.version);
               }
             };
+            
             navigator.serviceWorker.addEventListener("message", handler);
-            worker.postMessage({ type: "GET_VERSION" });
+            console.log(`[UpdateNotification] Wysyłanie GET_VERSION do ${label}...`);
+            sw.postMessage({ type: "GET_VERSION" });
+            
+            // Timeout 2s dla większej niezawodności w desktopowych przeglądarkach
             setTimeout(() => {
               navigator.serviceWorker.removeEventListener("message", handler);
               resolve(null);
-            }, 1000); // Wydłużony timeout (1s) dla urządzeń mobilnych
+            }, 2000);
           });
         };
 
         const activeWorker = registration.active;
-        if (activeWorker && waitingWorker) {
-          const activeVersion = await getWorkerVersion(activeWorker);
-          const waitingVersion = await getWorkerVersion(waitingWorker);
+        if (activeWorker && worker && activeWorker !== worker) {
+          const activeVersion = await getWorkerVersion(activeWorker, "ActiveWorker");
+          const waitingVersion = await getWorkerVersion(worker, "NewWorker");
+          
           if (
             activeVersion &&
             waitingVersion &&
             activeVersion === waitingVersion
           ) {
-            // Unikalny timestamp na serwerze nie uległ zmianie (ten sam kod źródłowy).
-            // Jest to fałszywy alarm wygenerowany przez przeglądarkę i cache. Odrzucamy cicho!
-            waitingWorker.postMessage({ type: "SKIP_WAITING" });
+            console.log("[UpdateNotification] Wykryto Phantom Update (wersje identyczne). Omijanie...");
+            worker.postMessage({ type: "SKIP_WAITING" });
             return true;
           }
         }
@@ -57,8 +73,10 @@ export const UpdateNotification = () => {
       };
 
       if (registration.waiting) {
+        console.log("[UpdateNotification] Znaleziono oczekujący Service Worker.");
         const isPhantom = await trySilentlySkip(registration.waiting);
         if (!isPhantom) {
+          console.log("[UpdateNotification] Wykryto REALNĄ aktualizację. Pokazuję powiadomienie.");
           setWaitingWorker(registration.waiting);
           setShowNotification(true);
         }
@@ -66,11 +84,14 @@ export const UpdateNotification = () => {
       }
 
       if (registration.installing) {
+        console.log("[UpdateNotification] Znaleziono instalujący się Service Worker.");
         const worker = registration.installing;
         worker.addEventListener("statechange", async () => {
+          console.log("[UpdateNotification] Zmiana stanu instalującego się SW:", worker.state);
           if (worker.state === "installed") {
             const isPhantom = await trySilentlySkip(worker);
             if (!isPhantom) {
+              console.log("[UpdateNotification] Nowy SW zainstalowany. Pokazuję powiadomienie.");
               setWaitingWorker(worker);
               setShowNotification(true);
             }
@@ -85,65 +106,104 @@ export const UpdateNotification = () => {
     if (!("serviceWorker" in navigator)) return;
 
     const init = async () => {
-      const registration = await navigator.serviceWorker.getRegistration();
-      if (registration) {
-        checkUpdateState(registration);
-        registration.onupdatefound = () => checkUpdateState(registration);
+      try {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          checkUpdateState(registration);
+          
+          // Upewniamy się, że nie nadpisujemy ważnych listenerów, ale reagujemy na nowe
+          const originalOnUpdateFound = registration.onupdatefound;
+          registration.onupdatefound = (ev: Event) => {
+            console.log("[UpdateNotification] Wykryto onupdatefound w rejestracji.");
+            checkUpdateState(registration);
+            if (typeof originalOnUpdateFound === "function") {
+              originalOnUpdateFound.call(registration, ev);
+            }
+          };
+        }
+      } catch (err) {
+        console.error("[UpdateNotification] Błąd podczas pobierania rejestracji SW:", err);
       }
     };
 
     init();
 
-    // Dodatkowe, agresywne sprawdzanie aktualizacji przy powrocie użytkownika do aplikacji
+    // Reagujemy na zdarzenie z serviceWorkerRegistration.ts (jeśli tamto zadziała pierwsze)
+    const handleCustomEvent = async (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail) {
+        console.log("[UpdateNotification] Otrzymano sw-update-available (CustomEvent).");
+        checkUpdateState(customEvent.detail);
+      }
+    };
+
+    // Obsługa przeładowania przy zmianie kontrolera (np. gdy inna karta kliknie "Aktualizuj")
+    const handleControllerChange = () => {
+      console.log("[UpdateNotification] Wykryto zmianę kontrolera (controllerchange).");
+      if (!isRefreshing.current && localStorage.getItem("pwa_updating_global")) {
+        console.log("[UpdateNotification] Wykryto flagę aktualizacji. Przeładowuję stronę...");
+        isRefreshing.current = true;
+        localStorage.removeItem("pwa_updating_global");
+        window.location.reload();
+      }
+    };
+
+    // Agresywne sprawdzanie przy powrocie użytkownika
     const handleRevisit = async () => {
       if (document.visibilityState === "visible") {
+        console.log("[UpdateNotification] Powrót do aplikacji. Sprawdzanie aktualizacji wymuszone.");
         const reg = await navigator.serviceWorker.getRegistration();
         if (reg) {
-          await reg.update();
-          checkUpdateState(reg);
+          try {
+            await reg.update();
+            checkUpdateState(reg);
+          } catch (e) {
+            console.warn("[UpdateNotification] Nie udało się wymusić aktualizacji:", e);
+          }
         }
       }
     };
 
-    const handleCustomEvent = async (event: Event) => {
-      const customEvent = event as CustomEvent;
-      if (customEvent.detail) {
-        checkUpdateState(customEvent.detail); // Przekazujemy całą rejestrację upewniając się że fałszywe powiadomienia są zbijane
-      }
-    };
-
     window.addEventListener("sw-update-available", handleCustomEvent);
+    navigator.serviceWorker.addEventListener("controllerchange", handleControllerChange);
     document.addEventListener("visibilitychange", handleRevisit);
     window.addEventListener("focus", handleRevisit);
 
     return () => {
       window.removeEventListener("sw-update-available", handleCustomEvent);
+      navigator.serviceWorker.removeEventListener("controllerchange", handleControllerChange);
       document.removeEventListener("visibilitychange", handleRevisit);
       window.removeEventListener("focus", handleRevisit);
     };
   }, [checkUpdateState]);
 
   const handleUpdate = async () => {
+    console.log("[UpdateNotification] Użytkownik kliknął Aktualizuj.");
     setShowNotification(false);
-    sessionStorage.setItem("pwa_updating", "true");
+    
+    // Używamy localStorage zamiast sessionStorage, aby inne karty też wiedziały że mogą się przeładować
+    localStorage.setItem("pwa_updating_global", "true");
 
     try {
       if ("caches" in window) {
+        console.log("[UpdateNotification] Czyszczenie cache...");
         const names = await caches.keys();
         await Promise.all(names.map((name) => caches.delete(name)));
       }
     } catch (error) {
-      console.warn("UpdateNotification: Failed to clear caches", error);
+      console.warn("[UpdateNotification] Błąd czyszczenia cache:", error);
     }
 
     const sendSkipWaiting = () => {
       if (waitingWorker && waitingWorker.state !== "redundant") {
+        console.log("[UpdateNotification] Wysyłanie SKIP_WAITING do waitingWorker.");
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
       }
 
       navigator.serviceWorker.getRegistrations().then((regs) => {
         for (const reg of regs) {
           if (reg.waiting) {
+            console.log("[UpdateNotification] Wysyłanie SKIP_WAITING do zlokalizowanej rejestracji waiting.");
             reg.waiting.postMessage({ type: "SKIP_WAITING" });
           }
         }
@@ -151,47 +211,32 @@ export const UpdateNotification = () => {
     };
 
     sendSkipWaiting();
-    const interval = setInterval(sendSkipWaiting, 200);
-    setTimeout(() => clearInterval(interval), 1000);
+    // Powtarzamy kilka razy, by upewnić się że dotarło do opornych workerów
+    const interval = setInterval(sendSkipWaiting, 300);
+    setTimeout(() => clearInterval(interval), 1500);
 
-    let refreshing = false;
-    const controllerChangeHandler = () => {
-      if (!refreshing && sessionStorage.getItem("pwa_updating")) {
-        refreshing = true;
-        sessionStorage.removeItem("pwa_updating");
-        window.location.reload();
-      }
-    };
-    navigator.serviceWorker.addEventListener(
-      "controllerchange",
-      controllerChangeHandler,
-    );
-
+    // Awaryjny reload po 3 sekundach, jeśli controllerchange nie odpalił
     setTimeout(() => {
-      if (!refreshing && sessionStorage.getItem("pwa_updating")) {
-        refreshing = true;
-        sessionStorage.removeItem("pwa_updating");
+      if (!isRefreshing.current) {
+        console.log("[UpdateNotification] Awaryjne przeładowanie (brak controllerchange).");
+        isRefreshing.current = true;
+        localStorage.removeItem("pwa_updating_global");
         window.location.reload();
       }
-    }, 2000);
+    }, 4000);
   };
 
   // UKRYWAMY POWIADOMIENIE w trybie logowania i przełączania kont
-  // Zapobiega to pokazywaniu paska, gdy użytkownik jest w trakcie zmiany sesji
   if (
     !showNotification ||
-    accountMode === "accountSwitch"
+    accountMode === "accountSwitch" ||
+    sessionStorage.getItem("account_switch_target")
   ) {
     return null;
   }
 
-  // Zabezpieczenie przed pokazywaniem podczas przełączania konta (flaga w sessionStorage)
-  if (sessionStorage.getItem("account_switch_target")) {
-    return null;
-  }
-
   return (
-    <NotificationWrapper>
+    <NotificationWrapper id="pwa-update-bar">
       <Message>{t("updateNotification.message") as string}</Message>
       <UpdateButton onClick={handleUpdate}>
         {t("updateNotification.button") as string}

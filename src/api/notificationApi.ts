@@ -14,7 +14,7 @@ export const scheduleNotification = async (
     lang?: string;
   },
 ) => {
-  const response = await axios.post("/schedule-notification", payload, {
+  const response = await axios.post("/notification-schedule", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -28,7 +28,7 @@ export const updateNotification = async (
     date: string;
   },
 ) => {
-  const response = await axios.put("/update-notification", payload, {
+  const response = await axios.put("/notification-update", payload, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

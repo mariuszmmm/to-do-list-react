@@ -27,6 +27,7 @@ Thumbs.db
 .env.production.local
 .env.production
 .env
+.env.copy
 
 npm-debug.log*
 yarn-debug.log*
@@ -35,12 +36,15 @@ yarn-error.log*
 # Local Netlify folder
 .netlify
 
-# Deno (nie używamy w tym projekcie)
-deno.lock
-
-
 # notes
 notes.md
 
 # vercel
 .vercel
+
+# bitwarden
+**/bws.exe
+bitwarden_sync.env
+
+# mongodb backups
+scripts/MongoDB/backups/

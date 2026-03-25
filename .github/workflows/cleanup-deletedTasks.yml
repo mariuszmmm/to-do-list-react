@@ -11,18 +11,18 @@ on:
     # - cron: "*/5 * * * *" # Every 5 minutes
 
 jobs:
-  cleanup-deletedTasks:
+  cleanup-deleted-tasks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Call Netlify cleanup-deletedTasks function
+      - name: Call Netlify cleanup-deleted-tasks function
         run: |
           NETLIFY_URL="${{ secrets.NETLIFY_SITE_URL }}"
           if [ -z "$NETLIFY_URL" ]; then
             echo "❌ Error: NETLIFY_SITE_URL secret is not set"
             exit 1
           fi
-          echo "⏳ Calling cleanup-deletedTasks..."
-          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/cleanup-deletedTasks" -H "Content-Type: application/json")
+          echo "⏳ Calling cleanup-deleted-tasks..."
+          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/cleanup-deleted-tasks" -H "Content-Type: application/json")
           echo "Response:"
           echo "$RESPONSE" | jq '.' 2>/dev/null || echo "$RESPONSE"

@@ -212,7 +212,7 @@ const langDe: typeof langPl = {
             part10:
               "<strong>Archivierte Listen und Backups</strong>: <br/>Archivieren von Listen und Backups auf Google Drive oder lokalen Speicher.",
             part11:
-              "<strong>Geplante Benachrichtigungen</strong>: <br/>Möglichkeit, Aufgabenerinnerungen über Push-Benachrichtigungen und E-Mails festzulegen (mithilfe von OneSignal).",
+              "<strong>Geplante Benachrichtigungen</strong>: <br/>Möglichkeit, Aufgabenerinnerungen über Push-Benachrichtigungen und E-Mails festlegen (mithilfe von OneSignal).",
           },
         },
         technologies: {
@@ -330,6 +330,11 @@ const langDe: typeof langPl = {
       device_many: "Gesamtzahl der aktiven Geräte: {{count}}",
       device_other: "Gesamtzahl der aktiven Geräte: {{count}}",
     },
+    systemConsole: {
+      title: "Systemkonsole (LOGS)",
+      preserveLogs: "Protokoll speichern",
+      clear: "Löschen",
+    },
     systemAdmin: {
       title: "System & Wartung",
       ablyStatus: {
@@ -339,7 +344,7 @@ const langDe: typeof langPl = {
         failed: "Verbindung fehlgeschlagen",
       },
       ably: {
-        title: "Kommunikation & Sync (Ably)",
+        title: "Komunikation & Sync (Ably)",
         state: "Verbindungsstatus: {{state}}",
         messagesUsage: "Nachrichtenlimit (Monatlich)",
         connectionsUsage: "Gleichzeitige Verbindungen",
@@ -650,7 +655,7 @@ const langDe: typeof langPl = {
     },
     notifications: {
       title: "Benachrichtigung planen",
-      label: "Aufgabenerinnerung 🕒",
+      label: "Erinnerung 🕒",
       button: "🔍 App öffnen",
       confirm: "Planen",
       taskContent: "Aufgabe",

@@ -51,8 +51,11 @@
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build",
-    "serve-https": "npm run build && serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
-    "https": "npm run build && serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
+    "secrets:sync": "powershell -ExecutionPolicy Bypass -File scripts/Bitwarden/sync-secrets.ps1",
+    "secrets:push": "powershell -ExecutionPolicy Bypass -File scripts/Bitwarden/push-secrets.ps1",
+    "db:migrate": "node scripts/MongoDB/migrate-db.js",
+    "db:restore": "node scripts/MongoDB/restore-db.js",
+    "db:backup": "node scripts/MongoDB/backup-db.js",
     "prepare": "husky"
   },
   "eslintConfig": {

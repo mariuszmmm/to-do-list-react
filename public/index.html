@@ -11,31 +11,32 @@
 
     <meta name="theme-color" content="#ffffff" />
 
-    <!-- Ten skrypt ustawia kolor paska systemowego telefonu PRZED załadowaniem React.
-         Kolory muszą być zsynchronizowane z src/common/ThemeSwitch/themeSaga.ts:
-         - tryb jasny / nowy użytkownik: #007380
-         - tryb ciemny: #005c67 -->
+    <!-- This script sets the status bar and root background color BEFORE React loads.
+         It prevents thermal flashing by synchronizing with theme settings in localStorage.
+         Colors must stay in sync with src/common/ThemeSwitch/themeSaga.ts:
+         - Light mode / default: #007380 bar, #ffffff background
+         - Dark mode: #005c67 bar, #151515 background -->
     <script>
       (function () {
         try {
           var settings = JSON.parse(localStorage.getItem("settings"));
           var isDark = settings && settings.isDarkTheme === true;
 
-          // 1. Kolor paska systemowego (to co miałeś)
+          // 1. Set the mobile status bar theme color
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) {
             meta.setAttribute("content", isDark ? "#005c67" : "#007380");
           }
 
-          // 2. Kolor tła strony (eliminacja rozbłysku)
-          // Używamy kolorów z Twojego theme.ts:
-          // Ciemny: #151515, Jasny: #FBFBFE (lub biały)
+          // 2. Set doc element styles early to eliminate white-flash during initialization
           var bgColor = isDark ? "#151515" : "#ffffff";
+          var textColor = isDark ? "#eeeeee" : "#222222";
+          
           document.documentElement.style.backgroundColor = bgColor;
-
-          // Dodatkowo ustawiamy kolor tekstu, żeby nic nie "migało"
-          document.documentElement.style.color = isDark ? "#eeeeee" : "#222222";
-        } catch (e) {}
+          document.documentElement.style.color = textColor;
+        } catch (e) {
+          console.error("Theme initialization error:", e);
+        }
       })();
     </script>
 

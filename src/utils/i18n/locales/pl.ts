@@ -327,6 +327,11 @@ const langPl = {
       device_many: "Wszystkie aktywne urządzenia: {{count}}",
       device_other: "Wszystkie aktywne urządzenia: {{count}}",
     },
+    systemConsole: {
+      title: "Konsola Systemowa (LOGI)",
+      preserveLogs: "Zachowaj dziennik",
+      clear: "Wyczyść",
+    },
     systemAdmin: {
       title: "System i Konserwacja",
       ablyStatus: {
@@ -644,7 +649,7 @@ const langPl = {
     },
     notifications: {
       title: "Zaplanuj powiadomienie",
-      label: "Przypomnienie o zadaniu 🕒",
+      label: "Przypomnienie 🕒",
       button: "🔍 Otwórz aplikację",
       confirm: "Zaplanuj",
       taskContent: "Zadanie",

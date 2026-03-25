@@ -27,7 +27,7 @@ export const downloadUserListsApi = async (
   token: string,
 ): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
-    const response = await axios.get("/backup-downloadUserLists", {
+    const response = await axios.get("/backup-download-user", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -47,7 +47,7 @@ export const downloadAllUsersApi = async (
   token: string,
 ): Promise<ApiResponse<{ backupData: BackupData }>> => {
   try {
-    const response = await axios.get("/backup-downloadAllUsers", {
+    const response = await axios.get("/backup-download-all", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -69,7 +69,7 @@ export const restoreUserListsApi = async (
 ): Promise<ApiResponse<{ listsCount: number }>> => {
   try {
     const response = await axios.post(
-      "/backup-restoreUserLists",
+      "/backup-restore-user",
       { backupData },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -92,7 +92,7 @@ export const restoreAllUsersApi = async (
 ): Promise<ApiResponse<{ restored: number; failed: number }>> => {
   try {
     const response = await axios.post(
-      "/backup-restoreAllUsers",
+      "/backup-restore-all",
       { backupData },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -114,7 +114,7 @@ export const uploadAllUsersToGoogleDriveApi = async (
 ): Promise<ApiResponse> => {
   try {
     let response = await axios.post(
-      "/backup-uploadAllUsersToGoogleDrive",
+      "/backup-upload-drive",
       {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -135,7 +135,7 @@ export const fetchGoogleDriveBackupListApi = async (
 ): Promise<ApiResponse<{ files?: BackupFile[] }>> => {
   try {
     const response = await axios.post(
-      "/backup-fetchGoogleDriveBackupList",
+      "/backup-list-drive",
       {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -158,7 +158,7 @@ export const deleteBackupFromGoogleDriveApi = async (
 ): Promise<ApiResponse> => {
   try {
     const response = await axios.post(
-      "/backup-deleteBackupFromGoogleDrive",
+      "/backup-delete-drive",
       { fileId },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -180,13 +180,13 @@ export const restoreSelectedBackupFromGoogleDriveApi = async (
 ): Promise<ApiResponse<{ restored: number; failed: number }>> => {
   try {
     await axios.post(
-      "/backup-uploadAllUsersToGoogleDrive",
+      "/backup-upload-drive",
       {},
       { headers: { Authorization: `Bearer ${token}` } },
     );
 
     let response = await axios.post(
-      "/backup-restoreBackupFromGoogleDrive",
+      "/backup-restore-drive",
       { fileId },
       { headers: { Authorization: `Bearer ${token}` } },
     );
@@ -258,7 +258,7 @@ export const getSystemStatusApi = async (
   }>
 > => {
   try {
-    const response = await axios.get("/get-system-status", {
+    const response = await axios.get("/system-status", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -313,7 +313,7 @@ export const runDeletedTasksCleanupApi = async (
 ): Promise<ApiResponse<any>> => {
   try {
     const response = await axios.post(
-      "/cleanup-deletedTasks",
+      "/cleanup-deleted-tasks",
       {},
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -336,7 +336,7 @@ export const diagnoseSystemApi = async (
   token: string,
 ): Promise<ApiResponse<any>> => {
   try {
-    const response = await axios.get("/diagnose-system", {
+    const response = await axios.get("/system-diagnose", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -15,11 +15,11 @@ import {
   checkWebhookSecret,
   checkWebhookSignature,
   parseJsonBody,
-} from "../functions/lib/validators";
-import { jsonResponse, logError } from "../functions/lib/response";
+} from "../shared/lib/validators";
+import { jsonResponse, logError } from "../shared/lib/response";
 
 const handler: Handler = async (event) => {
-  const logPrefix = "[confirmUser]";
+  const logPrefix = '[user-confirm]';
 
   const methodResponse = checkHttpMethod(event.httpMethod, "POST", logPrefix);
   if (methodResponse) return methodResponse;

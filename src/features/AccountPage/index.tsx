@@ -12,6 +12,7 @@ import { SystemAdmin } from "./SystemAdmin";
 import { UserManagement } from "./UserManagement";
 import { SessionInfo } from "./SessionInfo";
 import { EnvironmentReset } from "./EnvironmentReset";
+import { SystemConsole } from "./SystemConsole";
 import { Settings } from "../../types";
 import {
   selectLoggedUserEmail,
@@ -30,6 +31,7 @@ import {
 import { AccountAvatar, getAvatarColor } from "./AccountSwitcher/styled";
 import { TitleWrapper, EmailText } from "./styled";
 import { formatEmailWithBreaks } from "./utils";
+import { consoleLogger } from "../../utils/debug/consoleLogger";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -62,10 +64,14 @@ const AccountPage = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(
     () => getSettingsFromLocalStorage()?.isNotificationsOpen || false,
   );
+  const [isSystemConsoleOpen, setIsSystemConsoleOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isSystemConsoleOpen || false,
+  );
+  const [preserveLogs, setPreserveLogs] = useState(
+    () => getSettingsFromLocalStorage()?.preserveLogs || false,
+  );
 
-  const persistSettings = (
-    partial: Partial<Settings & { isSystemAdminOpen: boolean }>,
-  ) => {
+  const persistSettings = (partial: Partial<Settings>) => {
     const current = getSettingsFromLocalStorage() || {
       showSearch: false,
       hideDone: false,
@@ -109,6 +115,23 @@ const AccountPage = () => {
     setIsNotificationsOpen((prev) => {
       const next = !prev;
       persistSettings({ isNotificationsOpen: next });
+      return next;
+    });
+  };
+
+  const toggleSystemConsole = () => {
+    setIsSystemConsoleOpen((prev: boolean) => {
+      const next = !prev;
+      persistSettings({ isSystemConsoleOpen: next });
+      return next;
+    });
+  };
+
+  const togglePreserveLogs = () => {
+    setPreserveLogs((prev) => {
+      const next = !prev;
+      persistSettings({ preserveLogs: next });
+      consoleLogger.setPreserveLogs(next);
       return next;
     });
   };
@@ -262,6 +285,25 @@ const AccountPage = () => {
           onlyOpenButton={true}
           body={<SystemAdmin />}
           bodyHidden={!isSystemAdminOpen}
+        />
+      )}
+
+      {loggedUserEmail && (
+        <Section
+          title={t("systemConsole.title")}
+          extraHeaderContent={renderToggleButton(
+            isSystemConsoleOpen,
+            toggleSystemConsole,
+          )}
+          onHeaderClick={toggleSystemConsole}
+          onlyOpenButton={true}
+          body={
+            <SystemConsole
+              preserveLogs={preserveLogs}
+              onTogglePreserveLogs={togglePreserveLogs}
+            />
+          }
+          bodyHidden={!isSystemConsoleOpen}
         />
       )}
     </>

@@ -36,7 +36,7 @@ export const moveCloudinaryImage = async ({
 
   optionalParams.forEach(([key, value]) => params.append(key, value));
 
-  const res = await axios.put(`/image?${params.toString()}`, null, {
+  const res = await axios.put(`/image-cloudinary?${params.toString()}`, null, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

@@ -2,7 +2,7 @@ import { List, Version } from "../types";
 import axios from "axios";
 
 export const getDataApi = async (token: string) => {
-  return fetch("/data", {
+  return fetch("/data-lists", {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -25,7 +25,7 @@ export const addDataApi = async (
 ) => {
   try {
     const response = await axios.patch(
-      "/data",
+      "/data-lists",
       { list, deviceId },
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -47,7 +47,7 @@ export const updateDataApi = async (
   lists: List[],
   deviceId: string,
 ) => {
-  return fetch("/data", {
+  return fetch("/data-lists", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ lists, deviceId }),
@@ -72,7 +72,7 @@ export const removeDataApi = async (
   listId: string,
   deviceId: string,
 ) => {
-  return fetch("/data", {
+  return fetch("/data-lists", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ version, listId, deviceId }),

@@ -1,18 +1,18 @@
 import type { Handler } from "@netlify/functions";
 import axios from "axios";
-import { jsonResponse } from "../functions/lib/response";
+import { jsonResponse } from "../shared/lib/response";
 import {
   checkHttpMethod,
   parseJsonBody,
   isUserAdmin,
-} from "../functions/lib/validators";
+} from "../shared/lib/validators";
 import { connectToDB } from "../config/mongoose";
 import SystemConfig from "../models/SystemConfig";
 import UserData from "../models/UserData";
-import { publishSystemLog } from "../functions/lib/ablyHelper";
+import { publishSystemLog } from "../shared/lib/ablyHelper";
 
 export const handler: Handler = async (event, context) => {
-  const logPrefix = "[user-invite]";
+  const logPrefix = '[user-invite]';
 
   const logSystemEvent = async (
     status: "success" | "error",
@@ -71,7 +71,7 @@ export const handler: Handler = async (event, context) => {
   }
   email = email.toLowerCase().trim();
 
-  // 4. Autoryzacja Admina (zgodnie z auth-ablyAuth.ts)
+  // 4. Autoryzacja Admina (zgodnie z auth-ably.ts)
   const userEmail = contextUser?.email?.toLowerCase().trim();
   const isAdmin = isUserAdmin(context) || userEmail === "mariuszmmm@op.pl";
 

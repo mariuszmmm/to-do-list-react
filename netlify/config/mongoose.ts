@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 import "dotenv/config";
+import dns from "dns";
+
+// Sprawdzenie czy działamy lokalnie na Windowsie (Netlify CLI)
+if (!process.env.NETLIFY) {
+  // Wymuszenie publicznego DNS do sprawnego działania SRV na Twoim PC
+  dns.setServers(["1.1.1.1", "8.8.8.8"]);
+}
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DATABASE;

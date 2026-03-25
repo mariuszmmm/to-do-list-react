@@ -28,7 +28,7 @@ export const deleteCloudinaryImage = async ({ publicId, taskImageProps, deviceId
 
   optionalParams.forEach(([key, value]) => params.append(key, value));
 
-  const res = await axios.delete(`/image?${params.toString()}`, {
+  const res = await axios.delete(`/image-cloudinary?${params.toString()}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

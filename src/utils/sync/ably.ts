@@ -57,7 +57,7 @@ export const getAblyInstance = (): Ably.Realtime => {
             }
 
             const response = await fetch(
-              `/auth-ablyAuth?deviceId=${deviceId}&email=${encodeURIComponent(email)}`,
+              `/auth-ably?deviceId=${deviceId}&email=${encodeURIComponent(email)}`,
               {
                 method: "GET",
                 headers: {
@@ -85,7 +85,7 @@ export const getAblyInstance = (): Ably.Realtime => {
           }
 
           const response = await fetch(
-            `/auth-ablyAuth?email=${pendingEmail}&deviceId=${deviceId}`,
+            `/auth-ably?email=${pendingEmail}&deviceId=${deviceId}`,
             { method: "GET" },
           );
 

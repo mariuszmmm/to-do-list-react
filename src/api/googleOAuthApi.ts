@@ -1,5 +1,5 @@
 export async function exchangeGoogleOAuthCodeApi(code: string) {
-  const response = await fetch("/auth-googleOAuthCallback", {
+  const response = await fetch("/auth-google-callback", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code }),
@@ -19,7 +19,7 @@ export async function refreshGoogleTokenApi(
   refreshToken: string,
   userToken: string,
 ): Promise<{ accessToken: string; expiresIn: number }> {
-  const response = await fetch("/auth-refreshGoogleToken", {
+  const response = await fetch("/auth-google-refresh", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

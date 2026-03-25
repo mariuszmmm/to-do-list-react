@@ -2,11 +2,11 @@ import { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
 import SystemConfig from "../models/SystemConfig";
-import { jsonResponse } from "./lib/response";
-import { publishSystemLog } from "./lib/ablyHelper";
+import { jsonResponse } from "../shared/lib/response";
+import { publishSystemLog } from "../shared/lib/ablyHelper";
 
 const handler: Handler = async (event) => {
-  const logPrefix = "[cleanup-orphan-images]";
+  const logPrefix = '[cleanup-orphan-images]';
   console.log(`${logPrefix} Function started.`);
 
   if (event.httpMethod !== "POST") {

@@ -159,7 +159,7 @@ const langEn: typeof langPl = {
             "Create an account so you don't lose your data. In the login window, check the 'Stay logged in' option, so the app remembers you for longer and you won't have to enter your password every visit.",
         },
         step3: {
-          title: "3. Save in the Cloud",
+          title: "3. Zapisuj w chmurze",
           description:
             "As a logged-in user, you can save your current list to the database by clicking the 'Save list' button. Your data will be secure and available on all your devices.",
         },
@@ -329,6 +329,11 @@ const langEn: typeof langPl = {
       device_few: "Total active devices: {{count}}",
       device_many: "Total active devices: {{count}}",
       device_other: "Total active devices: {{count}}",
+    },
+    systemConsole: {
+      title: "System Console (LOGS)",
+      preserveLogs: "Preserve log",
+      clear: "Clear",
     },
     systemAdmin: {
       title: "System & Maintenance",
@@ -642,7 +647,7 @@ const langEn: typeof langPl = {
     },
     notifications: {
       title: "Schedule notification",
-      label: "Task Reminder 🕒",
+      label: "Reminder 🕒",
       button: "🔍 Open app",
       confirm: "Schedule",
       taskContent: "Task",
@@ -797,82 +802,79 @@ const langEn: typeof langPl = {
           "The list <strong>{{name}}</strong> already exists.<br/>Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{name}}</strong> to the database...",
-        success:
-          "List <strong>{{name}}</strong> has been saved to the database.",
+        success: "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
-          default: "An error occurred while adding the list to the database.",
+            "Operation could not be performed because lists were outdated.<br/>Please try again.",
+          default: "Error occurred while adding list to database.",
         },
       },
     },
     archiveTasks: {
       title: "Archiving tasks",
       message: {
-        confirm: "Do you want to move the current tasks to the archive?",
+        confirm: "Move current tasks to archive?",
       },
     },
     listRemove: {
-      title: "Deleting list",
+      title: "Removing list",
       message: {
-        confirm:
-          "Are you sure you want to delete the list:<br/><strong>{{name}}</strong> ?",
-        loading: "Deleting list...",
-        success: "The list has been removed from the database.",
+        confirm: "Are you sure you want to remove list:<br/><strong>{{name}}</strong> ?",
+        loading: "Removing list...",
+        success: "List has been removed from database.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
-          default: "An error occurred while deleting the list.",
+            "Operation could not be performed because lists were outdated.<br/>Please try again.",
+          default: "Error occurred while removing list.",
         },
       },
     },
     imageRemove: {
-      title: "Deleting photo",
+      title: "Removing image",
       message: {
-        confirm: "Are you sure you want to delete the photo?",
-        loading: "Deleting...",
-        success: "The photo has been removed.",
+        confirm: "Are you sure you want to remove image?",
+        loading: "Removing...",
+        success: "Image has been removed.",
         error: {
-          default: "An error occurred while deleting the photo.",
+          default: "Error while removing image.",
         },
       },
     },
     deleteBackup: {
       title: "Deleting backup",
       message: {
-        confirm:
-          "Are you sure you want to delete the backup: <strong>{{name}}</strong> ?",
+        confirm: "Are you sure you want to delete backup: <strong>{{name}}</strong> ?",
         loading: "Deleting backup...",
-        success: "The backup has been deleted.",
-        error: "An error occurred while deleting the backup.",
+        success: "Backup has been deleted.",
+        error: "Error while deleting backup.",
       },
     },
     restoreBackup: {
       title: "Restoring backup",
       message: {
         confirm:
-          "Are you sure you want to restore the backup: <strong>{{name}}</strong>?<br/><br/><small>Note: Current data will be replaced with data from the backup.</small>",
+          "Are you sure you want to restore backup: <strong>{{name}}</strong>?<br/><br/><small>Note: Current data will be replaced with backup data.</small>",
         loading: "Restoring backup...",
         success: "Backup has been restored.",
         error: "Error while restoring backup.",
       },
     },
     listsUpdate: {
-      title: "Updating list",
+      title: "Updating lists",
       message: {
-        loading: "Updating list...",
-        success: "The list has been updated in the database.",
+        loading: "Updating lists...",
+        success: "Lists have been updated.",
         error: {
           conflict:
-            "The operation could not be completed correctly because the lists were outdated.<br/>Try again.",
-          default: "An error occurred while updating the list.",
+            "Operation could not be performed because lists were outdated.<br/>Please try again.",
+          default: "Error occurred while updating lists.",
         },
       },
     },
     listLoad: {
       title: "Loading list",
       message: {
-        info: "The list <strong>{{name}}</strong> has been loaded for editing.",
+        info: "List <strong>{{name}}</strong> has been loaded for editing.",
       },
     },
     confirmation: {
@@ -881,50 +883,50 @@ const langEn: typeof langPl = {
         loading: "Checking registration status...",
         success: "Registration successful, close the page.",
         error: {
-          default: "The link has expired or has been used.",
+          default: "Link expired or has been used.",
         },
       },
     },
     sendMessage: {
-      title: "Send message",
+      title: "Sending message",
       labels: {
         name: "Name:",
-        email: "Email:",
+        email: "Email address:",
         message: "Message:",
       },
       placeholders: {
         name: "Enter your name",
-        email: "Enter your email address",
-        message: "Enter your message",
+        email: "Enter email address",
+        message: "Enter message",
       },
       message: {
         loading: "Sending message...",
         success: "Message has been sent.",
         error: {
-          default: "Error sending message.",
+          default: "Error while sending message.",
         },
       },
       button: "Send",
       autoReply: {
         lang: "en",
-        greeting: "Thank you for your message!",
+        greeting: "Thank you for contacting!",
         intro:
-          "Your message has been successfully received. I will respond as soon as possible – usually within 1–2 business days.",
+          "Your message has reached me successfully. I will answer as soon as possible - usually within 1-2 business days.",
         messageLabel: "Your message",
-        regards: "Best regards,\nMariusz Matusiewicz",
+        regards: "Sincerely,\nMariusz Matusiewicz",
         footer:
           "This message was generated automatically by the contact form of the To-Do List App. Please do not reply directly to this message.",
       },
     },
     backupAuthError: {
-      title: "Automated Backup Error",
+      title: "Automatic Backup Error",
       message:
-        "Automated backups have stopped due to Google Drive authorization issues. <br/><br/>Please go to the backup section below and click the <strong>Authorize Google</strong> button to renew access.",
+        "Automatic backups have stopped running due to Google Drive authorization issues. <br/><br/>Please go to the backup section below and click the <strong>Authorize Google</strong> button to renew access.",
     },
     offline: {
       title: "No connection",
       message:
-        "No internet access. You have access to local tasks and can edit them – changes will be synchronized once the connection is restored.",
+        "No internet. You have access to local tasks and can edit them - changes will be synchronized after reconnecting to the network.",
     },
   },
   updateNotification: {

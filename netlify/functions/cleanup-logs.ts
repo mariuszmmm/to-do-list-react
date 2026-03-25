@@ -1,11 +1,11 @@
 import { Handler } from "@netlify/functions";
 import SystemConfig from "../models/SystemConfig";
 import { connectToDB } from "../config/mongoose";
-import { jsonResponse, logError } from "../functions/lib/response";
-import { publishSystemLog } from "../functions/lib/ablyHelper";
+import { jsonResponse, logError } from "../shared/lib/response";
+import { publishSystemLog } from "../shared/lib/ablyHelper";
 
 const handler: Handler = async (event) => {
-  const logPrefix = "[cleanup-logs]";
+  const logPrefix = '[cleanup-logs]';
   console.log(`${logPrefix} Function started. Method: ${event.httpMethod}`);
 
   if (event.httpMethod !== "POST") {

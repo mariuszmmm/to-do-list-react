@@ -8,7 +8,7 @@ export const getCloudinarySignature = async () => {
     throw new Error("User token is null");
   }
 
-  const res = await axios.get("/image", {
+  const res = await axios.get("/image-cloudinary", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
