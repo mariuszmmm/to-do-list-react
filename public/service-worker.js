@@ -8,10 +8,15 @@
 self.addEventListener("message", function (event) {
   if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
   if (event.data && event.data.type === "GET_VERSION") {
-    event.source.postMessage({
+    const payload = {
       type: "VERSION_INFO",
       version: "todo-list-v0_DEV",
-    });
+    };
+    if (event.ports && event.ports[0]) {
+      event.ports[0].postMessage(payload);
+    } else if (event.source) {
+      event.source.postMessage(payload);
+    }
   }
 });
 self.addEventListener("push", function () {});
@@ -56,10 +61,9 @@ self.addEventListener("activate", (event) => {
           }
           return null;
         }),
-      );
+      ).then(() => self.clients.claim());
     }),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {

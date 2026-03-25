@@ -34,21 +34,19 @@ export const UpdateNotification = () => {
           return new Promise((resolve) => {
             if (sw.state === "redundant") return resolve(null);
             
-            const handler = (event: MessageEvent) => {
+            const messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = (event) => {
               if (event.data && event.data.type === "VERSION_INFO") {
-                navigator.serviceWorker.removeEventListener("message", handler);
                 console.log(`[UpdateNotification] Otrzymano wersję dla ${label}:`, event.data.version);
                 resolve(event.data.version);
               }
             };
             
-            navigator.serviceWorker.addEventListener("message", handler);
             console.log(`[UpdateNotification] Wysyłanie GET_VERSION do ${label}...`);
-            sw.postMessage({ type: "GET_VERSION" });
+            sw.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
             
             // Timeout 2s dla większej niezawodności w desktopowych przeglądarkach
             setTimeout(() => {
-              navigator.serviceWorker.removeEventListener("message", handler);
               resolve(null);
             }, 2000);
           });
