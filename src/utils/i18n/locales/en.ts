@@ -78,6 +78,7 @@ const langEn: typeof langPl = {
     dateCreated: "Date created",
     dateEdited: "Date edited",
     dateDone: "Date completed",
+    imageFileName: " Photo",
     backButton: "Back",
     showMore: "Show more",
     showLess: "Show less",
@@ -802,7 +803,8 @@ const langEn: typeof langPl = {
           "The list <strong>{{name}}</strong> already exists.<br/>Do you want to replace it?",
         cancel: "Change the name of the list and save again.",
         loading: "Saving list <strong>{{name}}</strong> to the database...",
-        success: "List <strong>{{name}}</strong> has been saved to the database.",
+        success:
+          "List <strong>{{name}}</strong> has been saved to the database.",
         error: {
           conflict:
             "Operation could not be performed because lists were outdated.<br/>Please try again.",
@@ -819,7 +821,8 @@ const langEn: typeof langPl = {
     listRemove: {
       title: "Removing list",
       message: {
-        confirm: "Are you sure you want to remove list:<br/><strong>{{name}}</strong> ?",
+        confirm:
+          "Are you sure you want to remove list:<br/><strong>{{name}}</strong> ?",
         loading: "Removing list...",
         success: "List has been removed from database.",
         error: {
@@ -843,7 +846,8 @@ const langEn: typeof langPl = {
     deleteBackup: {
       title: "Deleting backup",
       message: {
-        confirm: "Are you sure you want to delete backup: <strong>{{name}}</strong> ?",
+        confirm:
+          "Are you sure you want to delete backup: <strong>{{name}}</strong> ?",
         loading: "Deleting backup...",
         success: "Backup has been deleted.",
         error: "Error while deleting backup.",

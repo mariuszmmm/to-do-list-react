@@ -2,17 +2,15 @@ import { getBackupFileName } from "../shared/lib/getBackupFileName";
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
 import UserData from "../models/UserData";
-import {
-  checkClientContext,
-  checkHttpMethod,
-} from "../shared/lib/validators";
+import NotificationModel from "../models/Notification";
+import { checkClientContext, checkHttpMethod } from "../shared/lib/validators";
 import { jsonResponse, logError } from "../shared/lib/response";
 import { BackupData, BackupType } from "../../src/types";
 import SystemConfig from "../models/SystemConfig";
 import { publishSystemLog } from "../shared/lib/ablyHelper";
 
 const handler: Handler = async (event, context) => {
-  const logPrefix = '[backup-download-user]';
+  const logPrefix = "[backup-download-user]";
 
   const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
   if (methodResponse) return methodResponse;
@@ -58,6 +56,9 @@ const handler: Handler = async (event, context) => {
     }
 
     const lists = foundUser.lists || [];
+    const notifications = await NotificationModel.find({
+      userEmail: email,
+    }).exec();
 
     let totalTasks = 0;
     lists.forEach((list) => {
@@ -71,13 +72,16 @@ const handler: Handler = async (event, context) => {
     const fileName = getBackupFileName("user-lists", now);
 
     const backupData: BackupData = {
-      version: "1.0",
+      version: "1.1",
       timestamp: now.toISOString(),
       createdBy: email,
       user: email,
       fileName,
       backupType,
       lists,
+      notifications: notifications.map((notif) =>
+        typeof notif.toObject === "function" ? notif.toObject() : notif,
+      ),
       totalLists: lists.length,
       totalTasks,
     };

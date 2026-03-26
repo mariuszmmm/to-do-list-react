@@ -19,7 +19,16 @@ interface MoveImageParams {
 }
 
 export const moveCloudinaryImageToFolder = async (
-  { publicId, oldPublicId, folder, userEmail, listId, listName, taskId, deviceId }: MoveImageParams,
+  {
+    publicId,
+    oldPublicId,
+    folder,
+    userEmail,
+    listId,
+    listName,
+    taskId,
+    deviceId,
+  }: MoveImageParams,
   context: HandlerContext,
   logPrefix: string,
 ) => {
@@ -31,7 +40,9 @@ export const moveCloudinaryImageToFolder = async (
   }
 
   if (!publicId || !folder) {
-    return jsonResponse(400, { error: "Missing publicId or folder parameters" });
+    return jsonResponse(400, {
+      error: "Missing publicId or folder parameters",
+    });
   }
 
   try {
@@ -59,7 +70,11 @@ export const moveCloudinaryImageToFolder = async (
       try {
         await cloudinary.api.delete_resources([oldPublicId]);
       } catch (deleteError: any) {
-        console.warn(`${logPrefix} Failed to delete old image:`, oldPublicId, deleteError.message || deleteError);
+        console.warn(
+          `${logPrefix} Failed to delete old image:`,
+          oldPublicId,
+          deleteError.message || deleteError,
+        );
       }
     }
 
@@ -71,6 +86,7 @@ export const moveCloudinaryImageToFolder = async (
       format: result.format,
       createdAt: result.created_at,
       displayName: result.display_name,
+      originalFilename: result.original_filename,
     };
 
     const success = await updateTaskImageInUserData({
@@ -84,7 +100,10 @@ export const moveCloudinaryImageToFolder = async (
       throw new Error("Failed to update task image in user data");
     }
 
-    const updatedUser = await UserData.findOne({ email, account: "active" }).exec();
+    const updatedUser = await UserData.findOne({
+      email,
+      account: "active",
+    }).exec();
     const now = new Date().toISOString();
     await publishAblyUpdate(email, {
       action: "addOrUpdate",

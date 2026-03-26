@@ -2,6 +2,7 @@ import { List } from "../../src/types/list";
 import { nanoid } from "nanoid";
 import type { Handler } from "@netlify/functions";
 import UserData from "../models/UserData";
+import NotificationModel from "../models/Notification";
 import { connectToDB } from "../config/mongoose";
 import { publishAblyUpdate } from "../config/ably";
 import {
@@ -15,7 +16,7 @@ import SystemConfig from "../models/SystemConfig";
 import { publishSystemLog } from "../shared/lib/ablyHelper";
 
 const handler: Handler = async (event, context) => {
-  const logPrefix = '[backup-restore-user]';
+  const logPrefix = "[backup-restore-user]";
 
   const methodResponse = checkHttpMethod(event.httpMethod, "POST", logPrefix);
   if (methodResponse) return methodResponse;
@@ -134,12 +135,41 @@ const handler: Handler = async (event, context) => {
       }),
     );
 
-    foundUser.lists = normalizedLists;
-    await foundUser.save();
+    await UserData.findOneAndUpdate(
+      { email, account: "active" },
+      { $set: { lists: normalizedLists } },
+      { returnDocument: "after" }
+    );
+
+    // Restore user-specific notifications if present
+    const notificationsToRestore = Array.isArray(backupData.notifications)
+      ? backupData.notifications.filter((n) => n.userEmail === email)
+      : [];
+
+    if (notificationsToRestore.length > 0) {
+      for (const notif of notificationsToRestore) {
+        try {
+          await NotificationModel.findOneAndUpdate(
+            {
+              userEmail: email,
+              send_after: notif.send_after,
+              content: notif.content,
+            },
+            { ...notif, userEmail: email }, // Ensure it stays assigned to current user
+            { upsert: true },
+          );
+        } catch (err) {
+          console.error(
+            `Failed to restore user notification for ${email}`,
+            err,
+          );
+        }
+      }
+    }
 
     await updateStatus(
       "success",
-      `User lists restored for ${email} (${normalizedLists.length} lists)`,
+      `User data (lists & notifications) restored for ${email}`,
     );
 
     await publishAblyUpdate(email, {
@@ -149,8 +179,9 @@ const handler: Handler = async (event, context) => {
     });
 
     return jsonResponse(200, {
-      message: "User lists restored successfully",
+      message: "User lists and notifications restored successfully",
       listsCount: normalizedLists.length,
+      notificationsCount: notificationsToRestore.length,
     });
   } catch (error) {
     logError("Unexpected error", error, logPrefix);

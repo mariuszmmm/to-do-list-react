@@ -74,6 +74,8 @@ export type BackupData = {
   }>;
   systemSettings?: SystemConfigData[];
   systemLogs?: SystemConfigData[];
+  notifications?: any[];
+  collections?: Record<string, any[]>;
   totalUsers?: number;
   totalLists: number;
   totalTasks: number;

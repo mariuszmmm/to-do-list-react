@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/redux/redux";
-import { DateInfo, Name } from "./styled";
+import { DetailInfo, Name } from "./styled";
 import { Button } from "../../../common/Button";
 import { Header } from "../../../common/Header";
 import { Section } from "../../../common/Section";
@@ -80,26 +80,34 @@ const TaskPage = () => {
                   )}
                 </>
               )}
-              <DateInfo>
+              <DetailInfo>
                 <Name>{t("done.title")}:</Name>
                 {task.done ? t("done.yes") : t("done.no")}
-              </DateInfo>
-              <DateInfo>
+              </DetailInfo>
+              <DetailInfo>
                 <Name>{t("dateCreated")}:</Name>
                 {formatCurrentDate(new Date(task.date), i18n.language)}
-              </DateInfo>
+              </DetailInfo>
               {task.editedAt && task.editedAt !== task.date && (
-                <DateInfo>
+                <DetailInfo>
                   <Name>{t("dateEdited")}:</Name>
                   {formatCurrentDate(new Date(task.editedAt), i18n.language)}
-                </DateInfo>
+                </DetailInfo>
               )}
               {task.done && task.completedAt && (
-                <DateInfo>
+                <DetailInfo>
                   <Name>{t("dateDone")}:</Name>
                   {formatCurrentDate(new Date(task.completedAt), i18n.language)}
-                </DateInfo>
+                </DetailInfo>
               )}
+              {task.image &&
+                (task.image.displayName || task.image.originalFilename) && (
+                  <DetailInfo>
+                    <Name>{t("imageFileName")}:</Name>
+                    {task.image.displayName || task.image.originalFilename}
+                    {task.image.format ? `.${task.image.format}` : ""}
+                  </DetailInfo>
+                )}
 
               <FormButtonWrapper $taskDetails>
                 <FormButton

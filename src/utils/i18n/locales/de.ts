@@ -78,6 +78,7 @@ const langDe: typeof langPl = {
     dateCreated: "Erstellungsdatum",
     dateEdited: "Bearbeitungsdatum",
     dateDone: "Abschlussdatum",
+    imageFileName: " Foto",
     backButton: "Zurück",
     showMore: "Mehr anzeigen",
     showLess: "Weniger anzeigen",

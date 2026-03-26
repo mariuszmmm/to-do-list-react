@@ -21,7 +21,15 @@ export const uploadImageToCloudinary = async (
   config: CloudinaryConfig,
   options?: UploadOptions,
 ): Promise<UploadResult> => {
-  const { api_key, asset_folder, cloud_name, signature, tags, timestamp, upload_preset } = config;
+  const {
+    api_key,
+    asset_folder,
+    cloud_name,
+    signature,
+    tags,
+    timestamp,
+    upload_preset,
+  } = config;
 
   const formData = new FormData();
   formData.append("api_key", api_key);
@@ -29,6 +37,7 @@ export const uploadImageToCloudinary = async (
   formData.append("signature", signature);
   formData.append("timestamp", timestamp);
   formData.append("upload_preset", upload_preset);
+  formData.append("use_filename", "true");
   formData.append("tags", tags);
   formData.append("file", file);
   formData.append("overwrite", "true");

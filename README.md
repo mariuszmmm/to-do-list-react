@@ -92,7 +92,7 @@
   - <b>Real-time Sync:</b> Instant updates across devices using <b>Ably</b>.
   - <b>Archived Lists:</b> Archive lists to keep your workspace clean without losing data.
   - <b>Task Notifications:</b> Integration with <b>OneSignal</b> allowing users to schedule task reminders (Push and Email).
-  - <b>Admin Panel & Cloud Backups:</b> Advanced module for the system administrator to manage automated/manual database backups to <b>Google Drive</b>, system diagnostics, and cleanup.
+  - <b>Admin Panel & Cloud Backups:</b> Advanced module for the system administrator to manage automated/manual backups of both the database (MongoDB) and media files (Cloudinary) to <b>Google Drive</b>, as well as system diagnostics and cleanup.
 
 - <b>Lists Page:</b></br>
   After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:

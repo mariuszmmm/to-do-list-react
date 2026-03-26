@@ -11,20 +11,25 @@ Ten folder zawiera zestaw profesjonalnych narzędzi do zarządzania bazą danych
 
 Możesz zarządzać swoją bazą za pomocą trzech prostych komend z poziomu głównego katalogu projektu:
 
-### 1. `npm run db:backup` (Ręczna Kopia Zapasowa)
-Służy do szybkiego wykonania zrzutu obecnej bazy (`MONGODB_URI`) do plików JSON na dysku.
+### 1. `npm run db:backup` (Ręczna Kopia Zapasowa na Dysk)
+Służy do szybkiego wykonania zrzutu obecnej bazy (`MONGODB_URI`) do plików JSON na dysk lokalny.
 *   **Kiedy używać:** Przed wprowadzeniem dużych zmian w danych lub profilaktycznie.
-*   **Format nazwy:** `backup-MANUAL-[DATA]`
 
-### 2. `npm run db:restore` (Przywracanie Danych)
+### 2. `npm run db:backup:drive` (Kopia Zapasowa na Google Drive) ☁️
+Wykonuje pełny zrzut bazy danych i przesyła go jako jeden plik JSON bezpośrednio na Twój Dysk Google.
+*   **Kiedy używać:** Gdy chcesz mieć kopię chmurową gotową do przywrócenia jednym kliknięciem na stronie.
+
+### 3. `npm run db:restore` (Przywracanie z Dysku Lokalnego)
 Pozwala wybrać jedną z istniejących kopii z folderu `backups/` i wgrać ją do bazy danych.
-*   **Kiedy używać:** Gdy chcesz cofnąć zmiany lub przywrócić stan bazy z konkretnego dnia.
-*   **Bezpieczeństwo:** Skrypt oferuje wykonanie kopii ratunkowej (`backup-BEFORE-RESTORE-...`) tuż przed nadpisaniem bazy.
+*   **Kiedy używać:** Gdy masz pobrane pliki JSON na komputerze.
 
-### 3. `npm run db:migrate` (Migracja na Nowy Klaster)
+### 4. `npm run db:restore:drive` (Przywracanie z Google Drive) ☁️
+Pobiera listę kopii z chmury, pozwala wybrać jedną i przywraca ją bezpośrednio do bazy.
+*   **Kiedy używać:** Najszybsza metoda na cofnięcie zmian przy użyciu kopii z Dysku Google.
+
+### 5. `npm run db:migrate` (Migracja na Nowy Klaster)
 Kopiuje wszystkie dane ze starej bazy (`MONGODB_URI`) do nowej bazy docelowej (`NEW_MONGODB_URI`).
 *   **Kiedy używać:** Przy przenoszeniu projektu na nowe konto MongoDB Atlas.
-*   **Format nazwy:** `backup-MIGRATION-[DATA]` (tworzony automatycznie).
 
 ---
 

@@ -58,7 +58,9 @@ async function backup() {
     }
 
     const backupFolder = path.join(__dirname, "backups");
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const timestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
     const currentBackupPath = path.join(backupFolder, `backup-MANUAL-${timestamp}`);
 
     if (!fs.existsSync(backupFolder)) fs.mkdirSync(backupFolder);

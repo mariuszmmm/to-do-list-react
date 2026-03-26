@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import UserData from "../../models/UserData";
 import SystemConfig from "../../models/SystemConfig";
+import NotificationModel from "../../models/Notification";
 import { publishAblyUpdate } from "../../config/ably";
 import { BackupData, List, Task } from "../../../src/types";
 
@@ -96,6 +97,33 @@ export const restoreAllUsersFromBackupData = async (
         );
       } catch (err) {
         console.error(`Failed to restore SystemConfig: ${config.key}`, err);
+      }
+    }
+  }
+
+  // Restore Notifications if present
+  if (
+    Array.isArray(backupData.notifications) &&
+    backupData.notifications.length > 0
+  ) {
+    for (const notif of backupData.notifications) {
+      try {
+        // We use userEmail, send_after and content as a practical key for upserting notifications
+        // to avoid exact duplicates if restored multiple times.
+        await NotificationModel.findOneAndUpdate(
+          {
+            userEmail: notif.userEmail,
+            send_after: notif.send_after,
+            content: notif.content,
+          },
+          notif,
+          { upsert: true },
+        );
+      } catch (err) {
+        console.error(
+          `Failed to restore Notification for: ${notif.userEmail}`,
+          err,
+        );
       }
     }
   }

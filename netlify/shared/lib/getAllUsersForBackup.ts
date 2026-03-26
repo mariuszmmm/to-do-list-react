@@ -1,11 +1,29 @@
+import mongoose from "mongoose";
 import { getBackupFileName } from "./getBackupFileName";
 import { BackupData, BackupType } from "../../../src/types";
 import UserData from "../../models/UserData";
 import SystemConfig from "../../models/SystemConfig";
+import NotificationModel from "../../models/Notification";
 
 export const getAllUsersForBackup = async (email: string) => {
+  if (!mongoose.connection.db) {
+    throw new Error("Database not connected");
+  }
+
   const allUserData = await UserData.find({});
   const allSystemConfig = await SystemConfig.find({});
+  const allNotifications = await NotificationModel.find({});
+
+  // Dynamic dump of all collections (like the manual script)
+  const collectionsData: Record<string, any[]> = {};
+  const collections = await mongoose.connection.db.listCollections().toArray();
+  for (const col of collections) {
+    const docs = await mongoose.connection.db
+      .collection(col.name)
+      .find({})
+      .toArray();
+    collectionsData[col.name] = docs;
+  }
 
   if (!allUserData || allUserData.length === 0) {
     throw new Error("No user data found");
@@ -26,7 +44,7 @@ export const getAllUsersForBackup = async (email: string) => {
   const fileName = getBackupFileName(backupType, now);
 
   const backupData: BackupData = {
-    version: "1.0",
+    version: "1.1", // Increment version for new field support
     timestamp: now.toISOString(),
     createdBy: email,
     fileName,
@@ -65,6 +83,10 @@ export const getAllUsersForBackup = async (email: string) => {
             ? config.updatedAt.toISOString()
             : new Date().toISOString(),
       })),
+    notifications: allNotifications.map((notif) =>
+      typeof notif.toObject === "function" ? notif.toObject() : notif,
+    ),
+    collections: collectionsData,
     totalUsers: allUserData.length,
     totalLists,
     totalTasks,

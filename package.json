@@ -55,7 +55,13 @@
     "secrets:push": "powershell -ExecutionPolicy Bypass -File scripts/Bitwarden/push-secrets.ps1",
     "db:migrate": "node scripts/MongoDB/migrate-db.js",
     "db:restore": "node scripts/MongoDB/restore-db.js",
+    "db:restore:drive": "node scripts/MongoDB/restore-db-google-drive.js",
     "db:backup": "node scripts/MongoDB/backup-db.js",
+    "db:backup:drive": "node scripts/MongoDB/backup-db-google-drive.js",
+    "cdn:backup": "node scripts/Cloudinary/backup-cloudinary.js",
+    "cdn:restore": "node scripts/Cloudinary/restore-cloudinary.js",
+    "cdn:backup:drive": "node scripts/Cloudinary/backup-cloudinary-google-drive.js",
+    "cdn:restore:drive": "node scripts/Cloudinary/restore-cloudinary-google-drive.js",
     "prepare": "husky"
   },
   "eslintConfig": {

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const DateInfo = styled.p`
+export const DetailInfo = styled.p`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;

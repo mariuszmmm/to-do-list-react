@@ -76,6 +76,7 @@ const langPl = {
     dateCreated: "Data utworzenia",
     dateEdited: "Data edycji",
     dateDone: "Data ukończenia",
+    imageFileName: " Zdjęcie",
     backButton: "Powrót",
     showMore: "Pokaż więcej",
     showLess: "Pokaż mniej",

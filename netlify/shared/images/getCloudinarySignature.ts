@@ -28,6 +28,7 @@ export const getCloudinarySignature = () => {
     tags,
     timestamp: String(timestamp),
     upload_preset,
+    use_filename: "true",
   };
 
   const signature = cloudinary.utils.api_sign_request(params, api_secret!);

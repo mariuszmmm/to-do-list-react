@@ -93,7 +93,7 @@
   - <b>Synchronizacja w czasie rzeczywistym:</b> Natychmiastowe aktualizacje na różnych urządzeniach dzięki <b>Ably</b>.
   - <b>Archiwizacja list:</b> Możliwość archiwizowania list w celu utrzymania porządku bez utraty danych.
   - <b>Powiadomienia o zadaniach:</b> Integracja z <b>OneSignal</b> umożliwiająca planowanie przypomnień do zadań (Push oraz e-mail).
-  - <b>Panel Administracyjny:</b> Zaawansowany moduł dla administratora systemu, pozwalający na ręczne i automatyczne tworzenie kopii zapasowych całej bazy danych na <b>Google Drive</b> oraz diagnostykę i czyszczenie systemu.
+  - <b>Panel Administracyjny:</b> Zaawansowany moduł dla administratora systemu, pozwalający na ręczne i automatyczne tworzenie kopii zapasowych bazy danych (MongoDB) oraz plików mediów (Cloudinary) na <b>Google Drive</b>, a także diagnostykę i czyszczenie systemu.
 - <b>Strona List:</b></br>
   Po zalogowaniu użytkownik ma dostęp do strony "Listy", gdzie wyświetlane są wszystkie zapisane listy pobierane z bazy danych MongoDB. Na tej stronie możliwe jest:
   - Podgląd zawartości wybranej listy,

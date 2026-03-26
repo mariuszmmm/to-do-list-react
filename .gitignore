@@ -46,5 +46,10 @@ notes.md
 **/bws.exe
 bitwarden_sync.env
 
-# mongodb backups
+# backups
 scripts/MongoDB/backups/
+scripts/Cloudinary/backups/
+
+# temp
+temp
+tmp
