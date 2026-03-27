@@ -1,7 +1,12 @@
 import { RefObject, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
-import { CameraModalOverlay, CameraContainer, CameraVideo, CameraModalButtons } from "../../../common/CameraModal";
+import {
+  CameraModalOverlay,
+  CameraContainer,
+  CameraVideo,
+  CameraModalButtons,
+} from "../../../common/CameraModal";
 import { Info } from "../../../common/Info";
 import { WebcamError } from "../../../hooks/media/useWebcam";
 import { useScrollLock } from "../../../hooks";
@@ -33,7 +38,6 @@ const CameraModalComponent = ({
 
   useScrollLock(isOpen);
 
-
   return (
     <CameraModalOverlay $isOpen={isOpen}>
       <CameraContainer>
@@ -51,15 +55,23 @@ const CameraModalComponent = ({
       </CameraContainer>
       <CameraModalButtons>
         <FormButton
-          type='button'
-          width='150px'
+          type="button"
+          width="150px"
           onClick={onTakePhoto}
-          disabled={!isActive || cameraError !== null || isCameraLoading || isUploading}
+          disabled={
+            !isActive || cameraError !== null || isCameraLoading || isUploading
+          }
           $image
         >
           {t("buttons.capture")}
         </FormButton>
-        <FormButton type='button' width='150px' $cancel onClick={onClose} disabled={isUploading}>
+        <FormButton
+          type="button"
+          width="150px"
+          $cancel
+          onClick={onClose}
+          disabled={isUploading}
+        >
           {t("buttons.close")}
         </FormButton>
       </CameraModalButtons>

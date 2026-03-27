@@ -2,76 +2,27 @@
 
 Zestaw narzędzi do wykonywania pełnych kopii zapasowych oraz przywracania danych z Cloudinary, z pełnym wsparciem dla folderów („Asset Folders”).
 
-## Główne Skrypty
+## 📋 Dostępne Komendy (`npm run ...`)
 
-### 1. Backup Lokalny (`backup-cloudinary.js`)
-Pobiera wszystkie zasoby z Twojego konta Cloudinary i zapisuje je lokalnie.
+Możesz zarządzać swoimi zarchiwizowanymi obrazami z poziomu głównego katalogu na 4 proste sposoby:
 
-**Uruchomienie:**
-```powershell
-npm run cdn:backup
-```
+### 1. `npm run cdn:backup` (Ręczna Kopia Zapasowa na Dysk)
+Pobiera wszystkie grafiki i zasoby RAW przypięte do Twojego konta Cloudinary i skrupulatnie odtwarza struktury hierarchiczne (foldery) na lokalnym dysku SSD. Posiada mechanizm na wypadek podwójnych nazw z Windowsa.
+*   **Kiedy używać:** Jak w banku — profilaktycznie do testowania lub przed głębszą zmianą ułożenia bazy w sieci.
+*   **Kluczowe cechy:** Skanuje rekurencyjnie podfoldery wideo i RAW, zamykając konfigurację logistyczną potężnym zrzutem spoiwa `metadata.json`, który zabezpieczy tyły przy imporcie.
 
-**Kluczowe funkcje:**
-- **Pełna rekurencja**: Skanuje wszystkie foldery i podfoldery na koncie.
-- **Wszystkie typy**: Pobiera obrazy (image), wideo (video) oraz pliki surowe (raw).
-- **Struktura katalogów**: Odtwarza strukturę folderów Cloudinary lokalnie w folderze `backups`.
-- **Sanityzacja nazw**: Automatycznie poprawia nazwy folderów dla zgodności z systemem Windows (np. zamienia `"` na `_`).
-- **Metadane**: Tworzy plik `metadata.json` z kompletnymi informacjami do odtworzenia konta (Asset Folders, Public IDs).
+### 2. `npm run cdn:backup:drive` (Kopia Zapasowa na Google Drive) ☁️
+Przeprowadza bezobsługowy proces pełnego archiwum mediacyjnego Cloudinary bezpośrednio zamykając pliki w ZIPie — wyprowadzonym od razu połączonym skryplem typu `resumable upload` u Ciebie na dysku w chmurze Google.
+*   **Kiedy używać:** Bezpieczniejsza i "chmurowa" odnoga zwykłego zapisu (z komendy nr 1). Dysk nie ulega mechanicznym uszkodzeniom. 
 
----
+### 3. `npm run cdn:restore` (Przywracanie z Dysku Lokalnego)
+Wypycha paczkę testową potężnych rezerw bezpośrednio z wewnątrz Twojego peceta instalując to natywnie z ukształtowaną metadaną.
+*   **Kiedy używać:** Jeśli przypadkiem pominąłeś parę kluczowych zrzutów oznaczając je jako śmietnik - wpychanie ratuje logikę nadpisania nadpisując klucze i unieważniając ich stare obrazy (`invalidate: true`).
+*(Pojedynczy backup o wybranej dacie wymuszasz podając w konsoli np.: `node scripts/Cloudinary/restore-cloudinary.js NAZWA_FOLDERU`)*
 
-### 2. Backup do Google Drive (`backup-cloudinary-google-drive.js`) ☁️
-Tworzy archiwum ZIP wszystkich zasobów Cloudinary i przesyła je bezpośrednio na Dysk Google.
-
-**Uruchomienie:**
-```powershell
-npm run cdn:backup:drive
-```
-
-**Kluczowe funkcje:**
-- **Jeden plik ZIP**: Cała zawartość Cloudinary (obrazy, wideo, raw) + `metadata.json` spakowana w jednym archiwum.
-- **Bezpośrednia wysyłka**: Wykorzystuje `resumable upload` dla stabilności przy większych plikach.
-- **Lokalizacja**: Pliki trafiają do folderu `To-do-list_Backups / Cloudinary-Backups` na Dysku Google.
-- **Automatyka**: Pobiera tokeny autoryzacyjne bezpośrednio z Twojej bazy MongoDB (sama autoryzacja odbywa się w interfejsie aplikacji).
-
----
-
-### 3. Restore Lokalny (`restore-cloudinary.js`)
-Wysyła pliki z wybranego backupu z powrotem na Cloudinary.
-
-**Uruchomienie (najnowszy backup):**
-```powershell
-npm run cdn:restore
-```
-
----
-
-### 4. Restore z Google Drive (`restore-cloudinary-google-drive.js`) ☁️
-Pobiera ZIPa z Dysku Google, rozpakowuje go i przesyła pliki na Cloudinary.
-
-**Uruchomienie:**
-```powershell
-npm run cdn:restore:drive
-```
-
-**Kluczowe funkcje:**
-- **Pobieranie w locie**: Pobiera wybrane archiwum ZIP bezpośrednio do tymczasowego folderu.
-- **Interaktywne wybieranie**: Skanuje folder `Cloudinary-Backups` na Dysku Google i pozwala na wybór konkretnej kopii do przywrócenia.
-- **Odtwarzanie struktury**: Zachowuje oryginalne `Asset Folders` i metadane pliku.
-- **Automatyczne sprzątanie**: Po zakończeniu procesu usuwa pobrany plik ZIP oraz rozpakowaną zawartość.
-
----
-
-**Uruchomienie (konkretny backup):**
-```powershell
-node scripts/Cloudinary/restore-cloudinary.js nazwa_folderu_z_backupem
-```
-
-**Kluczowe funkcje:**
-- **Odtwarzanie struktury**: Dzięki metadanym pliki trafiają do swoich oryginalnych "Asset Folders", nawet jeśli `public_id` nie zawierało ścieżki.
-- **Nadpisywanie**: Skrypt używa `overwrite: true`, więc zaktualizuje pliki o tych samych identyfikatorach.
-- **Invalidacja cache**: Automatycznie czyści cache CDN (`invalidate: true`), aby nowe wersje były widoczne od razu.
+### 4. `npm run cdn:restore:drive` (Przywracanie z Google Drive) ☁️
+Interaktywny system odtwarzania. Pokazuje w terminalu tabelkę dostępnych archiwizacji uwięzionych na zapleczu konta Dysku Google. Na Twoje żądanie zaciąga ten konkretny ładunek do siebie na wirtualny pulpit temp. Rozkleja strukture media i instaluje idealnie w miejsce chmury Cloudinary. Autoczyszczenie po skończonym wgrywaniu dba o zachowanie zasobów sprzętu.
+*   **Kiedy używać:** Sposób ewakuacji z opcją zera limitu bez naruszania struktury folderów na maszynie.
 
 ---
 

@@ -84,6 +84,9 @@ export const themeLight = {
     shadow: {
       primary: colorNames.alto,
     },
+    scrollbar: {
+      primary: darken(0.1, colorNames.alto),
+    },
     info: {
       value: lighten(0.15, colorNames.forestGreen),
       value2: colorNames.orange,
@@ -145,6 +148,9 @@ export const themeDark: typeof themeLight = {
     },
     shadow: {
       primary: darken(0.8, colorNames.alto),
+    },
+    scrollbar: {
+      primary: darken(0.6, colorNames.alto),
     },
     info: {
       value: lighten(0.15, colorNames.forestGreen),

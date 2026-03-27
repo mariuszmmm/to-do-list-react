@@ -50,6 +50,11 @@ export const StorageSection = ({
   return (
     <TopBorderSection>
       <SectionTitle>{t("storage.title")}</SectionTitle>
+      {storageStats?.isFallback && (
+        <StyledSpan $comment style={{ marginBottom: "10px", display: "block", color: theme.colors.info.error }}>
+          ⚠️ Tryb ograniczony: Twoje konto Cloudinary blokuje dostęp do pełnych statystyk (Admin API). Wyświetlamy tylko liczbę plików.
+        </StyledSpan>
+      )}
       <AnimatedExpandBlock $visible={!!storageStats}>
         <div>
           <SpacerContainer>

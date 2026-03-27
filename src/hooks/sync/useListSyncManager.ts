@@ -193,11 +193,26 @@ export const useListSyncManager = ({
       updatedAt: sourceMeta.updatedAt,
       synced: true,
     };
+    
     const newTasks: Task[] = [...remoteOnlyTasks, ...localOnlyTasks].map(
-      (task) => ({
-        ...task,
-        status: task.status !== "deleted" ? "updated" : task.status,
-      }),
+      (task) => {
+        const remoteTask = remoteList.taskList.find(rt => rt.id === task.id);
+        const taskInLocal = tasks.find((local) => local.id === task.id);
+        
+        let newStatus = task.status;
+        if (task.status !== "deleted") {
+           if (remoteTask && (!taskInLocal || taskInLocal.updatedAt <= remoteTask.updatedAt)) {
+              newStatus = "synced";
+           } else {
+              newStatus = "updated";
+           }
+        }
+        
+        return {
+          ...task,
+          status: newStatus,
+        };
+      }
     );
 
     dispatch(

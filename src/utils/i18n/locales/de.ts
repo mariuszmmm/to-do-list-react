@@ -87,9 +87,9 @@ const langDe: typeof langPl = {
     title: "Aufgabenbild",
     noTask: "Aufgabe nicht gefunden 😥",
     buttons: {
-      add: "Hinzufügen",
-      change: "Ändern",
-      remove: "Entfernen",
+      add: "Foto hinzufügen",
+      change: "Foto ändern",
+      remove: "Foto entfernen",
       back: "Zurück",
       uploadFromDevice: "Vom Gerät hochladen",
       takePicture: "Foto aufnehmen",

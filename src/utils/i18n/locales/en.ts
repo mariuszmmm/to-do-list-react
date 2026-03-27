@@ -87,9 +87,9 @@ const langEn: typeof langPl = {
     title: "Task Image",
     noTask: "Task not found 😥",
     buttons: {
-      add: "Add",
-      change: "Change",
-      remove: "Remove",
+      add: "Add photo",
+      change: "Change photo",
+      remove: "Remove photo",
       back: "Back",
       uploadFromDevice: "Upload from device",
       takePicture: "Take a picture",

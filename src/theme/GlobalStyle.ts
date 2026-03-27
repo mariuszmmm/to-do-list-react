@@ -5,10 +5,10 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     background-color: ${({ theme }) => theme.colors.backgroundPrimary};
     color: ${({ theme }) => theme.colors.textPrimary};
-    /* Wymuszanie globalnego motywu na natywne przeglądarkowe widżety (np. DatePicker w Android) */
     color-scheme: ${({ theme }) => (theme.colors.textPrimary === "#151515ff" ? "light" : "dark")};
     overscroll-behavior: none;
     height: 100%;
+    overflow: hidden;
   }
 
   *, ::after, ::before {
@@ -25,6 +25,33 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100dvh;
     overscroll-behavior: none;  
     margin: 0;
+    overflow: hidden;
+  }
+
+  #root {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100vw;
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: ${({ theme }) => theme.colors.scrollbar.primary} transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.scrollbar.primary};
+    border-radius: 4px;
   }
 `;
 

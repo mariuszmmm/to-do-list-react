@@ -51,6 +51,9 @@ export const deleteCloudinaryImagesByListId = async (
 export const getCloudinaryUsage = async () => {
   try {
     const usage = await cloudinary.api.usage();
+
+    console.log("[getCloudinaryUsage] Usage:", usage);
+
     const storageUsed = usage.storage?.usage || 0;
     const defaultFreeLimit = 25 * 1024 * 1024 * 1024;
     const storageLimit = usage.storage?.limit || defaultFreeLimit;
@@ -104,8 +107,50 @@ export const getCloudinaryUsage = async () => {
         impressions: usage.impressions?.credits_usage || 0,
       },
     };
-  } catch (error) {
-    console.error("[getCloudinaryUsage] Error:", error);
+  } catch (error: any) {
+    // 403 Forbidden is a known issue on new Cloudinary environments (dw1at4kxe) 
+    // where RBAC (Assign Roles) blocks usage stats for Admin API by default.
+    if (error?.error?.http_code === 403) {
+      console.warn("[getCloudinaryUsage] Admin API usage blocked (403 forbidden). Triggering limited fallback stats.");
+      
+      try {
+        // Fallback: Use Search API to get basic totals (files & bytes)
+        // Search API is usually enabled on new accounts even when Admin API /usage is blocked.
+        const searchData = await cloudinary.search
+          .expression('resource_type:image OR resource_type:video')
+          .max_results(1) // We just need total_count
+          .execute();
+          
+        const totalFiles = searchData.total_count || 0;
+        
+        // Unfortunately, the Search API total_count doesn't give us total bytes easily without listing everything.
+        // We return a set of minimal stats so the UI doesn't collapse.
+        
+        return {
+          isFallback: true,
+          storage: {
+            used: 0,
+            limit: 25 * 1024 * 1024 * 1024,
+            used_percent: 0,
+            usage_gb: "0.00",
+            limit_gb: "25.00",
+          },
+          resources: {
+            used: totalFiles,
+            limit: "N/A",
+          },
+          transformations: { used: 0, limit: 25000 },
+          bandwidth: { used: 0, limit: 25 * 1024 * 1024 * 1024, usage_gb: "0.00", limit_gb: "25.00" },
+          credits: { used: 0, limit: 25, used_percent: 0 },
+          credit_breakdown: { transformations: 0, bandwidth: 0, storage: 0, impressions: 0 },
+        };
+      } catch (searchError) {
+        console.error("[getCloudinaryUsage] Fallback also failed:", searchError);
+        return null;
+      }
+    }
+    
+    console.error("[getCloudinaryUsage] Unexpected Error:", error);
     return null;
   }
 };

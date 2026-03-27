@@ -7,16 +7,21 @@ Ten projekt używa narzędzia **Bitwarden Secrets Manager CLI (`bws`)** oraz **N
 
 ---
 
-## 📋 Co robi `npm run secrets:sync`?
+## 📋 Dostępne Komendy (`npm run ...`)
 
-Jedna komenda wykonuje trzy rzeczy automatycznie:
+Zarządzaj swoją zsynchronizowaną bazą zmiennych środowiskowych z poziomu głównego katalogu projektu:
 
-1. Pobiera wszystkie sekrety z **dwóch projektów** w Bitwarden Secrets Manager.
-2. Zapisuje je do odpowiednich plików:
-   - Projekt **`to-do-list-react`** → plik **`.env`** (produkcja / Netlify)
-   - Projekt **`to-do-list-react-local`** → plik **`.env.local`** (lokalny deweloperski)
-   - Projekt **`to-do-list-react`** → plik **`.env.example`** (wzorzec z samymi nazwami kluczy, bez haseł)
-3. Pyta, czy wgrać zmienne do **Netlify** (wpisz `T` lub `N`).
+### 1. `npm run secrets:sync` (Pobieranie Pełnej Konfiguracji z Bitwardena)
+Jedna komenda pobiera najświeższe sekrety z obu środowisk (produkcji i lokalnego) i odtwarza uporządkowane pliki: `.env`, `.env.local` oraz szkieletowy `.env.example`. Na końcu ułatwia natychmiastowe wysłanie nowej wersji na platformę Netlify.
+*   **Kiedy używać:** Zawsze gdy zaczynasz kodować na nowym komputerze, współpracujesz na nowym dysku lub jeśli ręcznie edytowałeś stany sekretów w panelu przeglądarki Bitwardena.
+
+### 2. `npm run secrets:push` (Wysyłanie Zmian ze Skryptów do Bitwardena)
+Skanuje fizyczny plik `.env` (lub `.env.local`) wyłuskując nie tylko zaktualizowane wartości kluczy, ale również przepina i odczytuje mądrze odrębne "notatki" umieszczone za pomocą znaku '#'. Porównuje je na bieżąco z chmurą i interaktywnie uzgadnia co wysłać.
+*   **Kiedy używać:** Idealne po tym, gdy w szale pisania kodu utworzysz lokalnie 5 nowych bramek w `.env`. Komenda zabezpieczy te pliki wrzucając stan bezpośrednio w szyfrowaną otchłań konta.
+
+### 3. `npm run secrets:netlify` (Błyskawiczny, Celowy Import do Netlify)
+Narzędzie eksportujące środowisko do Netlify, omijające skrupulatny Bitwarden. Uzupełnione o ochronny wstrzykiwacz cudzysłowów na trudnych urlach typu Router Hash.
+*   **Kiedy używać:** Gdy na próbę chcesz dorzucić tylko jedną opcję konfiguracyjną i nie chcesz odpalać do tego procedury całego skanera (z punktu 1).
 
 ---
 
@@ -90,31 +95,7 @@ Na końcu zapyta, czy wysłać dane do Netlify – wpisz `T` (tak) lub `N` (nie)
 
 ---
 
-## 🔄 Regularna synchronizacja (gdy coś zmieniasz w Bitwardenie)
 
-Kiedykolwiek dodasz lub zmienisz sekret w Bitwardenie, wystarczy wpisać:
-
-```bash
-npm run secrets:sync
-```
-
----
-
-## ⬆️ Wysyłanie zmian do Bitwardena (gdy coś zmieniasz lokalnie)
-
-Jeśli zmieniłeś wartość w pliku `.env` lub `.env.local` i chcesz zaktualizować Bitwarden:
-
-```bash
-npm run secrets:push
-```
-
-Skrypt zapyta, który plik wysłać (`.env` lub `.env.local`), porówna wartości z Bitwardenem i:
-
-- **Zaktualizuje** klucze, których wartości się zmieniły.
-- **Zapyta**, czy dodać nowe klucze, których jeszcze nie ma w Bitwardenie.
-- **Pominie** klucze bez zmian.
-
----
 
 ## 🗂️ Struktura plików
 

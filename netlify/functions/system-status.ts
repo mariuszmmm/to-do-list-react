@@ -13,7 +13,7 @@ import {
 import mongoose from "mongoose";
 
 const handler: Handler = async (event, context) => {
-  const logPrefix = '[system-status]';
+  const logPrefix = "[system-status]";
 
   const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
   if (methodResponse) return methodResponse;
@@ -108,9 +108,9 @@ const handler: Handler = async (event, context) => {
     });
   } catch (error) {
     logError("Error in getSystemStatus wrapper", error, logPrefix);
-    return jsonResponse(200, { 
-      message: "Partial system status", 
-      error: "Some diagnostics failed to load"
+    return jsonResponse(200, {
+      message: "Partial system status",
+      error: "Some diagnostics failed to load",
     });
   }
 };

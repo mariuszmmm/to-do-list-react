@@ -55,16 +55,30 @@ $existingSecrets = $jsonOutput | ConvertFrom-Json
 
 Write-Host "[2/3] Porownywanie z plikiem: $sourceFile..." -ForegroundColor Cyan
 
+# Ustawienia kodowania, żeby polskie znaki przechodziły poprawnie (UTF-8)
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 # Czytanie lokalnego pliku .env (ignorujemy puste linie i komentarze)
 $localVars = @{}
-Get-Content $sourceFile | ForEach-Object {
+$localNotes = @{}
+Get-Content $sourceFile -Encoding UTF8 | ForEach-Object {
     $line = $_.Trim()
     if ($line -and -not $line.StartsWith("#")) {
         $parts = $line -split "=", 2
         if ($parts.Length -eq 2) {
             $key = $parts[0].Trim()
-            $value = $parts[1].Trim().Trim('"')
+            $rawRight = $parts[1].Trim()
+            
+            $note = ""
+            if ($rawRight -match "^(.*?)\s+#\s*(.*)$") {
+                $rawRight = $matches[1].Trim()
+                $note = $matches[2].Trim()
+            }
+            
+            $value = $rawRight.Trim('"')
             $localVars[$key] = $value
+            $localNotes[$key] = $note
         }
     }
 }
@@ -77,13 +91,28 @@ Write-Host "`n[3/3] Synchronizacja do projektu '$targetProjectName'..." -Foregro
 
 foreach ($key in $localVars.Keys) {
     $localValue = $localVars[$key]
+    $localNote = $localNotes[$key]
+    if ($null -eq $localNote) { $localNote = "" }
+    
     $existing = $existingSecrets | Where-Object { $_.key -eq $key -and $_.projectId -eq $targetProjectId }
 
     if ($existing) {
-        # Sekret istnieje - sprawdz czy wartosc sie zmienila
-        if ($existing.value -ne $localValue) {
+        $existingNote = $existing.note
+        if ($null -eq $existingNote) { $existingNote = "" }
+        
+        $needsUpdateValue = ($existing.value -ne $localValue)
+        $needsUpdateNote = ($existingNote -ne $localNote)
+        
+        if ($needsUpdateValue -or $needsUpdateNote) {
             Write-Host "  [~] Aktualizacja: $key" -ForegroundColor Yellow
-            & $exePath --server-url https://vault.bitwarden.eu secret edit $existing.id --value $localValue | Out-Null
+            
+            if ($needsUpdateValue -and $needsUpdateNote) {
+                & $exePath --server-url https://vault.bitwarden.eu secret edit $existing.id --value $localValue --note $localNote | Out-Null
+            } elseif ($needsUpdateValue) {
+                & $exePath --server-url https://vault.bitwarden.eu secret edit $existing.id --value $localValue | Out-Null
+            } else {
+                & $exePath --server-url https://vault.bitwarden.eu secret edit $existing.id --note $localNote | Out-Null
+            }
             $updated++
         } else {
             Write-Host "  [=] Bez zmian: $key" -ForegroundColor Gray
@@ -94,8 +123,13 @@ foreach ($key in $localVars.Keys) {
         Write-Host "`n  [+] Nowy klucz: '$key' nie istnieje w Bitwardenie." -ForegroundColor White
         $addChoice = Read-Host "      Czy dodac go do projektu '$targetProjectName'? [T/N]"
         if ($addChoice -eq 'T' -or $addChoice -eq 't') {
+            # BWS create nie przyjmuje parametru --note z konsoli, dlatego uzupelniamy go po utworzeniu
             $createResult = & $exePath --server-url https://vault.bitwarden.eu secret create $key $localValue $targetProjectId 2>&1
             if ($LASTEXITCODE -eq 0) {
+                $newSecret = $createResult | ConvertFrom-Json
+                if ($localNote -ne "") {
+                    & $exePath --server-url https://vault.bitwarden.eu secret edit $newSecret.id --note $localNote | Out-Null
+                }
                 Write-Host "      Dodano: $key" -ForegroundColor Green
             } else {
                 Write-Host "      [!] Blad podczas dodawania '$key': $createResult" -ForegroundColor Red

@@ -85,9 +85,9 @@ const langPl = {
     title: "Zdjęcie zadania",
     noTask: "Nie znaleziono zadania 😥",
     buttons: {
-      add: "Dodaj",
-      change: "Zmień",
-      remove: "Usuń",
+      add: "Dodaj zdjęcie",
+      change: "Zmień zdjęcie",
+      remove: "Usuń zdjęcie",
       back: "Powrót",
       uploadFromDevice: "Prześlij z urządzenia",
       takePicture: "Zrób zdjęcie",

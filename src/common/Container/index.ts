@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 export const Container = styled.main`
   max-width: 900px;
-  padding: 70px 20px 20px;
+  padding: 20px 20px 20px;
   margin: 0 auto;
-  min-height: var(--app-height, 100dvh);
+  min-height: calc(var(--app-height, 100dvh) - 50px);
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-    padding: 70px 2% 2%;
+    padding: 20px 2% 2%;
   }
 `;

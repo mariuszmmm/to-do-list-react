@@ -46,7 +46,12 @@ interface TaskImageActionsProps {
   data: DataState;
 }
 
-const TaskImageActionsComponent = ({ status, camera, actions, data }: TaskImageActionsProps) => {
+const TaskImageActionsComponent = ({
+  status,
+  camera,
+  actions,
+  data,
+}: TaskImageActionsProps) => {
   const { t } = useTranslation("translation", {
     keyPrefix: "taskImagePage",
   });
@@ -68,7 +73,11 @@ const TaskImageActionsComponent = ({ status, camera, actions, data }: TaskImageA
 
       {data.photoSourceButtonsVisible ? (
         <>
-          <FormButton {...BUTTON_PROPS} onClick={actions.onGalleryClick} disabled={status.isButtonDisabled}>
+          <FormButton
+            {...BUTTON_PROPS}
+            onClick={actions.onGalleryClick}
+            disabled={status.isButtonDisabled}
+          >
             {t("buttons.uploadFromDevice")}
           </FormButton>
           <FormButton
@@ -81,47 +90,64 @@ const TaskImageActionsComponent = ({ status, camera, actions, data }: TaskImageA
           </FormButton>
         </>
       ) : (
-        <FormButton {...BUTTON_PROPS} onClick={actions.onAddOrChange} disabled={status.isButtonDisabled}>
+        <FormButton
+          {...BUTTON_PROPS}
+          onClick={actions.onAddOrChange}
+          disabled={status.isButtonDisabled}
+        >
           {data.taskImageUrl ? t("buttons.change") : t("buttons.add")}
         </FormButton>
       )}
 
       {data.taskImageUrl && !data.photoSourceButtonsVisible && (
-        <FormButton {...BUTTON_PROPS} onClick={actions.onRemove} disabled={status.isButtonDisabled} $remove>
+        <FormButton
+          {...BUTTON_PROPS}
+          onClick={actions.onRemove}
+          disabled={status.isButtonDisabled}
+          $remove
+        >
           {t("buttons.remove")}
         </FormButton>
       )}
 
       <FormButton
         {...BUTTON_PROPS}
-        onClick={data.photoSourceButtonsVisible ? actions.onCancel : actions.onBack}
+        onClick={
+          data.photoSourceButtonsVisible ? actions.onCancel : actions.onBack
+        }
         disabled={status.phase === "committing"}
         $cancel
       >
-        {data.photoSourceButtonsVisible || status.isUploading ? t("buttons.cancel") : t("buttons.back")}
+        {data.photoSourceButtonsVisible || status.isUploading
+          ? t("buttons.cancel")
+          : t("buttons.back")}
       </FormButton>
     </FormButtonWrapper>
   );
 };
 
-export const TaskImageActions = memo(TaskImageActionsComponent, (prev, next) => {
-  return (
-    prev.status.isUploading === next.status.isUploading &&
-    prev.status.uploadError === next.status.uploadError &&
-    prev.status.isRemoving === next.status.isRemoving &&
-    prev.status.removeError === next.status.removeError &&
-    prev.status.isButtonDisabled === next.status.isButtonDisabled &&
-    prev.status.phase === next.status.phase &&
-    prev.camera.isAvailable === next.camera.isAvailable &&
-    prev.camera.error === next.camera.error &&
-    prev.actions.onGalleryClick === next.actions.onGalleryClick &&
-    prev.actions.onCameraClick === next.actions.onCameraClick &&
-    prev.actions.onAddOrChange === next.actions.onAddOrChange &&
-    prev.actions.onRemove === next.actions.onRemove &&
-    prev.actions.onCancel === next.actions.onCancel &&
-    prev.actions.onBack === next.actions.onBack &&
-    prev.data.loggedUserEmail === next.data.loggedUserEmail &&
-    prev.data.taskImageUrl === next.data.taskImageUrl &&
-    prev.data.photoSourceButtonsVisible === next.data.photoSourceButtonsVisible
-  );
-});
+export const TaskImageActions = memo(
+  TaskImageActionsComponent,
+  (prev, next) => {
+    return (
+      prev.status.isUploading === next.status.isUploading &&
+      prev.status.uploadError === next.status.uploadError &&
+      prev.status.isRemoving === next.status.isRemoving &&
+      prev.status.removeError === next.status.removeError &&
+      prev.status.isButtonDisabled === next.status.isButtonDisabled &&
+      prev.status.phase === next.status.phase &&
+      prev.camera.isAvailable === next.camera.isAvailable &&
+      prev.camera.error === next.camera.error &&
+      prev.actions.onGalleryClick === next.actions.onGalleryClick &&
+      prev.actions.onCameraClick === next.actions.onCameraClick &&
+      prev.actions.onAddOrChange === next.actions.onAddOrChange &&
+      prev.actions.onRemove === next.actions.onRemove &&
+      prev.actions.onCancel === next.actions.onCancel &&
+      prev.actions.onBack === next.actions.onBack &&
+      prev.data.loggedUserEmail === next.data.loggedUserEmail &&
+      prev.data.taskImageUrl === next.data.taskImageUrl &&
+      prev.data.photoSourceButtonsVisible ===
+        next.data.photoSourceButtonsVisible
+    );
+  },
+);

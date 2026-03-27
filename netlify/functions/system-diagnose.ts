@@ -1,6 +1,5 @@
 import type { Handler } from "@netlify/functions";
 import { connectToDB } from "../config/mongoose";
-import SystemConfig from "../models/SystemConfig";
 import { jsonResponse, logError } from "../shared/lib/response";
 import { getCloudinaryUsage } from "../shared/lib/cloudinaryHelper";
 import { getGoogleAccessToken } from "../shared/lib/googleDriveHelper";
@@ -12,7 +11,7 @@ import {
 import mongoose from "mongoose";
 
 const handler: Handler = async (event, context) => {
-  const logPrefix = '[system-diagnose]';
+  const logPrefix = "[system-diagnose]";
 
   const methodResponse = checkHttpMethod(event.httpMethod, "GET", logPrefix);
   if (methodResponse) return methodResponse;
@@ -46,11 +45,36 @@ const handler: Handler = async (event, context) => {
 
     // 2. Test Cloudinary
     try {
-      const usage = await getCloudinaryUsage();
-      results.cloudinary = {
-        status: usage ? "success" : "error",
-        details: usage ? "Connection successful" : "Failed to fetch usage data",
-      };
+      const apiKey = process.env.CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      
+      const pingUrl = `https://api.cloudinary.com/v1_1/${cloudName}/ping`;
+      const basicAuth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+
+      const response = await fetch(pingUrl, {
+        headers: {
+          'Authorization': `Basic ${basicAuth}`
+        }
+      });
+      
+      const status = response.status;
+      
+      if (status === 200) {
+        // Also check if full usage is allowed
+        const usage = await getCloudinaryUsage();
+        results.cloudinary = {
+          status: "success",
+          details: usage?.isFallback 
+            ? "Connected (Search API fallback - Admin API blocked with 403)" 
+            : "Connection successful (Full Admin API access)",
+        };
+      } else {
+        results.cloudinary = {
+          status: "error",
+          details: `Ping failed with status: ${status}`,
+        };
+      }
     } catch (err: any) {
       results.cloudinary = { status: "error", details: err.message };
     }
