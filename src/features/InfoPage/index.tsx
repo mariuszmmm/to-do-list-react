@@ -6,6 +6,7 @@ import { Text } from "../../common/Text";
 import { List, ListItem } from "./styled";
 import { StyledLink } from "../../common/StyledLink";
 import { ContactForm } from "./ContactForm";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 const InfoPage = () => {
   const { t } = useTranslation("translation", {
@@ -14,7 +15,7 @@ const InfoPage = () => {
   const translate = t as any;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   return (

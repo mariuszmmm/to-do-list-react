@@ -49,7 +49,7 @@ const handler: Handler = async (event, context) => {
       key: /^log_/,
     })
       .sort({ updatedAt: -1 })
-      .limit(5);
+      .limit(6);
 
     const logs = allConfigs.map((config) => ({
       key: config.key,

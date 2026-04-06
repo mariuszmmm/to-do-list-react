@@ -21,6 +21,7 @@ import {
 import { selectModalIsOpen, selectModalConfirmed, openModal, closeModal } from "../../Modal/modalSlice";
 import { selectTaskListMetaData, setListStatus } from "../tasks/tasksSlice";
 import { getOrCreateDeviceId } from "../../utils/storage/deviceId";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 type Props = { listsData: ListsData; localListId: string };
 
@@ -47,7 +48,7 @@ const RemoteListsPage = ({ listsData, localListId }: Props) => {
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   useEffect(() => {

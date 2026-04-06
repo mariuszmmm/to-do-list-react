@@ -10,6 +10,7 @@ import { formatCurrentDate } from "../../../utils/formatting/formatCurrentDate";
 import { useTranslation } from "react-i18next";
 import { FormButton } from "../../../common/FormButton";
 import { FormButtonWrapper } from "../../../common/FormButtonWrapper";
+import { scrollToTop } from "../../../utils/ui/scrollToTop";
 import {
   Image,
   ImagePreview,
@@ -31,7 +32,7 @@ const TaskPage = () => {
   const { imageUrl } = task?.image || {};
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   const taskContent = task ? task.content : t("noContent");

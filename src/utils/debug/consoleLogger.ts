@@ -27,6 +27,15 @@ class ConsoleLogger {
     }
   }
 
+  private isDebugModeEnabled(): boolean {
+    try {
+      const settings = JSON.parse(localStorage.getItem(this.settingsKey) || "{}");
+      return !!settings.debugMode;
+    } catch (e) {
+      return false;
+    }
+  }
+
   private loadPersistentLogs() {
     if (this.isPreserveLogsEnabled()) {
       try {
@@ -58,9 +67,14 @@ class ConsoleLogger {
     const originalWarn = console.warn;
     const originalInfo = console.info;
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     console.log = (...args: any[]) => {
       this.addLog("log", args);
-      originalLog.apply(console, args);
+      // Na produkcji logujemy tylko jeśli włączony jest Debug Mode
+      if (!isProduction || this.isDebugModeEnabled()) {
+        originalLog.apply(console, args);
+      }
     };
 
     console.error = (...args: any[]) => {
@@ -75,7 +89,10 @@ class ConsoleLogger {
 
     console.info = (...args: any[]) => {
       this.addLog("info", args);
-      originalInfo.apply(console, args);
+      // Na produkcji logujemy info tylko jeśli włączony jest Debug Mode
+      if (!isProduction || this.isDebugModeEnabled()) {
+        originalInfo.apply(console, args);
+      }
     };
   }
 

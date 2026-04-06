@@ -15,6 +15,7 @@ import {
 } from "./archivedListsSlice";
 import { selectModalIsOpen } from "../../Modal/modalSlice";
 import { useDispatch } from "react-redux";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 const ArchivedListsPage = () => {
   const taskListsRef = useRef<HTMLDivElement>(null);
@@ -34,7 +35,7 @@ const ArchivedListsPage = () => {
   });
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   useEffect(() => {

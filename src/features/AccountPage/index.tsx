@@ -32,6 +32,7 @@ import { AccountAvatar, getAvatarColor } from "./AccountSwitcher/styled";
 import { TitleWrapper, EmailText } from "./styled";
 import { formatEmailWithBreaks } from "./utils";
 import { consoleLogger } from "../../utils/debug/consoleLogger";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
@@ -153,7 +154,7 @@ const AccountPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
     if (sessionStorage.getItem("open_backup_after_oauth") === "true") {
       sessionStorage.removeItem("open_backup_after_oauth");
     }

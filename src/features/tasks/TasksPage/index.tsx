@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { ListsData, List } from "../../../types";
 import { UseMutationResult } from "@tanstack/react-query";
 import { useTaskForm } from "./hooks/useTaskForm";
+import { scrollToTop } from "../../../utils/ui/scrollToTop";
 
 type Props = {
   listsData?: ListsData;
@@ -34,12 +35,12 @@ const TasksPage = ({ listsData, saveListMutation }: Props) => {
   const taskForm = useTaskForm();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   useEffect(() => {
     if (!editedTaskContent) return;
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, [editedTaskContent]);
 
   return (

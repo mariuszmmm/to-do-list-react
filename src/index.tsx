@@ -22,7 +22,6 @@ import { restoreFromIndexedDB } from "./utils/storage/storageSync";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 // Obsługa tokenów uwierzytelniających i kodów OAuth z adresu URL (np. po powrocie z logowania Google)
-console.log("Aplikacja startuje..."); // Inicjalizacja pierwszej linii logów
 handleAuthTokensFromUrl();
 handleGoogleOAuthCodeFromUrl();
 

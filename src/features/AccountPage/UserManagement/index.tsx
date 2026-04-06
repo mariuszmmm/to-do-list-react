@@ -104,7 +104,6 @@ export const UserManagement = () => {
       const token = await getUserToken();
       if (token) {
         const response = await inviteUserApi(token, email);
-        console.log(response);
         if (response.success) {
           setMessage({
             text: t("userManagement.invite.success"),

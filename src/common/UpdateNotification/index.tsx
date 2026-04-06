@@ -19,12 +19,6 @@ export const UpdateNotification = () => {
 
   const checkUpdateState = useCallback(
     async (registration: ServiceWorkerRegistration) => {
-      console.log("[UpdateNotification] Sprawdzanie stanu aktualizacji...", {
-        waiting: !!registration.waiting,
-        installing: !!registration.installing,
-        active: !!registration.active,
-      });
-
       // Funkcja omijania "Phantom Updates" (puste aktualizacje bez zmiany kodu)
       const trySilentlySkip = async (worker: ServiceWorker) => {
         const getWorkerVersion = (
@@ -37,12 +31,10 @@ export const UpdateNotification = () => {
             const messageChannel = new MessageChannel();
             messageChannel.port1.onmessage = (event) => {
               if (event.data && event.data.type === "VERSION_INFO") {
-                console.log(`[UpdateNotification] Otrzymano wersję dla ${label}:`, event.data.version);
                 resolve(event.data.version);
               }
             };
             
-            console.log(`[UpdateNotification] Wysyłanie GET_VERSION do ${label}...`);
             sw.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
             
             // Timeout 2s dla większej niezawodności w desktopowych przeglądarkach
@@ -71,7 +63,6 @@ export const UpdateNotification = () => {
       };
 
       if (registration.waiting) {
-        console.log("[UpdateNotification] Znaleziono oczekujący Service Worker.");
         const isPhantom = await trySilentlySkip(registration.waiting);
         if (!isPhantom) {
           console.log("[UpdateNotification] Wykryto REALNĄ aktualizację. Pokazuję powiadomienie.");
@@ -82,10 +73,8 @@ export const UpdateNotification = () => {
       }
 
       if (registration.installing) {
-        console.log("[UpdateNotification] Znaleziono instalujący się Service Worker.");
         const worker = registration.installing;
         worker.addEventListener("statechange", async () => {
-          console.log("[UpdateNotification] Zmiana stanu instalującego się SW:", worker.state);
           if (worker.state === "installed") {
             const isPhantom = await trySilentlySkip(worker);
             if (!isPhantom) {
@@ -112,7 +101,6 @@ export const UpdateNotification = () => {
           // Upewniamy się, że nie nadpisujemy ważnych listenerów, ale reagujemy na nowe
           const originalOnUpdateFound = registration.onupdatefound;
           registration.onupdatefound = (ev: Event) => {
-            console.log("[UpdateNotification] Wykryto onupdatefound w rejestracji.");
             checkUpdateState(registration);
             if (typeof originalOnUpdateFound === "function") {
               originalOnUpdateFound.call(registration, ev);
@@ -130,7 +118,6 @@ export const UpdateNotification = () => {
     const handleCustomEvent = async (event: Event) => {
       const customEvent = event as CustomEvent;
       if (customEvent.detail) {
-        console.log("[UpdateNotification] Otrzymano sw-update-available (CustomEvent).");
         checkUpdateState(customEvent.detail);
       }
     };
@@ -149,7 +136,6 @@ export const UpdateNotification = () => {
     // Agresywne sprawdzanie przy powrocie użytkownika
     const handleRevisit = async () => {
       if (document.visibilityState === "visible") {
-        console.log("[UpdateNotification] Powrót do aplikacji. Sprawdzanie aktualizacji wymuszone.");
         const reg = await navigator.serviceWorker.getRegistration();
         if (reg) {
           try {

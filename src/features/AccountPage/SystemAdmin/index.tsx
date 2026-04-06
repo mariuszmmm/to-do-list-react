@@ -95,7 +95,7 @@ export const SystemAdmin = () => {
         );
         if (isDuplicate) return prevLogs;
 
-        return [newLog, ...prevLogs].slice(0, 5); // Show only the last 5 logs
+        return [newLog, ...prevLogs].slice(0, 6); // Show only the last 6 logs
       });
 
       // Also update the specific statuses if they were updated
