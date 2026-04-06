@@ -1,7 +1,9 @@
-import { FormEventHandler, useState, useRef, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { useValidation } from "../../../hooks/useValidation";
-import { useWaitingForConfirmation } from "./useWaitingForConfirmation";
+import { SubmitEvent, useState, useRef, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/redux";
+import { useValidation } from "../../../hooks/validation/useValidation";
+import { useWaitingForConfirmation } from "./hooks/useWaitingForConfirmation";
+import { useRestoreWaitingState } from "./hooks/useRestoreWaitingState";
+import { useModalConfirmationHandler } from "./hooks/useModalConfirmationHandler";
 import { Form } from "../../../common/Form";
 import { FormButton } from "../../../common/FormButton";
 import { Input } from "../../../common/Input";
@@ -13,22 +15,23 @@ import {
   selectLoggedUserEmail,
   selectMessage,
   setMessage,
-  setAccountMode,
 } from "../accountSlice";
 import { useTranslation } from "react-i18next";
-import { useLogin } from "./useLogin";
-import { useLogout } from "./useLogout";
+import { useLogin } from "./hooks/useLogin";
+import { useLogout } from "./hooks/useLogout";
 import {
-  closeModal,
-  openModal,
   selectModalConfirmed,
+  selectModalState,
+  openModal,
 } from "../../../Modal/modalSlice";
-import { usePasswordChange } from "./usePasswordChange";
-import { useAccountRecovery } from "./useAccountRecovery";
-import { useAccountDelete } from "./useAccountDelete";
-import { clearStorage } from "../../tasks/tasksSlice";
-import { useAccountRegister } from "./useAccountRegister";
+import { usePasswordChange } from "./hooks/usePasswordChange";
+import { useAccountRecovery } from "./hooks/useAccountRecovery";
+import { useAccountDelete } from "./hooks/useAccountDelete";
+import { useAccountRegister } from "./hooks/useAccountRegister";
 import { InputWrapper } from "../../../common/InputWrapper";
+import { clearSessionForNewAccount } from "../../../utils/auth/multiAccount";
+import { AccountSwitcher } from "../AccountSwitcher";
+import { SwitcherWrapper } from "./styled";
 
 export const AccountForm = () => {
   const [email, setEmail] = useState("");
@@ -40,9 +43,10 @@ export const AccountForm = () => {
   const message = useAppSelector(selectMessage);
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
   const confirmed = useAppSelector(selectModalConfirmed);
+  const modalState = useAppSelector(selectModalState);
 
   const isWaitingForConfirmation = useAppSelector(
-    selectIsWaitingForConfirmation
+    selectIsWaitingForConfirmation,
   );
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
@@ -70,38 +74,23 @@ export const AccountForm = () => {
   const accountDelete = useAccountDelete();
   const accountRegister = useAccountRegister();
 
+  useRestoreWaitingState({ setEmail, setPassword });
+
+  useModalConfirmationHandler({
+    confirmed,
+    modalState,
+    accountMode,
+    logout,
+    accountDelete,
+  });
+
   useEffect(() => {
     if (isWaitingForConfirmation) {
       waitingForConfirmation();
     }
   }, [isWaitingForConfirmation, waitingForConfirmation]);
 
-  useEffect(() => {
-    if (confirmed) {
-      if (accountMode === "logged") logout.mutate();
-      if (accountMode === "accountDelete") accountDelete.mutate();
-      if (accountMode === "dataRemoval") {
-        dispatch(clearStorage());
-        dispatch(setAccountMode("login"));
-        dispatch(
-          openModal({
-            title: { key: "modal.dataRemoval.title" },
-            message: { key: "modal.dataRemoval.message.info" },
-            type: "info",
-          })
-        );
-      }
-    } else {
-      if (confirmed === false) {
-        if (accountMode === "accountDelete") dispatch(setAccountMode("logged"));
-        if (accountMode === "dataRemoval") dispatch(setAccountMode("login"));
-        dispatch(closeModal());
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmed]);
-
-  const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  const onFormSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     switch (accountMode) {
@@ -130,7 +119,7 @@ export const AccountForm = () => {
             message: { key: "modal.logout.message.confirm" },
             confirmButton: { key: "modal.buttons.logoutButton" },
             type: "confirm",
-          })
+          }),
         );
         setPassword("");
         break;
@@ -147,30 +136,40 @@ export const AccountForm = () => {
     <>
       <Form
         onSubmit={onFormSubmit}
+        autoComplete="off"
         $singleInput={
           accountMode === "accountRecovery" || accountMode === "passwordChange"
         }
-        $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
+        $noInputs={
+          (!!loggedUserEmail || accountMode === "accountSwitch") &&
+          accountMode !== "passwordChange"
+        }
       >
         <Input
-          autoFocus
+          autoFocus={
+            accountMode === "login" || accountMode === "accountRegister"
+          }
           value={email}
           type="email"
           name="login"
+          autoComplete="username"
           placeholder={t("form.inputPlaceholders.email")}
           onChange={({ target }) => setEmail(target.value)}
           ref={emailInputRef}
-          hidden={!!loggedUserEmail}
+          hidden={!!loggedUserEmail || accountMode === "accountSwitch"}
         />
         <InputWrapper
           hidden={
-            (!!loggedUserEmail || accountMode === "accountRecovery") &&
+            (!!loggedUserEmail ||
+              accountMode === "accountRecovery" ||
+              accountMode === "accountSwitch") &&
             accountMode !== "passwordChange"
           }
         >
           <Input
             value={password}
             name="password"
+            autoFocus={accountMode === "passwordChange"}
             type={showPassword ? "text" : "password"}
             placeholder={
               accountMode === "passwordChange"
@@ -178,7 +177,12 @@ export const AccountForm = () => {
                 : t("form.inputPlaceholders.password")
             }
             autoComplete={
-              accountMode === "passwordChange" ? "new-password" : ""
+              accountMode === "passwordChange" ||
+              accountMode === "accountRegister"
+                ? "new-password"
+                : accountMode === "login"
+                  ? "current-password"
+                  : "off"
             }
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -186,29 +190,46 @@ export const AccountForm = () => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onTouchStart={() => setShowPassword(!showPassword)}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
+            type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>
         </InputWrapper>
-        <FormButton
-          type="submit"
-          $singleInput={
-            accountMode === "accountRecovery" ||
-            accountMode === "passwordChange"
-          }
-          $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
-        >
-          {accountMode === "accountRegister"
-            ? t("form.buttons.register")
-            : accountMode === "accountRecovery"
-            ? t("form.buttons.reset")
-            : accountMode === "passwordChange"
-            ? t("form.buttons.save")
-            : loggedUserEmail
-            ? t("form.buttons.logout")
-            : t("form.buttons.login")}
-        </FormButton>
+        {accountMode === "accountSwitch" && (
+          <SwitcherWrapper>
+            <AccountSwitcher />
+            <FormButton
+              type="button"
+              onClick={async () => await clearSessionForNewAccount()}
+            >
+              {t("switcher.addAccount")}
+            </FormButton>
+          </SwitcherWrapper>
+        )}
+        {accountMode !== "accountSwitch" && (
+          <FormButton
+            type="submit"
+            $singleInput={
+              accountMode === "accountRecovery" ||
+              accountMode === "passwordChange"
+            }
+            $noInputs={!!loggedUserEmail && accountMode !== "passwordChange"}
+          >
+            {accountMode === "accountRegister"
+              ? t("form.buttons.register")
+              : accountMode === "accountRecovery"
+                ? t("form.buttons.reset")
+                : accountMode === "passwordChange"
+                  ? t("form.buttons.save")
+                  : loggedUserEmail
+                    ? t("form.buttons.logout")
+                    : t("form.buttons.login")}
+          </FormButton>
+        )}
       </Form>
     </>
   );

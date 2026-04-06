@@ -1,84 +1,100 @@
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux";
-import { Nav, NavList, StyledNavLink, Account, NavButton } from "./styled";
-import { auth } from "../api/auth";
 import {
-  setAccountMode,
-  setLoggedUserEmail,
-} from "../features/AccountPage/accountSlice";
-import { supportedLanguages } from "../utils/i18n/languageResources";
+  Nav,
+  NavList,
+  Account,
+  ActiveAccount,
+  NavListItem,
+  StyledNavLink,
+} from "./styled";
+import { LangSwitcherDesktop } from "./LangSwitcherDesktop";
+import { LangSwitcherMobile } from "./LangSwitcherMobile";
 import { ListsData } from "../types";
+import { Loader } from "../common/Loader";
+import { auth } from "../api/auth";
+import { useAppSelector } from "../hooks";
+import { selectIsDarkTheme } from "../common/ThemeSwitch/themeSlice";
+import {
+  getWidthForInfoNavButton,
+  getWidthForListsNavButton,
+  getWidthForTasksNavButton,
+} from "../utils/ui/getWidthForDynamicButtons";
 
-type Props = { listsData?: ListsData; authRoutes: string[] };
+type Props = {
+  listsData?: ListsData;
+  isLoading: boolean;
+  isError: boolean;
+  authRoutes: string[];
+  isOnline: boolean;
+};
 
-const Navigation = ({ listsData, authRoutes }: Props) => {
+const Navigation = ({
+  listsData,
+  isLoading,
+  isError,
+  authRoutes,
+  isOnline,
+}: Props) => {
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "navigation",
   });
+
   const { pathname } = useLocation();
-  const dispatch = useAppDispatch();
-  const user = auth.currentUser();
   const authRoute = authRoutes.includes(pathname);
-
-  useEffect(() => {
-    if (!authRoute && user) {
-      dispatch(setAccountMode(user ? "logged" : "login"));
-      dispatch(setLoggedUserEmail(user ? user.email : null));
-    }
-
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    const handleStorageEvent = (event: StorageEvent) => {
-      if (event.key === "gotrue.user") window.location.reload();
-    };
-
-    if (!authRoutes) window.addEventListener("storage", handleStorageEvent);
-
-    return () => window.removeEventListener("storage", handleStorageEvent);
-
-    // eslint-disable-next-line
-  }, []);
+  const user = auth.currentUser();
+  const isDarkTheme = useAppSelector(selectIsDarkTheme);
 
   return (
-    <Nav>
+    <>
       {!authRoute && (
-        <NavList $isLists={!!listsData}>
-          <li>
-            {supportedLanguages.map((lang) => (
-              <NavButton
-                onClick={() => i18n.changeLanguage(lang)}
-                $isActive={i18n.language.split("-")[0] === lang}
-                key={lang}
+        <Nav>
+          <NavList $isLists={!!user && !isError && isOnline}>
+            <NavListItem $first $main>
+              <LangSwitcherDesktop />
+              <LangSwitcherMobile />
+            </NavListItem>
+
+            <NavListItem $main>
+              <StyledNavLink
+                to="/tasks"
+                $inactive={pathname !== "/tasks"}
+                width={getWidthForTasksNavButton(i18n.language)}
               >
-                {lang.toUpperCase()}
-              </NavButton>
-            ))}
-          </li>
-          <li>
-            <StyledNavLink to="/tasks" $inactive={pathname !== "/tasks"}>
-              {t("tasksPage")}
-            </StyledNavLink>
-          </li>
-          {!!listsData && (
-            <li>
-              <StyledNavLink to="/lists">{t("lists")}</StyledNavLink>
-            </li>
-          )}
-          <li>
-            <StyledNavLink to="/info">{t("info")} </StyledNavLink>
-          </li>
-          <li>
-            <StyledNavLink to="/account">
-              <Account $isActive={pathname === "/account"} />
-            </StyledNavLink>
-          </li>
-        </NavList>
+                {t("tasksPage")}
+              </StyledNavLink>
+            </NavListItem>
+            {!!user && !isError && isOnline && (
+              <NavListItem $main>
+                {isLoading ? (
+                  <Loader isDarkTheme={isDarkTheme} />
+                ) : !!listsData ? (
+                  <StyledNavLink
+                    to="/lists"
+                    width={getWidthForListsNavButton(i18n.language)}
+                  >
+                    {t("lists")}
+                  </StyledNavLink>
+                ) : null}
+              </NavListItem>
+            )}
+            <NavListItem $main>
+              <StyledNavLink
+                to="/info"
+                width={getWidthForInfoNavButton(i18n.language)}
+              >
+                {t("info")}
+              </StyledNavLink>
+            </NavListItem>
+            <NavListItem $last $main>
+              <StyledNavLink to="/account">
+                {pathname === "/account" ? <ActiveAccount /> : <Account />}
+              </StyledNavLink>
+            </NavListItem>
+          </NavList>
+        </Nav>
       )}
-    </Nav>
+    </>
   );
 };
 

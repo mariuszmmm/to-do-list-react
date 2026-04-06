@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 interface ButtonProps {
   $special?: boolean;
   $selected?: boolean;
+  $danger?: boolean;
   $error?: boolean;
   width?: string;
 }
@@ -16,17 +17,27 @@ export const Button = styled.button<ButtonProps>`
   line-height: 16px;
   margin: 3px 0 0 20px;
   padding: 0;
-  background: transparent;
-  color: ${({ theme }) => theme.color.teal};
+  background: ${({ theme }) => theme.colors.button.transparent};
+  color: ${({ theme }) => theme.colors.button.secendaryText};
   border: none;
   transition: filter 0.3s;
   user-select: none;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+
+  &[data-icon] {
+    flex-direction: row;
+  }
+
+  &[data-icon]::before {
+    content: attr(data-icon);
+    margin-right: 4px;
+  }
 
   ${({ $special }) =>
     $special &&
     css`
-      margin: 0;
+      margin: 0 0 0 10px;
       min-width: auto;
     `};
 
@@ -37,15 +48,15 @@ export const Button = styled.button<ButtonProps>`
       text-underline-offset: 5px;
     `};
 
+  ${({ $danger }) =>
+    $danger &&
+    css`
+      color: ${({ theme }) => theme.colors.status.error};
+    `};
+
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     margin: 2px 10px 0;
     align-items: center;
-
-    ${({ $special }) =>
-      $special &&
-      css`
-        margin: 0;
-      `};
   }
 
   &:hover {
@@ -58,14 +69,20 @@ export const Button = styled.button<ButtonProps>`
   }
 
   &:disabled {
-    color: ${({ theme }) => theme.color.silver};
+    color: ${({ theme }) => theme.colors.button.disabled};
     filter: brightness(100%);
     cursor: auto;
+
+    &[data-icon]::before {
+      opacity: 0.3;
+      margin-right: 4px;
+      filter: grayscale(100%);
+    }
 
     ${({ $error }) =>
       $error &&
       css`
-        color: ${({ theme }) => theme.color.red};
+        color: ${({ theme }) => theme.colors.status.error};
       `};
   }
 `;

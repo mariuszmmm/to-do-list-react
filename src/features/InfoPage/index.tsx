@@ -6,24 +6,47 @@ import { Text } from "../../common/Text";
 import { List, ListItem } from "./styled";
 import { StyledLink } from "../../common/StyledLink";
 import { ContactForm } from "./ContactForm";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 const InfoPage = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "infoPage",
   });
+  const translate = t as any;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   return (
     <>
+      <Header title={t("howToStart.title")} />
+      <Section
+        body={
+          <>
+            <Header sub2 title={`🚀 ${t("howToStart.subTitle")}`} />
+            <List>
+              {[1, 2, 3, 4, 5, 6, 7].map((num) => (
+                <ListItem key={num}>
+                  <strong>
+                    {translate(`howToStart.steps.step${num}.title`)}
+                  </strong>
+                  :
+                  <br />
+                  {translate(`howToStart.steps.step${num}.description`)}
+                </ListItem>
+              ))}
+            </List>
+          </>
+        }
+      />
+      <br />
       <Header title={t("aboutApp.title")} />
       <Section
         body={
           <>
             <Header
-              sub
+              sub2
               title={`⚙️ ${t("aboutApp.topics.features.subTitle")} `}
             />
             <List>
@@ -45,10 +68,25 @@ const InfoPage = () => {
               <ListItem>
                 <Trans i18nKey="infoPage.aboutApp.topics.features.description.part6" />
               </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part7" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part8" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part9" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part10" />
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey="infoPage.aboutApp.topics.features.description.part11" />
+              </ListItem>
             </List>
             <br />
             <Header
-              sub
+              sub2
               title={`🛠️ ${t("aboutApp.topics.technologies.subTitle")}`}
             />
             <List>
@@ -57,23 +95,23 @@ const InfoPage = () => {
               <ListItem>- Redux, Redux Toolkit, Redux Saga</ListItem>
               <ListItem>- TanStack Query (react-query)</ListItem>
               <ListItem>- react-i18next, Cloud Translation API</ListItem>
-              <ListItem>- Netlify GoTrue.js, EmailJS</ListItem>
-              <ListItem>- MongoDB</ListItem>
+              <ListItem>- Netlify, Netlify GoTrue.js</ListItem>
+              <ListItem>- MongoDB, Cloudinary, Ably, OneSignal</ListItem>
+              <ListItem>- Google Drive API, EmailJS, @dnd-kit</ListItem>
               <ListItem>- Styled Components, CSS Grid, Flexbox</ListItem>
             </List>
             <br />
-            <Header sub title={`🌐 ${t("aboutApp.topics.links.subTitle")}`} />
+            <Header sub2 title={`🌐 ${t("aboutApp.topics.links.subTitle")}`} />
             <List>
               <ListItem>
                 🚀{" "}
                 <Trans i18nKey="infoPage.aboutApp.topics.links.description.newApp" />
                 <br />
                 <StyledLink
-                  to="https://to-do-list-typescript-react.netlify.app"
+                  to="https://to-do-list.myprojects.pl"
                   target="_blank"
                 >
-                  {" "}
-                  https://to-do-list-typescript-react.netlify.app
+                  https://to-do-list.myprojects.pl
                 </StyledLink>
               </ListItem>
               <ListItem>
@@ -84,7 +122,6 @@ const InfoPage = () => {
                   to="https://mariuszmmm.github.io/to-do-list-react"
                   target="_blank"
                 >
-                  {" "}
                   https://mariuszmmm.github.io/to-do-list-react
                 </StyledLink>
               </ListItem>
@@ -95,7 +132,7 @@ const InfoPage = () => {
       <br />
       <Header title={t("aboutAuthor.title")} />
       <Section
-        title="Mariusz Matusiewicz"
+        title={t("aboutAuthor.name")}
         body={
           <>
             <Text>
@@ -105,14 +142,13 @@ const InfoPage = () => {
               <Trans i18nKey="infoPage.aboutAuthor.description.part2" />
             </Text>
             <br />
-            <Header sub title={`🔗 ${t("aboutAuthor.links.subTitle")}`} />
+            <Header sub2 title={`🔗 ${t("aboutAuthor.links.subTitle")}`} />
             <List>
               <ListItem>
                 🏡{" "}
                 <Trans i18nKey="infoPage.aboutAuthor.links.description.personalHomepage" />
                 <br />
                 <StyledLink to="https://myprojects.pl/" target="_blank">
-                  {" "}
                   https://myprojects.pl
                 </StyledLink>
               </ListItem>
@@ -121,7 +157,6 @@ const InfoPage = () => {
                 <Trans i18nKey="infoPage.aboutAuthor.links.description.github" />
                 <br />
                 <StyledLink to="https://github.com/mariuszmmm" target="_blank">
-                  {" "}
                   https://github.com/mariuszmmm
                 </StyledLink>
               </ListItem>

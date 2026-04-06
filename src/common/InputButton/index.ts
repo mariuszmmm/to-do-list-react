@@ -1,18 +1,19 @@
 import styled from "styled-components";
 
-export const InputButton = styled.button`
-  color: ${({ theme }) => theme.color.empress};
-  background: transparent;
+export const InputButton = styled.button<{ $editedTask?: boolean }>`
+  color: ${({ theme }) => theme.colors.button.edit};
+  background: ${({ theme }) => theme.colors.button.transparent};
   border: none;
   position: absolute;
-  width: 2.5rem;
-  height: 100%;
+  width: 2.6rem;
+  height: ${({ $editedTask }) => ($editedTask ? "2.5rem" : "100%")};
   right: 0;
-  top: 2px;
+  ${({ $editedTask }) => ($editedTask ? "bottom: 2px;" : "top: 2px; ")}
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   &:disabled {
     cursor: not-allowed;
-    color: ${({ theme }) => theme.color.silver};
+    color: ${({ theme }) => theme.colors.button.disabled};
   }
 `;

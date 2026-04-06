@@ -1,8 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
-import { nanoid } from "@reduxjs/toolkit";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { ButtonsContainer } from "../../../../common/ButtonsContainer";
 import { Button } from "../../../../common/Button";
-import { RedoIcon, UndoIcon } from "../../../../common/icons";
+import { CircleIcon, RedoIcon, UndoIcon } from "../../../../common/icons";
 import {
   selectAreTasksEmpty,
   selectHideDone,
@@ -15,27 +14,37 @@ import {
   selectEditedTask,
   setAllUndone,
   selectIsEveryTaskUndone,
-  selectListName,
+  selectTaskListMetaData,
   selectListNameToEdit,
   selectUndoTasksStack,
   selectRedoTasksStack,
-  switchTaskSort,
+  switchTasksSort,
   selectIsTasksSorting,
+  setTaskListToArchive,
+  selectListStatus,
+  clearTaskList,
+  setListStatus,
+  setChangeSource,
 } from "../../tasksSlice";
-import { selectListToAdd, setListToAdd } from "../../../ListsPage/listsSlice";
 import { useTranslation } from "react-i18next";
 import {
   getWidthForSwitchTaskSortButton,
   getWidthForToggleHideDoneButton,
-} from "../../../../utils/getWidthForDynamicButtons";
-import { useAddListMutation } from "./useAddListMutation";
-import { useEffect } from "react";
-import { ListsData } from "../../../../types";
-import { openModal, selectModalConfirmed } from "../../../../Modal/modalSlice";
+} from "../../../../utils/ui/getWidthForDynamicButtons";
+import { ListsData, List } from "../../../../types";
+import { UseMutationResult } from "@tanstack/react-query";
 
-type Props = { listsData?: ListsData };
+type Props = {
+  listsData?: ListsData;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
+};
 
-export const TasksButtons = ({ listsData }: Props) => {
+export const TasksButtons = ({ listsData, saveListMutation }: Props) => {
   const areTasksEmpty = useAppSelector(selectAreTasksEmpty);
   const hideDone = useAppSelector(selectHideDone);
   const isEveryTaskDone = useAppSelector(selectIsEveryTaskDone);
@@ -43,114 +52,106 @@ export const TasksButtons = ({ listsData }: Props) => {
   const undoTasksStack = useAppSelector(selectUndoTasksStack);
   const redoTasksStack = useAppSelector(selectRedoTasksStack);
   const tasks = useAppSelector(selectTasks);
-  const editedTask = useAppSelector(selectEditedTask);
+  const editedTaskContent = useAppSelector(selectEditedTask);
   const listNameToEdit = useAppSelector(selectListNameToEdit);
-  const listName = useAppSelector(selectListName);
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
   const isTasksSorting = useAppSelector(selectIsTasksSorting);
-  const listToAdd = useAppSelector(selectListToAdd);
-  const confirmed = useAppSelector(selectModalConfirmed);
-
+  const listStatus = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+  const { isPending, isError } = saveListMutation;
 
-  const addListMutation = useAddListMutation();
-
-  useEffect(() => {
-    if (!listToAdd || !listsData) return;
-    const listAlreadyExists =
-      listsData.lists.some(({ name }) => name === listToAdd.name) || false;
-
-    if (confirmed || !listAlreadyExists) {
-      addListMutation.mutate({
-        version: listsData.version,
-        list: listToAdd,
-      });
-      dispatch(setListToAdd(null));
-    } else {
-      if (confirmed === false) {
-        dispatch(setListToAdd(null));
-        dispatch(
-          openModal({
-            title: { key: "modal.listSave.title" },
-            message: {
-              key: "modal.listSave.message.cancel",
-            },
-            type: "info",
-          })
-        );
-
-        return;
-      }
-
-      if (listAlreadyExists) {
-        dispatch(
-          openModal({
-            title: { key: "modal.listSave.title" },
-            message: {
-              key: "modal.listSave.message.confirm",
-              values: { listName: listToAdd.name },
-            },
-            type: "confirm",
-          })
-        );
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listToAdd, confirmed]);
+  const isChanged =
+    listStatus.isRemoteSaveable &&
+    !listStatus.isIdenticalToRemote &&
+    !isError &&
+    !isPending;
 
   return (
     <ButtonsContainer>
-      {listsData && (
+      {!!listsData && (
         <Button
-          onClick={() =>
-            dispatch(
-              setListToAdd({
-                id: nanoid(),
-                name: listName,
-                taskList: tasks,
-              })
-            )
+          onClick={() => {
+            dispatch(setChangeSource("local"));
+            dispatch(setListStatus({ manualSaveTriggered: true }));
+          }}
+          disabled={
+            !taskListMetaData.name ||
+            !!listNameToEdit ||
+            isPending ||
+            !!editedTaskContent ||
+            isTasksSorting
           }
-          disabled={!listName || areTasksEmpty || listNameToEdit !== null}
         >
-          {t("tasks.buttons.save")}
+          <span>
+            <CircleIcon
+              $isChanged={isChanged}
+              $isError={isError}
+              $isPending={isPending}
+              $isUpdated={listStatus.isIdenticalToRemote}
+            />
+            {t("tasks.buttons.save")}
+          </span>
         </Button>
       )}
       <Button
-        onClick={() => dispatch(setAllDone({ tasks, listName }))}
-        disabled={isEveryTaskDone || areTasksEmpty}
+        onClick={() => {
+          areTasksEmpty
+            ? dispatch(clearTaskList({ tasks, taskListMetaData }))
+            : dispatch(
+                setTaskListToArchive({ name: taskListMetaData.name, tasks }),
+              );
+        }}
+        disabled={!!editedTaskContent || isTasksSorting}
+      >
+        {t("tasks.buttons.clear")}
+      </Button>
+      <Button
+        onClick={() => dispatch(setAllDone({ tasks, taskListMetaData }))}
+        disabled={
+          isEveryTaskDone ||
+          areTasksEmpty ||
+          !!editedTaskContent ||
+          isTasksSorting
+        }
       >
         {t("tasks.buttons.allDone")}
       </Button>
       <Button
-        onClick={() => dispatch(setAllUndone({ tasks, listName }))}
-        disabled={isEveryTaskUndone || areTasksEmpty}
+        onClick={() => dispatch(setAllUndone({ tasks, taskListMetaData }))}
+        disabled={
+          isEveryTaskUndone ||
+          areTasksEmpty ||
+          !!editedTaskContent ||
+          isTasksSorting
+        }
       >
         {t("tasks.buttons.allUndone")}
       </Button>
       <Button
         onClick={() => dispatch(toggleHideDone())}
-        disabled={areTasksEmpty}
+        disabled={areTasksEmpty || !!editedTaskContent || isTasksSorting}
         width={getWidthForToggleHideDoneButton(i18n.language)}
       >
         {hideDone ? t("tasks.buttons.show") : t("tasks.buttons.hide")}
       </Button>
       <Button
-        onClick={() => dispatch(switchTaskSort())}
-        disabled={tasks.length < 2}
+        onClick={() => dispatch(switchTasksSort())}
+        disabled={(tasks.length < 2 && !isTasksSorting) || !!editedTaskContent}
         width={getWidthForSwitchTaskSortButton(i18n.language)}
       >
         {isTasksSorting ? t("tasks.buttons.notSort") : t("tasks.buttons.sort")}
       </Button>
       <ButtonsContainer $sub>
         <Button
-          disabled={undoTasksStack.length === 0 || editedTask !== null}
+          disabled={
+            undoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting
+          }
           onClick={() => dispatch(undoTasks())}
           title={
-            undoTasksStack.length === 0 || editedTask !== null
+            undoTasksStack.length === 0 || !!editedTaskContent
               ? ""
               : t("tasks.buttons.undo")
           }
@@ -158,10 +159,12 @@ export const TasksButtons = ({ listsData }: Props) => {
           <UndoIcon />
         </Button>
         <Button
-          disabled={redoTasksStack.length === 0 || editedTask !== null}
+          disabled={
+            redoTasksStack.length === 0 || !!editedTaskContent || isTasksSorting
+          }
           onClick={() => dispatch(redoTasks())}
           title={
-            redoTasksStack.length === 0 || editedTask !== null
+            redoTasksStack.length === 0 || !!editedTaskContent
               ? ""
               : t("tasks.buttons.redo")
           }

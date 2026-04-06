@@ -1,4 +1,7 @@
-export type Version = number | null;
+export interface PresenceUser {
+  email: string;
+  deviceCount: number;
+}
 
 export interface AccountState {
   accountMode:
@@ -8,14 +11,22 @@ export interface AccountState {
     | "accountRegister"
     | "accountRecovery"
     | "accountDelete"
-    | "dataRemoval";
+    | "dataRemoval"
+    | "accountSwitch";
   isWaitingForConfirmation: boolean;
   loggedUserEmail: string | null;
+  loggedUserName: string;
+  loggedUserRoles: Array<"admin" | "user">;
   message: string;
-  version: Version;
+  presenceUsers: PresenceUser[];
+  userDevicesCount: number;
+  totalUsersCount: number;
+  allDevicesCount: number;
 }
 
 export type RecoveryStatus =
   | "linkExpired"
   | "accountRecovered"
   | "passwordChange";
+
+export type Version = number | null;

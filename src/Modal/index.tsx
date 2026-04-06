@@ -1,11 +1,11 @@
-import { Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   CircleCheckIcon,
   CircleInfoIcon,
   CircleLoadingIcon,
   CircleWarningIcon,
 } from "../common/icons";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { useAppDispatch, useAppSelector, useScrollLock } from "../hooks";
 import { cancel, closeModal, confirm, selectModalState } from "./modalSlice";
 import {
   ModalBackground,
@@ -18,70 +18,119 @@ import {
   HeaderContent,
   ModalCloseButton,
   ModalCancelButton,
+  ModalYesButton,
+  ModalNoButton,
 } from "./styled";
 
 export const Modal = () => {
+  const { t } = useTranslation();
   const { isOpen, title, message, confirmButton, endButton, type } =
     useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
+  useScrollLock(isOpen);
+
+
   if (!isOpen) return null;
 
+  const isClickable =
+    type !== "loading" && type !== "confirm" && type !== "yes/no";
+
   return (
-    <ModalBackground>
+    <ModalBackground
+      onClick={() => {
+        if (isClickable) {
+          dispatch(closeModal());
+        }
+      }}
+      $clickable={isClickable}
+    >
       <ModalContainer>
-        <ModalBody>
+        <ModalBody onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
-            {type === "info" && <CircleInfoIcon />}
-            {type === "success" && <CircleCheckIcon />}
-            {type === "loading" && <CircleLoadingIcon />}
-            {(type === "confirm" || type === "error") && <CircleWarningIcon />}
+            {(type === "info" || type === "yes/no") && (
+              <CircleInfoIcon key="info-icon" />
+            )}
+            {type === "success" && <CircleCheckIcon key="success-icon" />}
+            {type === "loading" && <CircleLoadingIcon key="loading-icon" />}
+            {(type === "confirm" || type === "error") && (
+              <CircleWarningIcon key="warning-icon" />
+            )}
             {title && (
-              <HeaderContent>
-                <Trans i18nKey={title.key} />
-              </HeaderContent>
+              <HeaderContent key="header-content">{t(title.key)}</HeaderContent>
             )}
           </ModalHeader>
+
           {!!message && (
             <ModalDescription>
-              {typeof message === "string" ? (
-                message
-              ) : (
-                <Trans i18nKey={message.key} values={message.values} />
-              )}
+              {typeof message === "string"
+                ? message
+                : t(message.key, message.values)
+                    .split(
+                      /(<strong>.*?<\/strong>|<small>.*?<\/small>|<br\s*\/?>)/g,
+                    )
+                    .map((part, index) => {
+                      if (part.startsWith("<strong")) {
+                        return (
+                          <strong key={index}>
+                            {part.replace(/<\/?strong>/g, "")}
+                          </strong>
+                        );
+                      }
+                      if (part.startsWith("<small")) {
+                        return (
+                          <small
+                            key={index}
+                            style={{ fontSize: "0.85em", opacity: 0.8 }}
+                          >
+                            {part.replace(/<\/?small>/g, "")}
+                          </small>
+                        );
+                      }
+                      if (part.startsWith("<br")) {
+                        return <br key={index} />;
+                      }
+                      return part;
+                    })}
             </ModalDescription>
           )}
-          {
-            <ModalButtonContainer>
-              {type === "confirm" ? (
-                <>
-                  <ModalCancelButton onClick={() => dispatch(cancel())}>
-                    <Trans i18nKey="modal.buttons.cancelButton" />
-                  </ModalCancelButton>
-                  <ModalConfirmButton onClick={() => dispatch(confirm())}>
-                    <Trans
-                      i18nKey={
-                        confirmButton
-                          ? confirmButton.key
-                          : "modal.buttons.confirmButton"
-                      }
-                    />
-                  </ModalConfirmButton>
-                </>
-              ) : (
-                <ModalCloseButton
-                  onClick={() => dispatch(closeModal())}
-                  disabled={type === "loading"}
-                >
-                  <Trans
-                    i18nKey={
-                      endButton ? endButton.key : "modal.buttons.closeButton"
-                    }
-                  />
-                </ModalCloseButton>
-              )}
-            </ModalButtonContainer>
-          }
+
+          <ModalButtonContainer>
+            {type === "confirm" && (
+              <>
+                <ModalCancelButton onClick={() => dispatch(cancel())}>
+                  {t("modal.buttons.cancelButton")}
+                </ModalCancelButton>
+                <ModalConfirmButton onClick={() => dispatch(confirm())}>
+                  {t(
+                    confirmButton
+                      ? confirmButton.key
+                      : "modal.buttons.confirmButton",
+                  )}
+                </ModalConfirmButton>
+              </>
+            )}
+
+            {type === "yes/no" && (
+              <>
+                <ModalYesButton onClick={() => dispatch(confirm())}>
+                  {t("modal.buttons.yesButton")}
+                </ModalYesButton>
+                <ModalNoButton onClick={() => dispatch(cancel())}>
+                  {t("modal.buttons.noButton")}
+                </ModalNoButton>
+              </>
+            )}
+
+            {type !== "yes/no" && type !== "confirm" && (
+              <ModalCloseButton
+                onClick={() => dispatch(closeModal())}
+                disabled={type === "loading"}
+              >
+                {t(endButton ? endButton.key : "modal.buttons.closeButton")}
+              </ModalCloseButton>
+            )}
+          </ModalButtonContainer>
         </ModalBody>
       </ModalContainer>
     </ModalBackground>

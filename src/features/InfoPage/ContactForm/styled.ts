@@ -11,5 +11,17 @@ export const Form = styled.form`
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     margin: 0 0 30px;
+    padding: 0px;
   }
+`;
+
+export const FieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const Label = styled.label`
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textSecendary};
 `;

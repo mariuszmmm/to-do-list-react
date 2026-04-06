@@ -1,0 +1,133 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zaproszenie do aplikacji To-Do List</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6;
+        margin: 8px;
+        padding: 20px 0 150px 0;
+      }
+      .container {
+        max-width: 620px;
+        width: 100%;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(49, 38, 38, 0.1);
+      }
+      .header {
+        background-color: #007380;
+        padding: 30px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
+      }
+      .header-title {
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 12px 0 0 0;
+        letter-spacing: 0.5px;
+      }
+      .content {
+        padding: 40px 30px;
+        text-align: center;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .content p {
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+      .button {
+        display: inline-block;
+        padding: 14px 32px;
+        background-color: #007380;
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .footer {
+        padding: 20px;
+        text-align: center;
+        font-size: 11px;
+        color: #999999;
+        background-color: #fafafa;
+      }
+
+      @media screen and (max-width: 620px) {
+        body {
+          padding: 0 0 100px 0 !important;
+        }
+        .header {
+          padding: 20px 15px !important;
+        }
+        .header-title {
+          font-size: 18px !important;
+        }
+        .content {
+          padding: 24px 15px !important;
+        }
+        .content p {
+          font-size: 14px !important;
+        }
+        .button {
+          font-size: 14px !important;
+          padding: 12px 24px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://to-do-list.myprojects.pl/web-app-manifest-192x192.png"
+          alt="To-Do List Logo"
+        />
+        <p class="header-title">To-Do List</p>
+      </div>
+      <div class="content">
+        <p>Zostałeś zaproszony do korzystania z aplikacji <b>To-Do List</b>.</p>
+        <p
+          style="
+            font-size: 15px;
+            color: #555555;
+            margin: 20px 0;
+            line-height: 1.6;
+            text-align: center;
+            font-style: italic;
+          "
+        >
+          To-Do List to prosty sposób na organizację Twoich codziennych list i
+          zadań.<br />
+          Błyskawicznie dodawaj zadania (również głosowo!), wzbogacaj je o
+          zdjęcia<br />
+          i układaj listy za pomocą wygodnego przeciągania elementów.<br />
+          Dzięki automatycznej synchronizacji w czasie rzeczywistym<br />
+          Twoje plany są zawsze aktualne na wszystkich urządzeniach.<br />
+          Gdziekolwiek jesteś, Twoja lista jest zawsze pod ręką,<br />
+          abyś o niczym nie zapomniał i miał wszystko pod kontrolą.
+        </p>
+        <p>Kliknij w poniższy przycisk, aby ustawić hasło do swojego konta.</p>
+        <a href="{{ .SiteURL }}/#invite_token={{ .Token }}" class="button"
+          >Ustaw hasło i aktywuj konto</a
+        >
+      </div>
+      <div class="footer">
+        <p>&copy; 2026 To-Do List. Wszystkie prawa zastrzeżone.</p>
+      </div>
+    </div>
+  </body>
+</html>

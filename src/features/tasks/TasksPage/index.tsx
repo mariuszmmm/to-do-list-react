@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useAppSelector } from "../../../hooks/redux";
-import { TaskFormButtons } from "./TaskFormButtons";
+import { useAppSelector } from "../../../hooks/redux/redux";
+import { AddTasksButtons } from "./AddTasksButtons";
 import { Search } from "./Search";
 import { TasksList } from "./TasksList";
 import { TasksButtons } from "./TasksButtons";
@@ -11,43 +11,66 @@ import { Section } from "../../../common/Section";
 import { TaskForm } from "./TaskForm";
 import { selectEditedTask, selectShowSearch } from "../tasksSlice";
 import { useTranslation } from "react-i18next";
-import { ListsData } from "../../../types";
+import { ListsData, List } from "../../../types";
+import { UseMutationResult } from "@tanstack/react-query";
+import { useTaskForm } from "./hooks/useTaskForm";
+import { scrollToTop } from "../../../utils/ui/scrollToTop";
 
-type Props = { listsData?: ListsData };
+type Props = {
+  listsData?: ListsData;
+  saveListMutation: UseMutationResult<
+    { data: ListsData },
+    Error,
+    { list: List; deviceId: string },
+    unknown
+  >;
+};
 
-const TasksPage = ({ listsData }: Props) => {
+const TasksPage = ({ listsData, saveListMutation }: Props) => {
   const showSearch = useAppSelector(selectShowSearch);
-  const editedTask = useAppSelector(selectEditedTask);
+  const editedTaskContent = useAppSelector(selectEditedTask);
   const { t } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
+  const taskForm = useTaskForm();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
+
+  useEffect(() => {
+    if (!editedTaskContent) return;
+    scrollToTop();
+  }, [editedTaskContent]);
 
   return (
     <>
       <Header title={t("title")} />
       <Section
         title={
-          editedTask === null
+          !editedTaskContent
             ? t("form.title.addTask")
             : t("form.title.editTask")
         }
-        extraHeaderContent={<TaskFormButtons />}
-        body={<TaskForm />}
+        extraHeaderContent={<AddTasksButtons />}
+        body={<TaskForm taskForm={taskForm} />}
       />
       <Section
         title={t("search.title")}
-        body={showSearch && <Search />}
+        body={<Search />}
         extraHeaderContent={<SearchButtons />}
         bodyHidden={!showSearch}
       />
       <Section
+        taskList
         title={<EditableListName />}
-        body={<TasksList />}
-        extraHeaderContent={<TasksButtons listsData={listsData} />}
+        body={<TasksList taskForm={taskForm} listsData={listsData} />}
+        extraHeaderContent={
+          <TasksButtons
+            listsData={listsData}
+            saveListMutation={saveListMutation}
+          />
+        }
       />
     </>
   );

@@ -1,3 +1,6 @@
+# Lokalny certyfikat mkcert
+localhost.pem
+localhost-key.pem
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -7,17 +10,24 @@
 
 # testing
 /coverage
+.jest-cache/
+jest-cache/
 
 # production
 /build
 
 # misc
 .DS_Store
+Thumbs.db
+.vscode/
 .env.local
 .env.development.local
+.env.development
 .env.test.local
 .env.production.local
+.env.production
 .env
+.env.copy
 
 npm-debug.log*
 yarn-debug.log*
@@ -25,3 +35,21 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
+
+# notes
+notes.md
+
+# vercel
+.vercel
+
+# bitwarden
+**/bws.exe
+bitwarden_sync.env
+
+# backups
+scripts/MongoDB/backups/
+scripts/Cloudinary/backups/
+
+# temp
+temp
+tmp

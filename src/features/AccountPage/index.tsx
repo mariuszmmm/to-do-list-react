@@ -1,32 +1,312 @@
-import { useEffect } from "react";
-import { useAppSelector } from "../../hooks/redux";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux/redux";
 import { Header } from "../../common/Header";
 import { Section } from "../../common/Section";
-import { AccountButtons } from "./AccountButtons";
+import { AnimatedSpan } from "../../common/StyledList";
+import { CollapseButton, CollapseIcon } from "../../common/CollapseButton";
+import { AccountActions } from "./AccountActions";
 import { AccountForm } from "./AccountForm";
-import { AccountExtraButtons } from "./AccountExtraButtons";
-import { selectLoggedUserEmail } from "./accountSlice";
+import { AccountFormActions } from "./AccountFormActions";
+import { BackupManager } from "./BackupManager";
+import { SystemAdmin } from "./SystemAdmin";
+import { UserManagement } from "./UserManagement";
+import { SessionInfo } from "./SessionInfo";
+import { EnvironmentReset } from "./EnvironmentReset";
+import { SystemConsole } from "./SystemConsole";
+import { Settings } from "../../types";
+import {
+  selectLoggedUserEmail,
+  selectLoggedUserName,
+  selectIsAdmin,
+  selectUserDevicesCount,
+} from "./accountSlice";
+import { getSystemStatusApi } from "../../api/backupApi";
+import { openModal } from "../../Modal/modalSlice";
+import { getUserToken } from "../../utils/auth/getUserToken";
 import { useTranslation } from "react-i18next";
+import {
+  getSettingsFromLocalStorage,
+  saveSettingsInLocalStorage,
+} from "../../utils/storage/localStorage";
+import { AccountAvatar, getAvatarColor } from "./AccountSwitcher/styled";
+import { TitleWrapper, EmailText } from "./styled";
+import { formatEmailWithBreaks } from "./utils";
+import { consoleLogger } from "../../utils/debug/consoleLogger";
+import { scrollToTop } from "../../utils/ui/scrollToTop";
 
 const AccountPage = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
+  const loggedUserName = useAppSelector(selectLoggedUserName);
+  const isAdmin = useAppSelector(selectIsAdmin);
+  const userDevices = useAppSelector(selectUserDevicesCount);
+
+  const avatarBgColor = loggedUserEmail ? getAvatarColor(loggedUserEmail) : "";
+  const initial = loggedUserEmail
+    ? (loggedUserName || loggedUserEmail)[0].toUpperCase()
+    : "";
   const { t } = useTranslation("translation", {
     keyPrefix: "accountPage",
   });
+  const [isBackupOpen, setIsBackupOpen] = useState(() => {
+    const shouldOpenBackup =
+      sessionStorage.getItem("open_backup_after_oauth") === "true";
+    if (shouldOpenBackup) return true;
+    return getSettingsFromLocalStorage()?.isBackupOpen || false;
+  });
+  const [isSessionInfoOpen, setIsSessionInfoOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isSessionInfoOpen || false,
+  );
+  const [isUserManagementOpen, setIsUserManagementOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isUserManagementOpen || false,
+  );
+  const [isSystemAdminOpen, setIsSystemAdminOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isSystemAdminOpen || false,
+  );
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isNotificationsOpen || false,
+  );
+  const [isSystemConsoleOpen, setIsSystemConsoleOpen] = useState(
+    () => getSettingsFromLocalStorage()?.isSystemConsoleOpen || false,
+  );
+  const [preserveLogs, setPreserveLogs] = useState(
+    () => getSettingsFromLocalStorage()?.preserveLogs || false,
+  );
+
+  const persistSettings = (partial: Partial<Settings>) => {
+    const current = getSettingsFromLocalStorage() || {
+      showSearch: false,
+      hideDone: false,
+    };
+    saveSettingsInLocalStorage({ ...current, ...partial });
+  };
+
+  const toggleSessionInfo = () => {
+    setIsSessionInfoOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isSessionInfoOpen: next });
+      return next;
+    });
+  };
+
+  const toggleUserManagement = () => {
+    setIsUserManagementOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isUserManagementOpen: next });
+      return next;
+    });
+  };
+
+  const toggleBackup = () => {
+    setIsBackupOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isBackupOpen: next });
+      return next;
+    });
+  };
+
+  const toggleSystemAdmin = () => {
+    setIsSystemAdminOpen((prev: boolean) => {
+      const next = !prev;
+      persistSettings({ isSystemAdminOpen: next });
+      return next;
+    });
+  };
+
+  const toggleNotifications = () => {
+    setIsNotificationsOpen((prev) => {
+      const next = !prev;
+      persistSettings({ isNotificationsOpen: next });
+      return next;
+    });
+  };
+
+  const toggleSystemConsole = () => {
+    setIsSystemConsoleOpen((prev: boolean) => {
+      const next = !prev;
+      persistSettings({ isSystemConsoleOpen: next });
+      return next;
+    });
+  };
+
+  const togglePreserveLogs = () => {
+    setPreserveLogs((prev) => {
+      const next = !prev;
+      persistSettings({ preserveLogs: next });
+      consoleLogger.setPreserveLogs(next);
+      return next;
+    });
+  };
+
+  const renderToggleButton = (isOpen: boolean, onClick: () => void) => (
+    <CollapseButton
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      aria-label={isOpen ? t("toggleButtons.hide") : t("toggleButtons.show")}
+      title={isOpen ? t("toggleButtons.hide") : t("toggleButtons.show")}
+    >
+      <CollapseIcon $open={isOpen} aria-hidden />
+    </CollapseButton>
+  );
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    scrollToTop();
+    if (sessionStorage.getItem("open_backup_after_oauth") === "true") {
+      sessionStorage.removeItem("open_backup_after_oauth");
+    }
+
+    if (isAdmin) {
+      getUserToken().then((token) => {
+        if (token) {
+          getSystemStatusApi(token).then((response) => {
+            if (response.success && response.data?.status?.status === "error") {
+              const errorTimestamp = response.data.status.timestamp;
+              const lastSeenTimestamp = localStorage.getItem(
+                "backup_error_last_seen",
+              );
+
+              if (errorTimestamp && lastSeenTimestamp === errorTimestamp) {
+                return; // Ten błąd był już pokazany — nie pokazuj ponownie
+              }
+
+              if (errorTimestamp) {
+                localStorage.setItem("backup_error_last_seen", errorTimestamp);
+              }
+
+              dispatch(
+                openModal({
+                  title: { key: "modal.backupAuthError.title" },
+                  message: { key: "modal.backupAuthError.message" },
+                  type: "error",
+                }),
+              );
+            }
+          });
+        }
+      });
+    }
+  }, [isAdmin, dispatch]);
 
   return (
     <>
       <Header title={t("title")} />
+
       <Section
-        title={loggedUserEmail || t("notLoggedIn")}
-        extraHeaderContent={<AccountButtons />}
+        title={
+          loggedUserEmail ? (
+            <TitleWrapper>
+              <AccountAvatar $bgColor={avatarBgColor}>{initial}</AccountAvatar>
+              <EmailText>{formatEmailWithBreaks(loggedUserEmail)}</EmailText>
+            </TitleWrapper>
+          ) : (
+            t("notLoggedIn")
+          )
+        }
+        extraHeaderContent={<AccountActions />}
         body={<AccountForm />}
-        extraContent={<AccountExtraButtons />}
+        extraContent={
+          <>
+            <AccountFormActions />
+            {loggedUserEmail && (
+              <AnimatedSpan $comment $visible={userDevices > 0}>
+                <br />
+                <strong>
+                  {t("deviceCount.device", { count: userDevices })}
+                </strong>
+              </AnimatedSpan>
+            )}
+          </>
+        }
       />
+
+      {loggedUserEmail && (
+        <Section
+          title={t("sessionInfo.title")}
+          extraHeaderContent={renderToggleButton(
+            isSessionInfoOpen,
+            toggleSessionInfo,
+          )}
+          onHeaderClick={toggleSessionInfo}
+          onlyOpenButton={true}
+          body={<SessionInfo isSessionInfoOpen={isSessionInfoOpen} />}
+          bodyHidden={!isSessionInfoOpen}
+        />
+      )}
+
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={t("userManagement.title")}
+          extraHeaderContent={renderToggleButton(
+            isUserManagementOpen,
+            toggleUserManagement,
+          )}
+          onHeaderClick={toggleUserManagement}
+          onlyOpenButton={true}
+          body={<UserManagement />}
+          bodyHidden={!isUserManagementOpen}
+        />
+      )}
+      {loggedUserEmail && (
+        <Section
+          title={t("backup.title")}
+          extraHeaderContent={renderToggleButton(isBackupOpen, toggleBackup)}
+          onHeaderClick={toggleBackup}
+          onlyOpenButton={true}
+          body={<BackupManager />}
+          bodyHidden={!isBackupOpen}
+        />
+      )}
+
+      {loggedUserEmail && (
+        <Section
+          title={t("environmentReset.title")}
+          extraHeaderContent={renderToggleButton(
+            isNotificationsOpen,
+            toggleNotifications,
+          )}
+          onHeaderClick={toggleNotifications}
+          onlyOpenButton={true}
+          body={<EnvironmentReset />}
+          bodyHidden={!isNotificationsOpen}
+        />
+      )}
+
+      {loggedUserEmail && isAdmin && (
+        <Section
+          title={t("systemAdmin.title")}
+          extraHeaderContent={renderToggleButton(
+            isSystemAdminOpen,
+            toggleSystemAdmin,
+          )}
+          onHeaderClick={toggleSystemAdmin}
+          onlyOpenButton={true}
+          body={<SystemAdmin />}
+          bodyHidden={!isSystemAdminOpen}
+        />
+      )}
+
+      {loggedUserEmail && (
+        <Section
+          title={t("systemConsole.title")}
+          extraHeaderContent={renderToggleButton(
+            isSystemConsoleOpen,
+            toggleSystemConsole,
+          )}
+          onHeaderClick={toggleSystemConsole}
+          onlyOpenButton={true}
+          body={
+            <SystemConsole
+              preserveLogs={preserveLogs}
+              onTogglePreserveLogs={togglePreserveLogs}
+            />
+          }
+          bodyHidden={!isSystemConsoleOpen}
+        />
+      )}
     </>
   );
 };

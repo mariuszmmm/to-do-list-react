@@ -16,8 +16,8 @@ jobs:
             echo "❌ Error: NETLIFY_SITE_URL secret is not set"
             exit 1
           fi
-          echo "⏳ Calling backup-autoAllUsersToGoogleDrive..."
-          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/backup-autoAllUsersToGoogleDrive" \
+          echo "⏳ Calling backup-auto-upload..."
+          RESPONSE=$(curl -s -X POST "$NETLIFY_URL/.netlify/functions/backup-auto-upload" \
             -H "Content-Type: application/json" \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             -d '{}')

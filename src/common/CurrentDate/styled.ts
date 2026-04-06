@@ -15,7 +15,7 @@ export const StyledDate = styled.span<StyledDateProps>`
   font-size: 14px;
   margin: 0;
   text-align: right;
-  color: ${({ theme }) => theme.color.black};
+  color: ${({ theme }) => theme.colors.textPrimary};
 
   @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
     ${({ $comentary }) =>

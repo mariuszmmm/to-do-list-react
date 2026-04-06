@@ -1,36 +1,72 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSelector,
+  createSlice,
+  nanoid,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import {
   getSettingsFromLocalStorage,
   getTasksFromLocalStorage,
-  getListNameFromLocalStorage,
+  getListMetadataFromLocalStorage,
   clearLocalStorage,
-} from "../../utils/localStorage";
-import { Task } from "../../types";
+} from "../../utils/storage/localStorage";
+import {
+  TaskListMetaData,
+  Task,
+  TaskListData,
+  ChangeSource,
+  EditedTask,
+} from "../../types";
 import { RootState } from "../../store";
 import { t } from "i18next";
+import i18n from "../../utils/i18n";
 
 interface TaskState {
   tasks: Task[];
-  editedTask: Task | null;
+  editedTask?: EditedTask;
   hideDone: boolean;
   showSearch: boolean;
-  undoTasksStack: { tasks: Task[]; listName: string }[];
-  redoTasksStack: { tasks: Task[]; listName: string }[];
-  listName: string;
-  listNameToEdit: string | null;
+  undoTasksStack: TaskListData[];
+  redoTasksStack: TaskListData[];
+  taskListMetaData: TaskListMetaData;
+  listNameToEdit?: string | null;
   isTasksSorting: boolean;
+  tasksToSort: Task[] | null;
+  tasksToArchive?: { name: string; tasks: Task[] } | null;
+  listStatus: {
+    manualSaveTriggered: boolean;
+    isRemoteSaveable: boolean;
+    isIdenticalToRemote: boolean;
+  };
+  changeSource?: ChangeSource;
+  notificationTask: Task | null;
 }
 
+const getNewTaskListMetaData = () => ({
+  id: nanoid(),
+  name: i18n.t("tasksPage.tasks.defaultListName") || "________",
+  date: initTime,
+  updatedAt: initTime,
+  synced: false,
+});
+
+const initTime = new Date().toISOString();
 const getInitialState = (): TaskState => ({
   tasks: getTasksFromLocalStorage() || [],
-  editedTask: null,
   hideDone: getSettingsFromLocalStorage()?.hideDone || false,
   showSearch: getSettingsFromLocalStorage()?.showSearch || false,
   undoTasksStack: [],
   redoTasksStack: [],
-  listName: getListNameFromLocalStorage() || "",
-  listNameToEdit: null,
+  taskListMetaData:
+    getListMetadataFromLocalStorage() || getNewTaskListMetaData(),
   isTasksSorting: false,
+  tasksToSort: null,
+  listStatus: {
+    manualSaveTriggered: false,
+    isRemoteSaveable: false,
+    isIdenticalToRemote: false,
+  },
+  notificationTask: null,
 });
 
 const tasksSlice = createSlice({
@@ -40,49 +76,66 @@ const tasksSlice = createSlice({
     addTask: (
       state,
       {
-        payload: { task, stateForUndo },
+        payload: { content, stateForUndo },
       }: PayloadAction<{
-        task: Task;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        content: string;
+        stateForUndo: TaskListData;
+      }>,
     ) => {
+      const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
-      state.tasks.push(task);
       state.redoTasksStack = [];
-      if (!state.listName) {
-        state.listName = t("tasksPage.tasks.defaultListName");
-      }
+      state.tasks.push({
+        id: nanoid(),
+        content,
+        done: false,
+        date: time,
+        updatedAt: time,
+        status: "new",
+      });
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     setTaskToEdit: (
       state,
-      { payload: taskId }: PayloadAction<string | null>
+      { payload: taskId }: PayloadAction<string | null>,
     ) => {
       if (!taskId) {
         state.editedTask = null;
         return;
       }
       const index = state.tasks.findIndex((task) => task.id === taskId);
-      state.editedTask = { ...state.tasks[index] };
+      if (index === -1) return;
+      state.editedTask = {
+        id: state.tasks[index].id,
+        content: state.tasks[index].content,
+      };
     },
     saveEditedTask: (
       state,
       {
-        payload: {
-          task: { id, content, editedDate },
-          stateForUndo,
-        },
+        payload: { id, content, stateForUndo },
       }: PayloadAction<{
-        task: Task;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        id: string;
+        content: string;
+        stateForUndo: TaskListData;
+      }>,
     ) => {
       const index = state.tasks.findIndex((task) => task.id === id);
       if (index === -1) return;
+      const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
-      state.tasks[index].content = content;
-      state.tasks[index].editedDate = editedDate;
-      state.editedTask = null;
       state.redoTasksStack = [];
+      state.tasks[index] = {
+        ...state.tasks[index],
+        content,
+        editedAt: time,
+        updatedAt: time,
+        status: "edited",
+      };
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.editedTask = null;
+      state.changeSource = "local";
     },
     toggleHideDone: (state) => {
       state.hideDone = !state.hideDone;
@@ -90,110 +143,203 @@ const tasksSlice = createSlice({
     toggleTaskDone: (
       state,
       {
-        payload: { taskId, doneDate, stateForUndo },
+        payload: { taskId, stateForUndo },
       }: PayloadAction<{
         taskId: string;
-        doneDate: string | null;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        stateForUndo: TaskListData;
+      }>,
     ) => {
-      state.undoTasksStack.push(stateForUndo);
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      state.tasks[index].done = !state.tasks[index].done;
-      state.tasks[index].doneDate = state.tasks[index].done ? doneDate : null;
+      if (index === -1) return;
+      const time = new Date().toISOString();
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      const { done } = state.tasks[index];
+      state.tasks[index] = {
+        ...state.tasks[index],
+        done: !done,
+        completedAt: done ? null : time,
+        updatedAt: time,
+        status: "updated",
+      };
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     removeTask: (
       state,
       {
-        payload: { taskId, stateForUndo },
+        payload: { taskId, stateForUndo, isRemoteSaveable },
       }: PayloadAction<{
         taskId: string;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        stateForUndo: TaskListData;
+        isRemoteSaveable?: boolean;
+      }>,
     ) => {
       const index = state.tasks.findIndex(({ id }) => id === taskId);
-      if (index !== -1) {
-        state.undoTasksStack.push(stateForUndo);
-        state.tasks.splice(index, 1);
-        state.redoTasksStack = [];
-      }
-    },
-    removeTasks: (state) => {
-      state.undoTasksStack.push({
-        tasks: state.tasks,
-        listName: state.listName,
-      });
-      state.listName = "";
-      state.tasks = [];
+      if (index === -1) return;
+      const time = new Date().toISOString();
+      state.undoTasksStack.push(stateForUndo);
       state.redoTasksStack = [];
+      isRemoteSaveable
+        ? (state.tasks[index] = {
+            ...state.tasks[index],
+            updatedAt: time,
+            status: "deleted",
+          })
+        : state.tasks.splice(index, 1);
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
+    },
+    setTaskListToArchive: (
+      state,
+      {
+        payload: tasksToArchive,
+      }: PayloadAction<{ name: string; tasks: Task[] } | null>,
+    ) => {
+      const tasks =
+        tasksToArchive?.tasks
+          .filter((task) => task.status !== "deleted")
+          .map((task) => ({
+            id: task.id,
+            content: task.content,
+            done: task.done,
+            date: task.date,
+            updatedAt: task.updatedAt,
+          })) || [];
+      state.tasksToArchive = tasksToArchive
+        ? { name: tasksToArchive.name, tasks }
+        : null;
+    },
+    clearTaskList: (
+      state,
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
+    ) => {
+      const time = new Date().toISOString();
+      state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
+      state.tasks = [];
       state.editedTask = null;
+      state.taskListMetaData = {
+        id: nanoid(),
+        name: t("tasksPage.tasks.defaultListName"),
+        date: time,
+        updatedAt: time,
+        synced: false,
+      };
+      state.listNameToEdit = null;
+      state.isTasksSorting = false;
+      state.tasksToArchive = null;
+      state.listStatus = {
+        manualSaveTriggered: false,
+        isRemoteSaveable: false,
+        isIdenticalToRemote: false,
+      };
+      state.changeSource = "local";
     },
     setAllDone: (
       state,
-      {
-        payload: stateForUndo,
-      }: PayloadAction<{ tasks: Task[]; listName: string }>
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
     ) => {
+      if (state.tasks.length === 0 || state.tasks.every(({ done }) => done))
+        return;
+      const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
       for (const task of state.tasks) {
         task.done = true;
+        task.completedAt = time;
+        task.updatedAt = time;
       }
-      state.redoTasksStack = [];
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     setAllUndone: (
       state,
-      {
-        payload: stateForUndo,
-      }: PayloadAction<{ tasks: Task[]; listName: string }>
+      { payload: stateForUndo }: PayloadAction<TaskListData>,
     ) => {
+      if (state.tasks.length === 0 || state.tasks.every(({ done }) => !done))
+        return;
+      const time = new Date().toISOString();
       state.undoTasksStack.push(stateForUndo);
+      state.redoTasksStack = [];
       for (const task of state.tasks) {
         task.done = false;
+        task.completedAt = null;
+        task.updatedAt = time;
       }
-      state.redoTasksStack = [];
+      state.taskListMetaData = { ...state.taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     setTasks: (
       state,
       {
-        payload: { tasks, listName, stateForUndo },
+        payload: { isLoad, taskListMetaData, tasks, stateForUndo },
       }: PayloadAction<{
+        isLoad?: boolean;
+        taskListMetaData: TaskListMetaData;
         tasks: Task[];
-        listName: string;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        stateForUndo?: TaskListData;
+      }>,
     ) => {
-      state.undoTasksStack.push(stateForUndo);
-      state.tasks = tasks;
-      state.listName = listName;
-      state.redoTasksStack = [];
+      const time = new Date().toISOString();
+      if (stateForUndo) {
+        state.undoTasksStack.push(stateForUndo);
+        state.redoTasksStack = [];
+      }
+      state.tasks = isLoad
+        ? tasks
+        : tasks.map((task) => ({
+            ...task,
+            updatedAt: time,
+          }));
+      state.taskListMetaData = isLoad
+        ? taskListMetaData
+        : { ...taskListMetaData, updatedAt: time };
+      state.changeSource = "local";
     },
     toggleShowSearch: (state) => {
       state.showSearch = !state.showSearch;
     },
     undoTasks: (state) => {
+      const time = new Date().toISOString();
       state.redoTasksStack.push({
         tasks: state.tasks,
-        listName: state.listName,
+        taskListMetaData: state.taskListMetaData,
       });
       const undoTasksStack = state.undoTasksStack.pop();
-      if (undoTasksStack === undefined) return;
-      state.tasks = undoTasksStack.tasks;
-      state.listName = undoTasksStack.listName;
+      if (!undoTasksStack) return;
+      state.tasks = undoTasksStack.tasks.map((task) => ({
+        ...task,
+        status: "updated",
+        updatedAt: time,
+      }));
+      state.taskListMetaData = {
+        ...undoTasksStack.taskListMetaData,
+        updatedAt: time,
+      };
+      state.changeSource = "local";
     },
     redoTasks: (state) => {
+      const time = new Date().toISOString();
       state.undoTasksStack.push({
         tasks: state.tasks,
-        listName: state.listName,
+        taskListMetaData: state.taskListMetaData,
       });
       const redoTasksStack = state.redoTasksStack.pop();
-      if (redoTasksStack === undefined) return;
-      state.tasks = redoTasksStack.tasks;
-      state.listName = redoTasksStack.listName;
+      if (!redoTasksStack) return;
+      state.tasks = redoTasksStack.tasks.map((task) => ({
+        ...task,
+        updatedAt: time,
+      }));
+      state.taskListMetaData = {
+        ...redoTasksStack.taskListMetaData,
+        updatedAt: time,
+      };
+      state.changeSource = "local";
     },
     setListNameToEdit: (
       state,
-      { payload: listNameToEdit }: PayloadAction<string | null>
+      { payload: listNameToEdit }: PayloadAction<string | null>,
     ) => {
       if (listNameToEdit) {
         state.listNameToEdit = listNameToEdit;
@@ -204,64 +350,93 @@ const tasksSlice = createSlice({
     setListName: (
       state,
       {
-        payload: { listName, stateForUndo },
-      }: PayloadAction<{
-        listName: string;
-        stateForUndo: { tasks: Task[]; listName: string };
-      }>
+        payload: { name, stateForUndo },
+      }: PayloadAction<{ name: string; stateForUndo?: TaskListData }>,
     ) => {
-      state.undoTasksStack.push(stateForUndo);
-      state.listName = listName;
-      state.redoTasksStack = [];
-    },
-    taskMoveUp: (state, { payload: index }) => {
-      let tasks = [...state.tasks];
-      const selectedTask = tasks[index];
-      const prevTask = tasks[index - 1];
-
-      if (!selectedTask || !prevTask) return;
-
-      state.tasks = tasks.map((task, i) => {
-        if (i === index - 1) {
-          return selectedTask;
-        }
-        if (i === index) {
-          return prevTask;
-        }
-        return task;
-      });
-    },
-    taskMoveDown: (state, { payload: index }) => {
-      let tasks = [...state.tasks];
-      const selectedTask = tasks[index];
-      const nextTask = tasks[index + 1];
-
-      if (!selectedTask || !nextTask) return;
-
-      state.tasks = tasks.map((tasks, i) => {
-        if (i === index) {
-          return nextTask;
-        }
-        if (i === index + 1) {
-          return selectedTask;
-        }
-        return tasks;
-      });
-    },
-    switchTaskSort: (state) => {
-      if (!state.isTasksSorting) {
-        state.undoTasksStack.push({
-          tasks: state.tasks,
-          listName: state.listName,
-        });
-      } else {
+      const time = new Date().toISOString();
+      if (!!stateForUndo) {
+        state.undoTasksStack.push(stateForUndo);
         state.redoTasksStack = [];
       }
+      state.taskListMetaData = {
+        ...state.taskListMetaData,
+        name,
+        updatedAt: time,
+      };
+      state.changeSource = "local";
+    },
+    setListStatus: (
+      state,
+      {
+        payload: { manualSaveTriggered, isRemoteSaveable, isIdenticalToRemote },
+      }: PayloadAction<{
+        manualSaveTriggered?: boolean;
+        isRemoteSaveable?: boolean;
+        isIdenticalToRemote?: boolean;
+      }>,
+    ) => {
+      if (manualSaveTriggered !== undefined) {
+        state.listStatus.manualSaveTriggered = manualSaveTriggered;
+      }
+      if (isRemoteSaveable !== undefined) {
+        state.listStatus.isRemoteSaveable = isRemoteSaveable;
+      }
+      if (isIdenticalToRemote !== undefined) {
+        state.listStatus.isIdenticalToRemote = isIdenticalToRemote;
+      }
+    },
+    updateTasksStatus: (
+      state,
+      { payload: { status } }: PayloadAction<{ status: Task["status"] }>,
+    ) => {
+      if (!status) return;
+      const allTasks = state.tasks;
+      const isAll = allTasks.every((task) => task.status === status);
+      if (isAll) return;
+
+      const tasksWithStatus = allTasks.map((task) => ({ ...task, status }));
+      state.tasks = tasksWithStatus;
+    },
+    setTasksToSort: (
+      state,
+      { payload: sortedTasks }: PayloadAction<Task[] | null>,
+    ) => {
+      state.tasksToSort = sortedTasks;
+    },
+    switchTasksSort: (state) => {
       state.isTasksSorting = !state.isTasksSorting;
+    },
+    clearTasks: () => {
+      clearLocalStorage();
+      return getInitialState();
     },
     clearStorage: () => {
       clearLocalStorage();
       return getInitialState();
+    },
+    setChangeSource: (state, { payload }: PayloadAction<ChangeSource>) => {
+      state.changeSource = payload;
+    },
+    setNotificationTask: (state, { payload }: PayloadAction<Task | null>) => {
+      state.notificationTask = payload;
+    },
+    updateTaskNotification: (
+      state,
+      {
+        payload: { taskId, notificationDate, notificationId },
+      }: PayloadAction<{
+        taskId: string;
+        notificationDate: string | null;
+        notificationId: string | null;
+      }>,
+    ) => {
+      const index = state.tasks.findIndex((task) => task.id === taskId);
+      if (index === -1) return;
+      state.tasks[index].notificationDate = notificationDate;
+      state.tasks[index].notificationId = notificationId;
+      state.tasks[index].updatedAt = new Date().toISOString();
+      state.tasks[index].status = "edited";
+      state.changeSource = "local";
     },
   },
 });
@@ -273,7 +448,8 @@ export const {
   toggleHideDone,
   toggleTaskDone,
   removeTask,
-  removeTasks,
+  setTaskListToArchive,
+  clearTaskList,
   setAllDone,
   setAllUndone,
   setTasks,
@@ -282,10 +458,15 @@ export const {
   redoTasks,
   setListNameToEdit,
   setListName,
-  taskMoveUp,
-  taskMoveDown,
-  switchTaskSort,
+  setListStatus,
+  updateTasksStatus,
+  setTasksToSort,
+  switchTasksSort,
+  clearTasks,
   clearStorage,
+  setChangeSource,
+  setNotificationTask,
+  updateTaskNotification,
 } = tasksSlice.actions;
 
 const selectTasksState = (state: RootState) => state.tasks;
@@ -301,8 +482,8 @@ export const selectUndoTasksStack = (state: RootState) =>
   selectTasksState(state).undoTasksStack;
 export const selectRedoTasksStack = (state: RootState) =>
   selectTasksState(state).redoTasksStack;
-export const selectListName = (state: RootState) =>
-  selectTasksState(state).listName;
+export const selectTaskListMetaData = (state: RootState) =>
+  selectTasksState(state).taskListMetaData;
 export const selectListNameToEdit = (state: RootState) =>
   selectTasksState(state).listNameToEdit;
 export const selectAreTasksEmpty = (state: RootState) =>
@@ -311,20 +492,29 @@ export const selectIsEveryTaskDone = (state: RootState) =>
   selectTasks(state).every(({ done }) => done);
 export const selectIsEveryTaskUndone = (state: RootState) =>
   selectTasks(state).every(({ done }) => !done);
-export const selectTaskById = (state: RootState, taskId: string) => {
-  const task = selectTasks(state).find(({ id }) => id === taskId) || null;
-  return task;
-};
+export const selectTaskById = (state: RootState, taskId: string) =>
+  selectTasks(state).find(({ id }) => id === taskId) || null;
+export const selectTasksToArchive = (state: RootState) =>
+  selectTasksState(state).tasksToArchive;
+export const selectListStatus = (state: RootState) =>
+  selectTasksState(state).listStatus;
+export const selectTasksToSort = (state: RootState) =>
+  selectTasksState(state).tasksToSort;
 export const selectIsTasksSorting = (state: RootState) =>
   selectTasksState(state).isTasksSorting;
-export const selectTasksByQuery = (state: RootState, query: string | null) => {
-  const tasks = selectTasks(state);
-
-  if (!query || query === "") return tasks;
-
-  return tasks.filter(({ content }) =>
-    content.toUpperCase().includes(query.toUpperCase().trim())
-  );
-};
+export const selectActiveTasksByQuery = createSelector(
+  [selectTasks, (_: RootState, query: string | null) => query],
+  (tasks, query) => {
+    const filtered = tasks.filter((task) => task.status !== "deleted");
+    if (!query) return filtered;
+    return filtered.filter((task) =>
+      task.content.toUpperCase().includes(query.toUpperCase().trim()),
+    );
+  },
+);
+export const selectChangeSource = (state: RootState) =>
+  selectTasksState(state).changeSource;
+export const selectNotificationTask = (state: RootState) =>
+  selectTasksState(state).notificationTask;
 
 export default tasksSlice.reducer;

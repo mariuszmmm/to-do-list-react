@@ -1,6 +1,6 @@
-import { FormEventHandler, useEffect, useRef, useState } from "react";
-import { useValidation } from "../../../hooks/useValidation";
-import { useAppDispatch } from "../../../hooks/redux";
+import { SubmitEventHandler, useEffect, useRef, useState } from "react";
+import { useValidation } from "../../../hooks/validation/useValidation";
+import { useAppDispatch } from "../../../hooks/redux/redux";
 import { Form } from "../../../common/Form";
 import { Input } from "../../../common/Input";
 import { Info } from "../../../common/Info";
@@ -12,16 +12,20 @@ import { auth } from "../../../api/auth";
 import {
   clearSessionStorage,
   getRecoveryTokenFromSessionStorage,
-} from "../../../utils/sessionStorage";
+} from "../../../utils/storage/sessionStorage";
 import { openModal } from "../../../Modal/modalSlice";
 import { useTranslation } from "react-i18next";
 import { RecoveryStatus } from "../../../types";
 
 interface Props {
   setStatus: (status: RecoveryStatus) => void;
+  setRecoveredEmail: (email: string | null) => void;
 }
 
-export const AccountRecoveryForm = ({ setStatus }: Props) => {
+export const AccountRecoveryForm = ({
+  setStatus,
+  setRecoveredEmail,
+}: Props) => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -39,24 +43,34 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
             title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.loading" },
             type: "loading",
-          })
+          }),
         );
+
         const token = getRecoveryTokenFromSessionStorage();
-        if (!token) throw new Error();
+        if (!token) throw new Error("No token");
+
         await auth.recover(token);
+
+        const recoveredUser = auth.currentUser();
+        if (recoveredUser?.email) {
+          setRecoveredEmail(recoveredUser.email);
+        }
+
         dispatch(
           openModal({
+            title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.success" },
             confirmButton: { key: "modal.buttons.nextButton" },
             type: "success",
-          })
+          }),
         );
       } catch (error) {
         dispatch(
           openModal({
+            title: { key: "modal.accountRecovery.title" },
             message: { key: "modal.accountRecovery.message.error.linkExpired" },
             type: "error",
-          })
+          }),
         );
         setStatus("linkExpired");
         clearSessionStorage();
@@ -64,7 +78,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
     };
 
     recover();
-  }, [dispatch, setStatus]);
+  }, [dispatch, setStatus, setRecoveredEmail]);
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { passwordValidation } = useValidation({
@@ -74,7 +88,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
     setMessage,
   });
 
-  const onFormSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  const onFormSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     if (!passwordValidation()) return;
@@ -84,15 +98,16 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.loading" },
           type: "loading",
-        })
+        }),
       );
       if (!user) throw new Error();
       await user.update({ password }).then((user) => user.logout());
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.success" },
           type: "success",
-        })
+        }),
       );
       setPassword("");
       setStatus("accountRecovered");
@@ -100,9 +115,10 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
     } catch (error) {
       dispatch(
         openModal({
+          title: { key: "modal.passwordChange.title" },
           message: { key: "modal.passwordChange.message.error.default" },
           type: "error",
-        })
+        }),
       );
     }
   };
@@ -114,7 +130,7 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           <Input
             value={password}
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder={t("form.inputPlaceholders.newPassword")}
             onChange={({ target }) => setPassword(target.value)}
             ref={passwordInputRef}
@@ -122,8 +138,11 @@ export const AccountRecoveryForm = ({ setStatus }: Props) => {
           <InputButton
             onMouseUp={() => setShowPassword(false)}
             onMouseDown={() => setShowPassword(true)}
-            onTouchStart={() => setShowPassword(true)}
-            onTouchEnd={() => setShowPassword(false)}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
+            type="button"
           >
             {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
           </InputButton>

@@ -1,14 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { useCurrentDate } from "../../hooks/useCurrentDate";
-import {
-  formatCurrentDay,
-  formatCurrentTime,
-} from "../../utils/formatCurrentDate";
+import { useTime } from "../../context/TimeContext";
+import { formatCurrentDay, formatCurrentTime } from "../../utils/formatting/formatCurrentDate";
 import { StyledDate, DateContainer } from "./styled";
 import { useLocation } from "react-router-dom";
 
 export const CurrentDate = ({ authRoutes }: { authRoutes: string[] }) => {
-  const currentDate = useCurrentDate();
+  const { now: currentDate } = useTime();
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation("translation", {
     keyPrefix: "currentDate",
@@ -20,7 +17,7 @@ export const CurrentDate = ({ authRoutes }: { authRoutes: string[] }) => {
   return (
     <DateContainer>
       <StyledDate $comentary>
-        {t("desc")}
+        {t("description")}
         {formatCurrentDay(currentDate, i18n.language)},
       </StyledDate>
       <StyledDate>{formatCurrentTime(currentDate, i18n.language)}</StyledDate>

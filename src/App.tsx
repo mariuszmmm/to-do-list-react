@@ -1,85 +1,131 @@
+import React from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "./hooks/redux";
+import { useQuery } from "@tanstack/react-query";
+
 import Navigation from "./Navigation";
 import TaskPage from "./features/tasks/TaskPage";
 import TasksPage from "./features/tasks/TasksPage";
 import InfoPage from "./features/InfoPage";
-import ListsPage from "./features/ListsPage";
 import AccountPage from "./features/AccountPage";
 import UserConfirmationPage from "./features/UserConfirmationPage";
+import UserInvitationPage from "./features/UserInvitationPage";
 import AccountRecoveryPage from "./features/AccountRecoveryPage";
+import RemoteListsPage from "./features/RemoteListsPage";
+import ArchivedListsPage from "./features/ArchivedListPage";
+
 import { Container } from "./common/Container";
 import { CurrentDate } from "./common/CurrentDate";
 import { Modal } from "./Modal";
-import { useQuery } from "@tanstack/react-query";
-import { refreshData } from "./utils/refreshData";
-import {
-  selectLoggedUserEmail,
-  setAccountMode,
-  setLoggedUserEmail,
-} from "./features/AccountPage/accountSlice";
+import { NotificationModal } from "./features/tasks/TasksPage/NotificationModal";
+import { TokenManager } from "./components/TokenManager";
+import { AblyManager } from "./components/AblyManager";
+import { ListSyncManager } from "./components/ListSyncManager";
+import { OfflineManager } from "./components/OfflineManager";
+import { SessionManager } from "./components/SessionManager";
+import { NotificationManager } from "./components/NotificationManager";
+
+import { refreshData } from "./utils/sync/refreshData";
+import { selectLoggedUserEmail } from "./features/AccountPage/accountSlice";
 import { ListsData } from "./types";
-import { openModal } from "./Modal/modalSlice";
-import { useEffect } from "react";
-import { clearLocalStorage } from "./utils/localStorage";
+import { selectTaskListMetaData } from "./features/tasks/tasksSlice";
+import {
+  useAppSelector,
+  useDataFetchingError,
+  useSaveListMutation,
+  useOnlineStatus,
+} from "./hooks";
+import { ThemeSwitch } from "./common/ThemeSwitch";
+import { HeaderControls } from "./common/HeaderControls";
+import { TaskImage } from "./features/tasks/TaskImage";
+import { UpdateNotification } from "./common/UpdateNotification";
 
 const App = () => {
   const loggedUserEmail = useAppSelector(selectLoggedUserEmail);
-  const dispatch = useAppDispatch();
-  const { data, isLoading, isSuccess, isError } = useQuery<ListsData>({
-    queryKey: ["lists"],
+  const isOnline = useOnlineStatus();
+  const { data, isLoading, isError, refetch } = useQuery<ListsData>({
+    queryKey: ["listsData"],
     queryFn: refreshData,
-    enabled: !!loggedUserEmail,
+    enabled: !!loggedUserEmail && isOnline,
+    refetchInterval: 5 * 60 * 1000,
   });
-  const safeData = !!loggedUserEmail ? data : undefined;
-  const authRoutes = ["/user-confirmation", "/account-recovery"];
-
-  useEffect(() => {
-    if (!loggedUserEmail) return;
-    if (isLoading) {
-      dispatch(
-        openModal({
-          title: { key: "modal.listsDownload.title" },
-          message: { key: "modal.listsDownload.message.loading" },
-          type: "loading",
-        })
-      );
-    }
-    if (isSuccess) {
-      dispatch(
-        openModal({
-          title: { key: "modal.listsDownload.title" },
-          message: { key: "modal.listsDownload.message.success" },
-          type: "success",
-        })
-      );
-    }
-    if (isError) {
-      clearLocalStorage();
-      dispatch(setLoggedUserEmail(null));
-      dispatch(setAccountMode("login"));
-      dispatch(
-        openModal({
-          title: { key: "modal.listsDownload.title" },
-          message: { key: "modal.listsDownload.message.error.default" },
-          type: "error",
-        })
-      );
-    }
-  }, [loggedUserEmail, isLoading, isSuccess, isError, dispatch]);
+  const safeData = !!loggedUserEmail && isOnline ? data : undefined;
+  const authRoutes = [
+    "/user-confirmation",
+    "/account-recovery",
+    "/user-invitation",
+  ];
+  const saveListMutation = useSaveListMutation();
+  const { id: localListId } = useAppSelector(selectTaskListMetaData);
+  useDataFetchingError({ isError, isData: !!safeData, refetch });
 
   return (
     <HashRouter>
-      <Navigation listsData={safeData} authRoutes={authRoutes} />
+      {(() => {
+        const { hash } = window.location;
+        if (!authRoutes.some((route) => hash.startsWith(`#${route}`))) {
+          return (
+            <>
+              <SessionManager authRoutes={authRoutes} />
+              <Navigation
+                listsData={safeData}
+                isLoading={isLoading}
+                isError={isError}
+                authRoutes={authRoutes}
+                isOnline={isOnline}
+              />
+              <TokenManager />
+              <AblyManager
+                userEmail={loggedUserEmail}
+                enabled={!!loggedUserEmail}
+              />
+              <ListSyncManager
+                listsData={safeData}
+                saveListMutation={saveListMutation}
+              />
+              <NotificationManager />
+              <OfflineManager refetch={refetch} />
+            </>
+          );
+        }
+        return null;
+      })()}
+
       <Container>
-        <CurrentDate authRoutes={authRoutes} />
+        <HeaderControls>
+          <ThemeSwitch authRoutes={authRoutes} />
+          <CurrentDate authRoutes={authRoutes} />
+        </HeaderControls>
         <Routes>
           <Route path="/account-recovery" element={<AccountRecoveryPage />} />
           <Route path="/user-confirmation" element={<UserConfirmationPage />} />
+          <Route path="/user-invitation" element={<UserInvitationPage />} />
+          <Route
+            path="/tasks/image/:id"
+            element={
+              <TaskImage listsData={safeData} localListId={localListId} />
+            }
+          />
           <Route path="/tasks/:id" element={<TaskPage />} />
-          <Route path="/tasks" element={<TasksPage listsData={safeData} />} />
+          <Route
+            path="/tasks"
+            element={
+              <TasksPage
+                listsData={safeData}
+                saveListMutation={saveListMutation}
+              />
+            }
+          />
+          <Route path="/archived-lists" element={<ArchivedListsPage />} />
           {!!safeData && (
-            <Route path="/lists" element={<ListsPage listsData={safeData} />} />
+            <Route
+              path="/lists"
+              element={
+                <RemoteListsPage
+                  listsData={safeData}
+                  localListId={localListId}
+                />
+              }
+            />
           )}
           <Route path="/info" element={<InfoPage />} />
           <Route path="/account" element={<AccountPage />} />
@@ -87,6 +133,8 @@ const App = () => {
         </Routes>
       </Container>
       <Modal />
+      <NotificationModal />
+      <UpdateNotification />
     </HashRouter>
   );
 };

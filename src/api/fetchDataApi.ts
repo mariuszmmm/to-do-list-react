@@ -1,7 +1,8 @@
 import { List, Version } from "../types";
+import axios from "axios";
 
 export const getDataApi = async (token: string) => {
-  return fetch("/getData", {
+  return fetch("/data-lists", {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   })
@@ -19,13 +20,37 @@ export const getDataApi = async (token: string) => {
 
 export const addDataApi = async (
   token: string,
-  version: Version,
-  list: List
+  list: List,
+  deviceId: string,
 ) => {
-  return fetch("/addData", {
+  try {
+    const response = await axios.patch(
+      "/data-lists",
+      { list, deviceId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        validateStatus: (status) => status < 500,
+      },
+    );
+    if (response.status === 409) {
+      return response.data;
+    }
+    return response.data;
+  } catch (error: any) {
+    console.error("Error updating data", error.message || error);
+    throw error;
+  }
+};
+
+export const updateDataApi = async (
+  token: string,
+  lists: List[],
+  deviceId: string,
+) => {
+  return fetch("/data-lists", {
     method: "PUT",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, list }),
+    body: JSON.stringify({ lists, deviceId }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -44,36 +69,13 @@ export const addDataApi = async (
 export const removeDataApi = async (
   token: string,
   version: Version,
-  listId: string
+  listId: string,
+  deviceId: string,
 ) => {
-  return fetch("/removeData", {
+  return fetch("/data-lists", {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, listId }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        if (response.status === 409) {
-          return response.json();
-        } else throw new Error(response.statusText);
-      }
-      return response.json();
-    })
-    .then((data) => data)
-    .catch((error) => {
-      console.error("Error updating data", error.message);
-    });
-};
-
-export const updateDataApi = async (
-  token: string,
-  version: Version,
-  lists: List[]
-) => {
-  return fetch("/updateData", {
-    method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ version, lists }),
+    body: JSON.stringify({ version, listId, deviceId }),
   })
     .then((response) => {
       if (!response.ok) {

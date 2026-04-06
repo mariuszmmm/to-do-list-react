@@ -1,8 +1,20 @@
-export interface Task {
+import { Image } from "./image-cloudinary";
+
+export type Task = {
   id: string;
   content: string;
   done: boolean;
   date: string;
-  doneDate?: string | null;
-  editedDate?: string | null;
-}
+  editedAt?: string;
+  completedAt?: string | null;
+  updatedAt: string;
+  status?: "new" | "edited" | "updated" | "deleted" | "synced";
+  deletedAt?: string | null;
+  image?: Image | null;
+  notificationDate?: string | null;
+  notificationId?: string | null;
+};
+
+export type EditedTask = { id: string; content: string } | null;
+
+export type ChangeSource = "local" | "remote" | null;

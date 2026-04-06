@@ -1,0 +1,116 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zresetuj swoje hasło</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6;
+        margin: 8px;
+        padding: 20px 0 150px 0;
+      }
+      .container {
+        max-width: 620px;
+        width: 100%;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(49, 38, 38, 0.1);
+      }
+      .header {
+        background-color: #007380;
+        padding: 30px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .header img {
+        height: 60px;
+        width: auto;
+        border-radius: 12px;
+      }
+      .header-title {
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 12px 0 0 0;
+        letter-spacing: 0.5px;
+      }
+      .content {
+        padding: 40px 30px;
+        text-align: center;
+        color: #333333;
+        line-height: 1.6;
+      }
+      .content p {
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+      .button {
+        display: inline-block;
+        padding: 14px 32px;
+        background-color: #007380;
+        color: #ffffff !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .footer {
+        padding: 20px;
+        text-align: center;
+        font-size: 11px;
+        color: #999999;
+        background-color: #fafafa;
+      }
+
+      @media screen and (max-width: 620px) {
+        body {
+          padding: 0 0 100px 0 !important;
+        }
+        .header {
+          padding: 20px 15px !important;
+        }
+        .header-title {
+          font-size: 18px !important;
+        }
+        .content {
+          padding: 24px 15px !important;
+        }
+        .content p {
+          font-size: 14px !important;
+        }
+        .button {
+          font-size: 14px !important;
+          padding: 12px 24px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://to-do-list.myprojects.pl/web-app-manifest-192x192.png"
+          alt="To-Do List Logo"
+        />
+        <p class="header-title">To-Do List</p>
+      </div>
+      <div class="content">
+        <p>Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.</p>
+        <p style="margin: 20px 0; line-height: 1.6">
+          Jeśli to Ty wysłałeś prośbę, kliknij w poniższy przycisk,<br />
+          aby ustawić nowe hasło. Jeśli to nie Ty, zignoruj tę wiadomość.
+        </p>
+        <a href="{{ .SiteURL }}/#recovery_token={{ .Token }}" class="button"
+          >Zresetuj hasło</a
+        >
+      </div>
+      <div class="footer">
+        <p>&copy; 2026 To-Do List. Wszystkie prawa zastrzeżone.</p>
+      </div>
+    </div>
+  </body>
+</html>

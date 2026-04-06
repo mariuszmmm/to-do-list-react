@@ -5,13 +5,7 @@ export const getExampleTasks = async (lang: string) => {
   if (!response.ok) {
     new Error(response.statusText);
   }
+  const { name, tasks } = (await response.json()) as ExampleTasks;
 
-  const exampleTasks = (await response.json()) as ExampleTasks;
-  const date = new Date().toISOString();
-  const exampleTasksWithDate = exampleTasks.tasks.map((task) => ({
-    ...task,
-    date,
-  }));
-
-  return { ...exampleTasks, tasks: exampleTasksWithDate };
+  return { name, tasks };
 };

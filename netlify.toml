@@ -1,34 +1,163 @@
+[build]
+  functions = "netlify/functions"
+
 [[redirects]]
-  from = "/getData"
-  to = "/.netlify/functions/getData"
+  from = "https://to-do-list-typescript-react-test.netlify.app/*"
+  to = "https://to-do-list.myprojects.pl/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/data-lists"
+  to = "/.netlify/functions/data-lists"
   status = 200
 
 [[redirects]]
-  from = "/addData"
-  to = "/.netlify/functions/addData"
+  from = "/image-cloudinary"
+  to = "/.netlify/functions/image-cloudinary"
   status = 200
 
 [[redirects]]
-  from = "/removeData"
-  to = "/.netlify/functions/removeData"
+  from = "/backup-download-user"
+  to = "/.netlify/functions/backup-download-user"
   status = 200
 
 [[redirects]]
-  from = "/updateData"
-  to = "/.netlify/functions/updateData"
+  from = "/backup-download-all"
+  to = "/.netlify/functions/backup-download-all"
   status = 200
 
 [[redirects]]
-  from = "/confirmUser"
-  to = "/.netlify/functions/confirmUser"
+  from = "/backup-restore-user"
+  to = "/.netlify/functions/backup-restore-user"
+  status = 200
+
+[[redirects]]
+  from = "/backup-restore-all"
+  to = "/.netlify/functions/backup-restore-all"
+  status = 200
+  
+[[redirects]]
+  from = "/backup-upload-drive"
+  to = "/.netlify/functions/backup-upload-drive"
+  status = 200
+
+[[redirects]]
+  from = "/backup-restore-drive"
+  to = "/.netlify/functions/backup-restore-drive"
+  status = 200
+
+[[redirects]]
+  from = "/auth-google-callback"
+  to = "/.netlify/functions/auth-google-callback"
+  status = 200
+
+[[redirects]]
+  from = "/user-confirm"
+  to = "/.netlify/functions/user-confirm"
   status = 200
     
 [[redirects]]
-  from = "/deleteUser"
-  to = "/.netlify/functions/deleteUser"
+  from = "/user-delete"
+  to = "/.netlify/functions/user-delete"
   status = 200
 
 [[redirects]]
-  from = "/translateMessage"
-  to = "/.netlify/functions/translateMessage"
+  from = "/user-invite"
+  to = "/.netlify/functions/user-invite"
+  status = 200
+
+[[redirects]]
+  from = "/user-list"
+  to = "/.netlify/functions/user-list"
+  status = 200
+
+[[redirects]]
+  from = "/user-admin-delete"
+  to = "/.netlify/functions/user-admin-delete"
+  status = 200
+
+[[redirects]]
+  from = "/service-translate"
+  to = "/.netlify/functions/service-translate"
+  status = 200
+
+[[redirects]]
+  from = "/auth-ably"
+  to = "/.netlify/functions/auth-ably"
+  status = 200
+
+[[redirects]]
+  from = "/backup-list-drive"
+  to = "/.netlify/functions/backup-list-drive"
+  status = 200
+
+[[redirects]]
+  from = "/backup-delete-drive"
+  to = "/.netlify/functions/backup-delete-drive"
+  status = 200
+
+[[redirects]]
+  from = "/auth-google-refresh"
+  to = "/.netlify/functions/auth-google-refresh"
+  status = 200
+
+[[redirects]]
+  from = "/backup-auto-upload"
+  to = "/.netlify/functions/backup-auto-upload"
+  status = 200
+
+[[redirects]]
+  from = "/system-status"
+  to = "/.netlify/functions/system-status"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-orphan-images"
+  to = "/.netlify/functions/cleanup-orphan-images"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-temp-images"
+  to = "/.netlify/functions/cleanup-temp-images"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-deleted-tasks"
+  to = "/.netlify/functions/cleanup-deleted-tasks"
+  status = 200
+
+[[redirects]]
+  from = "/cleanup-logs"
+  to = "/.netlify/functions/cleanup-logs"
+  status = 200
+
+[[redirects]]
+  from = "/system-diagnose"
+  to = "/.netlify/functions/system-diagnose"
+  status = 200
+
+[[redirects]]
+  from = "/notification-schedule"
+  to = "/.netlify/functions/notification-schedule"
+  status = 200
+
+[[redirects]]
+  from = "/notification-cancel"
+  to = "/.netlify/functions/notification-cancel"
+  status = 200
+
+[[redirects]]
+  from = "/notification-list-scheduled"
+  to = "/.netlify/functions/notification-list-scheduled"
+  status = 200
+
+[[redirects]]
+  from = "/notification-update"
+  to = "/.netlify/functions/notification-update"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200

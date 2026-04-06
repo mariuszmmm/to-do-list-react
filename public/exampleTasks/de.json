@@ -1,13 +1,15 @@
 {
-  "listName": "Beispiel Aufgaben",
+  "name": "Beispiel Aufgaben",
   "tasks": [
     {
       "content": "Aufgabe als erledigt markieren",
+      "date": "2024-06-01T10:00:00.000Z",
       "done": false,
       "id": "APd4N7pA-FfNAhd97KOhF"
     },
     {
       "content": "Alle Aufgaben abschließen",
+      "date": "2024-06-01T10:00:00.000Z",
       "done": false,
       "id": "gzSGVuOpNnRMYj8417fuG"
     }

@@ -1,23 +1,39 @@
 {
   "name": "to-do-list-react",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "private": true,
   "homepage": "",
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emailjs/browser": "^4.4.1",
-    "@netlify/functions": "^3.0.0",
+    "@netlify/functions": "^3.1.10",
+    "@netlify/identity": "^1.0.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@tanstack/react-query": "^5.74.3",
     "@tanstack/react-query-devtools": "^5.74.3",
-    "@types/react-speech-recognition": "^3.9.6",
+    "ably": "^2.17.0",
+    "axios": "^1.13.2",
+    "busboy": "^1.6.0",
+    "cloudinary": "^2.8.0",
+    "dotenv": "^17.2.3",
+    "eslint-config-react-app": "^7.0.1",
     "gotrue-js": "^0.9.29",
     "i18next": "^23.10.0",
     "i18next-browser-languagedetector": "^8.0.4",
+    "idb-keyval": "^6.2.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.5",
+    "lodash.debounce": "^4.0.8",
+    "mongodb": "^7.1.0",
+    "mongoose": "^9.2.1",
+    "nanoid": "^5.1.6",
+    "polished": "^4.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^14.0.1",
+    "react-loader-spinner": "^8.0.2",
+    "react-onesignal": "^3.5.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.3",
     "react-scripts": "^5.0.1",
@@ -28,16 +44,40 @@
   "scripts": {
     "start": "netlify dev",
     "dev": "netlify dev",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "simulate-cron": "node tools/simulate-cron.js",
+    "prebuild": "node -e \"const f=require('fs'),p=JSON.parse(f.readFileSync('./package.json','utf8'));f.writeFileSync('./src/version.ts','export const APP_VERSION = \\\"'+p.version+'\\\";\\n')\"",
+    "build": "react-scripts build && node -e \"const f=require('fs'),p='build/service-worker.js';f.writeFileSync(p,f.readFileSync(p,'utf8').replace(/todo-list-v[a-zA-Z0-9_]+/g,'todo-list-v'+Date.now()))\"",
+    "lint": "eslint src --format codeframe --color",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "secrets:sync": "powershell -ExecutionPolicy Bypass -File scripts/Bitwarden/sync-secrets.ps1",
+    "secrets:push": "powershell -ExecutionPolicy Bypass -File scripts/Bitwarden/push-secrets.ps1",
+    "secrets:netlify": "netlify env:import .env",
+    "db:migrate": "node scripts/MongoDB/migrate-db.js",
+    "db:restore": "node scripts/MongoDB/restore-db.js",
+    "db:restore:drive": "node scripts/MongoDB/restore-db-google-drive.js",
+    "db:backup": "node scripts/MongoDB/backup-db.js",
+    "db:backup:drive": "node scripts/MongoDB/backup-db-google-drive.js",
+    "cdn:backup": "node scripts/Cloudinary/backup-cloudinary.js",
+    "cdn:restore": "node scripts/Cloudinary/restore-cloudinary.js",
+    "cdn:backup:drive": "node scripts/Cloudinary/backup-cloudinary-google-drive.js",
+    "cdn:restore:drive": "node scripts/Cloudinary/restore-cloudinary-google-drive.js",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --format codeframe --color --fix"
     ]
   },
   "browserslist": {
@@ -53,11 +93,20 @@
     ]
   },
   "devDependencies": {
+    "@types/busboy": "^1.5.4",
     "@types/jsonwebtoken": "^9.0.8",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/mongoose": "^5.11.96",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "@types/react-i18next": "^7.8.3",
-    "typescript": "^4.9.5"
+    "@types/react-speech-recognition": "^3.9.6",
+    "eslint-formatter-codeframe": "^7.32.2",
+    "eslint-formatter-pretty": "^7.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "typescript": "^4.9.5",
+    "typescript-styled-plugin": "^0.18.3"
   }
 }

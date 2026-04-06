@@ -1,13 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { AccountState } from "../../types";
+import { AccountState, PresenceUser } from "../../types";
 
 const getInitialState = (): AccountState => ({
   accountMode: "login",
   isWaitingForConfirmation: false,
   loggedUserEmail: null,
+  loggedUserName: "",
+  loggedUserRoles: [],
   message: "",
-  version: null,
+  presenceUsers: [],
+  userDevicesCount: 0,
+  totalUsersCount: 0,
+  allDevicesCount: 0,
 });
 
 const accountSlice = createSlice({
@@ -26,32 +31,56 @@ const accountSlice = createSlice({
         | "accountRecovery"
         | "accountDelete"
         | "dataRemoval"
-      >
+        | "accountSwitch"
+      >,
     ) => {
       state.accountMode = mode;
       state.message = "";
     },
     setIsWaitingForConfirmation: (
       state,
-      { payload }: PayloadAction<boolean>
+      { payload }: PayloadAction<boolean>,
     ) => {
       state.isWaitingForConfirmation = payload;
     },
-    setLoggedUserEmail: (
+    setLoggedUser: (
       state,
-      { payload: email }: PayloadAction<string | null>
+      {
+        payload,
+      }: PayloadAction<{
+        email: string | null;
+        name?: string;
+        roles?: AccountState["loggedUserRoles"];
+      } | null>,
     ) => {
-      state.loggedUserEmail = email;
-      if (email === null) {
+      if (payload === null || payload.email === null) {
+        state.loggedUserEmail = null;
+        state.loggedUserName = "";
+        state.loggedUserRoles = [];
         state.accountMode = "login";
-        state.version = null;
+        return;
       }
+      state.loggedUserEmail = payload.email;
+      state.loggedUserName = payload.name || "";
+      state.loggedUserRoles = payload.roles || [];
     },
+
     setMessage: (state, { payload: message }: PayloadAction<string>) => {
       state.message = message;
     },
-    setVersion: (state, { payload: version }: PayloadAction<number | null>) => {
-      state.version = version;
+    setPresenceData: (
+      state,
+      action: PayloadAction<{
+        users: PresenceUser[];
+        totalUsers: number;
+        userDevices: number;
+        allDevices: number;
+      }>,
+    ) => {
+      state.presenceUsers = action.payload.users;
+      state.userDevicesCount = action.payload.userDevices;
+      state.totalUsersCount = action.payload.totalUsers;
+      state.allDevicesCount = action.payload.allDevices;
     },
   },
 });
@@ -59,9 +88,9 @@ const accountSlice = createSlice({
 export const {
   setAccountMode,
   setIsWaitingForConfirmation,
-  setLoggedUserEmail,
+  setLoggedUser,
   setMessage,
-  setVersion,
+  setPresenceData,
 } = accountSlice.actions;
 
 const selectAccountState = (state: RootState) => state.account;
@@ -70,9 +99,21 @@ export const selectAccountMode = (state: RootState) =>
   selectAccountState(state).accountMode;
 export const selectIsWaitingForConfirmation = (state: RootState) =>
   selectAccountState(state).isWaitingForConfirmation;
+export const selectLoggedUserName = (state: RootState) =>
+  selectAccountState(state).loggedUserName;
 export const selectLoggedUserEmail = (state: RootState) =>
   selectAccountState(state).loggedUserEmail;
+export const selectIsAdmin = (state: RootState) =>
+  selectAccountState(state).loggedUserRoles.includes("admin");
 export const selectMessage = (state: RootState) =>
   selectAccountState(state).message;
+export const selectPresenceUsers = (state: RootState) =>
+  selectAccountState(state).presenceUsers;
+export const selectUserDevicesCount = (state: RootState) =>
+  selectAccountState(state).userDevicesCount;
+export const selectTotalUsersCount = (state: RootState) =>
+  selectAccountState(state).totalUsersCount;
+export const selectAllDevicesCount = (state: RootState) =>
+  selectAccountState(state).allDevicesCount;
 
 export default accountSlice.reducer;

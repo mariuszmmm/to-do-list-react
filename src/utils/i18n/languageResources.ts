@@ -1,6 +1,6 @@
-import langDe from "./locales/de";
-import langEn from "./locales/en";
 import langPl from "./locales/pl";
+import langEn from "./locales/en";
+import langDe from "./locales/de";
 
 export const resources = {
   pl: { translation: langPl },
@@ -9,9 +9,9 @@ export const resources = {
 };
 
 export const langCodes: Record<SupportedLanguages, string> = {
-  pl: "pl-Pl",
-  en: "en-US",
-  de: "de-DE",
+  pl: "pl",
+  en: "en",
+  de: "de",
 };
 
 export type SupportedLanguages = keyof typeof resources;

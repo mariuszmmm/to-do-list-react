@@ -3,34 +3,38 @@
 </p>
 
 # To-Do List Application
-[**Try it now**](https://to-do-list-typescript-react.netlify.app/) and discover all the possibilities of the application!  
+
+[**Try it now**](https://to-do-list.myprojects.pl/) and discover all the possibilities of the application!
 
 </br>
 
-* [Presentation](#-presentation)
-* [Deployment](#-deployment)
-* [Technologies](#-technologies)
-* [Description](#-description)
-* [Configuration](#-configuration)
-* [Application views](#-application-views)
-* [User Instructions](#-user-instructions)
-* [Adding Tasks by Voice](#-adding-tasks-by-voice)
+- [Presentation](#-presentation)
+- [Deployment](#-deployment)
+- [Technologies](#-technologies)
+- [Description](#-description)
+- [Configuration](#-configuration)
+- [Application views](#-application-views)
+- [User Instructions](#-user-instructions)
+- [Voice task input](#-voice-task-input)
+- [Contact Form](#-contact-form)
 
 </br>
 
 ## 🎬 Presentation
+
 ![to-do list](images/presentation.gif)
 
 <br>
 
 ## 🚀 Deployment
-* [**New version :**](https://to-do-list-typescript-react.netlify.app/)</br>
-Features requiring communication with the database and user management have been implemented using <b>Netlify</b> – a platform offering serverless functions and authentication support. With <b>Netlify GoTrue</b>, the application allows users to manage their accounts, including registration, login, password reset and change, as well as account deletion. Additionally, the application enables storing task lists in the <b>MongoDB</b> database, which allows for later retrieval, editing, and saving.
-The application supports translating the entire site into three languages: <b>Polish (pl)</b>, <b>English (en)</b>, and <b>German (de)</b>, using <b>react-i18next</b>. New features have also been implemented, such as dynamic translation of error messages using <b>Cloud Translation API</b>, which ensures that server messages are translated in real-time based on the user’s selected language.
-Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list-typescript-react.netlify.app
 
-* [**Older version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
-The older version is hosted on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
+- [**New version :**](https://to-do-list.myprojects.pl/)</br>
+  Features requiring communication with the database and user management have been implemented using <b>Netlify</b> – a platform offering serverless functions and authentication support. With <b>Netlify GoTrue</b>, the application allows users to manage their accounts, including registration, login, password reset and change, as well as account deletion. Additionally, the application enables storing task lists in the <b>MongoDB</b> database, which allows for later retrieval, editing, and saving.
+  The application supports translating the entire site into three languages: <b>Polish (pl)</b>, <b>English (en)</b>, and <b>German (de)</b>, using <b>react-i18next</b>. New features have also been implemented, such as dynamic translation of error messages using <b>Cloud Translation API</b>, which ensures that server messages are translated in real-time based on the user’s selected language.
+  Another novelty is the migration to <b>TanStack Query</b> (formerly <b>React Query</b>) for handling queries and mutations in the app, which significantly simplifies state management and asynchronous operations. The entire application has also been adapted to work with <b>TypeScript</b>, improving code stability and easing maintenance.<br/>https://to-do-list.myprojects.pl
+
+- [**Basic version :**](https://mariuszmmm.github.io/to-do-list-react)</br>
+  Currently, the basic version of the application is located on the <b>gh-pages</b> branch and can be accessed at:</br>https://mariuszmmm.github.io/to-do-list-react
 
 </br>
 
@@ -45,6 +49,11 @@ The older version is hosted on the <b>gh-pages</b> branch and can be accessed at
 <li>Netlify GoTrue.js</li>
 <li>MongoDB</li>
 <li>EmailJS</li>
+<li>Cloudinary (Image Management)</li>
+<li>Ably (Real-time Synchronization)</li>
+<li>OneSignal (Omni-channel Notifications)</li>
+<li>Google Drive API (Cloud Backups)</li>
+<li>@dnd-kit (Drag and Drop)</li>
 <li>Normalize.css, Styled Components</li>
 <li>CSS Grid & Flexbox, Media Queries</li>
 <li>Controlled Components</li>
@@ -53,154 +62,221 @@ The older version is hosted on the <b>gh-pages</b> branch and can be accessed at
 <br>
 
 ## 📝 Description
-<b>To-Do List</b> is an application built with React and TypeScript. This version has been significantly expanded – in addition to the classic to-do list features, a number of new improvements and capabilities have been introduced:
-* <b>Core Features:</b>
-   * Fetch sample tasks <i>(when the list is empty)</i>,
-   * Add new tasks,
-   * Mark tasks as completed,
-   * Search tasks with the ability to show/hide filters and clear them,
-   * Display task details,
-   * Delete tasks,
-   * Hide completed tasks,
-   * Mark all tasks as completed and now also unmark all tasks.
-* <b>New features:</b>
-   * <b>TypeScript support:</b> The app has been rewritten in TypeScript for better type safety and maintainability.
-   * <b>TanStack Query:</b> Replaced manual fetching (Redux Saga) with useQuery hooks to fetch sample tasks and lists, and useMutation hooks for list mutations and user-related operations.
-   * <b>react-i18next:</b> App translation into pl, en, de.
-   * <b>Dynamic error translation:</b> Server error messages are translated on the fly using the Cloud Translation API.
-   * <b>Streamlined state management:</b> Redux and Saga remain only for global app state; fetching and mutation logic moved to TanStack Query.
-   * <b>User Account Management:</b>
-      <i>(Implementation based on the [Netlify GoTrue](https://github.com/netlify/gotrue-js) library with custom UI components.)</i>
-      * Registration,
-      * Login,
-      * Password reset and change,
-      * Account deletion.<br>
-   * <b>Adding tasks by voice:</b> Ability to enter task content using speech recognition (Web Speech API).
 
-* <b>Lists Page:</b></br>
-After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
-   * Preview the contents of a selected list,
-   * Load the selected list into current to-do list,
-   * Sort the list,
-   * Delete the list.
-* <b>Saving a list to the database:</b></br>
-After logging in, users can save the current to-do list to the database.
-* <b>Task Editing:</b></br>
-Tasks can be edited (using the pencil icon) with options to undo and redo changes.
+<b>To-Do List</b> is an application built with React and TypeScript. This version has been significantly expanded – in addition to the classic to-do list features, a number of new improvements and capabilities have been introduced:
+
+- <b>Core Features:</b>
+  - Fetch sample tasks <i>(when the list is empty)</i>,
+  - Add new tasks,
+  - Mark tasks as completed,
+  - Search tasks with the ability to show/hide filters and clear them,
+  - Display task details,
+  - Delete tasks,
+  - Hide completed tasks,
+  - Mark all tasks as completed and now also unmark all tasks.
+- <b>New features:</b>
+  - <b>TypeScript support:</b> The app has been rewritten in TypeScript for better type safety and maintainability.
+  - <b>TanStack Query:</b> Replaced manual fetching (Redux Saga) with useQuery hooks to fetch sample tasks and lists, and useMutation hooks for list mutations and user-related operations.
+  - <b>react-i18next:</b> App translation into pl, en, de.
+  - <b>Dynamic error translation:</b> Server error messages are translated on the fly using the Cloud Translation API.
+  - <b>Streamlined state management:</b> Redux and Saga remain only for global app state; fetching and mutation logic moved to TanStack Query.
+  - <b>User Account Management:</b>
+    <i>(Implementation based on the [Netlify GoTrue](https://github.com/netlify/gotrue-js) library with custom UI components.)</i>
+    - Registration,
+    - Login,
+    - Password reset and change,
+    - Account deletion.<br>
+  - <b>Voice task input:</b> Ability to enter task content using speech recognition (Web Speech API).
+  - <b>Task Attachments:</b> Ability to attach images to tasks (powered by <b>Cloudinary</b>).
+  - <b>Drag & Drop:</b> Intuitively reorder users' tasks and lists (powered by <b>@dnd-kit</b>).
+  - <b>Real-time Sync:</b> Instant updates across devices using <b>Ably</b>.
+  - <b>Archived Lists:</b> Archive lists to keep your workspace clean without losing data.
+  - <b>Task Notifications:</b> Integration with <b>OneSignal</b> allowing users to schedule task reminders (Push and Email).
+  - <b>Admin Panel & Cloud Backups:</b> Advanced module for the system administrator to manage automated/manual backups of both the database (MongoDB) and media files (Cloudinary) to <b>Google Drive</b>, as well as system diagnostics and cleanup.
+
+- <b>Lists Page:</b></br>
+  After logging in, users can access the “Lists” page, where all saved lists from the MongoDB database are displayed. On this page, you can:
+  - Preview the contents of a selected list,
+  - Load the selected list into current to-do list,
+  - Sort the list,
+  - Delete the list.
+- <b>Saving a list to the database:</b></br>
+  After logging in, users can save the current to-do list to the database.
+- <b>Task Editing:</b></br>
+  Tasks can be edited (using the pencil icon) with options to undo and redo changes.
 
 The application offers a user-friendly interface that supports effective task management.
 
 </br>
 
 ## ⚙ Configuration
+
 To run the to-do-list-react application locally, follow these steps:
 
 1. <b>Clone the Repository:</b><br>
-Clone the GitHub repository to your local machine:
+   Clone the GitHub repository to your local machine:
+
 ```commandline
      git clone https://github.com/mariuszmmm/to-do-list-react.git
 ```
+
 2. <b>Install Dependencies:</b><br>
-Navigate to the project directory and install all required dependencies:
+   Navigate to the project directory and install all required dependencies:
+
 ```commandline
     cd to-do-list-react
     npm install
 ```
+
 3. <b>Configure Environment Variables:</b><br>
-Create a .env file in the root directory and define the following variables:
+   Create a .env file in the root directory and define the following variables:
+
 ```commandline
-   MONGODB_URI=your_mongodb_uri
-   MONGODB_DATABASE=your_database
-   WEBHOOK_SECRET=your_webhook_secret
-   REACT_APP_CONFIRMATION_URL="http://localhost:8888/#/user-confirmation"
-   REACT_APP_RECOVERY_URL="http://localhost:8888/#/account-recovery"
-   TRANSLATION_API_KEY="your_translation_api_key"
-   TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+    ABLY_API_KEY="your_ably_api_key_here"
+
+    GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    GOOGLE_DRIVE_CLIENT_SECRET="your_google_drive_client_secret_here"
+    GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+
+    MONGODB_DATABASE="your_mongodb_database_name"
+    MONGODB_URI="your_mongodb_connection_string"
+
+    REACT_APP_ABLY_API_KEY="your_ably_api_key_for_react_here"
+    REACT_APP_CONFIRMATION_URL="https://your-netlify-app.netlify.app/#/user-confirmation"
+    REACT_APP_EMAILJS_PUBLIC_KEY="your_emailjs_public_key_here"
+    REACT_APP_EMAILJS_SERVICE_ID="your_emailjs_service_id_here"
+    REACT_APP_EMAILJS_TEMPLATE_ID="your_emailjs_template_id_here"
+    REACT_APP_GOOGLE_DRIVE_CLIENT_ID="your_google_drive_client_id_here"
+    REACT_APP_GOOGLE_DRIVE_REDIRECT_URI="https://your-netlify-app.netlify.app/"
+    REACT_APP_NETLIFY_IDENTITY_URL="https://your-netlify-app.netlify.app/.netlify/identity"
+    REACT_APP_RECOVERY_URL="https://your-netlify-app.netlify.app/#/account-recovery"
+
+    TRANSLATION_API_KEY="your_google_translation_api_key_here"
+    TRANSLATION_API_URL="https://translation.googleapis.com/language/translate/v2"
+
+    WEBHOOK_SECRET="your_webhook_secret_here"
+
+    CLOUDINARY_API_SECRET="your_cloudinary_api_secret_here"
+    CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name_here"
+    CLOUDINARY_API_KEY="your_cloudinary_api_key_here"
+    CLOUDINARY_UPLOAD_PRESET="your_unsigned_upload_preset_here"
 ```
+
 4. <b>Start the Application:</b><br>
-Run the application in development mode:
+   Run the application in development mode:
+
 ```commandline
     npm start
 ```
+
 The app will launch in your browser at http://localhost:8888.
 
 <br>
 
 ## 🖥 Application Views
+
 The application is fully responsive and adapts to various devices, including smartphones, tablets, and desktops.
 Example views:
 
 - <b>320x568</b> <i>(Mobile view)</i>  
-![to-do list](images/size_1.gif)
+  ![to-do list](images/size_1.gif)
 
 - <b>600x960</b> <i>(Tablet view)</i>  
-![to-do list](images/size_2.gif)
+  ![to-do list](images/size_2.gif)
 
 </br>
 
 ## 📄 User Instructions
+
 <b>Fetching Sample Tasks</b>
-* Select the <b>"Fetch Sample Tasks"</b> option – tasks will be fetched only if the current to-do list is empty.
+
+- Select the <b>"Fetch Sample Tasks"</b> option – tasks will be fetched only if the current to-do list is empty.
 
 </br>
 
 <b>Adding a Task</b>
-* Enter the task name in the text field and click <b>"Add Task"</b> or press <b>Enter</b>.
+
+- Enter the task name in the text field and click <b>"Add Task"</b> or press <b>Enter</b>.
+- Click the <b>image icon</b> to upload an attachment to the task.
 
 </br>
 
 <b>Marking a Task as Completed</b>
-* Click the checkbox next to a task to mark it as completed.
+
+- Click the checkbox next to a task to mark it as completed.
 
 </br>
 
 <b>Editing a Task</b>
-* Click the pencil icon to edit a task's content.
-* Use the undo/redo options to revert or restore changes.
+
+- Click the pencil icon to edit a task's content.
+- Use the undo/redo options to revert or restore changes.
+
+</br>
+
+<b>Adding images to tasks</b> (available for logged-in users)
+
+- Click the image icon to add an image to the task.
+- You can add one image from your computer's disk or take a photo with your camera.
+
+</br>
+
+<b>Task Notifications</b> (available for logged-in users)
+
+- Click the notification bell icon next to a task to schedule a notification.
+- Choose a future date and time to receive a Push or email reminder at the specified moment.
 
 </br>
 
 <b>Searching for Tasks</b>
-* Enter a keyword or phrase in the search field.
-* Use the <b>Show/Hide filter</b> or <b>Clear filter</b> options for better control of results.
+
+- Enter a keyword or phrase in the search field.
+- Use the <b>Show/Hide filter</b> or <b>Clear filter</b> options for better control of results.
 
 </br>
 
 <b>Task Management</b>
-* <b>Display details:</b> Click a task to view its detailed information.
-* <b>Delete task:</b> Click the trash icon next to a task to delete it.
-* <b>Done all / Undone all:</b> Allows you to mark all tasks as completed or unmark them.
-* <b>Enable/disable sorting:</b> Toggles sorting mode. In list view, buttons will appear to move tasks up and down.
+
+- <b>Display details:</b> Click a task to view its detailed information.
+- <b>Delete task:</b> Click the trash icon next to a task to delete it.
+- <b>Done all / Undone all:</b> Allows you to mark all tasks as completed or unmark them.
+- <b>Enable/disable sorting:</b> Toggles sorting mode. In list view, buttons will appear to move tasks up and down, or you can drag and drop them.
 
 </br>
 
 <b>Undo and redo changes</b>
-* Click the <b>"↺"</b> button – the last action on the to-do list will be reverted.
-* Click the <b>"↻"</b> button – the reverted action will be restored.
-</br>
-Buttons are active only when undoing or redoing is possible.
+
+- Click the <b>"↺"</b> button – the last action on the to-do list will be reverted.
+- Click the <b>"↻"</b> button – the reverted action will be restored.
+  </br>
+  Buttons are active only when undoing or redoing is possible.
 
 </br>
 
 <b>Save list</b> (available for logged-in users)
-* Select the <b>"Save List"</b> option – the to-do list will be saved to the database. If the list name already exists, you can rename it or overwrite the existing one.
+
+- Select the <b>"Save List"</b> option – the to-do list will be saved to the database.
 
 </br>
 
 <b>User Account Management</b>
-* After logging in, the user gains access to:
-   * <b>Password change, account deletion, and other account features.</b>
-   * <b>Lists Page:</b> View saved lists, preview contents, load a list into the current to-do-list, or delete a list.
-   * <b>Save the current to-do list to the database.</b>
+
+- After logging in, the user gains access to:
+  - <b>Password change, account deletion, and other account features.</b>
+  - <b>Lists Page:</b> View saved lists, preview contents, load a list into the current to-do-list, or delete a list.
+  - <b>Save the current to-do list to the database.</b>
+  - <b>Ability to add images to tasks.</b>
 
 </br>
 
-## 🎤 Adding Tasks by Voice
-The application allows you to add and edit tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
+## 🎤 Voice task input
+
+The application allows you to dictate when adding and editing tasks using speech recognition. This feature uses the Web Speech API and is available in the add/edit task form.
 
 </br>
 
 **How does it work?**
+
 - Next to the text field, there is a button with a microphone icon.
 - Click the microphone to start listening – you can dictate the task content.
 - The recognized text appears automatically in the text field.
@@ -210,6 +286,7 @@ The application allows you to add and edit tasks using speech recognition. This 
 </br>
 
 **Additional information:**
+
 - Various languages are supported – the app automatically adjusts the recognition language to the selected interface language.
 - In task edit mode, speech recognition continues the existing content.
 - Interim results are supported, so the text appears live as you speak (if the browser allows it).
@@ -217,4 +294,5 @@ The application allows you to add and edit tasks using speech recognition. This 
 </br>
 
 ## 📬 Contact Form
+
 The application includes a contact form that allows users to send messages directly to the author. This form is integrated using [EmailJS](https://www.emailjs.com/docs/examples/reactjs/), enabling email sending without the need for a backend server.

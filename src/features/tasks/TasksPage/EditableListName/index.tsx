@@ -1,47 +1,63 @@
-import { FormEventHandler, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/redux";
+import { SubmitEvent, useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/redux/redux";
 import { Input } from "../../../../common/Input";
 import { NameContainer } from "./styled";
 import { ListName } from "./ListName";
 import { Button } from "../../../../common/Button";
 import {
   selectListNameToEdit,
-  selectListName,
+  selectTaskListMetaData,
   setListNameToEdit,
   setListName,
   selectTasks,
+  selectListStatus,
+  selectIsTasksSorting,
+  selectEditedTask,
 } from "../../tasksSlice";
 import { useTranslation } from "react-i18next";
+import { StatusIndicator, StyledSpan } from "../../../../common/StyledList";
+import { formatCurrentDate } from "../../../../utils/formatting/formatCurrentDate";
 
 export const EditableListName = () => {
   const tasks = useAppSelector(selectTasks);
-  const listName = useAppSelector(selectListName);
-  const { t } = useTranslation("translation", {
+  const taskListMetaData = useAppSelector(selectTaskListMetaData);
+  const name = taskListMetaData.name;
+  const { t, i18n } = useTranslation("translation", {
     keyPrefix: "tasksPage",
   });
-  const [name, setName] = useState(listName || t("tasks.defaultListName"));
+  const [newName, setNewName] = useState(name || t("tasks.defaultListName"));
   const listNameToEdit = useAppSelector(selectListNameToEdit);
+  const isTasksSorting = useAppSelector(selectIsTasksSorting);
+  const editedTask = useAppSelector(selectEditedTask);
   const inpurRef = useRef<HTMLInputElement>(null);
+  const { isRemoteSaveable } = useAppSelector(selectListStatus);
   const dispatch = useAppDispatch();
 
-  const onNameSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+  useEffect(() => {
+    listNameToEdit && dispatch(setListNameToEdit(null));
+    !name && dispatch(setListName({ name: t("tasks.defaultListName") }));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onNameSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const trimedContent = name.trim();
+    const trimedContent = newName.trim();
 
     if (trimedContent) {
-      if (listNameToEdit !== null) {
+      if (!!listNameToEdit) {
         dispatch(
           setListName({
-            listName: trimedContent,
-            stateForUndo: { tasks, listName },
-          })
+            name: trimedContent,
+            stateForUndo: { tasks, taskListMetaData },
+          }),
         );
         dispatch(setListNameToEdit(null));
 
-        setName(trimedContent);
+        setNewName(trimedContent);
       } else {
-        dispatch(setListNameToEdit(listName || t("tasks.defaultListName")));
-        setName(listName || t("tasks.defaultListName"));
+        dispatch(setListNameToEdit(name));
+        setNewName(name);
       }
     } else {
       inpurRef.current!.focus();
@@ -50,20 +66,43 @@ export const EditableListName = () => {
 
   return (
     <NameContainer onSubmit={onNameSubmit}>
-      {listNameToEdit === null ? (
-        <ListName>{listName || t("tasks.defaultListName")}</ListName>
+      {!listNameToEdit ? (
+        <>
+          <StyledSpan $commentListName>
+            {`${i18n.t("listFrom")}: ${formatCurrentDate(new Date(taskListMetaData.date), i18n.language)} `}
+            {tasks.length > 0 && (
+              <>
+                <strong>•</strong>&nbsp;(&nbsp;
+                {i18n.t("currentTaskCount.tasks", { count: tasks.length })}
+                &nbsp;){" "}
+              </>
+            )}
+            <strong>•</strong>&nbsp;
+            <StatusIndicator $online={isRemoteSaveable}>
+              {i18n.t(isRemoteSaveable ? "online" : "offline")}
+            </StatusIndicator>
+          </StyledSpan>
+          <ListName>{name}</ListName>
+        </>
       ) : (
         <Input
           type="text"
-          value={name}
+          value={newName}
           placeholder={t("tasks.inputPlaceholder")}
-          onChange={({ target }) => setName(target.value)}
+          onChange={({ target }) => {
+            const value = target.value;
+            if (value.length === 1) {
+              setNewName(value.toUpperCase());
+            } else {
+              setNewName(value);
+            }
+          }}
           autoFocus
           ref={inpurRef}
         />
       )}
-      <Button $special>
-        {listNameToEdit === null
+      <Button $special disabled={isTasksSorting || !!editedTask} type="submit">
+        {!listNameToEdit
           ? t("tasks.buttons.titleButtons.change")
           : t("tasks.buttons.titleButtons.save")}
       </Button>

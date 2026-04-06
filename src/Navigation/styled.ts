@@ -1,33 +1,71 @@
-import { NavLink } from "react-router-dom";
 import styled, { css } from "styled-components";
+import { NavLink } from "react-router-dom";
 import { ReactComponent as user } from "../images/user.svg";
+import { ReactComponent as user_1 } from "../images/user_1.svg";
 
-interface NavListProps {
-  $isLists: boolean;
-}
-interface ButtonProps {
-  $isActive?: boolean;
+interface LangDropdownProps {
+  $isOpen?: boolean;
 }
 
-interface StyledNavLinkProps {
-  $inactive?: boolean;
-}
-interface AccountProps {
-  $isActive?: boolean;
-}
+export const LangDropdown = styled.ul<LangDropdownProps>`
+  display: flex;
+  position: absolute;
+  left: -20px;
+  top: calc(100% + 17px);
+  z-index: 1001;
+  min-width: 60px;
+  padding: 15px 0 10px 0;
+  list-style: none;
+  padding-top: 10px;
+  background-color: ${({ theme }) => theme.colors.nav.background};
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? "translateX(0)" : "translateX(-100%)"};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+export const LangDesktop = styled.div`
+  display: flex;
+  gap: 14px;
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    display: none;
+  }
+`;
+
+export const LangMobileWrapper = styled.div`
+  position: relative;
+  display: none;
+  padding-left: 1px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
+    display: inline-block;
+  }
+`;
 
 export const Nav = styled.nav`
-  background-color: ${({ theme }) => theme.color.teal};
+  background-color: ${({ theme }) => theme.colors.nav.background};
+  /* transition: background-color 0.5s ease-in-out; */
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50px;
   user-select: none;
   position: fixed;
+  top: 0;
+  left: 0;
   min-width: 300px;
   width: 100%;
-  z-index: 1;
+  z-index: 1000;
 `;
+interface NavListProps {
+  $isLists: boolean;
+}
 
 export const NavList = styled.ul<NavListProps>`
   list-style: none;
@@ -43,30 +81,50 @@ export const NavList = styled.ul<NavListProps>`
     $isLists &&
     css`
       grid-template-columns: 1fr auto auto auto 1fr;
-
-      @media (max-width: ${({ theme }) => theme.breakpoint.mobileMax}) {
-        grid-template-columns: 1fr auto auto auto auto;
-      }
-
-      @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-        grid-template-columns: 1fr auto auto auto 1fr;
-      }
     `};
-
-  li {
-    text-align: right;
-  }
-
-  li:first-child {
-    text-align: left;
-    margin-left: 20px;
-  }
 `;
+
+interface NavListItemProps {
+  $first?: boolean;
+  $last?: boolean;
+  $main?: boolean;
+}
+
+export const NavListItem = styled.li<NavListItemProps>`
+  ${({ $main }) =>
+    $main &&
+    css`
+      text-align: right;
+    `}
+
+  ${({ $first }) =>
+    $first &&
+    css`
+      text-align: left;
+      margin-left: 20px;
+    `}
+
+  ${({ $last }) =>
+    $last &&
+    css`
+      margin-right: 20px;
+    `}
+`;
+
+interface StyledNavLinkProps {
+  $inactive?: boolean;
+  width?: string;
+}
 
 export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   text-decoration: none;
-  color: ${({ theme }) => theme.color.white};
-  height: 50px;
+  color: ${({ theme }) => theme.colors.nav.text};
+  transition: color 0.2s ease-in-out;
+  width: ${({ width }) => width || "auto"};
+  display: inline-block;
+  text-align: center;
+  min-width: fit-content;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     text-decoration: underline;
@@ -74,39 +132,58 @@ export const StyledNavLink = styled(NavLink)<StyledNavLinkProps>`
   }
 
   &.active {
-    font-weight: 700;
+    font-weight: ${({ theme }) => theme.fontWeight.bold};
     ${({ $inactive }) =>
       $inactive &&
       css`
-        font-weight: 400;
+        font-weight: ${({ theme }) => theme.fontWeight.normal};
       `}
   }
 `;
 
+interface ButtonProps {
+  $isActive?: boolean;
+  width?: string;
+}
+
 export const NavButton = styled.button<ButtonProps>`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.color.white};
-  height: 50px;
+  color: ${({ theme }) => theme.colors.nav.text};
+  width: ${({ width }) => width || "auto"};
+  cursor: pointer;
+  text-underline-offset: 5px;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
 
   &:hover {
     text-decoration: underline;
-    text-underline-offset: 5px;
   }
+
   ${({ $isActive }) =>
     $isActive &&
     css`
-      font-weight: 700;
+      font-weight: ${({ theme }) => theme.fontWeight.bold};
     `};
+`;
 
-  @media (max-width: ${({ theme }) => theme.breakpoint.mobileMid}) {
-    display: none;
+interface AccountProps {
+  $isActive?: boolean;
+}
+
+export const Account = styled(user)<AccountProps>`
+  margin-top: 0.2rem;
+  width: 0.9rem;
+  transition: scale 0.1s ease-in-out;
+
+  &:hover {
+    scale: 1.1;
   }
 `;
 
-export const Account = styled(user)<AccountProps>`
-  margin-top: 0.1rem;
-  margin-right: 20px;
+export const ActiveAccount = styled(user_1)<AccountProps>`
+  margin-top: 0.2rem;
+  scale: 1.1;
   width: 0.9rem;
 
   ${({ $isActive }) =>
