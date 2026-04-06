@@ -43,18 +43,19 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
   const subscribeToConfirmationChannel = useCallback(async (email: string) => {
     if (!email) return;
 
-    const channelKey = `confirmation:${email}`;
+    const normalizedEmail = email.toLowerCase().trim();
+    const channelKey = `confirmation:${normalizedEmail}`;
     if (channelsRef.current.has(channelKey)) {
       return;
     }
 
     const ably = getAblyInstance();
-    const channel = ably.channels.get(`user:${email}:confirmation`);
+    const channel = ably.channels.get(`user:${normalizedEmail}:confirmation`);
     channelsRef.current.set(channelKey, channel);
 
     const handleConfirmation = (message: any) => {
       if (message.data?.type === "user-confirmed") {
-        const callbacks = subscriptionsRef.confirmation.get(email) || [];
+        const callbacks = subscriptionsRef.confirmation.get(normalizedEmail) || [];
         callbacks.forEach((cb) => cb(message.data));
       }
     };
@@ -74,7 +75,8 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
   }, []);
 
   const cleanupConfirmationChannel = useCallback(async (email: string) => {
-    const channelKey = `confirmation:${email}`;
+    const normalizedEmail = email.toLowerCase().trim();
+    const channelKey = `confirmation:${normalizedEmail}`;
     const channel = channelsRef.current.get(channelKey);
     const handler = confirmationHandlersRef.current.get(channelKey);
 
@@ -94,24 +96,25 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
     async (email: string, callback: ConfirmationCallback) => {
       if (!email) return () => {};
 
-      const callbacks = subscriptionsRef.confirmation.get(email) || [];
+      const normalizedEmail = email.toLowerCase().trim();
+      const callbacks = subscriptionsRef.confirmation.get(normalizedEmail) || [];
       callbacks.push(callback);
-      subscriptionsRef.confirmation.set(email, callbacks);
+      subscriptionsRef.confirmation.set(normalizedEmail, callbacks);
 
       try {
-        await subscribeToConfirmationChannel(email);
+        await subscribeToConfirmationChannel(normalizedEmail);
       } catch (err) {
         console.error("[AblyManager] Confirmation subscribe error:", err);
       }
 
       return () => {
-        const currentCallbacks = subscriptionsRef.confirmation.get(email) || [];
+        const currentCallbacks = subscriptionsRef.confirmation.get(normalizedEmail) || [];
         const idx = currentCallbacks.indexOf(callback);
         if (idx > -1) currentCallbacks.splice(idx, 1);
 
         if (currentCallbacks.length === 0) {
-          subscriptionsRef.confirmation.delete(email);
-          cleanupConfirmationChannel(email).catch((err) =>
+          subscriptionsRef.confirmation.delete(normalizedEmail);
+          cleanupConfirmationChannel(normalizedEmail).catch((err) =>
             console.error("[AblyManager] Confirmation cleanup error:", err),
           );
         } else {
@@ -124,13 +127,16 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
 
   const onListsUpdate = useCallback(
     (email: string, callback: ListsUpdateCallback) => {
-      const callbacks = subscriptionsRef.listsUpdate.get(email) || [];
+      const normalizedEmail = email.toLowerCase().trim();
+      const callbacks = subscriptionsRef.listsUpdate.get(normalizedEmail) || [];
       callbacks.push(callback);
-      subscriptionsRef.listsUpdate.set(email, callbacks);
+      subscriptionsRef.listsUpdate.set(normalizedEmail, callbacks);
 
       return () => {
-        const idx = callbacks.indexOf(callback);
-        if (idx > -1) callbacks.splice(idx, 1);
+        const currentCallbacks =
+          subscriptionsRef.listsUpdate.get(normalizedEmail) || [];
+        const idx = currentCallbacks.indexOf(callback);
+        if (idx > -1) currentCallbacks.splice(idx, 1);
       };
     },
     [],
@@ -160,12 +166,13 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
 
     const ably = getAblyInstance();
     const currentDeviceId = getOrCreateDeviceId();
+    const normalizedEmail = loggedUserEmail.toLowerCase().trim();
 
-    const dataChannel = ably.channels.get(`user:${loggedUserEmail}:lists`);
+    const dataChannel = ably.channels.get(`user:${normalizedEmail}:lists`);
     channelsRef.current.set("data", dataChannel);
 
     const presenceSelfChannel = ably.channels.get(
-      `user:${loggedUserEmail}:presence`,
+      `user:${normalizedEmail}:presence`,
     );
     const presenceAdminChannel = ably.channels.get("global:presence-admins");
 
@@ -183,7 +190,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
         await dataChannel.attach();
         await presenceSelfChannel.attach();
         await presenceAdminChannel.attach();
-        await subscribeToConfirmationChannel(loggedUserEmail);
+        await subscribeToConfirmationChannel(normalizedEmail);
       } catch (err) {
         if (isAblyErrorSilent(err)) return;
         console.error("[AblyManager] Channel attach failed:", err);
@@ -194,7 +201,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
         if (!message.data?.lists) return;
         if (message.data.deviceId === currentDeviceId) return;
         const callbacks =
-          subscriptionsRef.listsUpdate.get(loggedUserEmail) || [];
+          subscriptionsRef.listsUpdate.get(normalizedEmail) || [];
         callbacks.forEach((cb) => cb(message.data));
       };
 
@@ -213,7 +220,9 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
 
           const members = await presenceCountChannel.presence.get();
           const counts = members.reduce<Record<string, number>>((acc, m) => {
-            const email = m.data?.email || (m.clientId || "").split(":")[0];
+            const email = (m.data?.email || (m.clientId || "").split(":")[0])
+              ?.toLowerCase()
+              .trim();
             if (email) acc[email] = (acc[email] || 0) + 1;
             return acc;
           }, {});
@@ -221,7 +230,7 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
             .sort((a, b) => a.localeCompare(b))
             .map((email) => ({ email, deviceCount: counts[email] }));
           const totalUsers = users.length;
-          const userDevices = counts[loggedUserEmail || ""] || 0;
+          const userDevices = counts[normalizedEmail] || 0;
           const allDevices = members.length;
 
           const callbacks =
@@ -265,12 +274,12 @@ export const useAblyManager = (options: { isGlobalManager?: boolean } = {}) => {
 
       try {
         await presenceSelfChannel.presence.enter({
-          email: loggedUserEmail,
+          email: normalizedEmail,
           deviceId: currentDeviceId,
           status: "available",
         });
         await presenceAdminChannel.presence.enter({
-          email: loggedUserEmail,
+          email: normalizedEmail,
           deviceId: currentDeviceId,
           status: "available",
         });

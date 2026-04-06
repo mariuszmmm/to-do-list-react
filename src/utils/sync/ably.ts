@@ -6,7 +6,7 @@ let ablyInstance: Ably.Realtime | null = null;
 let pendingConfirmationEmail: string | null = null;
 
 export const setPendingConfirmationEmail = (email: string | null) => {
-  pendingConfirmationEmail = email;
+  pendingConfirmationEmail = email ? email.toLowerCase().trim() : null;
 };
 
 const getPendingConfirmationEmail = () => pendingConfirmationEmail;
@@ -26,10 +26,11 @@ const getEmailFromToken = (token: string): string | null => {
 let currentAblyEmail: string | null = null;
 
 export const getAblyInstance = (): Ably.Realtime => {
-  const userToken = localStorage.getItem("gotrue.user") 
-    ? JSON.parse(localStorage.getItem("gotrue.user")!).token?.access_token 
+  const userToken = localStorage.getItem("gotrue.user")
+    ? JSON.parse(localStorage.getItem("gotrue.user")!).token?.access_token
     : null;
-  const email = userToken ? getEmailFromToken(userToken) : null;
+  const rawEmail = userToken ? getEmailFromToken(userToken) : null;
+  const email = rawEmail?.toLowerCase().trim() || null;
 
   // Jeśli użytkownik się zmienił, zamknij stare połączenie
   if (ablyInstance && email !== currentAblyEmail) {
@@ -46,7 +47,8 @@ export const getAblyInstance = (): Ably.Realtime => {
           const userToken = await getUserToken();
 
           if (userToken) {
-            const email = getEmailFromToken(userToken);
+            const rawEmail = getEmailFromToken(userToken);
+            const email = rawEmail?.toLowerCase().trim();
 
             if (!email) {
               callback(
@@ -77,7 +79,7 @@ export const getAblyInstance = (): Ably.Realtime => {
             return;
           }
 
-          const pendingEmail = getPendingConfirmationEmail();
+          const pendingEmail = getPendingConfirmationEmail()?.toLowerCase().trim();
 
           if (!pendingEmail) {
             callback("No token available", null);
@@ -85,7 +87,7 @@ export const getAblyInstance = (): Ably.Realtime => {
           }
 
           const response = await fetch(
-            `/auth-ably?email=${pendingEmail}&deviceId=${deviceId}`,
+            `/auth-ably?email=${encodeURIComponent(pendingEmail)}&deviceId=${deviceId}`,
             { method: "GET" },
           );
 
