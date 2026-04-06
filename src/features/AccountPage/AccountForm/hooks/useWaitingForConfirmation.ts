@@ -22,7 +22,8 @@ export const useWaitingForConfirmation = ({ email, password, message }: WaitingF
   const waitingForConfirmation = useCallback(() => {
     if (!email || !password) return;
 
-    setPendingConfirmationEmail(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    setPendingConfirmationEmail(normalizedEmail);
 
     const handleConfirmation = async ({ type, email: confirmedEmail }: { type: string; email: string }) => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -64,7 +65,7 @@ export const useWaitingForConfirmation = ({ email, password, message }: WaitingF
       }
     };
 
-    onConfirmation(email, handleConfirmation)
+    onConfirmation(normalizedEmail, handleConfirmation)
       .then((unsubscribe) => {
         unsubscribeRef.current = unsubscribe;
       })

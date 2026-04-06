@@ -15,12 +15,9 @@ const handler: Handler = async (event, context) => {
   const contextUser = context?.clientContext?.user;
   const isAuthenticated = contextUser !== undefined;
 
-  // Bezpieczeństwo: W produkcji ufamy TYLKO e-mailowi z tokenu (contextUser).
-  // Parametr emailParam dopuszczamy tylko lokalnie dla ułatwienia debugowania/dev.
-  const isLocalDev =
-    process.env.NETLIFY_DEV === "true" ||
-    process.env.NODE_ENV === "development";
-  const email = (contextUser?.email || (isLocalDev ? emailParam : null))
+  // Bezpieczeństwo: Jeśli nie ma contextUser, dopuszczamy emailParam jako "pendingEmail",
+  // ale wtedy przyznajemy TYLKO uprawnienia do kanału potwierdzenia.
+  const email = (contextUser?.email || emailParam)
     ?.toLowerCase()
     .trim();
 
@@ -48,15 +45,26 @@ const handler: Handler = async (event, context) => {
     const serverTime = await ably.time();
     const uniqueClientId = `${email}:${deviceId}`;
 
-    const capability: any = {
-      [`user:${email}:lists`]: ["subscribe", "publish", "history"],
-      [`user:${email}:confirmation`]: ["subscribe", "publish"],
-      [`user:${email}:presence`]: ["subscribe", "presence"],
-      "global:presence-admins": ["subscribe", "presence"],
-    };
+    // Definiujemy uprawnienia w zależności od statusu autentykacji
+    let capability: any = {};
 
-    if (isAdmin) {
-      capability["system:logs"] = ["subscribe"];
+    if (isAuthenticated) {
+      // Pełne uprawnienia dla zalogowanego użytkownika
+      capability = {
+        [`user:${email}:lists`]: ["subscribe", "publish", "history"],
+        [`user:${email}:confirmation`]: ["subscribe", "publish"],
+        [`user:${email}:presence`]: ["subscribe", "presence"],
+        "global:presence-admins": ["subscribe", "presence"],
+      };
+
+      if (isAdmin) {
+        capability["system:logs"] = ["subscribe"];
+      }
+    } else {
+      // Ograniczone uprawnienia dla użytkownika oczekującego na potwierdzenie (niezalogowanego)
+      capability = {
+        [`user:${email}:confirmation`]: ["subscribe"],
+      };
     }
 
     const tokenRequest = await ably.auth.createTokenRequest({
