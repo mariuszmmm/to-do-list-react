@@ -3,7 +3,7 @@ name: Cleanup Logs
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 1 * * *" # Every day at 01:00 UTC
+    - cron: "30 3 * * 0" # Every Sunday at 03:30 UTC
 
 jobs:
   cleanup-logs:

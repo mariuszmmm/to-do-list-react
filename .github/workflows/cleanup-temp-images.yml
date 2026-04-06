@@ -2,11 +2,7 @@ name: Cleanup Cloudinary Temp Uploads
 
 on:
   schedule:
-    # - cron: "0 0 * * 0" # Every Sunday at midnight (weekly)
-    - cron: "0 0 * * *" # Every day at midnight (daily)
-    # - cron: "10 0 * * *" # Every day at 00:10 (daily)
-    # - cron: "20 0 * * *" # Every day at 00:20 (daily)
-    # - cron: "*/5 * * * *" # Every 5 minutes
+    - cron: "0 1 * * *" # Every day at 01:00 UTC
 
   workflow_dispatch:
 

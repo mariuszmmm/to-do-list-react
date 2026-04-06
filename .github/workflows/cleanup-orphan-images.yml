@@ -2,12 +2,7 @@ name: Cleanup Orphan Images
 
 on:
   schedule:
-    # - cron: "0 0 1 * *" # First day of every month at midnight (monthly)
-    # - cron: "0 0 * * *" # Every day at midnight (daily)
-    # - cron: "10 0 * * *" # Every day at 00:10 (daily)
-    - cron: "20 0 * * *" # Every day at 00:20 (daily)
-    # - cron: "*/10 * * * *" # Every 10 minutes (for testing)
-    # - cron: "*/5 * * * *" # Every 5 minutes
+    - cron: "0 3 * * 0" # Every Sunday at 03:00 UTC
 
   workflow_dispatch:
 
